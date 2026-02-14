@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Car Comparison</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-block">
+      <span class="brand-name">CarQuantix</span>
+      <span class="brand-copy">&copy; 2026</span>
+    </div>
+    <nav class="top-links" aria-label="Top links">
+      {% if user %}
+      <div class="favorites-nav-wrap">
+        <a href="#" id="topFavoritesLink" class="top-link" aria-expanded="false">My Favorites</a>
+        <section id="favoritesArea" class="favorites-area favorites-popover" aria-live="polite">
+          <div class="favorites-header">
+            <button id="clearFavoritesBtn" class="btn muted">Clear favorites</button>
+          </div>
+          <div id="favoritesList" class="favorites-list"></div>
+        </section>
+      </div>
+      {% endif %}
+      <a href="/contact" target="_blank" rel="noopener noreferrer" class="top-link">Contact</a>
+      <a href="/about-us" target="_blank" rel="noopener noreferrer" class="top-link">About Us</a>
+      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" class="top-link">Privacy Policy</a>
+    </nav>
+    <div class="auth-area">
+      <div class="switch-row top-switch">
+        <span>Dark Mode</span>
+        <label class="switch">
+          <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+          <span class="slider"></span>
+        </label>
+      </div>
+      {% if user %}
+      <div class="notifications-wrap">
+        <button id="notificationsBtn" class="top-icon-btn" type="button" aria-label="Notifications" title="Notifications">
+          <span class="top-icon-glyph">&#128276;</span>
+          <span id="notificationsBadge" class="notifications-badge hidden">0</span>
+        </button>
+      <div id="notificationsMenu" class="notifications-menu" aria-live="polite">
+        <div class="notifications-title">Updates</div>
+        <div id="notificationsList" class="notifications-list"></div>
+      </div>
+      </div>
+      <button id="profileMenuTrigger" class="avatar-btn" aria-label="Profile menu">
+        <img src="{{ user.picture or '' }}" alt="{{ user.name or user.email or 'Profile' }}">
+      </button>
+      <div id="profileMenu" class="profile-menu">
+        <div class="profile-name">{{ user.name or user.email }}</div>
+        <button id="logoutBtn" class="menu-action">Logout</button>
+      </div>
+      {% else %}
+      <button id="loginBtn" class="auth-btn">Log In</button>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-left">
+        <video class="promo-video" data-src="{{ url_for('login_media', filename='lgnvideo.mp4') }}" preload="none" muted loop playsinline>
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="modal-right">
+        <h3 id="formTitle">Log In</h3>
+        <form id="authForm">
+          <input id="loginName" class="hidden" type="text" placeholder="Full Name" autocomplete="name" />
+          <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required />
+          <div class="password-row">
+            <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required />
+            <button type="button" id="togglePassword" aria-label="Show password" title="Show password">
+              <svg class="eye-icon eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" fill="currentColor"/>
+              </svg>
+              <svg class="eye-icon eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 4l16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="strength-row">
+            <span id="strengthLabel">Password strength: -</span>
+            <span class="hint">Min 8 characters, mix letters/numbers.</span>
+          </div>
+          <div id="codeBlock" class="hidden">
+            <input id="verificationCode" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Verification code" />
+            <span id="codeHint" class="hint">Enter the 6-digit code sent to your email.</span>
+            <button type="button" id="resendCode" class="link-btn">Resend code</button>
+          </div>
+          <a href="#" id="forgotLink">Forgot your password?</a>
+          <button type="submit" class="primary" id="submitBtn">Log In</button>
+          <div id="authError" class="form-error hidden"></div>
+        </form>
+<div class="social">
+  <button onclick="window.location.href='/login/google'">
+    Continue with Google
+  </button>
+
+  <button onclick="window.location.href='/login/facebook'">
+    Continue with Facebook
+  </button>
+</div>
+        <p id="toggleCopy"><span id="toggleCopyText">Don’t have an account?</span> <a href="#" id="toggleAuthMode">Create one</a></p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="app">
+    <aside class="sidebar" aria-label="vehicles list">
+      <div class="sidebar-header">
+        <h2>Vehicles</h2>
+        <input id="search" type="search" placeholder="Search (model or brand)..." aria-label="search" />
+      </div>
+
+      <div id="catalogToggle" class="catalog-toggle" role="tablist" aria-label="Vehicle type switcher">
+        <button type="button" data-catalog="cars" class="active" aria-selected="true" data-i18n="catalogCars">Cars</button>
+        <button type="button" data-catalog="motorcycles" aria-selected="false" data-i18n="catalogMotorcycles">Motorcycles</button>
+      </div>
+
+      <div id="filterBar">
+  <button data-sort="topSpeed">Top Speed</button>
+  <button data-sort="nameAZ">A-Z</button>
+  <button data-sort="acc">0-100 (s)</button>
+  <button data-sort="price">Price</button>
+</div>
+
+      <div id="itemList" class="list" role="list">
+        <!-- Items populated by script -->
+      </div>
+    </aside>
+
+    <main class="main" role="main">
+      <header class="main-header">
+        <h1>Comparison</h1>
+        <div class="actions">
+          <button id="clearBtn" class="btn muted">Clear Selected</button>
+          <button id="compareBtn" class="btn primary">Compare</button>
+        </div>
+      </header>
+
+      <section id="compareArea" class="compare-area" aria-live="polite">
+        <p class="empty">No vehicles selected. Start by adding vehicles from the left.</p>
+      </section>
+
+      <section id="tableArea" class="table-area hidden" aria-label="comparison table">
+        <h2>Comparison Table</h2>
+        <div class="table-wrap">
+          <table id="compTable" summary="Specifications comparison">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Power (CV)</th>
+                <th>0—100 (s)</th>
+                <th>Top Speed (km/h)</th>
+                <th>Engine</th>
+                <th>Price</th>
+                <th>Consumption</th>
+                <th>Cost</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+<div class="comment-section">
+  <h3>Comments</h3>
+
+  <form id="commentForm">
+    <input type="text" id="username" placeholder="Your name" required />
+    <textarea id="commentInput" placeholder="Write your comment..." required></textarea>
+        <label for="rating">Rating:</label>
+    <select id="rating">
+      <option value="5">★★★★★</option>
+      <option value="4">★★★★☆</option>
+      <option value="3">★★★☆☆</option>
+      <option value="2">★★☆☆☆</option>
+      <option value="1">★☆☆☆☆</option>
+    </select>
+
+    <button type="submit">Submit</button>
+  </form>
+  <div id="commentsContainer"></div>
+</div>
+  <script
+    window.currentUser = {{ user | tojson | safe }};
+  </script
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

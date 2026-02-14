@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Test User",
+    "email": "admin@example.com",
+    "password_hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e6289d6d9f2c7b0"
+  },
+  {
+    "name": "Kesha X1",
+    "email": "keshachat507@gmail.com",
+    "password_hash": "scrypt:32768:8:1$V1rZ9B5mlr6Szz0p$2284b26e755f42303a7f999b162a85d5187320173818d8c546b3e6d1af540291a9b700578c68c4d8979923875425ad2e86a3e38d6570fa2c4e98a0ce05f64765"
+  },
+  {
+    "name": "Kesha X1",
+    "email": "kickbotoski849@gmail.com",
+    "password_hash": "scrypt:32768:8:1$CbwlQRtasVrjY7S2$bef370e55cd51668b0f703672459d4f99b6ecae49303eff06d181bcbf988730c737838429d8aaeb439a750fc25c62683478bdbca4085b0cded66635df7a12e10"
+  }
+]
