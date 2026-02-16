@@ -1628,7 +1628,7 @@ body.dark #togglePassword {
   #search{width:100%}
 }
 
-/* mobile-fix-v6 */
+/* mobile-fix-v7 */
 *,
 *::before,
 *::after { box-sizing: border-box; }
@@ -1702,6 +1702,12 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     height: 36px;
   }
 
+  /* Main header + compare button visible */
+  .main-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .main-header h1 { font-size: 22px; }
+  .main-header .actions { width: 100%; margin-top: 0 !important; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+  .main-header .actions .btn { flex: 1; min-width: 140px; padding: 8px 10px; font-size: 12px; }
+
   /* Filters + catalog tighter */
   #filterBar { flex-wrap: wrap; gap: 8px; margin: 12px 0; }
   #filterBar button { padding: 7px 10px; font-size: 12px; }
@@ -1716,14 +1722,15 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .add-btn { padding: 6px 8px; font-size: 11px; min-height: 32px; }
 
   /* Selected compare cards smaller */
-  .compare-area { gap: 10px; }
-  .compare-card { padding: 10px; border-radius: 12px; gap: 8px; }
+  .compare-area { gap: 8px; }
+  .compare-card { padding: 8px; border-radius: 10px; gap: 6px; }
   .compare-card .thumb-frame { aspect-ratio: 16/9; }
-  .compare-card img.thumb-img { border-radius: 10px; }
-  .title-row h4 { font-size: 0.95rem; }
-  .compare-card .meta h4 { font-size: 0.95rem; }
-  .meta-line { font-size: 0.8rem; }
-  .remove-btn { padding: 6px 8px; font-size: 12px; }
+  .compare-card img.thumb-img { border-radius: 8px; }
+  .title-row h4 { font-size: 0.88rem; }
+  .type-pill { font-size: 10px; padding: 3px 8px; }
+  .compare-card .meta h4 { font-size: 0.88rem; }
+  .meta-line { font-size: 0.75rem; }
+  .remove-btn { padding: 6px 8px; font-size: 11px; }
 
   /* Login modal more compact */
   .modal-content {
