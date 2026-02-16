@@ -1628,7 +1628,7 @@ body.dark #togglePassword {
   #search{width:100%}
 }
 
-/* mobile-fix-v2 */
+/* mobile-fix-v3 */
 *,
 *::before,
 *::after { box-sizing: border-box; }
@@ -1636,6 +1636,22 @@ body.dark #togglePassword {
 html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
 
 @media (max-width: 760px) {
+  /* Keep sidebar hidden unless opened */
+  .sidebar {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(86vw, 360px);
+    max-width: 360px;
+    transform: translateX(110%) !important;
+    transition: transform .28s ease;
+    z-index: 1200;
+    box-shadow: -8px 0 30px rgba(2,6,23,0.6);
+  }
+  .sidebar.open { transform: translateX(0) !important; }
+
+  .overlay { display: none; }
+  .overlay.show { display: block; }
+
   .topbar {
     position: static;
     flex-direction: column;
@@ -1685,5 +1701,23 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     width: 36px;
     height: 36px;
   }
+
+  /* Filters + catalog tighter */
+  #filterBar { flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  #filterBar button { padding: 7px 10px; font-size: 12px; }
+  .catalog-toggle button { padding: 8px 10px; font-size: 13px; }
+
+  /* Login modal responsive */
+  .modal-content {
+    width: min(92vw, 420px);
+    margin: 10vh auto;
+    flex-direction: column;
+    max-height: 80vh;
+    overflow: auto;
+  }
+  .modal-left { height: 200px; }
+  .promo-video { height: 200px; }
+  .modal-right { padding: 16px; }
 }
+
 
