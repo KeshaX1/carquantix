@@ -1628,7 +1628,7 @@ body.dark #togglePassword {
   #search{width:100%}
 }
 
-/* mobile-fix-v3 */
+/* mobile-fix-v4 */
 *,
 *::before,
 *::after { box-sizing: border-box; }
@@ -1707,17 +1707,29 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   #filterBar button { padding: 7px 10px; font-size: 12px; }
   .catalog-toggle button { padding: 8px 10px; font-size: 13px; }
 
-  /* Login modal responsive */
+  /* Sidebar list cards smaller */
+  .item { padding: 8px; gap: 8px; }
+  .item .thumb { height: 110px; }
+  .info h3 { font-size: 0.88rem; }
+  .info p { font-size: 0.75rem; }
+  .add-btn { padding: 6px 8px; font-size: 12px; }
+
+  /* Login modal more compact */
   .modal-content {
-    width: min(92vw, 420px);
-    margin: 10vh auto;
+    width: min(92vw, 360px);
+    margin: 8vh auto;
     flex-direction: column;
-    max-height: 80vh;
+    max-height: 78vh;
     overflow: auto;
   }
-  .modal-left { height: 200px; }
-  .promo-video { height: 200px; }
-  .modal-right { padding: 16px; }
+  .modal-left { height: 150px; }
+  .promo-video { height: 150px; }
+  .modal-right { padding: 12px; gap: 8px; }
+  .modal-right h3 { font-size: 18px; }
+  .modal-right input { padding: 8px; font-size: 14px; }
+  .modal-right .primary { padding: 8px; font-size: 14px; }
+  .modal-right .social button { padding: 8px; font-size: 13px; }
+  .strength-row { font-size: 11px; }
+  #togglePassword { padding: 6px 8px; }
 }
-
 
