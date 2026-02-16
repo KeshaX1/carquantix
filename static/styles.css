@@ -1,4 +1,4 @@
-:root{
+﻿:root{
   --input-bg: #ffffff;
   --input-text: #000000;
   --modal-bg: #ffffff;
@@ -467,7 +467,7 @@ h1, h2, h3, p, button {
 }
 
 .icon-btn[data-action="like"]::before {
-    content: "👍";
+    content: "ğŸ‘";
     margin-right: 6px;
 }
 
@@ -783,7 +783,7 @@ body.dark .comment-section textarea::placeholder {
 }
 
 .scroll-comments {
-  max-height: 400px; /* İsteğe göre 300–600px arası ayarlanabilir */
+  max-height: 400px; /* Ä°steÄŸe gÃ¶re 300â€“600px arasÄ± ayarlanabilir */
   overflow-y: auto;
   padding-right: 8px;
   margin-top: 12px;
@@ -833,7 +833,7 @@ body.dark .comment-section textarea::placeholder {
 }
 
 /*                         Login / Profile                          */
-/* Login butonunu üstte sağ köşeye taşıma ve küçültme */
+/* Login butonunu Ã¼stte saÄŸ kÃ¶ÅŸeye taÅŸÄ±ma ve kÃ¼Ã§Ã¼ltme */
 input {
   background-color: var(--input-bg);
   color: var(--input-text);
@@ -856,7 +856,7 @@ input {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: auto; /* tüm satırı kaplamasın */
+  width: auto; /* tÃ¼m satÄ±rÄ± kaplamasÄ±n */
 }
 
 #loginBtn:hover,
@@ -1359,7 +1359,7 @@ body.dark .lang-option.active {
 }
 
 .profile-menu .favorites-toggle::after {
-  content: '▼';
+  content: 'â–¼';
   display: inline-block;
   margin-left: 8px;
   font-size: 0.72rem;
@@ -1367,7 +1367,7 @@ body.dark .lang-option.active {
 }
 
 .profile-menu .favorites-area.collapsed .favorites-toggle::after {
-  content: '►';
+  content: 'â–º';
 }
 
 .profile-menu .favorites-list {
@@ -1627,3 +1627,35 @@ body.dark #togglePassword {
   .compare-card .thumb-row{ gap:8px; }
   #search{width:100%}
 }
+
+/* mobile-fix-v1 */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
+
+@media (max-width: 760px) {
+  .topbar {
+    position: static;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .top-links {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .auth-area {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+

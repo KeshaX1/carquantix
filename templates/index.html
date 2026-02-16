@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Car Comparison</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260216') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -109,7 +109,7 @@
     Continue with Facebook
   </button>
 </div>
-        <p id="toggleCopy"><span id="toggleCopyText">Don’t have an account?</span> <a href="#" id="toggleAuthMode">Create one</a></p>
+        <p id="toggleCopy"><span id="toggleCopyText">Donâ€™t have an account?</span> <a href="#" id="toggleAuthMode">Create one</a></p>
       </div>
     </div>
   </div>
@@ -159,7 +159,7 @@
               <tr>
                 <th>Model</th>
                 <th>Power (CV)</th>
-                <th>0—100 (s)</th>
+                <th>0â€”100 (s)</th>
                 <th>Top Speed (km/h)</th>
                 <th>Engine</th>
                 <th>Price</th>
@@ -181,11 +181,11 @@
     <textarea id="commentInput" placeholder="Write your comment..." required></textarea>
         <label for="rating">Rating:</label>
     <select id="rating">
-      <option value="5">★★★★★</option>
-      <option value="4">★★★★☆</option>
-      <option value="3">★★★☆☆</option>
-      <option value="2">★★☆☆☆</option>
-      <option value="1">★☆☆☆☆</option>
+      <option value="5">â˜…â˜…â˜…â˜…â˜…</option>
+      <option value="4">â˜…â˜…â˜…â˜…â˜†</option>
+      <option value="3">â˜…â˜…â˜…â˜†â˜†</option>
+      <option value="2">â˜…â˜…â˜†â˜†â˜†</option>
+      <option value="1">â˜…â˜†â˜†â˜†â˜†</option>
     </select>
 
     <button type="submit">Submit</button>
@@ -198,3 +198,4 @@
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
+
