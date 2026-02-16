@@ -1,0 +1,23 @@
+[33mcommit 71c0f014c6070826f3c502adfa82bdb344261ddc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Kesha <kerimhangeldi@gmail.com>
+Date:   Mon Feb 16 17:46:18 2026 +0300
+
+    Remove .env from repo
+
+[33mcommit 2fe2d7d800daadb684d2385ef587349d83d9da35[m
+Author: Kesha <kerimhangeldi@gmail.com>
+Date:   Mon Feb 16 17:45:19 2026 +0300
+
+    Deploy to Render
+
+[33mcommit 6a4b72edc2cf742edd78d6867b02558634be88f5[m
+Author: Kesha <kerimhangeldi@gmail.com>
+Date:   Sat Feb 14 18:00:01 2026 +0300
+
+    Remove .env permanently
+
+[33mcommit c9b6bd5575cc49b75d21c71ed6156271dc37d04b[m
+Author: Kesha <kerimhangeldi@gmail.com>
+Date:   Sat Feb 14 17:56:43 2026 +0300
+
+    initial clean commit
