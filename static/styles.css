@@ -1628,7 +1628,7 @@ body.dark #togglePassword {
   #search{width:100%}
 }
 
-/* mobile-fix-v5 */
+/* mobile-fix-v6 */
 *,
 *::before,
 *::after { box-sizing: border-box; }
@@ -1714,6 +1714,16 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .info h3 { font-size: 0.82rem; }
   .info p { font-size: 0.72rem; margin-top: 4px; }
   .add-btn { padding: 6px 8px; font-size: 11px; min-height: 32px; }
+
+  /* Selected compare cards smaller */
+  .compare-area { gap: 10px; }
+  .compare-card { padding: 10px; border-radius: 12px; gap: 8px; }
+  .compare-card .thumb-frame { aspect-ratio: 16/9; }
+  .compare-card img.thumb-img { border-radius: 10px; }
+  .title-row h4 { font-size: 0.95rem; }
+  .compare-card .meta h4 { font-size: 0.95rem; }
+  .meta-line { font-size: 0.8rem; }
+  .remove-btn { padding: 6px 8px; font-size: 12px; }
 
   /* Login modal more compact */
   .modal-content {
