@@ -130,6 +130,8 @@ body.dark .brand-divider::after{
   flex-direction:column;
   gap:12px;
   box-shadow:0 10px 24px rgba(0,0,0,0.14);
+  --card-accent: var(--accent);
+  --card-accent-soft: rgba(0,122,255,0.16);
 }
 .compare-card .thumb-frame{
   position:relative;
@@ -206,7 +208,39 @@ body.dark .brand-divider::after{
 .compare-card .thumb-row.single .thumb{
   flex-basis:100%;
 }
-.compare-card .meta h4{margin:0 0 6px 0}
+.compare-card .meta{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  text-align:center;
+}
+.compare-card .meta h4{
+  margin:0;
+  font-size:1.15rem;
+  font-weight:800;
+  color:var(--card-accent);
+}
+.compare-card .meta .spec-line{
+  color:var(--card-accent);
+  font-size:0.95rem;
+}
+.compare-card .meta .price-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:6px 14px;
+  border-radius:999px;
+  font-weight:700;
+  color:var(--card-accent);
+  background:var(--card-accent-soft);
+  border:1px solid rgba(255,255,255,0.18);
+}
+.compare-card .meta .stat-line{
+  color:var(--card-accent);
+  font-size:0.95rem;
+}
 .compare-card .meta.compact{
   display:flex;
   align-items:center;
@@ -1783,10 +1817,10 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .compare-card { padding: 7px; border-radius: 10px; gap: 6px; }
   .compare-card .thumb-frame { height: 140px; aspect-ratio: auto; }
   .compare-card img.thumb-img { height: 100%; }
-  .compare-card .card-overlay { padding: 10px 10px 8px; }
-  .compare-card .card-overlay h4 { font-size: 0.9rem; }
-  .compare-card .card-overlay .spec-line { font-size: 0.75rem; }
-  .compare-card .card-overlay .price-pill { padding: 4px 10px; font-size: 0.75rem; }
+  .compare-card .meta h4 { font-size: 0.9rem; }
+  .compare-card .meta .spec-line { font-size: 0.75rem; }
+  .compare-card .meta .price-badge { padding: 4px 10px; font-size: 0.75rem; }
+  .compare-card .meta .stat-line { font-size: 0.75rem; }
   .title-row h4 { font-size: 0.82rem; }
   .type-pill { font-size: 10px; padding: 3px 6px; }
   .compare-card .meta h4 { font-size: 0.82rem; }

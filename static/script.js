@@ -1737,6 +1737,58 @@ function formatPrice(val) {
   return String(val).replace(/^\$/, '€');
 }
 
+function extractAverageColor(img) {
+  try {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const w = 32;
+    const h = 32;
+    canvas.width = w;
+    canvas.height = h;
+    ctx.drawImage(img, 0, 0, w, h);
+    const data = ctx.getImageData(0, 0, w, h).data;
+    let r = 0;
+    let g = 0;
+    let b = 0;
+    let count = 0;
+    for (let i = 0; i < data.length; i += 8) {
+      const alpha = data[i + 3];
+      if (alpha < 200) continue;
+      r += data[i];
+      g += data[i + 1];
+      b += data[i + 2];
+      count++;
+    }
+    if (!count) return null;
+    r = Math.round(r / count);
+    g = Math.round(g / count);
+    b = Math.round(b / count);
+    return { r, g, b };
+  } catch (err) {
+    return null;
+  }
+}
+
+function applyCardAccent(card, img) {
+  const avg = extractAverageColor(img);
+  if (!avg) return;
+  const lum = 0.2126 * avg.r + 0.7152 * avg.g + 0.0722 * avg.b;
+  let r = avg.r;
+  let g = avg.g;
+  let b = avg.b;
+  if (lum < 90) {
+    r = Math.min(255, r + 80);
+    g = Math.min(255, g + 80);
+    b = Math.min(255, b + 80);
+  } else if (lum > 200) {
+    r = Math.max(0, r - 60);
+    g = Math.max(0, g - 60);
+    b = Math.max(0, b - 60);
+  }
+  card.style.setProperty('--card-accent', `rgb(${r}, ${g}, ${b})`);
+  card.style.setProperty('--card-accent-soft', `rgba(${r}, ${g}, ${b}, 0.18)`);
+}
+
 function getConsumptionInfo(vehicle) {
   const info = vehicle?.consumption;
   if (!info || typeof info.value !== 'number') return null;
@@ -1926,23 +1978,24 @@ function renderSelected() {
       <div class="thumb-row single">
         <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
           <img class="thumb thumb-img" data-src="${startSrc}" data-gallery="${gallery.join('|')}" data-index="0" src="${startSrc}" alt="${v.name}" loading="lazy" decoding="async" fetchpriority="low" />
-          <div class="card-overlay">
-            <h4>${v.name}</h4>
-            <div class="spec-line">${v.engine} - ${v.power} CV - ${v.topSpeed} km/h</div>
-            <div class="price-pill"><span>${t('priceLabel')}</span> ${formatPrice(v.price)}</div>
-          </div>
         </div>
       </div>
-      <div class="meta compact">
-        <p class="meta-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</p>
+      <div class="meta">
+        <h4>${v.name}</h4>
+        <div class="spec-line">${v.engine} - ${v.power} CV - ${v.topSpeed} km/h</div>
+        <div class="price-badge"><span>${t('priceLabel')}</span> ${formatPrice(v.price)}</div>
+        <div class="stat-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</div>
         <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
       </div>
     `;
     const mainThumb = card.querySelector('.thumb-img');
     if (mainThumb) {
-      const applyMode = () => applyFitMode(mainThumb);
-      mainThumb.addEventListener('load', applyMode);
-      if (mainThumb.complete) applyMode();
+      const applyVisual = () => {
+        applyFitMode(mainThumb);
+        applyCardAccent(card, mainThumb);
+      };
+      mainThumb.addEventListener('load', applyVisual);
+      if (mainThumb.complete) applyVisual();
       const galleryImgs = gallery.length ? gallery : [thumb].filter(Boolean);
       mainThumb.addEventListener('click', () => {
         if (galleryImgs.length > 1) {
