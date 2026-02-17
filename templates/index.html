@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Car Comparison</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260216h') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260217a') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -25,13 +25,13 @@
         </section>
       </div>
       {% endif %}
-      <a href="/contact" target="_blank" rel="noopener noreferrer" class="top-link">Contact</a>
-      <a href="/about-us" target="_blank" rel="noopener noreferrer" class="top-link">About Us</a>
-      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" class="top-link">Privacy Policy</a>
+      <a href="/contact" id="topContactLink" target="_blank" rel="noopener noreferrer" class="top-link">Contact</a>
+      <a href="/about-us" id="topAboutLink" target="_blank" rel="noopener noreferrer" class="top-link">About Us</a>
+      <a href="/privacy-policy" id="topPrivacyLink" target="_blank" rel="noopener noreferrer" class="top-link">Privacy Policy</a>
     </nav>
     <div class="auth-area">
       <div class="switch-row top-switch">
-        <span>Dark Mode</span>
+        <span id="darkModeLabel">Dark Mode</span>
         <label class="switch">
           <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
           <span class="slider"></span>
@@ -195,7 +195,7 @@
   <script>
     window.currentUser = {{ user | tojson | safe }};
   </script>
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260217a') }}"></script>
 </body>
 </html>
 

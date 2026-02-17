@@ -1271,6 +1271,14 @@ const TRANSLATIONS = {
     favoritesEmpty: 'No favorites yet.',
     addFavorite: 'Add to favorites',
     removeFavorite: 'Remove from favorites',
+    favorites: 'My Favorites',
+    clearFavorites: 'Clear favorites',
+    contact: 'Contact',
+    about: 'About Us',
+    privacy: 'Privacy Policy',
+    darkMode: 'Dark Mode',
+    updates: 'Updates',
+    logout: 'Logout',
   },
   tr: {
     vehiclesTitle: 'Araçlar',
@@ -1307,6 +1315,14 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Henüz favori yok.',
     addFavorite: 'Favorilere ekle',
     removeFavorite: 'Favorilerden çıkar',
+    favorites: 'Favorilerim',
+    clearFavorites: 'Favorileri temizle',
+    contact: 'İletişim',
+    about: 'Hakkımızda',
+    privacy: 'Gizlilik Politikası',
+    darkMode: 'Karanlık Mod',
+    updates: 'Güncellemeler',
+    logout: 'Çıkış',
   },
   de: {
     vehiclesTitle: 'Fahrzeuge',
@@ -1340,6 +1356,14 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Noch keine Favoriten.',
     addFavorite: 'Zu Favoriten hinzufügen',
     removeFavorite: 'Aus Favoriten entfernen',
+    favorites: 'Meine Favoriten',
+    clearFavorites: 'Favoriten löschen',
+    contact: 'Kontakt',
+    about: 'Über uns',
+    privacy: 'Datenschutz',
+    darkMode: 'Dunkelmodus',
+    updates: 'Updates',
+    logout: 'Abmelden',
   },
   fr: {
     vehiclesTitle: 'Véhicules',
@@ -1373,6 +1397,14 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Aucun favori pour le moment.',
     addFavorite: 'Ajouter aux favoris',
     removeFavorite: 'Retirer des favoris',
+    favorites: 'Mes favoris',
+    clearFavorites: 'Supprimer les favoris',
+    contact: 'Contact',
+    about: 'À propos',
+    privacy: 'Politique de confidentialité',
+    darkMode: 'Mode sombre',
+    updates: 'Mises à jour',
+    logout: 'Déconnexion',
   },
   es: {
     vehiclesTitle: 'Vehículos',
@@ -1406,6 +1438,14 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Aún no hay favoritos.',
     addFavorite: 'Añadir a favoritos',
     removeFavorite: 'Quitar de favoritos',
+    favorites: 'Mis favoritos',
+    clearFavorites: 'Borrar favoritos',
+    contact: 'Contacto',
+    about: 'Acerca de',
+    privacy: 'Política de privacidad',
+    darkMode: 'Modo oscuro',
+    updates: 'Actualizaciones',
+    logout: 'Cerrar sesión',
   },
 };
 
@@ -1805,8 +1845,9 @@ function renderList(filter = '') {
 
   ordered.forEach((v) => {
     const brand = getBrandLabel(v.name);
-    if (useBrandGrouping && lastBrand && brand !== lastBrand) {
-      listEl.appendChild(createBrandDivider(lastBrand));
+    if (useBrandGrouping && brand !== lastBrand) {
+      listEl.appendChild(createBrandDivider(brand));
+      lastBrand = brand;
     }
     const item = document.createElement('div');
     item.className = 'item';
@@ -1833,11 +1874,7 @@ function renderList(filter = '') {
       ${actionsHtml}
     `;
     listEl.appendChild(item);
-    if (useBrandGrouping) lastBrand = brand;
   });
-  if (useBrandGrouping && ordered.length && lastBrand) {
-    listEl.appendChild(createBrandDivider(lastBrand));
-  }
   attachAddButtons();
   attachListFavoriteButtons();
   setupLazyThumbs(listEl);
@@ -1889,18 +1926,16 @@ function renderSelected() {
       <div class="thumb-row single">
         <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
           <img class="thumb thumb-img" data-src="${startSrc}" data-gallery="${gallery.join('|')}" data-index="0" src="${startSrc}" alt="${v.name}" loading="lazy" decoding="async" fetchpriority="low" />
+          <div class="card-overlay">
+            <h4>${v.name}</h4>
+            <div class="spec-line">${v.engine} - ${v.power} CV - ${v.topSpeed} km/h</div>
+            <div class="price-pill"><span>${t('priceLabel')}</span> ${formatPrice(v.price)}</div>
+          </div>
         </div>
       </div>
-      <div class="meta">
-        <h4>${v.name}</h4>
-        <p style="color:var(--muted)">${v.engine} - ${v.power} CV - ${v.topSpeed} km/h</p>
-        <p style="margin:4px 0 0 0"><strong>${t('priceLabel')}</strong> ${formatPrice(v.price)}</p>
-        <p style="margin-top:8px">
-          <strong>${t('zeroToHundred')}</strong> ${v.acc}s
-        </p>
-        <div style="margin-top:8px">
-          <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
-        </div>
+      <div class="meta compact">
+        <p class="meta-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</p>
+        <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
       </div>
     `;
     const mainThumb = card.querySelector('.thumb-img');
@@ -2134,6 +2169,21 @@ function applyTranslations() {
   if (loginBtnEl) loginBtnEl.textContent = pack.login;
   const formTitleEl = document.getElementById('formTitle');
   if (formTitleEl) formTitleEl.textContent = pack.login;
+  if (topFavoritesLink && pack.favorites) topFavoritesLink.textContent = pack.favorites;
+  const clearFavBtn = document.getElementById('clearFavoritesBtn');
+  if (clearFavBtn && pack.clearFavorites) clearFavBtn.textContent = pack.clearFavorites;
+  const contactLink = document.getElementById('topContactLink');
+  if (contactLink && pack.contact) contactLink.textContent = pack.contact;
+  const aboutLink = document.getElementById('topAboutLink');
+  if (aboutLink && pack.about) aboutLink.textContent = pack.about;
+  const privacyLink = document.getElementById('topPrivacyLink');
+  if (privacyLink && pack.privacy) privacyLink.textContent = pack.privacy;
+  const darkModeLabel = document.getElementById('darkModeLabel');
+  if (darkModeLabel && pack.darkMode) darkModeLabel.textContent = pack.darkMode;
+  const notificationsTitle = document.querySelector('.notifications-title');
+  if (notificationsTitle && pack.updates) notificationsTitle.textContent = pack.updates;
+  const logoutBtnEl = document.getElementById('logoutBtn');
+  if (logoutBtnEl && pack.logout) logoutBtnEl.textContent = pack.logout;
 }
 
 function setLanguage(code) {

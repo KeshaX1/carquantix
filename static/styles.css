@@ -152,6 +152,46 @@ body.dark .brand-divider::after{
   border-radius:12px;
   background:transparent;
 }
+.compare-card .thumb-frame::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:linear-gradient(180deg, rgba(0,0,0,0) 38%, rgba(0,0,0,0.65) 100%);
+}
+.compare-card .card-overlay{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:3;
+  padding:16px 18px 14px;
+  color:#fff;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.compare-card .card-overlay h4{
+  margin:0;
+  font-size:1.1rem;
+  font-weight:800;
+  text-shadow:0 6px 18px rgba(0,0,0,0.6);
+}
+.compare-card .card-overlay .spec-line{
+  font-size:0.95rem;
+  opacity:0.95;
+  text-shadow:0 6px 18px rgba(0,0,0,0.6);
+}
+.compare-card .card-overlay .price-pill{
+  align-self:center;
+  padding:6px 14px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.45);
+  border:1px solid rgba(255,255,255,0.22);
+  font-weight:700;
+}
 .title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .title-row h4{margin:0;flex:1}
 .type-pill{padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:var(--glass);color:var(--accent);font-size:12px;font-weight:700;white-space:nowrap}
@@ -167,6 +207,15 @@ body.dark .brand-divider::after{
   flex-basis:100%;
 }
 .compare-card .meta h4{margin:0 0 6px 0}
+.compare-card .meta.compact{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.compare-card .meta.compact .meta-line{
+  margin:0;
+}
 .remove-btn{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);padding:6px;border-radius:8px;cursor:pointer}
 
 .empty{color:var(--muted);background:rgba(255,255,255,0.01);padding:22px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03)}
@@ -1734,6 +1783,10 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .compare-card { padding: 7px; border-radius: 10px; gap: 6px; }
   .compare-card .thumb-frame { height: 140px; aspect-ratio: auto; }
   .compare-card img.thumb-img { height: 100%; }
+  .compare-card .card-overlay { padding: 10px 10px 8px; }
+  .compare-card .card-overlay h4 { font-size: 0.9rem; }
+  .compare-card .card-overlay .spec-line { font-size: 0.75rem; }
+  .compare-card .card-overlay .price-pill { padding: 4px 10px; font-size: 0.75rem; }
   .title-row h4 { font-size: 0.82rem; }
   .type-pill { font-size: 10px; padding: 3px 6px; }
   .compare-card .meta h4 { font-size: 0.82rem; }
