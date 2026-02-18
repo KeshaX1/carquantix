@@ -1776,17 +1776,27 @@ function applyCardAccent(card, img) {
   let r = avg.r;
   let g = avg.g;
   let b = avg.b;
-  if (lum < 90) {
-    r = Math.min(255, r + 80);
-    g = Math.min(255, g + 80);
-    b = Math.min(255, b + 80);
-  } else if (lum > 200) {
-    r = Math.max(0, r - 60);
-    g = Math.max(0, g - 60);
-    b = Math.max(0, b - 60);
+  if (lum < 110) {
+    r = Math.min(255, r + 110);
+    g = Math.min(255, g + 110);
+    b = Math.min(255, b + 110);
+  } else if (lum > 210) {
+    r = Math.max(0, r - 80);
+    g = Math.max(0, g - 80);
+    b = Math.max(0, b - 80);
+  } else {
+    r = Math.min(255, r + 40);
+    g = Math.min(255, g + 40);
+    b = Math.min(255, b + 40);
   }
+  const strong = {
+    r: Math.min(255, r + 20),
+    g: Math.min(255, g + 20),
+    b: Math.min(255, b + 20),
+  };
   card.style.setProperty('--card-accent', `rgb(${r}, ${g}, ${b})`);
-  card.style.setProperty('--card-accent-soft', `rgba(${r}, ${g}, ${b}, 0.18)`);
+  card.style.setProperty('--card-accent-strong', `rgb(${strong.r}, ${strong.g}, ${strong.b})`);
+  card.style.setProperty('--card-accent-soft', `rgba(${r}, ${g}, ${b}, 0.28)`);
 }
 
 function getConsumptionInfo(vehicle) {
@@ -1983,7 +1993,10 @@ function renderSelected() {
       <div class="meta">
         <h4>${v.name}</h4>
         <div class="spec-line">${v.engine} - ${v.power} CV - ${v.topSpeed} km/h</div>
-        <div class="price-badge"><span>${t('priceLabel')}</span> ${formatPrice(v.price)}</div>
+        <div class="price-wrapper">
+          <span class="price-label">${t('priceLabel')}</span>
+          <span class="price-value">${formatPrice(v.price)}</span>
+        </div>
         <div class="stat-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</div>
         <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
       </div>

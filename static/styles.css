@@ -131,6 +131,7 @@ body.dark .brand-divider::after{
   gap:12px;
   box-shadow:0 10px 24px rgba(0,0,0,0.14);
   --card-accent: var(--accent);
+  --card-accent-strong: var(--accent);
   --card-accent-soft: rgba(0,122,255,0.16);
 }
 .compare-card .thumb-frame{
@@ -225,17 +226,44 @@ body.dark .brand-divider::after{
   color:var(--card-accent);
   font-size:0.95rem;
 }
-.compare-card .meta .price-badge{
+.compare-card .meta .price-wrapper{
+  position: relative;
   display:inline-flex;
   align-items:center;
-  justify-content:center;
-  gap:6px;
-  padding:6px 14px;
-  border-radius:999px;
-  font-weight:700;
-  color:var(--card-accent);
-  background:var(--card-accent-soft);
-  border:1px solid rgba(255,255,255,0.18);
+  gap:8px;
+  padding:10px 22px;
+  border-radius:30px;
+  font-weight:600;
+  color:#fff;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  overflow:hidden;
+  border:1px solid color-mix(in srgb, var(--card-accent-strong) 65%, rgba(255,255,255,0.2));
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06) inset,
+    0 10px 24px var(--card-accent-soft),
+    0 0 22px color-mix(in srgb, var(--card-accent-strong) 55%, transparent);
+}
+.compare-card .meta .price-wrapper::before{
+  content:"";
+  position:absolute;
+  bottom:-15px;
+  left:50%;
+  transform:translateX(-50%);
+  width:120%;
+  height:40px;
+  background: radial-gradient(circle, var(--card-accent-soft) 0%, rgba(0,0,0,0) 70%);
+  filter: blur(12px);
+  z-index:0;
+  pointer-events:none;
+}
+.compare-card .meta .price-wrapper span{
+  position:relative;
+  z-index:1;
+}
+.compare-card .meta .price-wrapper .price-value{
+  color:var(--card-accent-strong);
+  text-shadow:0 6px 18px rgba(0,0,0,0.6);
 }
 .compare-card .meta .stat-line{
   color:var(--card-accent);
@@ -1819,7 +1847,9 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .compare-card img.thumb-img { height: 100%; }
   .compare-card .meta h4 { font-size: 0.9rem; }
   .compare-card .meta .spec-line { font-size: 0.75rem; }
-  .compare-card .meta .price-badge { padding: 4px 10px; font-size: 0.75rem; }
+  .compare-card .meta .price-wrapper { padding: 6px 12px; font-size: 0.75rem; }
+  .compare-card .meta .price-wrapper::before { height: 26px; bottom: -10px; }
+  .compare-card .meta .price-wrapper .price-value { font-size: 0.75rem; }
   .compare-card .meta .stat-line { font-size: 0.75rem; }
   .title-row h4 { font-size: 0.82rem; }
   .type-pill { font-size: 10px; padding: 3px 6px; }
