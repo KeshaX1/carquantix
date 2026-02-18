@@ -3,36 +3,45 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8BTCF256NW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-8BTCF256NW');
+  </script>
   <title>About Us - CarQuantix</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body class="about-page">
+<body class="about-page" data-page="about">
   <main class="about-wrap">
     <section class="about-card">
-      <h1>About Us - CarQuantix</h1>
-      <p>CarQuantix is a modern vehicle comparison and cost analysis platform designed to help users make smarter car-buying decisions.</p>
-      <p>Choosing a car today is not just about speed or looks. It is about performance, efficiency, and long-term ownership costs. CarQuantix brings all these factors together in one easy-to-use tool.</p>
-      <p>Our platform allows users to:</p>
+      <h1 data-i18n="about.title">About Us - CarQuantix</h1>
+      <p data-i18n="about.p1">CarQuantix is a modern vehicle comparison and cost analysis platform designed to help users make smarter car-buying decisions.</p>
+      <p data-i18n="about.p2">Choosing a car today is not just about speed or looks. It is about performance, efficiency, and long-term ownership costs. CarQuantix brings all these factors together in one easy-to-use tool.</p>
+      <p data-i18n="about.featuresTitle">Our platform allows users to:</p>
       <ul>
-        <li>Compare cars and motorcycles by performance data</li>
-        <li>Analyze acceleration, top speed, and engine power</li>
-        <li>Evaluate fuel and electricity costs</li>
-        <li>Understand real ownership expenses</li>
-        <li>Make data-driven decisions before buying</li>
+        <li data-i18n="about.features1">Compare cars and motorcycles by performance data</li>
+        <li data-i18n="about.features2">Analyze acceleration, top speed, and engine power</li>
+        <li data-i18n="about.features3">Evaluate fuel and electricity costs</li>
+        <li data-i18n="about.features4">Understand real ownership expenses</li>
+        <li data-i18n="about.features5">Make data-driven decisions before buying</li>
       </ul>
-      <p>CarQuantix is built for:</p>
+      <p data-i18n="about.audienceTitle">CarQuantix is built for:</p>
       <ul>
-        <li>Car buyers</li>
-        <li>Automotive enthusiasts</li>
-        <li>Electric vehicle researchers</li>
-        <li>Budget-conscious drivers</li>
+        <li data-i18n="about.audience1">Car buyers</li>
+        <li data-i18n="about.audience2">Automotive enthusiasts</li>
+        <li data-i18n="about.audience3">Electric vehicle researchers</li>
+        <li data-i18n="about.audience4">Budget-conscious drivers</li>
       </ul>
-      <p>We believe that access to clear and structured automotive data should be simple. That is why CarQuantix focuses on delivering a clean interface and meaningful comparisons instead of overwhelming users with scattered information.</p>
-      <p>Our goal is to help people choose the right vehicle for their needs. Not just the fastest or the most expensive, but the most suitable.</p>
-      <p>CarQuantix operates as a web-based software service (SaaS), continuously improving its features and expanding its vehicle database.</p>
-      <h2>Our Mission</h2>
-      <p>To simplify vehicle comparison by combining performance data and real-world cost insights in one place.</p>
+      <p data-i18n="about.p5">We believe that access to clear and structured automotive data should be simple. That is why CarQuantix focuses on delivering a clean interface and meaningful comparisons instead of overwhelming users with scattered information.</p>
+      <p data-i18n="about.p6">Our goal is to help people choose the right vehicle for their needs. Not just the fastest or the most expensive, but the most suitable.</p>
+      <p data-i18n="about.p7">CarQuantix operates as a web-based software service (SaaS), continuously improving its features and expanding its vehicle database.</p>
+      <h2 data-i18n="about.missionTitle">Our Mission</h2>
+      <p data-i18n="about.mission">To simplify vehicle comparison by combining performance data and real-world cost insights in one place.</p>
     </section>
   </main>
+  <script src="{{ url_for('static', filename='page_i18n.js', v='20260217b') }}"></script>
 </body>
 </html>
