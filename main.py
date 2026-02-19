@@ -3,6 +3,7 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import re
 import json
 import hashlib
 import urllib.parse
@@ -70,14 +71,38 @@ PENDING_RESET_PATH = Path(__file__).with_name("pending_resets.json")
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 
+SEO_SLUGS = {
+    "audi-sq8-2024-fuel-cost",
+    "tesla-model-y-charging-cost",
+    "bmw-m5-fuel-consumption",
+    "toyota-corolla-fuel-cost",
+    "ford-mustang-mach-e-fuel-cost",
+    "lamborghini-aventador-top-speed",
+    "bmw-m5-top-speed",
+    "bmw-m5-cs-top-speed",
+    "audi-rs6-top-speed",
+    "porsche-911-turbo-top-speed",
+    "mercedes-amg-gt-top-speed",
+    "audi-rs6-vs-bmw-m5-cs",
+    "bugatti-chiron-vs-koenigsegg-agera-rs",
+    "lamborghini-veneno-vs-ferrari-enzo-ferrari",
+    "mercedes-benz-sls-vs-aston-martin-lagonda",
+    "pagani-huayra-vs-mclaren-720s",
+}
+
 
 @app.after_request
 def add_cache_headers(response):
     path = request.path or ""
+    host = (request.host or "").lower()
+    is_local = host.startswith(("127.0.0.1", "localhost"))
     if path.startswith("/static/") or path.startswith("/login-media/"):
-        response.cache_control.public = True
-        response.cache_control.max_age = 31536000
-        response.cache_control.immutable = True
+        if is_local:
+            response.cache_control.no_store = True
+        else:
+            response.cache_control.public = True
+            response.cache_control.max_age = 31536000
+            response.cache_control.immutable = True
     elif response.mimetype == "text/html":
         response.cache_control.no_store = True
     return response
@@ -304,6 +329,17 @@ def about_us():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+
+@app.route("/<slug>")
+def seo_slug(slug):
+    normalized = re.sub(r"\s+", "-", (slug or "").strip().lower())
+    if normalized in SEO_SLUGS:
+        if normalized != slug:
+            return redirect(f"/{normalized}", code=301)
+        user = session.get("user")
+        return render_template("index.html", user=user)
+    return "Not Found", 404
 
 @app.route("/login/google")
 def login_google():

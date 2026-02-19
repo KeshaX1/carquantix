@@ -172,15 +172,15 @@ const VEHICLES = [
 
   { id: 'CR 4',            name: '2024 Boldmen CR 4', power:408, acc:3.9, topSpeed:300, engine: '3.0 Inline-6 Turbo', price: '$199.985', img: '/static/images/boldmenCR4.png', rearImg: '/static/rearimg/boldmenCR4-rear.png' , consumption: { value:9.0, unit: 'L/100km' }},
 
-  { id: 'Veyron',          name: '2013 Bugatti Veyron', power:1.001, acc:2.6, topSpeed:410, engine: 'Grand Sport Vitesse 8.0 W16', price: '$2.290.000', img: '/static/images/bugattiVeyron.png', rearImg: '/static/rearimg/bugattiVeyron-rear.jpg' , consumption: { value:24.0, unit: 'L/100km' }},
+  { id: 'Veyron',          name: '2013 Bugatti Veyron', power:1001, acc:2.6, topSpeed:410, engine: 'Grand Sport Vitesse 8.0 W16', price: '$2.290.000', img: '/static/images/bugattiVeyron.png', rearImg: '/static/rearimg/bugattiVeyron-rear.jpg' , consumption: { value:24.0, unit: 'L/100km' }},
 
-  { id: 'Chiron',          name: '2022 Bugatti Chiron', power:1.500, acc:2.4, topSpeed:440, engine: '8.0 W16', price: '$5.100.000', img: '/static/images/bugttiChiron.jpg', rearImg: '/static/rearimg/bugttiChiron-rear.jpg' , consumption: { value:24.0, unit: 'L/100km' }},
+  { id: 'Chiron',          name: '2022 Bugatti Chiron', power:1500, acc:2.4, topSpeed:440, engine: '8.0 W16', price: '$5.100.000', img: '/static/images/bugttiChiron.jpg', rearImg: '/static/rearimg/bugttiChiron-rear.jpg' , consumption: { value:24.0, unit: 'L/100km' }},
 
   { id: 'Divo',            name: '2020 Bugatti Divo', power:1500, acc:2.4, topSpeed:380, engine: '8.0 W16', price: '$13.500.000', img: '/static/images/bugattiDivo.png', rearImg: '/static/rearimg/bugattiDivo-rear.jpg' , consumption: { value:24.0, unit: 'L/100km' }},
 
   { id: 'EB 110',          name: '1995 Bugatti EB 110', power:560, acc:3.4, topSpeed:350, engine: 'GT SS', price: '$2.750.000', img: '/static/images/bugattiEB110.png', rearImg: '/static/rearimg/bugattiEB110-rear.jpg' , consumption: { value:19.0, unit: 'L/100km' }},
 
-  { id: 'Yangwang U9',     name: '2024 BYD Yangwang U9', power:1.305, acc:2.36, topSpeed:309, engine: 'U9', price: '$297.500', img: '/static/images/bydYangwangu9.png', rearImg: '/static/rearimg/bydYangwangu9-rear.jpg' , consumption: { value:28.0, unit: 'kWh/100km' }},
+  { id: 'Yangwang U9',     name: '2024 BYD Yangwang U9', power:1305, acc:2.36, topSpeed:309, engine: 'U9', price: '$297.500', img: '/static/images/bydYangwangu9.png', rearImg: '/static/rearimg/bydYangwangu9-rear.jpg' , consumption: { value:28.0, unit: 'kWh/100km' }},
 
   { id: 'ATS',             name: '2019 Cadillac ATS', power:470, acc:4.2, topSpeed:298, engine: 'V 3.6 V6', price: '$49.900', img: '/static/images/cadillacAts.jpg', rearImg: '/static/rearimg/cadillacAts-rear.jpg' , consumption: { value:9.5, unit: 'L/100km' }},
 
@@ -446,11 +446,11 @@ const VEHICLES = [
 
   { id: 'CC',           name: '2024 Koenigsegg CC', power:1385, acc:2.7, topSpeed:465, engine: '5.0 V8', price: '$3.102.500', img: '/static/images/koenigseggCC.png', rearImg: '/static/rearimg/koenigseggCC-rear.png' , consumption: { value:22.0, unit: 'L/100km' }},
 
-  { id: 'Jesko',        name: '2024 Koenigsegg Jesko', power:1.599, acc:2.5, topSpeed:480, engine: '5.0L Twin-Turbo V8', price: '$3.800.000', img: '/static/images/koenigseggJesko.png', rearImg: '/static/rearimg/koenigseggJesko-rear.jpg' , consumption: { value:25.0, unit: 'L/100km' }},
+  { id: 'Jesko',        name: '2024 Koenigsegg Jesko', power:1599, acc:2.5, topSpeed:480, engine: '5.0L Twin-Turbo V8', price: '$3.800.000', img: '/static/images/koenigseggJesko.png', rearImg: '/static/rearimg/koenigseggJesko-rear.jpg' , consumption: { value:25.0, unit: 'L/100km' }},
 
   { id: 'One:1',        name: '2015 Koenigsegg One:1', power:1360, acc:2.8, topSpeed:440, engine: '	5.0 V8', price: '$3.500.000', img: '/static/images/koenigseggOne1.png', rearImg: '/static/rearimg/koenigseggOne1-rear.png' , consumption: { value:25.0, unit: 'L/100km' }},
 
-  { id: 'Regera',       name: '2021 Koenigsegg Regera', power:1.500, acc:2.8, topSpeed:410, engine: '5.0 L V8', price: '$4.500.000', img: '/static/images/koenigseggRegera.png', rearImg: '/static/rearimg/koenigseggRegera-rear.png' , consumption: { value:22.0, unit: 'L/100km' }},
+  { id: 'Regera',       name: '2021 Koenigsegg Regera', power:1500, acc:2.8, topSpeed:410, engine: '5.0 L V8', price: '$4.500.000', img: '/static/images/koenigseggRegera.png', rearImg: '/static/rearimg/koenigseggRegera-rear.png' , consumption: { value:22.0, unit: 'L/100km' }},
 
   { id: 'X-Bow GT',     name: '2025 KTM X-Bow GT', power:500, acc:3.4, topSpeed:280, engine: '2.5 TFSI', price: '$429.900', img: '/static/images/ktmXbowgt.png', rearImg: '/static/rearimg/ktmXbowgt-rear.png' , consumption: { value:9.0, unit: 'L/100km' }},
 
@@ -1271,14 +1271,6 @@ const TRANSLATIONS = {
     favoritesEmpty: 'No favorites yet.',
     addFavorite: 'Add to favorites',
     removeFavorite: 'Remove from favorites',
-    favorites: 'My Favorites',
-    clearFavorites: 'Clear favorites',
-    contact: 'Contact',
-    about: 'About Us',
-    privacy: 'Privacy Policy',
-    darkMode: 'Dark Mode',
-    updates: 'Updates',
-    logout: 'Logout',
   },
   tr: {
     vehiclesTitle: 'Araçlar',
@@ -1315,14 +1307,6 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Henüz favori yok.',
     addFavorite: 'Favorilere ekle',
     removeFavorite: 'Favorilerden çıkar',
-    favorites: 'Favorilerim',
-    clearFavorites: 'Favorileri temizle',
-    contact: 'İletişim',
-    about: 'Hakkımızda',
-    privacy: 'Gizlilik Politikası',
-    darkMode: 'Karanlık Mod',
-    updates: 'Güncellemeler',
-    logout: 'Çıkış',
   },
   de: {
     vehiclesTitle: 'Fahrzeuge',
@@ -1356,14 +1340,6 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Noch keine Favoriten.',
     addFavorite: 'Zu Favoriten hinzufügen',
     removeFavorite: 'Aus Favoriten entfernen',
-    favorites: 'Meine Favoriten',
-    clearFavorites: 'Favoriten löschen',
-    contact: 'Kontakt',
-    about: 'Über uns',
-    privacy: 'Datenschutz',
-    darkMode: 'Dunkelmodus',
-    updates: 'Updates',
-    logout: 'Abmelden',
   },
   fr: {
     vehiclesTitle: 'Véhicules',
@@ -1397,14 +1373,6 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Aucun favori pour le moment.',
     addFavorite: 'Ajouter aux favoris',
     removeFavorite: 'Retirer des favoris',
-    favorites: 'Mes favoris',
-    clearFavorites: 'Supprimer les favoris',
-    contact: 'Contact',
-    about: 'À propos',
-    privacy: 'Politique de confidentialité',
-    darkMode: 'Mode sombre',
-    updates: 'Mises à jour',
-    logout: 'Déconnexion',
   },
   es: {
     vehiclesTitle: 'Vehículos',
@@ -1438,14 +1406,6 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Aún no hay favoritos.',
     addFavorite: 'Añadir a favoritos',
     removeFavorite: 'Quitar de favoritos',
-    favorites: 'Mis favoritos',
-    clearFavorites: 'Borrar favoritos',
-    contact: 'Contacto',
-    about: 'Acerca de',
-    privacy: 'Política de privacidad',
-    darkMode: 'Modo oscuro',
-    updates: 'Actualizaciones',
-    logout: 'Cerrar sesión',
   },
 };
 
@@ -1698,6 +1658,70 @@ function applyFitMode(img){
   // using pure cover; no dynamic fit needed now
 }
 
+function extractAverageColor(img) {
+  try {
+    const w = img.naturalWidth || img.width;
+    const h = img.naturalHeight || img.height;
+    if (!w || !h) return null;
+    const size = 24;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    canvas.width = size;
+    canvas.height = size;
+    ctx.drawImage(img, 0, 0, size, size);
+    const data = ctx.getImageData(0, 0, size, size).data;
+    let r = 0;
+    let g = 0;
+    let b = 0;
+    let count = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      const alpha = data[i + 3];
+      if (alpha < 200) continue;
+      r += data[i];
+      g += data[i + 1];
+      b += data[i + 2];
+      count++;
+    }
+    if (!count) return null;
+    r = Math.round(r / count);
+    g = Math.round(g / count);
+    b = Math.round(b / count);
+    return { r, g, b };
+  } catch (err) {
+    return null;
+  }
+}
+
+function applyCardAccent(card, img) {
+  const avg = extractAverageColor(img);
+  if (!avg) return;
+  const lum = 0.2126 * avg.r + 0.7152 * avg.g + 0.0722 * avg.b;
+  let r = avg.r;
+  let g = avg.g;
+  let b = avg.b;
+  if (lum < 110) {
+    r = Math.min(255, r + 100);
+    g = Math.min(255, g + 100);
+    b = Math.min(255, b + 100);
+  } else if (lum > 210) {
+    r = Math.max(0, r - 70);
+    g = Math.max(0, g - 70);
+    b = Math.max(0, b - 70);
+  } else {
+    r = Math.min(255, r + 35);
+    g = Math.min(255, g + 35);
+    b = Math.min(255, b + 35);
+  }
+  const strong = {
+    r: Math.min(255, r + 20),
+    g: Math.min(255, g + 20),
+    b: Math.min(255, b + 20),
+  };
+  card.style.setProperty('--card-accent', `rgb(${r}, ${g}, ${b})`);
+  card.style.setProperty('--card-accent-strong', `rgb(${strong.r}, ${strong.g}, ${strong.b})`);
+  card.style.setProperty('--card-accent-soft', `rgba(${r}, ${g}, ${b}, 0.28)`);
+}
+
 // derive brand label from vehicle name
 const MULTI_BRAND_PREFIXES = [
   'alfa romeo',
@@ -1735,68 +1759,6 @@ function parsePrice(val) {
 function formatPrice(val) {
   if (!val) return '-';
   return String(val).replace(/^\$/, '€');
-}
-
-function extractAverageColor(img) {
-  try {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    const w = 32;
-    const h = 32;
-    canvas.width = w;
-    canvas.height = h;
-    ctx.drawImage(img, 0, 0, w, h);
-    const data = ctx.getImageData(0, 0, w, h).data;
-    let r = 0;
-    let g = 0;
-    let b = 0;
-    let count = 0;
-    for (let i = 0; i < data.length; i += 8) {
-      const alpha = data[i + 3];
-      if (alpha < 200) continue;
-      r += data[i];
-      g += data[i + 1];
-      b += data[i + 2];
-      count++;
-    }
-    if (!count) return null;
-    r = Math.round(r / count);
-    g = Math.round(g / count);
-    b = Math.round(b / count);
-    return { r, g, b };
-  } catch (err) {
-    return null;
-  }
-}
-
-function applyCardAccent(card, img) {
-  const avg = extractAverageColor(img);
-  if (!avg) return;
-  const lum = 0.2126 * avg.r + 0.7152 * avg.g + 0.0722 * avg.b;
-  let r = avg.r;
-  let g = avg.g;
-  let b = avg.b;
-  if (lum < 110) {
-    r = Math.min(255, r + 110);
-    g = Math.min(255, g + 110);
-    b = Math.min(255, b + 110);
-  } else if (lum > 210) {
-    r = Math.max(0, r - 80);
-    g = Math.max(0, g - 80);
-    b = Math.max(0, b - 80);
-  } else {
-    r = Math.min(255, r + 40);
-    g = Math.min(255, g + 40);
-    b = Math.min(255, b + 40);
-  }
-  const strong = {
-    r: Math.min(255, r + 20),
-    g: Math.min(255, g + 20),
-    b: Math.min(255, b + 20),
-  };
-  card.style.setProperty('--card-accent', `rgb(${r}, ${g}, ${b})`);
-  card.style.setProperty('--card-accent-strong', `rgb(${strong.r}, ${strong.g}, ${strong.b})`);
-  card.style.setProperty('--card-accent-soft', `rgba(${r}, ${g}, ${b}, 0.28)`);
 }
 
 function getConsumptionInfo(vehicle) {
@@ -1907,9 +1869,8 @@ function renderList(filter = '') {
 
   ordered.forEach((v) => {
     const brand = getBrandLabel(v.name);
-    if (useBrandGrouping && brand !== lastBrand) {
-      listEl.appendChild(createBrandDivider(brand));
-      lastBrand = brand;
+    if (useBrandGrouping && lastBrand && brand !== lastBrand) {
+      listEl.appendChild(createBrandDivider(lastBrand));
     }
     const item = document.createElement('div');
     item.className = 'item';
@@ -1936,7 +1897,11 @@ function renderList(filter = '') {
       ${actionsHtml}
     `;
     listEl.appendChild(item);
+    if (useBrandGrouping) lastBrand = brand;
   });
+  if (useBrandGrouping && ordered.length && lastBrand) {
+    listEl.appendChild(createBrandDivider(lastBrand));
+  }
   attachAddButtons();
   attachListFavoriteButtons();
   setupLazyThumbs(listEl);
@@ -2111,6 +2076,57 @@ setCatalog(activeCatalog);
 initFavoritesUI();
 renderFavorites();
 
+const SEO_PRESELECT = {
+  'audi-sq8-2024-fuel-cost': { catalog: 'cars', ids: ['SQ8'] },
+  'tesla-model-y-charging-cost': { catalog: 'cars', ids: ['Model Y'] },
+  'bmw-m5-fuel-consumption': { catalog: 'cars', ids: ['M5'] },
+  'toyota-corolla-fuel-cost': { catalog: 'cars', ids: ['Corolla'] },
+  'ford-mustang-mach-e-fuel-cost': { catalog: 'cars', ids: ['Mustang Mach-E'] },
+  'lamborghini-aventador-top-speed': { catalog: 'cars', ids: ['Aventador'] },
+  'bmw-m5-top-speed': { catalog: 'cars', ids: ['M5'] },
+  'bmw-m5-cs-top-speed': { catalog: 'cars', ids: ['M5 CS'] },
+  'audi-rs6-top-speed': { catalog: 'cars', ids: ['RS6'] },
+  'porsche-911-turbo-top-speed': { catalog: 'cars', ids: ['911'] },
+  'mercedes-amg-gt-top-speed': { catalog: 'cars', ids: ['AMG GT'] },
+  'audi-rs6-vs-bmw-m5-cs': { catalog: 'cars', ids: ['RS6', 'M5 CS'] },
+  'bugatti-chiron-vs-koenigsegg-agera-rs': { catalog: 'cars', ids: ['Chiron', 'Agera RS'] },
+  'lamborghini-veneno-vs-ferrari-enzo-ferrari': { catalog: 'cars', ids: ['Veneno', 'Enzo Ferrari'] },
+  'mercedes-benz-sls-vs-aston-martin-lagonda': { catalog: 'cars', ids: ['SLS', 'Lagonda'] },
+  'pagani-huayra-vs-mclaren-720s': { catalog: 'cars', ids: ['Huayra', '720S'] },
+};
+
+function normalizeSeoSlug(pathname) {
+  const raw = decodeURIComponent(String(pathname || '')).trim();
+  const trimmed = raw.replace(/^\/+|\/+$/g, '');
+  if (!trimmed) return '';
+  return trimmed
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+function applySeoPreselect() {
+  const slug = normalizeSeoSlug(window.location.pathname);
+  if (!slug) return;
+  const entry = SEO_PRESELECT[slug];
+  if (!entry) return;
+  const catalog = entry.catalog || 'cars';
+  setCatalog(catalog);
+  selected = [];
+  const source = catalog === 'motorcycles' ? MOTORCYCLES : VEHICLES;
+  entry.ids.forEach(id => {
+    const veh = source.find(x => String(x.id).toLowerCase() === String(id).toLowerCase());
+    if (!veh) return;
+    const key = makeKey(catalog, veh.id);
+    if (selected.find(s => (s._key || makeKey(s.catalog || catalog, s.id)) === key)) return;
+    selected.push({ ...veh, _key: key, catalog });
+  });
+  renderSelected();
+  if (selected.length) buildTable();
+}
+
+applySeoPreselect();
+
 searchInput.addEventListener('input', (e) => renderList(e.target.value));
 clearBtn.addEventListener('click', () => { selected = []; renderSelected(); });
 compareBtn.addEventListener('click', () => {
@@ -2171,24 +2187,26 @@ overlay.addEventListener('click', () => {
 });
 
 const themeToggle = document.getElementById('themeToggle');
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const storedTheme = localStorage.getItem('theme');
+const isLocalHost = ['127.0.0.1', 'localhost'].includes(window.location.hostname);
+const defaultDark = isLocalHost ? true : (storedTheme ? storedTheme === 'dark' : true);
 
 const syncTheme = (forceDark) => {
   const next = typeof forceDark === 'boolean' ? forceDark : document.body.classList.contains('dark');
   document.body.classList.toggle('dark', next);
   if (themeToggle) themeToggle.checked = next;
+  localStorage.setItem('theme', next ? 'dark' : 'light');
 };
 
-if (prefersDark && !document.body.classList.contains('dark')) {
-  document.body.classList.add('dark');
-}
+document.body.classList.toggle('dark', defaultDark);
 
 if (themeToggle) {
-  syncTheme();
+  syncTheme(defaultDark);
   themeToggle.addEventListener('change', (e) => {
-    document.body.classList.toggle('dark', e.target.checked);
     syncTheme(e.target.checked);
   });
+} else {
+  syncTheme(defaultDark);
 }
 
 // Language dropdown + translations
@@ -2235,21 +2253,6 @@ function applyTranslations() {
   if (loginBtnEl) loginBtnEl.textContent = pack.login;
   const formTitleEl = document.getElementById('formTitle');
   if (formTitleEl) formTitleEl.textContent = pack.login;
-  if (topFavoritesLink && pack.favorites) topFavoritesLink.textContent = pack.favorites;
-  const clearFavBtn = document.getElementById('clearFavoritesBtn');
-  if (clearFavBtn && pack.clearFavorites) clearFavBtn.textContent = pack.clearFavorites;
-  const contactLink = document.getElementById('topContactLink');
-  if (contactLink && pack.contact) contactLink.textContent = pack.contact;
-  const aboutLink = document.getElementById('topAboutLink');
-  if (aboutLink && pack.about) aboutLink.textContent = pack.about;
-  const privacyLink = document.getElementById('topPrivacyLink');
-  if (privacyLink && pack.privacy) privacyLink.textContent = pack.privacy;
-  const darkModeLabel = document.getElementById('darkModeLabel');
-  if (darkModeLabel && pack.darkMode) darkModeLabel.textContent = pack.darkMode;
-  const notificationsTitle = document.querySelector('.notifications-title');
-  if (notificationsTitle && pack.updates) notificationsTitle.textContent = pack.updates;
-  const logoutBtnEl = document.getElementById('logoutBtn');
-  if (logoutBtnEl && pack.logout) logoutBtnEl.textContent = pack.logout;
 }
 
 function setLanguage(code) {
