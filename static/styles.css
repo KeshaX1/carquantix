@@ -84,7 +84,10 @@ body.dark .brand-divider::after{
 .add-btn{padding:8px 10px;border-radius:8px;border:none;background:var(--accent);color:#021;cursor:pointer;font-weight:600}
 
 .main{flex:1;padding:20px;display:flex;flex-direction:column}
-.main-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.main-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.hero-copy{display:flex;flex-direction:column;gap:6px;max-width:720px}
+.main-title{margin:0;font-size:1.6rem;line-height:1.25}
+.hero-description{margin:0;color:var(--muted);font-size:0.98rem;line-height:1.5}
 .actions{display:flex;gap:8px}
 .main-header .actions{margin-top:47px}
 .btn{padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
@@ -851,6 +854,16 @@ body.dark .comment-section textarea::placeholder {
 .about-card p {
   margin: 10px 0;
   line-height: 1.6;
+}
+
+.about-home-link a {
+  color: #7ec2ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.about-home-link a:hover {
+  text-decoration: underline;
 }
 
 .about-card ul {

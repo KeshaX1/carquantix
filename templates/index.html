@@ -11,6 +11,20 @@
     gtag('js', new Date());
     gtag('config', 'G-8BTCF256NW');
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "CarQuantix",
+    "url": "https://carquantix.com/",
+    "description": "Compare cars by horsepower, acceleration, top speed and fuel cost.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://carquantix.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
   <title>CarQuantix – Best Cars by HP, Acceleration, Top Speed & Cost</title>
   <meta name="description" content="Compare car horsepower, 0-100 acceleration, top speed and fuel cost. Find the best value per HP cars and performance rankings instantly.">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260219g') }}">
@@ -156,9 +170,6 @@
         <h1 class="main-title">
           CarQuantix – Compare Cars by Horsepower, 0-100 Acceleration, Top Speed & Fuel Cost
         </h1>
-        <p class="hero-description">
-          Compare real-world performance data including horsepower (HP), 0-100 km/h acceleration, top speed, and fuel cost. Find the best value performance cars instantly.
-        </p>
         <div class="actions">
           <button id="clearBtn" class="btn muted">Clear Selected</button>
           <button id="compareBtn" class="btn primary">Compare</button>

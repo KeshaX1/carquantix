@@ -27,6 +27,7 @@
       'about.p7': 'CarQuantix operates as a web-based software service (SaaS), continuously improving its features and expanding its vehicle database.',
       'about.missionTitle': 'Our Mission',
       'about.mission': 'To simplify vehicle comparison by combining performance data and real-world cost insights in one place.',
+      'about.homeLink': 'Learn more on our car comparison homepage.',
     },
     tr: {
       'about.title': 'Hakkimizda - CarQuantix',
@@ -48,6 +49,7 @@
       'about.p7': 'CarQuantix, ozelliklerini surekli gelistiren ve arac veritabaniyi genisleten web tabanli bir yazilim hizmetidir (SaaS).',
       'about.missionTitle': 'Misyonumuz',
       'about.mission': 'Performans verileri ve gercek dunya maliyetlerini tek yerde birlestirerek arac karsilastirmayi kolaylastirmak.',
+      'about.homeLink': 'Arac karsilastirma ana sayfamizda daha fazla bilgi edinin.',
     },
     de: {
       'about.title': 'Uber uns - CarQuantix',
@@ -69,6 +71,7 @@
       'about.p7': 'CarQuantix ist ein webbasiertes SaaS, das Funktionen verbessert und die Datenbank erweitert.',
       'about.missionTitle': 'Unsere Mission',
       'about.mission': 'Fahrzeugvergleich durch Leistungsdaten und reale Kosten an einem Ort vereinfachen.',
+      'about.homeLink': 'Erfahren Sie mehr auf unserer Autovergleich-Startseite.',
     },
     fr: {
       'about.title': 'A propos - CarQuantix',
@@ -90,6 +93,7 @@
       'about.p7': 'CarQuantix est un service SaaS qui s ameliore et etend sa base de donnees.',
       'about.missionTitle': 'Notre mission',
       'about.mission': 'Simplifier la comparaison en combinant performances et couts reels.',
+      'about.homeLink': 'En savoir plus sur notre page d accueil de comparaison de voitures.',
     },
     es: {
       'about.title': 'Acerca de - CarQuantix',
@@ -111,6 +115,7 @@
       'about.p7': 'CarQuantix es un servicio SaaS que mejora funciones y amplia su base de datos.',
       'about.missionTitle': 'Nuestra mision',
       'about.mission': 'Simplificar la comparacion combinando rendimiento y costos reales en un solo lugar.',
+      'about.homeLink': 'Conoce mas en nuestra pagina de comparacion de autos.',
     },
   };
 
