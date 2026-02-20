@@ -1213,6 +1213,7 @@ const listEl = document.getElementById('itemList');
 const compareArea = document.getElementById('compareArea');
 const compTable = document.querySelector('#compTable tbody');
 const searchInput = document.getElementById('search');
+const brandSelect = document.getElementById('brandFilter');
 const clearBtn = document.getElementById('clearBtn');
 const compareBtn = document.getElementById('compareBtn');
 const catalogToggle = document.getElementById('catalogToggle');
@@ -1242,6 +1243,8 @@ const TRANSLATIONS = {
     catalogCars: 'Cars',
     catalogMotorcycles: 'Motorcycles',
     searchPlaceholder: 'Search (model or brand)...',
+    brandLabel: 'Brand',
+    brandAll: 'All brands',
     filters: { topSpeed: 'Top Speed', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Price' },
     comparison: 'Comparison',
     clear: 'Clear Selected',
@@ -1278,6 +1281,8 @@ const TRANSLATIONS = {
     catalogCars: 'Arabalar',
     catalogMotorcycles: 'Motosikletler',
     searchPlaceholder: 'Ara (model veya marka)...',
+    brandLabel: 'Marka',
+    brandAll: 'Tüm markalar',
     filters: { topSpeed: 'En yüksek hız', nameAZ: 'A-Z', acc: '0-100 (sn)', price: 'Fiyat' },
     comparison: 'Karşılaştırma',
     clear: 'Seçilenleri Temizle',
@@ -1311,6 +1316,8 @@ const TRANSLATIONS = {
   de: {
     vehiclesTitle: 'Fahrzeuge',
     searchPlaceholder: 'Suche (Modell oder Marke)...',
+    brandLabel: 'Marke',
+    brandAll: 'Alle Marken',
     filters: { topSpeed: 'Höchstgeschwindigkeit', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Preis' },
     comparison: 'Vergleich',
     clear: 'Auswahl löschen',
@@ -1344,6 +1351,8 @@ const TRANSLATIONS = {
   fr: {
     vehiclesTitle: 'Véhicules',
     searchPlaceholder: 'Rechercher (modèle ou marque)...',
+    brandLabel: 'Marque',
+    brandAll: 'Toutes les marques',
     filters: { topSpeed: 'Vitesse max', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Prix' },
     comparison: 'Comparaison',
     clear: 'Effacer la sélection',
@@ -1377,6 +1386,8 @@ const TRANSLATIONS = {
   es: {
     vehiclesTitle: 'Vehículos',
     searchPlaceholder: 'Buscar (modelo o marca)...',
+    brandLabel: 'Marca',
+    brandAll: 'Todas las marcas',
     filters: { topSpeed: 'Velocidad máx', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Precio' },
     comparison: 'Comparación',
     clear: 'Limpiar selección',
@@ -1607,6 +1618,8 @@ let favorites = favoritesEnabled ? loadFavorites() : [];
 let selected = [];
 let activeSort = null;
 let activeCatalog = 'cars';
+const brandSelectionByCatalog = {};
+let activeBrand = 'all';
 const INVENTORY_MAP = { cars: VEHICLES, motorcycles: MOTORCYCLES };
 const savedCatalog = localStorage.getItem('catalogType');
 if (savedCatalog && INVENTORY_MAP[savedCatalog]) {
@@ -1750,6 +1763,34 @@ function createBrandDivider(label) {
   return divider;
 }
 
+function getBrandList() {
+  const brands = new Set();
+  currentInventory().forEach(v => {
+    const brand = getBrandLabel(v.name);
+    if (brand) brands.add(brand);
+  });
+  return Array.from(brands).sort((a, b) => a.localeCompare(b));
+}
+
+function buildBrandOptions() {
+  if (!brandSelect) return;
+  const brands = getBrandList();
+  brandSelect.innerHTML = '';
+  const allOption = document.createElement('option');
+  allOption.value = 'all';
+  allOption.textContent = t('brandAll');
+  brandSelect.appendChild(allOption);
+  brands.forEach(brand => {
+    const option = document.createElement('option');
+    option.value = brand;
+    option.textContent = brand;
+    brandSelect.appendChild(option);
+  });
+  const saved = brandSelectionByCatalog[activeCatalog] || activeBrand || 'all';
+  activeBrand = brands.includes(saved) ? saved : 'all';
+  brandSelect.value = activeBrand;
+}
+
 function parsePrice(val) {
   if (!val) return 0;
   const digits = String(val).replace(/\D/g, '');
@@ -1862,9 +1903,18 @@ function setupLazyThumbs(container) {
 function renderList(filter = '') {
   listEl.innerHTML = '';
   const q = filter.trim().toLowerCase();
-  const filtered = currentInventory().filter(v => (v.name + ' ' + v.engine).toLowerCase().includes(q));
+  const brandFilter = activeBrand && activeBrand !== 'all' ? activeBrand.toLowerCase() : '';
+  const filtered = currentInventory().filter(v => {
+    const haystack = (v.name + ' ' + v.engine).toLowerCase();
+    if (q && !haystack.includes(q)) return false;
+    if (brandFilter) {
+      const brand = getBrandLabel(v.name).toLowerCase();
+      if (brand !== brandFilter) return false;
+    }
+    return true;
+  });
   const ordered = sortVehicles(filtered);
-  const useBrandGrouping = !activeSort || activeSort === 'nameAZ';
+  const useBrandGrouping = (!activeSort || activeSort === 'nameAZ') && !brandFilter;
   let lastBrand = null;
 
   ordered.forEach((v) => {
@@ -2063,6 +2113,8 @@ function setCatalog(nextCatalog) {
     btn.classList.toggle('active', isActive);
     btn.setAttribute('aria-selected', isActive);
   });
+  activeBrand = brandSelectionByCatalog[activeCatalog] || 'all';
+  buildBrandOptions();
   renderList(searchInput ? searchInput.value : '');
   renderSelected();
   applyTranslations();
@@ -2128,6 +2180,13 @@ function applySeoPreselect() {
 applySeoPreselect();
 
 searchInput.addEventListener('input', (e) => renderList(e.target.value));
+if (brandSelect) {
+  brandSelect.addEventListener('change', (e) => {
+    activeBrand = e.target.value || 'all';
+    brandSelectionByCatalog[activeCatalog] = activeBrand;
+    renderList(searchInput ? searchInput.value : '');
+  });
+}
 clearBtn.addEventListener('click', () => { selected = []; renderSelected(); });
 compareBtn.addEventListener('click', () => {
   if (selected.length === 0) { alert(t('selectPrompt')); return; }
@@ -2223,6 +2282,9 @@ function applyTranslations() {
     if (pack[key]) btn.textContent = pack[key];
   });
   if (searchInput) searchInput.placeholder = pack.searchPlaceholder;
+  const brandLabel = document.querySelector('.brand-label');
+  if (brandLabel) brandLabel.textContent = pack.brandLabel || 'Brand';
+  if (brandSelect) buildBrandOptions();
   document.querySelectorAll('#filterBar button').forEach(btn => {
     const key = btn.dataset.sort || btn.dataset.type;
     if (pack.filters && pack.filters[key]) btn.textContent = pack.filters[key];
