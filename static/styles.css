@@ -39,6 +39,11 @@ body.dark {
 .sidebar-header{display:flex;flex-direction:column;gap:10px}
 .sidebar-header h2{margin:0;font-size:1.1rem}
 #search{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:inherit}
+.brand-filter{display:flex;flex-direction:column;gap:6px}
+.brand-label{font-size:0.75rem;color:var(--muted);font-weight:600}
+.brand-select{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:inherit;width:100%}
+body.dark .brand-select{background:#1a1f2b;color:#eaf0ff;border-color:#2a2f3b}
+body.dark .brand-select option{background:#12151d;color:#eaf0ff}
 .catalog-toggle{display:flex;gap:10px;margin-top:4px}
 .catalog-toggle button{flex:1;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:var(--glass);color:inherit;font-weight:700;cursor:pointer;transition:all .18s ease}
 .catalog-toggle button.active{background:linear-gradient(135deg,#007bff,#00c3ff);color:#fff;border-color:transparent;box-shadow:0 10px 24px rgba(0,123,255,0.35)}
