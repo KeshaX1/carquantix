@@ -1887,9 +1887,20 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     max-width: 100%;
     flex: 1 1 100%;
   }
-  .compare-card .thumb-frame { height: 140px; aspect-ratio: auto; }
-  .compare-card .thumb-frame { width: 100%; max-width: 100%; overflow: hidden; }
-  .compare-card img.thumb-img { width: 100%; max-width: 100%; height: 100%; display: block; }
+  .compare-card .thumb-frame {
+    height: auto;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .compare-card img.thumb-img {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
   .compare-card .meta h4 { font-size: 0.9rem; }
   .compare-card .meta .spec-line { font-size: 0.75rem; }
   .compare-card .meta .price-wrapper { padding: 6px 12px; font-size: 0.75rem; }
