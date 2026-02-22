@@ -180,6 +180,39 @@
         <p class="empty">No vehicles selected. Start by adding vehicles from the left.</p>
       </section>
 
+      <section id="fuelCalculator" class="fuel-calculator hidden" aria-label="Fuel calculator">
+        <div class="fuel-card">
+          <div class="fuel-header">
+            <h2 id="fuelCalcTitle">Cost of Ownership</h2>
+          </div>
+          <div class="fuel-grid">
+            <label class="fuel-field" for="fuelCalcDistance">
+              <span id="fuelCalcDistanceLabel">Distance (km)</span>
+              <input id="fuelCalcDistance" type="number" min="0" step="1" inputmode="decimal" placeholder="0" />
+            </label>
+            <label class="fuel-field" for="fuelCalcPrice">
+              <span id="fuelCalcPriceLabel">Price per L</span>
+              <input id="fuelCalcPrice" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" />
+            </label>
+            <label class="fuel-field" for="fuelCalcUnit">
+              <span id="fuelCalcUnitLabel">Unit</span>
+              <select id="fuelCalcUnit">
+                <option value="fuel">Fuel (L/100km)</option>
+                <option value="electric">Electric (kWh/100km)</option>
+              </select>
+            </label>
+            <label class="fuel-field" for="fuelCalcConsumption">
+              <span id="fuelCalcConsumptionLabel">Consumption (L/100km)</span>
+              <input id="fuelCalcConsumption" type="number" min="0" step="0.1" inputmode="decimal" placeholder="0.0" />
+            </label>
+          </div>
+          <div class="fuel-result" aria-live="polite">
+            <span id="fuelCalcResultLabel">Estimated cost</span>
+            <strong id="fuelCalcResult">-</strong>
+          </div>
+        </div>
+      </section>
+
       <section id="tableArea" class="table-area hidden" aria-label="comparison table">
         <h2>Comparison Table</h2>
         <div class="table-wrap">

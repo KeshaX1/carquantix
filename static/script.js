@@ -1212,10 +1212,17 @@ const MOTORCYCLES = Array.isArray(globalThis?.Motorcycles) ? globalThis.Motorcyc
 const listEl = document.getElementById('itemList');
 const compareArea = document.getElementById('compareArea');
 const compTable = document.querySelector('#compTable tbody');
+const tableArea = document.getElementById('tableArea');
 const searchInput = document.getElementById('search');
 const brandSelect = document.getElementById('brandFilter');
 const clearBtn = document.getElementById('clearBtn');
 const compareBtn = document.getElementById('compareBtn');
+const fuelCalcSection = document.getElementById('fuelCalculator');
+const fuelCalcDistance = document.getElementById('fuelCalcDistance');
+const fuelCalcPrice = document.getElementById('fuelCalcPrice');
+const fuelCalcUnit = document.getElementById('fuelCalcUnit');
+const fuelCalcConsumption = document.getElementById('fuelCalcConsumption');
+const fuelCalcResult = document.getElementById('fuelCalcResult');
 const catalogToggle = document.getElementById('catalogToggle');
 const catalogButtons = catalogToggle ? Array.from(catalogToggle.querySelectorAll('button[data-catalog]')) : [];
 const topbarEl = document.querySelector('.topbar');
@@ -1267,8 +1274,11 @@ const TRANSLATIONS = {
     costTitle: 'Cost of Ownership',
     consumptionLabel: 'Consumption',
     distanceLabel: 'Distance (km)',
-    pricePerLiter: 'Price per L (EUR)',
-    pricePerKwh: 'Price per kWh (EUR)',
+    pricePerLiter: 'Price per L',
+    pricePerKwh: 'Price per kWh',
+    unitLabel: 'Unit',
+    unitFuel: 'Fuel (L/100km)',
+    unitElectric: 'Electric (kWh/100km)',
     costEstimate: 'Estimated cost',
     consumptionMissing: 'Consumption data not available',
     favoritesEmpty: 'No favorites yet.',
@@ -1305,8 +1315,11 @@ const TRANSLATIONS = {
     costTitle: 'Maliyet Hesaplayıcı',
     consumptionLabel: 'Tüketim',
     distanceLabel: 'Mesafe (km)',
-    pricePerLiter: 'Litre fiyatı (EUR)',
-    pricePerKwh: 'kWh fiyatı (EUR)',
+    pricePerLiter: 'Litre fiyatı',
+    pricePerKwh: 'kWh fiyatı',
+    unitLabel: 'Birim',
+    unitFuel: 'Yakıt (L/100km)',
+    unitElectric: 'Elektrik (kWh/100km)',
     costEstimate: 'Tahmini maliyet',
     consumptionMissing: 'Tüketim verisi yok',
     favoritesEmpty: 'Henüz favori yok.',
@@ -1340,8 +1353,11 @@ const TRANSLATIONS = {
     costTitle: 'Betriebskosten',
     consumptionLabel: 'Verbrauch',
     distanceLabel: 'Distanz (km)',
-    pricePerLiter: 'Preis pro L (EUR)',
-    pricePerKwh: 'Preis pro kWh (EUR)',
+    pricePerLiter: 'Preis pro L',
+    pricePerKwh: 'Preis pro kWh',
+    unitLabel: 'Einheit',
+    unitFuel: 'Kraftstoff (L/100km)',
+    unitElectric: 'Strom (kWh/100km)',
     costEstimate: 'Kosten',
     consumptionMissing: 'Keine Verbrauchsdaten',
     favoritesEmpty: 'Noch keine Favoriten.',
@@ -1375,8 +1391,11 @@ const TRANSLATIONS = {
     costTitle: 'Coût d’utilisation',
     consumptionLabel: 'Consommation',
     distanceLabel: 'Distance (km)',
-    pricePerLiter: 'Prix par L (EUR)',
-    pricePerKwh: 'Prix par kWh (EUR)',
+    pricePerLiter: 'Prix par L',
+    pricePerKwh: 'Prix par kWh',
+    unitLabel: 'Unité',
+    unitFuel: 'Carburant (L/100km)',
+    unitElectric: 'Électrique (kWh/100km)',
     costEstimate: 'Coût estimé',
     consumptionMissing: 'Données de consommation indisponibles',
     favoritesEmpty: 'Aucun favori pour le moment.',
@@ -1410,8 +1429,11 @@ const TRANSLATIONS = {
     costTitle: 'Costo de uso',
     consumptionLabel: 'Consumo',
     distanceLabel: 'Distancia (km)',
-    pricePerLiter: 'Precio por L (EUR)',
-    pricePerKwh: 'Precio por kWh (EUR)',
+    pricePerLiter: 'Precio por L',
+    pricePerKwh: 'Precio por kWh',
+    unitLabel: 'Unidad',
+    unitFuel: 'Combustible (L/100km)',
+    unitElectric: 'Eléctrico (kWh/100km)',
     costEstimate: 'Costo estimado',
     consumptionMissing: 'Sin datos de consumo',
     favoritesEmpty: 'Aún no hay favoritos.',
@@ -1423,6 +1445,20 @@ const TRANSLATIONS = {
 const getLang = (code) => LANGUAGES.find(l => l.code === code);
 let currentLang = localStorage.getItem('appLang');
 if (!getLang(currentLang)) currentLang = LANGUAGES[0].code;
+
+function getCurrencyForLang(code) {
+  switch (code) {
+    case 'tr':
+      return 'TRY';
+    case 'en':
+      return 'USD';
+    case 'de':
+    case 'fr':
+    case 'es':
+    default:
+      return 'EUR';
+  }
+}
 
 const t = (key) => {
   const langPack = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
@@ -1799,7 +1835,7 @@ function parsePrice(val) {
 
 function formatPrice(val) {
   if (!val) return '-';
-  return String(val).replace(/^\$/, '€');
+  return String(val).replace(/^\$/, '\u20AC');
 }
 
 function getConsumptionInfo(vehicle) {
@@ -1830,7 +1866,7 @@ function calculateCost(vehicle) {
 
 function formatCurrency(value) {
   if (!Number.isFinite(value)) return '-';
-  return `€${value.toFixed(2)}`;
+  return `\u20AC${value.toFixed(2)}`;
 }
 
 function formatCostValue(value) {
@@ -1850,6 +1886,140 @@ function getStoredNumber(key, fallback) {
 function setStoredNumber(key, value) {
   if (!Number.isFinite(value)) return;
   localStorage.setItem(key, String(value));
+}
+
+const FUEL_DISTANCE_KEY = 'fuelCalcDistance';
+const FUEL_UNIT_KEY = 'fuelCalcUnit';
+const FUEL_CONSUMPTION_L_KEY = 'fuelCalcConsumptionL';
+const FUEL_CONSUMPTION_KWH_KEY = 'fuelCalcConsumptionKwh';
+
+function parseNumberInput(value) {
+  const normalized = String(value ?? '').replace(',', '.').trim();
+  const num = Number(normalized);
+  return Number.isFinite(num) ? num : NaN;
+}
+
+function getFuelUnit() {
+  return fuelCalcUnit && fuelCalcUnit.value === 'electric' ? 'electric' : 'fuel';
+}
+
+function getConsumptionKey(unit) {
+  return unit === 'electric' ? FUEL_CONSUMPTION_KWH_KEY : FUEL_CONSUMPTION_L_KEY;
+}
+
+function getPriceKey(unit) {
+  return unit === 'electric' ? 'pricePerKwh' : 'pricePerLiter';
+}
+
+function getDefaultPrice(unit) {
+  return unit === 'electric' ? DEFAULT_PRICE_PER_KWH : DEFAULT_PRICE_PER_LITER;
+}
+
+function getConsumptionUnit(unit) {
+  return unit === 'electric' ? 'kWh/100km' : 'L/100km';
+}
+
+function loadFuelInputsForUnit(unit) {
+  if (fuelCalcPrice) {
+    fuelCalcPrice.value = getStoredNumber(getPriceKey(unit), getDefaultPrice(unit));
+  }
+  if (fuelCalcConsumption) {
+    const savedConsumption = localStorage.getItem(getConsumptionKey(unit));
+    fuelCalcConsumption.value = savedConsumption !== null ? savedConsumption : '';
+  }
+}
+
+function updateFuelCalcLabels() {
+  const pack = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const unit = getFuelUnit();
+  const fuelUnitLabel = document.getElementById('fuelCalcUnitLabel');
+  const fuelUnitSelect = document.getElementById('fuelCalcUnit');
+  const fuelPriceLabel = document.getElementById('fuelCalcPriceLabel');
+  const fuelConsumptionLabel = document.getElementById('fuelCalcConsumptionLabel');
+
+  if (fuelUnitLabel) fuelUnitLabel.textContent = pack.unitLabel || 'Unit';
+  if (fuelUnitSelect) {
+    const fuelOpt = fuelUnitSelect.querySelector('option[value="fuel"]');
+    const elecOpt = fuelUnitSelect.querySelector('option[value="electric"]');
+    if (fuelOpt) fuelOpt.textContent = pack.unitFuel || 'Fuel (L/100km)';
+    if (elecOpt) elecOpt.textContent = pack.unitElectric || 'Electric (kWh/100km)';
+  }
+  if (fuelPriceLabel) {
+    const currency = getCurrencyForLang(currentLang);
+    const baseLabel = unit === 'electric' ? pack.pricePerKwh : pack.pricePerLiter;
+    fuelPriceLabel.textContent = `${baseLabel} (${currency})`;
+  }
+  if (fuelConsumptionLabel) {
+    const consumptionLabel = pack.consumptionLabel || 'Consumption';
+    fuelConsumptionLabel.textContent = `${consumptionLabel} (${getConsumptionUnit(unit)})`;
+  }
+}
+
+function updateFuelCalculator() {
+  if (!fuelCalcSection || !fuelCalcResult) return;
+  const unit = getFuelUnit();
+  const priceKey = getPriceKey(unit);
+  const consumptionKey = getConsumptionKey(unit);
+  const distance = parseNumberInput(fuelCalcDistance?.value);
+  const price = parseNumberInput(fuelCalcPrice?.value);
+  const consumption = parseNumberInput(fuelCalcConsumption?.value);
+
+  if (Number.isFinite(price) && price > 0) {
+    setStoredNumber(priceKey, price);
+  }
+  if (Number.isFinite(distance) && distance >= 0) {
+    localStorage.setItem(FUEL_DISTANCE_KEY, String(distance));
+  }
+  if (Number.isFinite(consumption) && consumption > 0) {
+    localStorage.setItem(consumptionKey, String(consumption));
+  }
+
+  if (!Number.isFinite(distance) || distance < 0) {
+    fuelCalcResult.textContent = '-';
+    return;
+  }
+  if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(consumption) || consumption <= 0) {
+    fuelCalcResult.textContent = '-';
+    return;
+  }
+
+  const total = (distance / 100) * consumption * price;
+  fuelCalcResult.textContent = formatCurrency(total);
+}
+
+function setFuelCalculatorVisible(visible) {
+  if (!fuelCalcSection) return;
+  fuelCalcSection.classList.toggle('hidden', !visible);
+}
+
+function initFuelCalculator() {
+  if (!fuelCalcSection) return;
+  const savedDistance = localStorage.getItem(FUEL_DISTANCE_KEY);
+  if (fuelCalcDistance && savedDistance !== null) fuelCalcDistance.value = savedDistance;
+  const savedUnit = localStorage.getItem(FUEL_UNIT_KEY);
+  if (fuelCalcUnit && (savedUnit === 'fuel' || savedUnit === 'electric')) {
+    fuelCalcUnit.value = savedUnit;
+  }
+  const unit = getFuelUnit();
+  loadFuelInputsForUnit(unit);
+  updateFuelCalcLabels();
+
+  [fuelCalcDistance, fuelCalcPrice, fuelCalcConsumption].forEach((input) => {
+    if (!input) return;
+    input.addEventListener('input', updateFuelCalculator);
+    input.addEventListener('change', updateFuelCalculator);
+  });
+  if (fuelCalcUnit) {
+    fuelCalcUnit.addEventListener('change', () => {
+      const nextUnit = getFuelUnit();
+      localStorage.setItem(FUEL_UNIT_KEY, nextUnit);
+      loadFuelInputsForUnit(nextUnit);
+      updateFuelCalcLabels();
+      updateFuelCalculator();
+    });
+  }
+
+  updateFuelCalculator();
 }
 
 
@@ -1982,8 +2152,8 @@ function renderSelected() {
       </div>
     `;
     compTable.innerHTML = '';
-    document.getElementById('tableArea').classList.add('hidden');
-    
+    if (tableArea) tableArea.classList.add('hidden');
+    setFuelCalculatorVisible(false);
     return;
   }
 
@@ -2086,8 +2256,11 @@ function buildTable() {
     compTable.appendChild(tr);
   });
 
-  document.getElementById('tableArea').classList.remove('hidden');
-  document.getElementById('tableArea').scrollIntoView({ behavior: 'smooth' });
+  if (tableArea) {
+    tableArea.classList.remove('hidden');
+    tableArea.scrollIntoView({ behavior: 'smooth' });
+  }
+  setFuelCalculatorVisible(true);
 }
 
 // events
@@ -2124,6 +2297,7 @@ catalogButtons.forEach(btn => {
 setCatalog(activeCatalog);
 initFavoritesUI();
 renderFavorites();
+initFuelCalculator();
 
 const SEO_PRESELECT = {
   'audi-sq8-2024-fuel-cost': { catalog: 'cars', ids: ['SQ8'] },
@@ -2298,6 +2472,13 @@ function applyTranslations() {
       if (pack.tableHeaders[idx]) th.textContent = pack.tableHeaders[idx];
     });
   }
+  const fuelTitle = document.getElementById('fuelCalcTitle');
+  if (fuelTitle) fuelTitle.textContent = pack.costTitle;
+  const fuelDistanceLabel = document.getElementById('fuelCalcDistanceLabel');
+  if (fuelDistanceLabel) fuelDistanceLabel.textContent = pack.distanceLabel;
+  updateFuelCalcLabels();
+  const fuelResultLabel = document.getElementById('fuelCalcResultLabel');
+  if (fuelResultLabel) fuelResultLabel.textContent = pack.costEstimate;
   const commentsTitle = document.querySelector('.comment-section h3');
   if (commentsTitle) commentsTitle.textContent = pack.commentsTitle;
   const usernameInput = document.getElementById('username');
@@ -2325,6 +2506,10 @@ function setLanguage(code) {
   renderList();
   renderSelected();
   applyTranslations();
+  if (fuelCalcSection) {
+    loadFuelInputsForUnit(getFuelUnit());
+    updateFuelCalculator();
+  }
   renderFavorites();
   document.dispatchEvent(new CustomEvent('languagechange', { detail: langObj }));
 }
