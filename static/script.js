@@ -1919,8 +1919,8 @@ function renderList(filter = '') {
 
   ordered.forEach((v) => {
     const brand = getBrandLabel(v.name);
-    if (useBrandGrouping && lastBrand && brand !== lastBrand) {
-      listEl.appendChild(createBrandDivider(lastBrand));
+    if (useBrandGrouping && brand !== lastBrand) {
+      listEl.appendChild(createBrandDivider(brand));
     }
     const item = document.createElement('div');
     item.className = 'item';
@@ -1949,9 +1949,6 @@ function renderList(filter = '') {
     listEl.appendChild(item);
     if (useBrandGrouping) lastBrand = brand;
   });
-  if (useBrandGrouping && ordered.length && lastBrand) {
-    listEl.appendChild(createBrandDivider(lastBrand));
-  }
   attachAddButtons();
   attachListFavoriteButtons();
   setupLazyThumbs(listEl);
