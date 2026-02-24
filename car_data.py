@@ -49,9 +49,14 @@ def _extract_array(text: str, var_name: str):
 
 def _parse_js_array(array_text: str):
     cleaned = re.sub(r"//.*", "", array_text)
-    cleaned = re.sub(r"([A-Za-z0-9_]+)\s*:", r'"\1":', cleaned)
-    cleaned = cleaned.replace("'", '"')
+    cleaned = re.sub(r"([,{]\s*)([A-Za-z0-9_]+)\s*:", r'\1"\2":', cleaned)
+    def _replace_single_quoted(match):
+        content = match.group(1)
+        content = content.replace("\\", "\\\\").replace('"', '\\"')
+        return f"\"{content}\""
+    cleaned = re.sub(r"'([^'\\]*(?:\\.[^'\\]*)*)'", _replace_single_quoted, cleaned)
     cleaned = re.sub(r",\s*([}\]])", r"\1", cleaned)
+    cleaned = re.sub(r"[\x00-\x1F]", " ", cleaned)
     return json.loads(cleaned)
 
 
