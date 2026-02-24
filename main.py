@@ -383,6 +383,13 @@ def car_detail(slug):
     _, slug_map = load_cars()
     car = slug_map.get(slug)
     if not car:
+        year_swap = re.match(r"^(.+)-(\d{4})$", slug)
+        if year_swap:
+            alt_slug = f"{year_swap.group(2)}-{year_swap.group(1)}"
+            car = slug_map.get(alt_slug)
+            if car:
+                canonical_slug = car.get("slug") or alt_slug
+                return redirect(f"/cars/{canonical_slug}", code=301)
         return "Not Found", 404
     canonical_slug = car.get("slug") or slug
     if slug != canonical_slug:
