@@ -1259,6 +1259,7 @@ const TRANSLATIONS = {
     empty: 'No vehicles selected. Start by adding vehicles from the left.',
     add: 'Add',
     remove: 'Remove',
+    details: 'Details',
     tableTitle: 'Comparison Table',
     tableHeaders: ['Model','Power (CV)','0-100 (s)','Top Speed (km/h)','Engine','Price','Consumption','Cost'],
     priceLabel: 'Price:',
@@ -1300,6 +1301,7 @@ const TRANSLATIONS = {
     empty: 'Araç seçilmedi. Soldan ekleyin.',
     add: 'Ekle',
     remove: 'Kaldır',
+    details: 'Detay',
     tableTitle: 'Karşılaştırma Tablosu',
     tableHeaders: ['Model','Güç (BG)','0-100 (sn)','Azami Hız (km/sa)','Motor','Fiyat','Tüketim','Maliyet'],
     priceLabel: 'Fiyat:',
@@ -1338,6 +1340,7 @@ const TRANSLATIONS = {
     empty: 'Keine Fahrzeuge gewählt. Füge links welche hinzu.',
     add: 'Hinzufügen',
     remove: 'Entfernen',
+    details: 'Details',
     tableTitle: 'Vergleichstabelle',
     tableHeaders: ['Modell','Leistung (PS)','0-100 (s)','Vmax (km/h)','Motor','Preis','Verbrauch','Kosten'],
     priceLabel: 'Preis:',
@@ -1376,6 +1379,7 @@ const TRANSLATIONS = {
     empty: 'Aucun véhicule sélectionné. Ajoutez-en depuis la gauche.',
     add: 'Ajouter',
     remove: 'Retirer',
+    details: 'Details',
     tableTitle: 'Tableau comparatif',
     tableHeaders: ['Modèle','Puissance (ch)','0-100 (s)','Vitesse max (km/h)','Moteur','Prix','Consommation','Coût'],
     priceLabel: 'Prix :',
@@ -1414,6 +1418,7 @@ const TRANSLATIONS = {
     empty: 'No hay vehículos seleccionados. Añade desde la izquierda.',
     add: 'Añadir',
     remove: 'Quitar',
+    details: 'Detalles',
     tableTitle: 'Tabla comparativa',
     tableHeaders: ['Modelo','Potencia (CV)','0-100 (s)','Vel. máxima (km/h)','Motor','Precio','Consumo','Costo'],
     priceLabel: 'Precio:',
@@ -1669,6 +1674,22 @@ function makeKey(catalog, id) {
 function parseKey(key) {
   const [catalog, ...rest] = String(key || '').split(':');
   return { catalog: catalog || 'cars', id: decodeURIComponent(rest.join(':') || '') };
+}
+
+function slugifyName(value) {
+  const normalized = String(value || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '');
+  const slug = normalized
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return slug || 'car';
+}
+
+function buildCarDetailUrl(vehicle) {
+  const name = vehicle?.name || vehicle?.id || '';
+  return `/cars/${slugifyName(name)}`;
 }
 
 function currentInventory() {
@@ -2165,7 +2186,11 @@ function renderSelected() {
     const rearThumb = rearSrc ? safeImg(rearSrc, `${v.name} rear`) : null;
     const gallery = [thumb, rearThumb].filter(Boolean);
     const startSrc = gallery[0] || thumb;
-    const key = v._key || makeKey(v.catalog || 'cars', v.id);
+    const catalog = v.catalog || 'cars';
+    const key = v._key || makeKey(catalog, v.id);
+    const detailLink = catalog === 'cars'
+      ? `<a class="detail-btn" href="${buildCarDetailUrl(v)}" aria-label="${t('details')} ${v.name}">${t('details')}</a>`
+      : '';
     card.innerHTML = `
       <div class="thumb-row single">
         <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
@@ -2180,7 +2205,10 @@ function renderSelected() {
           <span class="price-value">${formatPrice(v.price)}</span>
         </div>
         <div class="stat-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</div>
-        <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
+        <div class="card-actions">
+          <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
+          ${detailLink}
+        </div>
       </div>
     `;
     const mainThumb = card.querySelector('.thumb-img');

@@ -319,6 +319,13 @@ body.dark .brand-divider::after{
   color:var(--card-accent);
   font-size:0.95rem;
 }
+.card-actions{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
 .compare-card .meta.compact{
   display:flex;
   align-items:center;
@@ -328,7 +335,28 @@ body.dark .brand-divider::after{
 .compare-card .meta.compact .meta-line{
   margin:0;
 }
-.remove-btn{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);padding:6px;border-radius:8px;cursor:pointer}
+.remove-btn{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.03);
+  color:var(--muted);
+  padding:6px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.detail-btn{
+  text-decoration:none;
+  padding:6px 10px;
+  border-radius:8px;
+  font-weight:600;
+  color:#cfeaff;
+  border:1px solid rgba(0,195,255,0.35);
+  background:linear-gradient(135deg, rgba(0,157,255,0.18), rgba(0,195,255,0.12));
+  box-shadow:0 6px 16px rgba(0,120,255,0.18);
+}
+.detail-btn:hover{
+  border-color:rgba(0,195,255,0.6);
+  box-shadow:0 10px 22px rgba(0,120,255,0.28);
+}
 
 .empty{color:var(--muted);background:rgba(255,255,255,0.01);padding:22px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03)}
 .empty-block{
