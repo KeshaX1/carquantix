@@ -12,6 +12,7 @@ import secrets
 import smtplib
 from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
+from car_data import load_cars
 
 # Load .env explicitly so it works even if the app is started from another directory
 DOTENV_PATH = Path(__file__).with_name(".env")
@@ -70,6 +71,8 @@ PENDING_PATH = Path(__file__).with_name("pending_verifications.json")
 PENDING_RESET_PATH = Path(__file__).with_name("pending_resets.json")
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
+STATIC_DIR = Path(__file__).with_name("static")
+SITEMAP_PATH = STATIC_DIR / "sitemap.xml"
 
 SEO_SLUGS = {
     "audi-sq8-2024-fuel-cost",
@@ -89,6 +92,50 @@ SEO_SLUGS = {
     "mercedes-benz-sls-vs-aston-martin-lagonda",
     "pagani-huayra-vs-mclaren-720s",
 }
+
+
+def build_car_specs(car):
+    specs = []
+    power = car.get("power")
+    if power is not None:
+        specs.append({"label": "Power", "value": f"{power} hp"})
+    acc = car.get("acc")
+    if acc is not None:
+        specs.append({"label": "0-100 km/h", "value": f"{acc} s"})
+    top_speed = car.get("topSpeed")
+    if top_speed is not None:
+        specs.append({"label": "Top Speed", "value": f"{top_speed} km/h"})
+    engine = car.get("engine")
+    if engine:
+        specs.append({"label": "Engine", "value": engine})
+    price = car.get("price")
+    if price:
+        specs.append({"label": "Price", "value": price})
+    consumption = car.get("consumption") or {}
+    if consumption.get("value") is not None and consumption.get("unit"):
+        specs.append(
+            {
+                "label": "Consumption",
+                "value": f"{consumption['value']} {consumption['unit']}",
+            }
+        )
+    return specs
+
+
+def build_car_meta_description(car):
+    bits = []
+    if car.get("power") is not None:
+        bits.append(f"{car['power']} hp")
+    if car.get("acc") is not None:
+        bits.append(f"0-100 km/h {car['acc']} s")
+    if car.get("topSpeed") is not None:
+        bits.append(f"Top speed {car['topSpeed']} km/h")
+    if car.get("engine"):
+        bits.append(car["engine"])
+    summary = ", ".join(bits[:4])
+    if summary:
+        return f"{car.get('name', 'Car')} specs and details: {summary}."
+    return f"{car.get('name', 'Car')} specs and details."
 
 
 @app.after_request
@@ -329,6 +376,48 @@ def about_us():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+
+@app.route("/cars/<slug>")
+def car_detail(slug):
+    _, slug_map = load_cars()
+    car = slug_map.get(slug)
+    if not car:
+        return "Not Found", 404
+    specs = build_car_specs(car)
+    meta_title = f"{car.get('name', 'Car')} | CarQuantix"
+    meta_description = build_car_meta_description(car)
+    return render_template(
+        "car_detail.html",
+        car=car,
+        specs=specs,
+        meta_title=meta_title,
+        meta_description=meta_description,
+        canonical_url=request.base_url,
+    )
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    if SITEMAP_PATH.exists():
+        return send_from_directory(STATIC_DIR, "sitemap.xml")
+    _, slug_map = load_cars()
+    base_url = request.host_url.rstrip("/")
+    urls = [
+        f"{base_url}/",
+        f"{base_url}/about-us",
+        f"{base_url}/contact",
+        f"{base_url}/privacy-policy",
+    ]
+    urls.extend(f"{base_url}/{slug}" for slug in sorted(SEO_SLUGS))
+    urls.extend(f"{base_url}/cars/{slug}" for slug in sorted(slug_map.keys()))
+    entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
+    xml = (
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+        f"{entries}</urlset>"
+    )
+    return app.response_class(xml, mimetype="application/xml")
 
 
 @app.route("/<slug>")

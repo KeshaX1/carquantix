@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/static/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/static/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/static/favicon-192.png">
+  <title>{{ meta_title }}</title>
+  <meta name="description" content="{{ meta_description }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260219g') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .car-detail-main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+    }
+    .car-hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      align-items: center;
+    }
+    .car-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.72rem;
+      color: var(--muted, #9fb0c5);
+      font-weight: 700;
+    }
+    .car-title {
+      margin: 8px 0 8px;
+      font-size: clamp(1.6rem, 2vw + 1rem, 2.6rem);
+    }
+    .car-subtitle {
+      margin: 0;
+      color: var(--muted, #9fb0c5);
+      line-height: 1.6;
+    }
+    .car-hero-image {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.35);
+      background: #0b0f18;
+    }
+    .car-specs {
+      margin-top: 32px;
+    }
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .spec-card {
+      background: var(--card, rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .spec-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted, #9fb0c5);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .spec-value {
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+    .car-gallery {
+      margin-top: 32px;
+    }
+    .gallery-grid img {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+      background: #0b0f18;
+    }
+  </style>
+</head>
+<body class="car-detail-page">
+  <header class="topbar">
+    <div class="brand-block">
+      <span class="brand-name">CarQuantix</span>
+      <span class="brand-copy">&copy; 2026</span>
+    </div>
+    <nav class="top-links" aria-label="Top links">
+      <a href="/" class="top-link">Home</a>
+      <a href="/contact" class="top-link">Contact</a>
+      <a href="/about-us" class="top-link">About Us</a>
+      <a href="/privacy-policy" class="top-link">Privacy Policy</a>
+    </nav>
+    <div class="auth-area"></div>
+  </header>
+
+  <main class="car-detail-main">
+    <section class="car-hero">
+      <div>
+        <div class="car-eyebrow">Car Details</div>
+        <h1 class="car-title">{{ car.name }}</h1>
+        <p class="car-subtitle">
+          Explore performance specs, engine details, and pricing for this model.
+        </p>
+      </div>
+      {% if car.img %}
+      <img class="car-hero-image" src="{{ car.img }}" alt="{{ car.name }}">
+      {% endif %}
+    </section>
+
+    <section class="car-specs">
+      <h2>Specifications</h2>
+      <div class="spec-grid">
+        {% for spec in specs %}
+        <div class="spec-card">
+          <div class="spec-label">{{ spec.label }}</div>
+          <div class="spec-value">{{ spec.value }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    {% if car.rearImg %}
+    <section class="car-gallery">
+      <h2>Gallery</h2>
+      <div class="gallery-grid">
+        <img src="{{ car.rearImg }}" alt="{{ car.name }} rear view">
+      </div>
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>
