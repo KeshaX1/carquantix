@@ -92,5 +92,11 @@ def load_cars():
         car["slug"] = slug
         slug_map[slug] = car
 
+        year_match = re.match(r"^(\\d{4})-(.+)$", slug)
+        if year_match:
+            alt_slug = f"{year_match.group(2)}-{year_match.group(1)}"
+            if alt_slug not in slug_map:
+                slug_map[alt_slug] = car
+
     _CAR_CACHE, _CAR_SLUG_MAP = cars, slug_map
     return _CAR_CACHE, _CAR_SLUG_MAP

@@ -384,6 +384,9 @@ def car_detail(slug):
     car = slug_map.get(slug)
     if not car:
         return "Not Found", 404
+    canonical_slug = car.get("slug") or slug
+    if slug != canonical_slug:
+        return redirect(f"/cars/{canonical_slug}", code=301)
     specs = build_car_specs(car)
     meta_title = f"{car.get('name', 'Car')} | CarQuantix"
     meta_description = build_car_meta_description(car)
