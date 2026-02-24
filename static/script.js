@@ -1285,6 +1285,21 @@ const TRANSLATIONS = {
     favoritesEmpty: 'No favorites yet.',
     addFavorite: 'Add to favorites',
     removeFavorite: 'Remove from favorites',
+    navContact: 'Contact',
+    navAbout: 'About Us',
+    navPrivacy: 'Privacy Policy',
+    emptyNote: 'Prices reflect average market estimates in EUR.',
+    seoHeading1: 'Car Performance & Cost Comparison Platform',
+    seoP1: 'CarQuantix allows users to compare horsepower, acceleration, top speed and fuel consumption across multiple model years. Discover the best value per HP cars and performance rankings instantly.',
+    seoHeading2: 'Car Fuel Cost Calculator',
+    seoP2: 'With CarQuantix, you can easily calculate your vehicle\'s fuel consumption, cost per kilometer, and monthly fuel expenses. Compare gasoline, diesel, and electric vehicles based on real fuel prices.',
+    seoHeading3: 'Cost Per Kilometer Calculation',
+    seoP3: 'Enter your vehicle\'s fuel consumption (per 100 km) and current fuel price to instantly see your cost per kilometer, monthly, and yearly expenses.',
+    seoHeading4: 'Electric Vehicle Charging Cost',
+    seoP4: 'Calculate charging costs for electric vehicles using kWh/100km consumption values. Get detailed cost analysis based on current electricity prices.',
+    seoHeading5: 'Popular Fuel Cost Pages',
+    seoHeading6: 'Popular Performance & Top Speed',
+    seoHeading7: 'Popular Comparisons',
   },
   tr: {
     vehiclesTitle: 'Araçlar',
@@ -1327,6 +1342,21 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Henüz favori yok.',
     addFavorite: 'Favorilere ekle',
     removeFavorite: 'Favorilerden çıkar',
+    navContact: 'İletişim',
+    navAbout: 'Hakkımızda',
+    navPrivacy: 'Gizlilik Politikası',
+    emptyNote: 'Fiyatlar EUR cinsinden ortalama piyasa tahminlerini yansıtır.',
+    seoHeading1: 'Araç Performans & Maliyet Karşılaştırma Platformu',
+    seoP1: 'CarQuantix, farklı model yıllarında beygir gücü, hızlanma, azami hız ve yakıt tüketimini karşılaştırmanı sağlar. En iyi fiyat/performans araçlarını hızlıca keşfet.',
+    seoHeading2: 'Yakıt Maliyet Hesaplayıcı',
+    seoP2: 'CarQuantix ile aracının yakıt tüketimini, km başı maliyeti ve aylık yakıt giderlerini kolayca hesaplayabilirsin. Benzin, dizel ve elektrikli araçları gerçek yakıt fiyatlarıyla karşılaştır.',
+    seoHeading3: 'Kilometre Başına Maliyet',
+    seoP3: '100 km başına tüketim ve güncel yakıt fiyatını girerek km, aylık ve yıllık maliyetini anında gör.',
+    seoHeading4: 'Elektrikli Araç Şarj Maliyeti',
+    seoP4: 'kWh/100km tüketim değerleri ile elektrikli araç şarj maliyetini hesapla. Güncel elektrik fiyatlarına göre detaylı analiz al.',
+    seoHeading5: 'Popüler Yakıt Maliyet Sayfaları',
+    seoHeading6: 'Popüler Performans & Azami Hız',
+    seoHeading7: 'Popüler Karşılaştırmalar',
   },
   de: {
     vehiclesTitle: 'Fahrzeuge',
@@ -1366,6 +1396,21 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Noch keine Favoriten.',
     addFavorite: 'Zu Favoriten hinzufügen',
     removeFavorite: 'Aus Favoriten entfernen',
+    navContact: 'Kontakt',
+    navAbout: 'Uber uns',
+    navPrivacy: 'Datenschutz',
+    emptyNote: 'Preise basieren auf durchschnittlichen Marktwerten in EUR.',
+    seoHeading1: 'Plattform fur Leistungs- & Kostenvergleich',
+    seoP1: 'CarQuantix vergleicht PS, Beschleunigung, Top Speed und Verbrauch uber mehrere Modelljahre. Finde schnell das beste Preis/Leistungs-Verhaltnis.',
+    seoHeading2: 'Kraftstoffkosten-Rechner',
+    seoP2: 'Mit CarQuantix kannst du Verbrauch, Kosten pro Kilometer und monatliche Ausgaben berechnen. Vergleiche Benzin, Diesel und Elektrofahrzeuge mit realen Preisen.',
+    seoHeading3: 'Kosten pro Kilometer',
+    seoP3: 'Gib den Verbrauch (pro 100 km) und den aktuellen Kraftstoffpreis ein, um Kosten pro km, monatlich und jahrlich zu sehen.',
+    seoHeading4: 'Ladekosten fur Elektroautos',
+    seoP4: 'Berechne Ladekosten mit kWh/100km Werten und erhalte eine Analyse basierend auf Strompreisen.',
+    seoHeading5: 'Beliebte Kraftstoffkosten-Seiten',
+    seoHeading6: 'Beliebte Performance & Top Speed',
+    seoHeading7: 'Beliebte Vergleiche',
   },
   fr: {
     vehiclesTitle: 'Véhicules',
@@ -1405,6 +1450,21 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Aucun favori pour le moment.',
     addFavorite: 'Ajouter aux favoris',
     removeFavorite: 'Retirer des favoris',
+    navContact: 'Contact',
+    navAbout: 'A propos',
+    navPrivacy: 'Politique de confidentialite',
+    emptyNote: 'Les prix sont des estimations moyennes du marche en EUR.',
+    seoHeading1: 'Plateforme de comparaison performance & cout',
+    seoP1: 'CarQuantix compare puissance, acceleration, vitesse max et consommation sur plusieurs millesimes. Trouve rapidement le meilleur rapport prix/performances.',
+    seoHeading2: 'Calculateur de cout carburant',
+    seoP2: 'Avec CarQuantix, calcule la consommation, le cout par km et les depenses mensuelles. Compare essence, diesel et electrique avec des prix reels.',
+    seoHeading3: 'Cout par kilometre',
+    seoP3: 'Saisis la consommation (pour 100 km) et le prix actuel du carburant pour voir les couts par km, mensuels et annuels.',
+    seoHeading4: 'Cout de recharge electrique',
+    seoP4: 'Calcule les couts de recharge en kWh/100km et obtiens une analyse basee sur le prix de l\'electricite.',
+    seoHeading5: 'Pages populaires de cout carburant',
+    seoHeading6: 'Performances & Vitesse max populaires',
+    seoHeading7: 'Comparaisons populaires',
   },
   es: {
     vehiclesTitle: 'Vehículos',
@@ -1444,6 +1504,21 @@ const TRANSLATIONS = {
     favoritesEmpty: 'Aún no hay favoritos.',
     addFavorite: 'Añadir a favoritos',
     removeFavorite: 'Quitar de favoritos',
+    navContact: 'Contacto',
+    navAbout: 'Acerca de',
+    navPrivacy: 'Politica de privacidad',
+    emptyNote: 'Los precios reflejan estimaciones promedio del mercado en EUR.',
+    seoHeading1: 'Plataforma de comparacion de rendimiento y costo',
+    seoP1: 'CarQuantix compara potencia, aceleracion, velocidad maxima y consumo entre varios años modelo. Descubre el mejor valor por HP al instante.',
+    seoHeading2: 'Calculadora de costo de combustible',
+    seoP2: 'Con CarQuantix puedes calcular consumo, costo por km y gastos mensuales. Compara gasolina, diesel y electricos con precios reales.',
+    seoHeading3: 'Costo por kilometro',
+    seoP3: 'Ingresa el consumo (por 100 km) y el precio actual del combustible para ver costos por km, mensuales y anuales.',
+    seoHeading4: 'Costo de carga electrica',
+    seoP4: 'Calcula costos de carga usando valores kWh/100km y obtiene un analisis basado en precios de electricidad.',
+    seoHeading5: 'Paginas populares de costo de combustible',
+    seoHeading6: 'Rendimiento y velocidad maxima populares',
+    seoHeading7: 'Comparaciones populares',
   },
 };
 
@@ -2166,10 +2241,11 @@ function attachAddButtons() {
 function renderSelected() {
   compareArea.innerHTML = '';
   if (selected.length === 0) {
+    const emptyNoteText = t('emptyNote');
     compareArea.innerHTML = `
       <div class="empty-block">
         <p class="empty">${t('empty')}</p>
-        <p class="empty-note">Prices reflect average market estimates in EUR.</p>
+        <p class="empty-note">${emptyNoteText === 'emptyNote' ? 'Prices reflect average market estimates in EUR.' : emptyNoteText}</p>
       </div>
     `;
     compTable.innerHTML = '';
@@ -2521,6 +2597,10 @@ function applyTranslations() {
   if (loginBtnEl) loginBtnEl.textContent = pack.login;
   const formTitleEl = document.getElementById('formTitle');
   if (formTitleEl) formTitleEl.textContent = pack.login;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (pack[key]) el.textContent = pack[key];
+  });
 }
 
 function setLanguage(code) {

@@ -60,9 +60,9 @@
         </section>
       </div>
       {% endif %}
-      <a href="/contact" id="topContactLink" target="_blank" rel="noopener noreferrer" class="top-link">Contact</a>
-      <a href="/about-us" id="topAboutLink" target="_blank" rel="noopener noreferrer" class="top-link">About Us</a>
-      <a href="/privacy-policy" id="topPrivacyLink" target="_blank" rel="noopener noreferrer" class="top-link">Privacy Policy</a>
+      <a href="/contact" id="topContactLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navContact">Contact</a>
+      <a href="/about-us" id="topAboutLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navAbout">About Us</a>
+      <a href="/privacy-policy" id="topPrivacyLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navPrivacy">Privacy Policy</a>
     </nav>
     <div class="auth-area">
       <div class="switch-row top-switch">
@@ -248,29 +248,29 @@
     </main>
   </div>
   <section class="seo-content" style="margin-top:60px; padding:40px 20px; max-width:1000px; margin-left:auto; margin-right:auto;">
-    <h2>Car Performance & Cost Comparison Platform</h2>
-    <p>CarQuantix allows users to compare horsepower, acceleration, top speed and fuel consumption across multiple model years. Discover the best value per HP cars and performance rankings instantly.</p>
+    <h2 data-i18n="seoHeading1">Car Performance & Cost Comparison Platform</h2>
+    <p data-i18n="seoP1">CarQuantix allows users to compare horsepower, acceleration, top speed and fuel consumption across multiple model years. Discover the best value per HP cars and performance rankings instantly.</p>
 
-    <h2>Car Fuel Cost Calculator</h2>
-    <p>
+    <h2 data-i18n="seoHeading2">Car Fuel Cost Calculator</h2>
+    <p data-i18n="seoP2">
     With CarQuantix, you can easily calculate your vehicle's fuel consumption,
     cost per kilometer, and monthly fuel expenses.
     Compare gasoline, diesel, and electric vehicles based on real fuel prices.
     </p>
 
-    <h3>Cost Per Kilometer Calculation</h3>
-    <p>
+    <h3 data-i18n="seoHeading3">Cost Per Kilometer Calculation</h3>
+    <p data-i18n="seoP3">
     Enter your vehicle’s fuel consumption (per 100 km) and current fuel price
     to instantly see your cost per kilometer, monthly, and yearly expenses.
     </p>
 
-    <h3>Electric Vehicle Charging Cost</h3>
-    <p>
+    <h3 data-i18n="seoHeading4">Electric Vehicle Charging Cost</h3>
+    <p data-i18n="seoP4">
     Calculate charging costs for electric vehicles using kWh/100km consumption values.
     Get detailed cost analysis based on current electricity prices.
     </p>
 
-    <h3>Popular Fuel Cost Pages</h3>
+    <h3 data-i18n="seoHeading5">Popular Fuel Cost Pages</h3>
     <div class="seo-links" aria-label="Popular fuel cost pages">
       <a href="/audi-sq8-2024-fuel-cost">Audi SQ8 fuel cost</a>
       <a href="/tesla-model-y-charging-cost">Tesla Model Y charging cost</a>
@@ -279,7 +279,7 @@
       <a href="/ford-mustang-mach-e-fuel-cost">Ford Mustang Mach-E fuel cost</a>
     </div>
 
-    <h3>Popular Performance &amp; Top Speed</h3>
+    <h3 data-i18n="seoHeading6">Popular Performance &amp; Top Speed</h3>
     <div class="seo-links" aria-label="Performance and top speed pages">
       <a href="/lamborghini-aventador-top-speed">Lamborghini Aventador Top Speed</a>
       <a href="/bmw-m5-cs-top-speed">BMW M5 CS Top Speed</a>
@@ -288,7 +288,7 @@
       <a href="/mercedes-amg-gt-top-speed">Mercedes AMG GT Top Speed</a>
     </div>
 
-    <h3>Popular Comparisons</h3>
+    <h3 data-i18n="seoHeading7">Popular Comparisons</h3>
     <div class="seo-links" aria-label="Popular comparisons">
       <a href="/audi-rs6-vs-bmw-m5-cs">Audi RS6 vs BMW M5 CS</a>
       <a href="/bugatti-chiron-vs-koenigsegg-agera-rs">Bugatti Chiron vs Koenigsegg Agera RS</a>
@@ -319,7 +319,7 @@
   <script>
     window.currentUser = {{ user | tojson | safe }};
   </script>
-  <script src="{{ url_for('static', filename='script.js', v='20260224a') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260224b') }}"></script>
 </body>
 </html>
 
