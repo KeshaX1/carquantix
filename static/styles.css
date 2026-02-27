@@ -530,6 +530,12 @@ h1, h2, h3, p, button {
   margin-top: 16px;
 }
 
+.seo-links--dense {
+  max-height: 240px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
 .seo-links a {
   text-decoration: none;
   color: var(--accent);
@@ -540,6 +546,11 @@ h1, h2, h3, p, button {
   font-weight: 600;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.seo-links--dense a {
+  padding: 6px 10px;
+  font-size: 0.82rem;
 }
 
 .seo-links a:hover {
@@ -1888,36 +1899,46 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .overlay { display: none; }
   .overlay.show { display: block; }
 
+  /* Mobile topbar layout: brand + icons row, links row */
   .topbar {
-    position: static;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    padding: 6px 10px;
+    position: sticky;
+    top: 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "brand auth"
+      "links links";
+    align-items: center;
+    gap: 8px 10px;
+    padding: 10px 12px;
   }
 
-  .brand-name { font-size: 20px; }
-  .brand-copy { display: none; }
-
+  .brand-block { grid-area: brand; }
+  .auth-area { grid-area: auth; justify-content: flex-end; gap: 10px; }
   .top-links {
+    grid-area: links;
     width: 100%;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 6px;
+    gap: 18px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
   }
+
+  .brand-name { font-size: 24px; }
+  .brand-copy { font-size: 12px; }
 
   .top-link {
-    font-size: 12px;
-    padding: 4px 6px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.06);
+    font-size: 13px;
+    padding: 0;
+    background: transparent;
   }
 
   .auth-area {
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
+    width: auto;
+    flex-wrap: nowrap;
   }
 
   .top-switch { font-size: 11px; }
@@ -1934,8 +1955,8 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
 
   .top-icon-btn,
   .avatar-btn {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
 
   /* Main header + compare button visible */
