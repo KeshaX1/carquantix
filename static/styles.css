@@ -1898,6 +1898,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
 
   .overlay { display: none; }
   .overlay.show { display: block; }
+  .header-hamburger { display: none !important; }
 
   /* Mobile topbar layout: brand + icons row, links row */
   .topbar {
@@ -1919,19 +1920,19 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .top-links {
     grid-area: links;
     width: 100%;
-    justify-content: center;
-    gap: 18px;
+    justify-content: space-between;
+    gap: 10px;
     flex-wrap: nowrap;
     overflow-x: auto;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
   }
 
-  .brand-name { font-size: 24px; }
+  .brand-name { font-size: 26px; }
   .brand-copy { font-size: 12px; }
 
   .top-link {
-    font-size: 13px;
+    font-size: 12px;
     padding: 0;
     background: transparent;
   }
@@ -1987,18 +1988,24 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .add-btn { padding: 6px 8px; font-size: 11px; min-height: 32px; }
 
   /* Selected compare cards smaller */
-  .compare-area { gap: 6px; }
+  .compare-area {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+  }
   .compare-card {
-    padding: 7px;
-    border-radius: 10px;
-    gap: 6px;
+    padding: 8px;
+    border-radius: 12px;
+    gap: 8px;
     width: 100%;
     max-width: 100%;
-    flex: 1 1 100%;
+    min-width: 0;
+    flex: initial;
   }
   .compare-card .thumb-frame {
     height: auto;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 3;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
