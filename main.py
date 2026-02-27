@@ -72,7 +72,28 @@ PENDING_RESET_PATH = Path(__file__).with_name("pending_resets.json")
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 STATIC_DIR = Path(__file__).with_name("static")
-SITEMAP_PATH = STATIC_DIR / "sitemap.xml"
+ICON_DIR = STATIC_DIR / "icon"
+BASE_URL = os.environ.get("BASE_URL", "https://carquantix.com").rstrip("/")
+if not re.match(r"^https?://", BASE_URL):
+    BASE_URL = f"https://{BASE_URL.lstrip('/')}"
+_BASE_URL_PARTS = urllib.parse.urlparse(BASE_URL)
+CANONICAL_SCHEME = (_BASE_URL_PARTS.scheme or "https").lower()
+CANONICAL_HOST = (_BASE_URL_PARTS.netloc or "carquantix.com").lower()
+CANONICAL_BASE_URL = f"{CANONICAL_SCHEME}://{CANONICAL_HOST}"
+
+FEATURED_CAR_SLUGS = [
+    "2022-bmw-m5",
+    "2024-bmw-xm",
+    "2024-audi-a3",
+    "2024-audi-a8",
+    "2025-mercedes-benz-maybach-s-klasse",
+    "2025-aston-martin-db",
+    "2025-dodge-charger",
+    "2018-dodge-demon",
+    "2004-ferrari-enzo-ferrari",
+    "2020-ford-mustang",
+]
+FEATURED_CAR_LIMIT = int(os.environ.get("FEATURED_CAR_LIMIT", "10"))
 
 SEO_SLUGS = {
     "audi-sq8-2024-fuel-cost",
@@ -92,6 +113,16 @@ SEO_SLUGS = {
     "mercedes-benz-sls-vs-aston-martin-lagonda",
     "pagani-huayra-vs-mclaren-720s",
 }
+
+
+def is_local_host(host):
+    host_only = (host or "").split(":")[0].lower()
+    return host_only in {"127.0.0.1", "localhost", "::1"}
+
+
+def get_forwarded_value(header_value, fallback):
+    value = header_value or fallback or ""
+    return value.split(",")[0].strip()
 
 
 def build_car_specs(car):
@@ -136,6 +167,54 @@ def build_car_meta_description(car):
     if summary:
         return f"{car.get('name', 'Car')} specs and details: {summary}."
     return f"{car.get('name', 'Car')} specs and details."
+
+
+def get_base_url():
+    scheme = get_forwarded_value(request.headers.get("X-Forwarded-Proto"), request.scheme or "https").lower()
+    host = get_forwarded_value(request.headers.get("X-Forwarded-Host"), request.host)
+    if is_local_host(host):
+        return f"{scheme}://{host}".rstrip("/")
+    return CANONICAL_BASE_URL
+
+
+def build_car_links(cars):
+    return [
+        {
+            "name": car.get("name") or car.get("id") or car.get("slug") or "Car",
+            "slug": car.get("slug"),
+        }
+        for car in cars
+        if car.get("slug")
+    ]
+
+
+def select_featured_car_links(car_links):
+    if FEATURED_CAR_SLUGS:
+        index = {car["slug"]: car for car in car_links}
+        featured = [index[slug] for slug in FEATURED_CAR_SLUGS if slug in index]
+        if featured:
+            return featured[:FEATURED_CAR_LIMIT]
+    return car_links[:FEATURED_CAR_LIMIT]
+
+
+@app.before_request
+def enforce_canonical_origin():
+    if request.method not in ("GET", "HEAD"):
+        return None
+    if request.path == "/health":
+        return None
+    scheme = get_forwarded_value(request.headers.get("X-Forwarded-Proto"), request.scheme or "https").lower()
+    host = get_forwarded_value(request.headers.get("X-Forwarded-Host"), request.host).lower()
+    host_only = host.split(":")[0]
+    if is_local_host(host_only):
+        return None
+    if scheme == CANONICAL_SCHEME and host_only == CANONICAL_HOST:
+        return None
+    target = f"{CANONICAL_BASE_URL}{request.path}"
+    query_string = request.query_string.decode("utf-8")
+    if query_string:
+        target = f"{target}?{query_string}"
+    return redirect(target, code=301)
 
 
 @app.after_request
@@ -360,22 +439,56 @@ def health():
 @app.route("/")
 def index():
     user = session.get("user")
-    return render_template("index.html", user=user)
+    cars, _ = load_cars()
+    car_links = build_car_links(cars)
+    featured_car_links = select_featured_car_links(car_links)
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "index.html",
+        user=user,
+        car_links=car_links,
+        featured_car_links=featured_car_links,
+        canonical_url=canonical_url,
+        meta_title="CarQuantix - Best Cars by HP, Acceleration, Top Speed and Cost",
+        meta_description="Compare car and motorcycle horsepower, acceleration and top speed. Find the best performance value with CarQuantix.",
+        robots_directive="index,follow",
+    )
 
 
 @app.route("/privacy-policy")
 def privacy_policy():
-    return render_template("privacy_policy.html")
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "privacy_policy.html",
+        canonical_url=canonical_url,
+        meta_title="CarQuantix Privacy Policy",
+        meta_description="Read how CarQuantix collects, uses and protects your data.",
+        robots_directive="index,follow",
+    )
 
 
 @app.route("/about-us")
 def about_us():
-    return render_template("about_us.html")
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "about_us.html",
+        canonical_url=canonical_url,
+        meta_title="About Us - CarQuantix",
+        meta_description="Learn what CarQuantix does and how we help users compare vehicles with clear performance data.",
+        robots_directive="index,follow",
+    )
 
 
 @app.route("/contact")
 def contact():
-    return render_template("contact.html")
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "contact.html",
+        canonical_url=canonical_url,
+        meta_title="Contact - CarQuantix",
+        meta_description="Contact the CarQuantix team for support, business or partnership requests.",
+        robots_directive="index,follow",
+    )
 
 
 @app.route("/cars/<slug>")
@@ -397,29 +510,40 @@ def car_detail(slug):
     specs = build_car_specs(car)
     meta_title = f"{car.get('name', 'Car')} | CarQuantix"
     meta_description = build_car_meta_description(car)
+    canonical_url = f"{get_base_url()}{request.path}"
+    page_schema = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": meta_title,
+        "description": meta_description,
+        "url": canonical_url,
+    }
     return render_template(
         "car_detail.html",
         car=car,
         specs=specs,
         meta_title=meta_title,
         meta_description=meta_description,
-        canonical_url=request.base_url,
+        canonical_url=canonical_url,
+        robots_directive="index,follow",
+        page_schema=page_schema,
     )
+
+@app.route("/car/<slug>")
+def car_detail_legacy(slug):
+    return redirect(f"/cars/{slug}", code=301)
 
 
 @app.route("/sitemap.xml")
 def sitemap():
-    if SITEMAP_PATH.exists():
-        return send_from_directory(STATIC_DIR, "sitemap.xml")
     _, slug_map = load_cars()
-    base_url = request.host_url.rstrip("/")
+    base_url = get_base_url()
     urls = [
         f"{base_url}/",
         f"{base_url}/about-us",
         f"{base_url}/contact",
         f"{base_url}/privacy-policy",
     ]
-    urls.extend(f"{base_url}/{slug}" for slug in sorted(SEO_SLUGS))
     urls.extend(f"{base_url}/cars/{slug}" for slug in sorted(slug_map.keys()))
     entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
     xml = (
@@ -429,6 +553,17 @@ def sitemap():
     )
     return app.response_class(xml, mimetype="application/xml")
 
+@app.route("/robots.txt")
+def robots():
+    base_url = CANONICAL_BASE_URL
+    body = "User-agent: *\nAllow: /\n"
+    body += f"Sitemap: {base_url}/sitemap.xml\n"
+    return app.response_class(body, mimetype="text/plain")
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(STATIC_DIR, "favicon.ico", mimetype="image/x-icon")
+
 
 @app.route("/<slug>")
 def seo_slug(slug):
@@ -437,7 +572,19 @@ def seo_slug(slug):
         if normalized != slug:
             return redirect(f"/{normalized}", code=301)
         user = session.get("user")
-        return render_template("index.html", user=user)
+        cars, _ = load_cars()
+        car_links = build_car_links(cars)
+        featured_car_links = select_featured_car_links(car_links)
+        return render_template(
+            "index.html",
+            user=user,
+            car_links=car_links,
+            featured_car_links=featured_car_links,
+            canonical_url=f"{get_base_url()}/",
+            meta_title="CarQuantix - Compare Cars and Motorcycles",
+            meta_description="Compare horsepower, acceleration and top speed with CarQuantix.",
+            robots_directive="noindex,follow",
+        )
     return "Not Found", 404
 
 @app.route("/login/google")
