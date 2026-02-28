@@ -26,11 +26,9 @@ oauth = OAuth(app)
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 
 # GOOGLE OAUTH CONFIG
-# Fail fast if env variables are missing so we don't hit Google with empty client_id
+# Keep the app bootable even if Google OAuth env vars are missing
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
-if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
-    raise RuntimeError("GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET are not set in environment.")
 
 FACEBOOK_CLIENT_ID = os.environ.get("FACEBOOK_CLIENT_ID", "")
 FACEBOOK_CLIENT_SECRET = os.environ.get("FACEBOOK_CLIENT_SECRET", "")
@@ -41,19 +39,21 @@ if FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET:
     print("[init] Facebook client_id detected")
 else:
     print("[init] Facebook client_id/secret not set; Facebook login disabled")
-
-oauth.register(
-    name='google',
-    client_id=GOOGLE_CLIENT_ID,
-    client_secret=GOOGLE_CLIENT_SECRET,
-    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-    access_token_url="https://oauth2.googleapis.com/token",
-    authorize_url="https://accounts.google.com/o/oauth2/v2/auth",
-    api_base_url="https://www.googleapis.com/oauth2/v2/",
-    client_kwargs={
-        "scope": "openid email profile"
-    }
-)
+if GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET:
+    oauth.register(
+        name='google',
+        client_id=GOOGLE_CLIENT_ID,
+        client_secret=GOOGLE_CLIENT_SECRET,
+        server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+        access_token_url="https://oauth2.googleapis.com/token",
+        authorize_url="https://accounts.google.com/o/oauth2/v2/auth",
+        api_base_url="https://www.googleapis.com/oauth2/v2/",
+        client_kwargs={
+            "scope": "openid email profile"
+        }
+    )
+else:
+    print("[init] Google client_id/secret not set; Google login disabled")
 
 if FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET:
     oauth.register(
@@ -120,6 +120,15 @@ def is_local_host(host):
     return host_only in {"127.0.0.1", "localhost", "::1"}
 
 
+def is_platform_internal_host(host):
+    host_only = (host or "").split(":")[0].lower()
+    return (
+        host_only.endswith(".onrender.com")
+        or host_only.endswith(".internal")
+        or "." not in host_only
+    )
+
+
 def get_forwarded_value(header_value, fallback):
     value = header_value or fallback or ""
     return value.split(",")[0].strip()
@@ -172,7 +181,7 @@ def build_car_meta_description(car):
 def get_base_url():
     scheme = get_forwarded_value(request.headers.get("X-Forwarded-Proto"), request.scheme or "https").lower()
     host = get_forwarded_value(request.headers.get("X-Forwarded-Host"), request.host)
-    if is_local_host(host):
+    if is_local_host(host) or is_platform_internal_host(host):
         return f"{scheme}://{host}".rstrip("/")
     return CANONICAL_BASE_URL
 
@@ -206,7 +215,7 @@ def enforce_canonical_origin():
     scheme = get_forwarded_value(request.headers.get("X-Forwarded-Proto"), request.scheme or "https").lower()
     host = get_forwarded_value(request.headers.get("X-Forwarded-Host"), request.host).lower()
     host_only = host.split(":")[0]
-    if is_local_host(host_only):
+    if is_local_host(host_only) or is_platform_internal_host(host_only):
         return None
     if scheme == CANONICAL_SCHEME and host_only == CANONICAL_HOST:
         return None
@@ -490,6 +499,41 @@ def contact():
         robots_directive="index,follow",
     )
 
+@app.route("/pricing")
+def pricing():
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "pricing.html",
+        canonical_url=canonical_url,
+        meta_title="Pricing - CarQuantix",
+        meta_description="CarQuantix pricing and plan information.",
+        robots_directive="index,follow",
+    )
+
+
+@app.route("/terms")
+def terms():
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "terms.html",
+        canonical_url=canonical_url,
+        meta_title="Terms and Conditions - CarQuantix",
+        meta_description="Read the terms and conditions for using CarQuantix.",
+        robots_directive="index,follow",
+    )
+
+
+@app.route("/refund-policy")
+def refund_policy():
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "refund_policy.html",
+        canonical_url=canonical_url,
+        meta_title="Refund Policy - CarQuantix",
+        meta_description="Review the CarQuantix refund policy for subscriptions and digital services.",
+        robots_directive="index,follow",
+    )
+
 
 @app.route("/cars/<slug>")
 def car_detail(slug):
@@ -542,6 +586,9 @@ def sitemap():
         f"{base_url}/",
         f"{base_url}/about-us",
         f"{base_url}/contact",
+        f"{base_url}/pricing",
+        f"{base_url}/terms",
+        f"{base_url}/refund-policy",
         f"{base_url}/privacy-policy",
     ]
     urls.extend(f"{base_url}/cars/{slug}" for slug in sorted(slug_map.keys()))
@@ -589,12 +636,16 @@ def seo_slug(slug):
 
 @app.route("/login/google")
 def login_google():
+    if 'google' not in oauth._registry:
+        return jsonify({"ok": False, "message": "Google login not configured."}), 500
     print(f"[auth] using client_id={GOOGLE_CLIENT_ID}")
     redirect_uri = url_for("authorize_google", _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
 
 @app.route("/auth/callback/google")
 def authorize_google():
+    if 'google' not in oauth._registry:
+        return jsonify({"ok": False, "message": "Google login not configured."}), 500
     token = oauth.google.authorize_access_token()
     user = oauth.google.get("userinfo").json()
     session["user"] = session_user_payload(user)
