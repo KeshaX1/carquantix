@@ -319,6 +319,12 @@ body.dark .brand-divider::after{
   color:var(--card-accent);
   font-size:0.95rem;
 }
+body:not(.dark) .compare-card .meta h4,
+body:not(.dark) .compare-card .meta .spec-line,
+body:not(.dark) .compare-card .meta .stat-line,
+body:not(.dark) .compare-card .meta-line{
+  color:#1b2430;
+}
 .card-actions{
   display:flex;
   align-items:center;
