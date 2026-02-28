@@ -25,42 +25,42 @@
 <body class="about-page" data-page="terms">
   <main class="about-wrap">
     <section class="about-card">
-      <h1>Terms and Conditions</h1>
-      <p>By accessing or using CarQuantix, you agree to these Terms and Conditions. If you do not agree, please do not use the service.</p>
+      <h1 data-i18n="terms.title">Terms and Conditions</h1>
+      <p data-i18n="terms.p1">By accessing or using CarQuantix, you agree to these Terms and Conditions. If you do not agree, please do not use the service.</p>
 
-      <h2>Eligibility</h2>
-      <p>You must be at least 13 years old to use CarQuantix. By using the site, you represent that you meet this requirement.</p>
+      <h2 data-i18n="terms.eligibilityTitle">Eligibility</h2>
+      <p data-i18n="terms.eligibilityP">You must be at least 13 years old to use CarQuantix. By using the site, you represent that you meet this requirement.</p>
 
-      <h2>Accounts</h2>
-      <p>You are responsible for keeping your account credentials secure and for all activity under your account.</p>
+      <h2 data-i18n="terms.accountsTitle">Accounts</h2>
+      <p data-i18n="terms.accountsP">You are responsible for keeping your account credentials secure and for all activity under your account.</p>
 
-      <h2>Acceptable Use</h2>
+      <h2 data-i18n="terms.useTitle">Acceptable Use</h2>
       <ul>
-        <li>Do not misuse, disrupt, or attempt to reverse‑engineer the platform.</li>
-        <li>Do not use automated scraping or bulk data extraction without permission.</li>
-        <li>Do not upload or submit unlawful or harmful content.</li>
+        <li data-i18n="terms.useLi1">Do not misuse, disrupt, or attempt to reverse-engineer the platform.</li>
+        <li data-i18n="terms.useLi2">Do not use automated scraping or bulk data extraction without permission.</li>
+        <li data-i18n="terms.useLi3">Do not upload or submit unlawful or harmful content.</li>
       </ul>
 
-      <h2>Payments</h2>
-      <p>Paid features (if offered) are processed by our payment provider. Prices and billing terms are shown at checkout.</p>
+      <h2 data-i18n="terms.paymentsTitle">Payments</h2>
+      <p data-i18n="terms.paymentsP">Paid features (if offered) are processed by our payment provider. Prices and billing terms are shown at checkout.</p>
 
-      <h2>Refunds</h2>
-      <p>Refund requests are handled under our <a href="/refund-policy">Refund Policy</a>.</p>
+      <h2 data-i18n="terms.refundsTitle">Refunds</h2>
+      <p><span data-i18n="terms.refundsP1">Refund requests are handled under our</span> <a href="/refund-policy" data-i18n="terms.refundsLink">Refund Policy</a><span data-i18n="terms.refundsP2">.</span></p>
 
-      <h2>Intellectual Property</h2>
-      <p>All content, trademarks, and software on CarQuantix are owned by CarQuantix or its licensors.</p>
+      <h2 data-i18n="terms.ipTitle">Intellectual Property</h2>
+      <p data-i18n="terms.ipP">All content, trademarks, and software on CarQuantix are owned by CarQuantix or its licensors.</p>
 
-      <h2>Disclaimer</h2>
-      <p>CarQuantix provides data and estimates for informational purposes only. We do not guarantee accuracy, completeness, or suitability for any purpose.</p>
+      <h2 data-i18n="terms.disclaimerTitle">Disclaimer</h2>
+      <p data-i18n="terms.disclaimerP">CarQuantix provides data and estimates for informational purposes only. We do not guarantee accuracy, completeness, or suitability for any purpose.</p>
 
-      <h2>Limitation of Liability</h2>
-      <p>To the fullest extent permitted by law, CarQuantix is not liable for indirect or consequential damages arising from your use of the service.</p>
+      <h2 data-i18n="terms.liabilityTitle">Limitation of Liability</h2>
+      <p data-i18n="terms.liabilityP">To the fullest extent permitted by law, CarQuantix is not liable for indirect or consequential damages arising from your use of the service.</p>
 
-      <h2>Changes</h2>
-      <p>We may update these terms from time to time. Continued use of the service constitutes acceptance of the updated terms.</p>
+      <h2 data-i18n="terms.changesTitle">Changes</h2>
+      <p data-i18n="terms.changesP">We may update these terms from time to time. Continued use of the service constitutes acceptance of the updated terms.</p>
 
-      <h2>Contact</h2>
-      <p>Questions? Contact us at <a href="mailto:carquantix@gmail.com">carquantix@gmail.com</a>.</p>
+      <h2 data-i18n="terms.contactTitle">Contact</h2>
+      <p><span data-i18n="terms.contactP">Questions? Contact us at</span> <a href="mailto:carquantix@gmail.com">carquantix@gmail.com</a>.</p>
     </section>
   </main>
   <footer class="site-footer">
@@ -70,14 +70,15 @@
         <span class="footer-copy">© 2026 CarQuantix. All rights reserved.</span>
       </div>
       <nav class="footer-links" aria-label="Footer links">
-        <a href="/about-us">About Us</a>
-        <a href="/contact">Contact</a>
-        <a href="/pricing">Pricing</a>
-        <a href="/terms">Terms</a>
-        <a href="/refund-policy">Refund Policy</a>
-        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/about-us" data-i18n="navAbout">About Us</a>
+        <a href="/contact" data-i18n="navContact">Contact</a>
+        <a href="/pricing" data-i18n="navPricing">Pricing</a>
+        <a href="/terms" data-i18n="navTerms">Terms</a>
+        <a href="/refund-policy" data-i18n="navRefund">Refund Policy</a>
+        <a href="/privacy-policy" data-i18n="navPrivacy">Privacy Policy</a>
       </nav>
     </div>
   </footer>
+  <script src="{{ url_for('static', filename='page_i18n.js', v='20260228m1') }}"></script>
 </body>
 </html>
