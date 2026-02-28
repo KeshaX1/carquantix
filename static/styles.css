@@ -1898,7 +1898,11 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
 
   .overlay { display: none; }
   .overlay.show { display: block; }
-  .header-hamburger { display: none !important; }
+  .header-hamburger {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
 
   /* Mobile topbar layout: brand + icons row, links row */
   .topbar {
