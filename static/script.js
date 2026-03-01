@@ -678,7 +678,7 @@ const VEHICLES = [
 
   { id: 'F1',           name: '2000 McLaren F1', power:627, acc:3.5, topSpeed:386, engine: '6.1 V12', price: '$17.000.000', img: '/static/images/mcLarenF1.jpg', rearImg: '/static/rearimg/mcLarenF1-rear.png' , consumption: { value:16.0, unit: 'L/100km' }},
 
-  { id: 'GT',           name: '2021 McLaren GT', power:620, acc:3.1, topSpeed:326, engine: '4.0 V8', price: '$154.740', img: '/static/images/mcLarenGT.png', rearImg: '/static/rearimg/mcLarenGT-rear.png' , consumption: { value:12.0, unit: 'L/100km' }},
+  { id: 'GT 2',         name: '2021 McLaren GT', power:620, acc:3.1, topSpeed:326, engine: '4.0 V8', price: '$154.740', img: '/static/images/mcLarenGT.png', rearImg: '/static/rearimg/mcLarenGT-rear.png' , consumption: { value:12.0, unit: 'L/100km' }},
 
   { id: 'GTS',          name: '2025 McLaren GTS', power:634, acc:3.2, topSpeed:326, engine: '4.0 V8', price: '$270.000', img: '/static/images/mcLarenGTS.png', rearImg: '/static/rearimg/mcLarenGTS-rear.png' , consumption: { value:13.0, unit: 'L/100km' }},
 
