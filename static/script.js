@@ -1272,6 +1272,8 @@ const TRANSLATIONS = {
     ratingLabel: 'Rating:',
     submit: 'Submit',
     login: 'Log In',
+    darkMode: 'Dark Mode',
+    loginToComment: 'Please log in to comment.',
     costTitle: 'Cost of Ownership',
     consumptionLabel: 'Consumption',
     distanceLabel: 'Distance (km)',
@@ -1332,6 +1334,8 @@ const TRANSLATIONS = {
     ratingLabel: 'Puan:',
     submit: 'Gönder',
     login: 'Giriş',
+    darkMode: 'Karanlık Mod',
+    loginToComment: 'Yorum yapmak için giriş yapın.',
     costTitle: 'Maliyet Hesaplayıcı',
     consumptionLabel: 'Tüketim',
     distanceLabel: 'Mesafe (km)',
@@ -1389,6 +1393,8 @@ const TRANSLATIONS = {
     ratingLabel: 'Bewertung:',
     submit: 'Senden',
     login: 'Anmelden',
+    darkMode: 'Dunkelmodus',
+    loginToComment: 'Bitte anmelden, um zu kommentieren.',
     costTitle: 'Betriebskosten',
     consumptionLabel: 'Verbrauch',
     distanceLabel: 'Distanz (km)',
@@ -1446,6 +1452,8 @@ const TRANSLATIONS = {
     ratingLabel: 'Note :',
     submit: 'Envoyer',
     login: 'Connexion',
+    darkMode: 'Mode sombre',
+    loginToComment: 'Veuillez vous connecter pour commenter.',
     costTitle: 'Coût d’utilisation',
     consumptionLabel: 'Consommation',
     distanceLabel: 'Distance (km)',
@@ -1503,6 +1511,8 @@ const TRANSLATIONS = {
     ratingLabel: 'Puntuación:',
     submit: 'Enviar',
     login: 'Iniciar sesión',
+    darkMode: 'Modo oscuro',
+    loginToComment: 'Inicia sesión para comentar.',
     costTitle: 'Costo de uso',
     consumptionLabel: 'Consumo',
     distanceLabel: 'Distancia (km)',
@@ -2819,7 +2829,10 @@ setLanguage(currentLang);
 
   if (!currentUser) {
     form.style.display = "none";
-    container.insertAdjacentHTML("beforebegin", `<p>Please log in to comment.</p>`);
+    container.insertAdjacentHTML(
+      "beforebegin",
+      `<p id="loginToCommentNote" data-i18n="loginToComment">${t('loginToComment')}</p>`
+    );
   } else {
     // prefill and lock name from session user
     if (usernameInput) {
