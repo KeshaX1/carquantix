@@ -815,10 +815,20 @@ def create_billing_checkout():
         body = {}
 
     if response.status_code >= 400:
+        detail = ""
+        if isinstance(body, dict):
+            if isinstance(body.get("error"), dict):
+                detail = str(body["error"].get("detail") or body["error"].get("message") or "").strip()
+            if not detail and isinstance(body.get("errors"), list) and body["errors"]:
+                first_error = body["errors"][0] if isinstance(body["errors"][0], dict) else {}
+                detail = str(first_error.get("detail") or first_error.get("message") or "").strip()
+        message = "Failed to create checkout transaction."
+        if detail:
+            message = f"{message} {detail}"
         return jsonify(
             {
                 "ok": False,
-                "message": "Failed to create checkout transaction.",
+                "message": message,
                 "details": body,
             }
         ), 502

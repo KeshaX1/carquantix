@@ -2218,7 +2218,24 @@ async function startFuelPremiumCheckout() {
       data = {};
     }
     if (!res.ok || !data.ok || !data.checkout_url) {
-      throw new Error(data.message || t('premiumCheckoutError'));
+      const backendDetail = (() => {
+        if (!data || typeof data !== 'object') return '';
+        if (data.message) return String(data.message);
+        const details = data.details;
+        if (details && typeof details === 'object') {
+          if (details.error && typeof details.error === 'object') {
+            return String(details.error.detail || details.error.message || '').trim();
+          }
+          if (Array.isArray(details.errors) && details.errors.length) {
+            const first = details.errors[0];
+            if (first && typeof first === 'object') {
+              return String(first.detail || first.message || '').trim();
+            }
+          }
+        }
+        return '';
+      })();
+      throw new Error(backendDetail || t('premiumCheckoutError'));
     }
     window.location.href = data.checkout_url;
   } catch (err) {
