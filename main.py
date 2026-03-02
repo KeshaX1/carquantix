@@ -6,10 +6,13 @@ import os
 import re
 import json
 import hashlib
+import hmac
 import urllib.parse
 import time
 import secrets
 import smtplib
+import requests
+from datetime import datetime
 from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
 from car_data import load_cars
@@ -80,6 +83,12 @@ _BASE_URL_PARTS = urllib.parse.urlparse(BASE_URL)
 CANONICAL_SCHEME = (_BASE_URL_PARTS.scheme or "https").lower()
 CANONICAL_HOST = (_BASE_URL_PARTS.netloc or "carquantix.com").lower()
 CANONICAL_BASE_URL = f"{CANONICAL_SCHEME}://{CANONICAL_HOST}"
+PADDLE_ENV = os.environ.get("PADDLE_ENV", "sandbox").strip().lower()
+PADDLE_API_KEY = os.environ.get("PADDLE_API_KEY", "").strip()
+PADDLE_PRICE_ID = os.environ.get("PADDLE_PRICE_ID", "").strip()
+PADDLE_WEBHOOK_SECRET = os.environ.get("PADDLE_WEBHOOK_SECRET", "").strip()
+PADDLE_API_BASE = "https://api.paddle.com" if PADDLE_ENV == "production" else "https://sandbox-api.paddle.com"
+PREMIUM_ACTIVE_STATUSES = {"active", "trialing"}
 
 FEATURED_CAR_SLUGS = [
     "2022-bmw-m5",
@@ -224,6 +233,11 @@ def enforce_canonical_origin():
     if query_string:
         target = f"{target}?{query_string}"
     return redirect(target, code=301)
+
+
+@app.before_request
+def sync_session_user_state():
+    refresh_session_user_from_store()
 
 
 @app.after_request
@@ -410,6 +424,8 @@ def prune_expired_reset_pending():
 
 
 def find_user(email):
+    if not email:
+        return None
     email_l = email.lower()
     for u in load_users():
         if u.get("email", "").lower() == email_l:
@@ -432,10 +448,221 @@ def letter_avatar(initial="U"):
     return "data:image/svg+xml;utf8," + urllib.parse.quote(svg)
 
 
+def find_user_index(users, email):
+    target = (email or "").strip().lower()
+    if not target:
+        return None
+    for idx, u in enumerate(users):
+        if (u.get("email") or "").strip().lower() == target:
+            return idx
+    return None
+
+
+def find_user_index_by_billing_ids(users, customer_id=None, subscription_id=None):
+    customer_id = (customer_id or "").strip()
+    subscription_id = (subscription_id or "").strip()
+    if not customer_id and not subscription_id:
+        return None
+    for idx, u in enumerate(users):
+        if customer_id and u.get("paddle_customer_id") == customer_id:
+            return idx
+        if subscription_id and u.get("paddle_subscription_id") == subscription_id:
+            return idx
+    return None
+
+
+def upsert_user(email, patch):
+    email = (email or "").strip().lower()
+    if not email:
+        return None
+    updates = patch or {}
+    users = load_users()
+    idx = find_user_index(users, email)
+    if idx is None:
+        record = {
+            "name": updates.get("name") or email,
+            "email": email,
+            "subscription_status": updates.get("subscription_status") or "free",
+        }
+        for key, value in updates.items():
+            if value is not None:
+                record[key] = value
+        users.append(record)
+        save_users(users)
+        return record
+
+    user = users[idx]
+    changed = False
+    for key, value in updates.items():
+        if value is None:
+            continue
+        if user.get(key) != value:
+            user[key] = value
+            changed = True
+    if changed:
+        save_users(users)
+    return user
+
+
+def parse_unix_timestamp(value):
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def parse_iso_timestamp(value):
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    if raw.endswith("Z"):
+        raw = raw[:-1] + "+00:00"
+    try:
+        return datetime.fromisoformat(raw).timestamp()
+    except ValueError:
+        return None
+
+
+def normalize_subscription_status(value):
+    status = str(value or "free").strip().lower()
+    if not status:
+        return "free"
+    return status
+
+
+def is_premium_user(user_dict):
+    status = normalize_subscription_status(user_dict.get("subscription_status"))
+    if status not in PREMIUM_ACTIVE_STATUSES:
+        return False
+    expires_at = user_dict.get("subscription_expires_at")
+    if not expires_at:
+        return True
+    expiry_ts = parse_unix_timestamp(expires_at)
+    if expiry_ts is None:
+        expiry_ts = parse_iso_timestamp(expires_at)
+    if expiry_ts is None:
+        return True
+    return expiry_ts > time.time()
+
+
 def session_user_payload(user_dict):
     name = user_dict.get("name") or user_dict.get("email")
     picture = user_dict.get("picture") or letter_avatar(name[:1] if name else "U")
-    return {"name": name, "email": user_dict.get("email"), "picture": picture}
+    status = normalize_subscription_status(user_dict.get("subscription_status"))
+    expires_at = user_dict.get("subscription_expires_at")
+    payload = {
+        "name": name,
+        "email": user_dict.get("email"),
+        "picture": picture,
+        "subscription_status": status,
+        "subscription_expires_at": expires_at,
+    }
+    payload["is_premium"] = is_premium_user(payload)
+    return payload
+
+
+def parse_paddle_signature(header_value):
+    parts = {}
+    for chunk in str(header_value or "").split(";"):
+        if "=" not in chunk:
+            continue
+        key, value = chunk.split("=", 1)
+        parts[key.strip()] = value.strip()
+    return parts.get("ts"), parts.get("h1")
+
+
+def verify_paddle_webhook_signature(raw_body, header_value, secret):
+    timestamp, digest = parse_paddle_signature(header_value)
+    if not timestamp or not digest or not secret:
+        return False
+    signed_payload = timestamp.encode("utf-8") + b":" + (raw_body or b"")
+    expected = hmac.new(secret.encode("utf-8"), signed_payload, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, digest)
+
+
+def extract_billing_identifiers(event_data):
+    data = event_data if isinstance(event_data, dict) else {}
+    custom_data = data.get("custom_data") if isinstance(data.get("custom_data"), dict) else {}
+    customer = data.get("customer") if isinstance(data.get("customer"), dict) else {}
+    billing_period = data.get("current_billing_period") if isinstance(data.get("current_billing_period"), dict) else {}
+    scheduled_change = data.get("scheduled_change") if isinstance(data.get("scheduled_change"), dict) else {}
+    email = (custom_data.get("user_email") or custom_data.get("email") or customer.get("email") or "").strip().lower()
+    customer_id = (
+        data.get("customer_id")
+        or custom_data.get("customer_id")
+        or customer.get("id")
+        or ""
+    )
+    subscription_id = str(data.get("subscription_id") or "").strip()
+    data_id = str(data.get("id") or "").strip()
+    if not subscription_id and data_id.startswith("sub_"):
+        subscription_id = data_id
+    expires_at = (
+        billing_period.get("ends_at")
+        or data.get("next_billed_at")
+        or scheduled_change.get("effective_at")
+        or None
+    )
+    return {
+        "email": email,
+        "customer_id": str(customer_id or "").strip(),
+        "subscription_id": subscription_id,
+        "expires_at": expires_at,
+    }
+
+
+def resolve_subscription_status(event_type, event_data):
+    normalized_type = str(event_type or "").strip().lower()
+    raw_status = (event_data or {}).get("status")
+    status_from_data = normalize_subscription_status(raw_status) if raw_status is not None else None
+    if normalized_type == "transaction.completed":
+        return "active"
+    if normalized_type in {"transaction.payment_failed", "transaction.updated"} and status_from_data in {"past_due", "canceled"}:
+        return status_from_data
+    if normalized_type == "subscription.created":
+        return "active"
+    if normalized_type == "subscription.resumed":
+        return "active"
+    if normalized_type in {"subscription.canceled", "subscription.cancelled"}:
+        return "canceled"
+    if normalized_type == "subscription.paused":
+        return "paused"
+    if normalized_type == "subscription.past_due":
+        return "past_due"
+    if normalized_type == "subscription.trialing":
+        return "trialing"
+    if normalized_type == "subscription.updated":
+        return status_from_data
+    return status_from_data
+
+
+def refresh_session_user_from_store():
+    current = session.get("user")
+    if not isinstance(current, dict):
+        return
+    email = (current.get("email") or "").strip().lower()
+    if not email:
+        normalized = session_user_payload(current)
+        if normalized != current:
+            session["user"] = normalized
+        return
+    persisted = find_user(email)
+    base = dict(current)
+    if persisted:
+        base.update(
+            {
+                "name": persisted.get("name") or current.get("name"),
+                "email": persisted.get("email") or email,
+                "picture": current.get("picture") or persisted.get("picture"),
+                "subscription_status": persisted.get("subscription_status", current.get("subscription_status")),
+                "subscription_expires_at": persisted.get("subscription_expires_at", current.get("subscription_expires_at")),
+            }
+        )
+    normalized = session_user_payload(base)
+    if normalized != current:
+        session["user"] = normalized
 
 @app.route("/login-media/<path:filename>")
 def login_media(filename):
@@ -533,6 +760,136 @@ def refund_policy():
         meta_description="Review the CarQuantix refund policy for subscriptions and digital services.",
         robots_directive="index,follow",
     )
+
+
+@app.route("/api/billing/checkout", methods=["POST"])
+def create_billing_checkout():
+    user = session.get("user") or {}
+    email = (user.get("email") or "").strip().lower()
+    if not email:
+        return jsonify({"ok": False, "message": "Login required."}), 401
+    if not PADDLE_API_KEY or not PADDLE_PRICE_ID:
+        return jsonify({"ok": False, "message": "Billing is not configured on the server."}), 500
+
+    request_data = request.get_json(silent=True) or {}
+    success_url = (request_data.get("success_url") or "").strip()
+    if not success_url:
+        success_url = f"{get_base_url()}/?billing=success"
+
+    customer = find_user(email)
+    payload = {
+        "items": [{"price_id": PADDLE_PRICE_ID, "quantity": 1}],
+        "collection_mode": "automatic",
+        "custom_data": {
+            "user_email": email,
+            "feature": "cost_of_ownership",
+        },
+        "checkout": {
+            "display_mode": "overlay",
+            "success_url": success_url,
+        },
+    }
+    customer_id = (customer or {}).get("paddle_customer_id")
+    if customer_id:
+        payload["customer_id"] = customer_id
+    else:
+        payload["customer"] = {"email": email}
+
+    try:
+        response = requests.post(
+            f"{PADDLE_API_BASE}/transactions",
+            headers={
+                "Authorization": f"Bearer {PADDLE_API_KEY}",
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+            json=payload,
+            timeout=20,
+        )
+    except requests.RequestException as exc:
+        return jsonify({"ok": False, "message": f"Checkout request failed: {exc}"}), 502
+
+    try:
+        body = response.json()
+    except ValueError:
+        body = {}
+
+    if response.status_code >= 400:
+        return jsonify(
+            {
+                "ok": False,
+                "message": "Failed to create checkout transaction.",
+                "details": body,
+            }
+        ), 502
+
+    transaction = body.get("data") if isinstance(body, dict) else {}
+    checkout = transaction.get("checkout") if isinstance(transaction, dict) else {}
+    checkout_url = checkout.get("url")
+    if not checkout_url:
+        return jsonify({"ok": False, "message": "Checkout URL was not returned by Paddle."}), 502
+
+    transaction_id = transaction.get("id")
+    if transaction_id:
+        upsert_user(email, {"paddle_last_transaction_id": transaction_id})
+    return jsonify({"ok": True, "checkout_url": checkout_url, "transaction_id": transaction_id})
+
+
+@app.route("/api/paddle/webhook", methods=["POST"])
+def paddle_webhook():
+    raw_body = request.get_data(cache=True, as_text=False) or b""
+    if not verify_paddle_webhook_signature(
+        raw_body,
+        request.headers.get("Paddle-Signature", ""),
+        PADDLE_WEBHOOK_SECRET,
+    ):
+        return jsonify({"ok": False, "message": "Invalid webhook signature."}), 400
+
+    event = request.get_json(silent=True) or {}
+    event_type = str(event.get("event_type") or "").strip().lower()
+    event_data = event.get("data") if isinstance(event.get("data"), dict) else {}
+    ids = extract_billing_identifiers(event_data)
+    status = resolve_subscription_status(event_type, event_data)
+
+    users = load_users()
+    idx = find_user_index(users, ids["email"])
+    if idx is None:
+        idx = find_user_index_by_billing_ids(users, ids["customer_id"], ids["subscription_id"])
+
+    now_ts = int(time.time())
+    patch = {
+        "subscription_expires_at": ids["expires_at"],
+        "subscription_updated_at": now_ts,
+        "paddle_customer_id": ids["customer_id"] or None,
+        "paddle_subscription_id": ids["subscription_id"] or None,
+        "paddle_last_event_type": event_type or None,
+    }
+    if status is not None:
+        patch["subscription_status"] = status
+    if event_data.get("id") and str(event_data.get("id")).startswith("txn_"):
+        patch["paddle_last_transaction_id"] = event_data.get("id")
+
+    if idx is None:
+        if not ids["email"]:
+            return jsonify({"ok": True, "message": "No matching user for webhook payload."}), 200
+        new_user = {"name": ids["email"], "email": ids["email"], "subscription_status": "free"}
+        for key, value in patch.items():
+            if value is not None:
+                new_user[key] = value
+        users.append(new_user)
+        save_users(users)
+        return jsonify({"ok": True, "updated": ids["email"]}), 200
+
+    changed = False
+    for key, value in patch.items():
+        if value is None:
+            continue
+        if users[idx].get(key) != value:
+            users[idx][key] = value
+            changed = True
+    if changed:
+        save_users(users)
+    return jsonify({"ok": True, "updated": users[idx].get("email")}), 200
 
 
 @app.route("/cars/<slug>")
@@ -648,7 +1005,21 @@ def authorize_google():
         return jsonify({"ok": False, "message": "Google login not configured."}), 500
     token = oauth.google.authorize_access_token()
     user = oauth.google.get("userinfo").json()
-    session["user"] = session_user_payload(user)
+    email = (user.get("email") or "").strip().lower()
+    if email:
+        existing_user = find_user(email)
+        persisted = upsert_user(
+            email,
+            {
+                "name": user.get("name") or email,
+                "picture": user.get("picture"),
+                "provider": "google",
+                "subscription_status": (existing_user or {}).get("subscription_status", "free"),
+            },
+        ) or user
+        session["user"] = session_user_payload(persisted)
+    else:
+        session["user"] = session_user_payload(user)
     return redirect("/")
 
 @app.route("/login/facebook")
@@ -677,7 +1048,18 @@ def authorize_facebook():
         "picture": picture,
         "provider": "facebook",
     }
-    session["user"] = session_user_payload(payload)
+    email = (payload.get("email") or "").strip().lower()
+    existing_user = find_user(email)
+    persisted = upsert_user(
+        email,
+        {
+            "name": payload.get("name") or email,
+            "picture": payload.get("picture"),
+            "provider": "facebook",
+            "subscription_status": (existing_user or {}).get("subscription_status", "free"),
+        },
+    ) if email else None
+    session["user"] = session_user_payload(persisted or payload)
     return redirect("/")
 
 @app.route("/auth/login", methods=["POST"])
@@ -760,6 +1142,7 @@ def signup_verify():
         "name": entry.get("name") or email,
         "email": email,
         "password_hash": entry.get("password_hash"),
+        "subscription_status": "free",
     }
     users = load_users()
     users.append(user_record)

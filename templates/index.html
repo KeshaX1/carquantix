@@ -51,7 +51,7 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260228m3') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260302-premium1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -211,6 +211,7 @@
         <div class="fuel-card">
           <div class="fuel-header">
             <h2 id="fuelCalcTitle">Cost of Ownership</h2>
+            <span id="fuelPremiumBadge" class="premium-badge">Premium</span>
           </div>
           <div class="fuel-grid">
             <label class="fuel-field" for="fuelCalcDistance">
@@ -236,6 +237,10 @@
           <div class="fuel-result" aria-live="polite">
             <span id="fuelCalcResultLabel">Estimated cost</span>
             <strong id="fuelCalcResult">-</strong>
+          </div>
+          <div id="fuelPremiumLock" class="fuel-premium-lock hidden" aria-live="polite">
+            <p id="fuelPremiumLockText">Cost of Ownership is a premium feature.</p>
+            <button id="fuelPremiumUnlockBtn" class="btn primary" type="button">Upgrade to Unlock</button>
           </div>
         </div>
       </section>
@@ -359,7 +364,7 @@
   <script>
     window.currentUser = {{ user | tojson | safe }};
   </script>
-  <script src="{{ url_for('static', filename='script.js', v='20260224b') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260302-premium1') }}"></script>
 </body>
 </html>
 

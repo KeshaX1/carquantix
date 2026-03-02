@@ -1223,6 +1223,11 @@ const fuelCalcPrice = document.getElementById('fuelCalcPrice');
 const fuelCalcUnit = document.getElementById('fuelCalcUnit');
 const fuelCalcConsumption = document.getElementById('fuelCalcConsumption');
 const fuelCalcResult = document.getElementById('fuelCalcResult');
+const fuelCard = fuelCalcSection ? fuelCalcSection.querySelector('.fuel-card') : null;
+const fuelPremiumLock = document.getElementById('fuelPremiumLock');
+const fuelPremiumLockText = document.getElementById('fuelPremiumLockText');
+const fuelPremiumUnlockBtn = document.getElementById('fuelPremiumUnlockBtn');
+const fuelPremiumBadge = document.getElementById('fuelPremiumBadge');
 const catalogToggle = document.getElementById('catalogToggle');
 const catalogButtons = catalogToggle ? Array.from(catalogToggle.querySelectorAll('button[data-catalog]')) : [];
 const topbarEl = document.querySelector('.topbar');
@@ -1283,6 +1288,11 @@ const TRANSLATIONS = {
     unitFuel: 'Fuel (L/100km)',
     unitElectric: 'Electric (kWh/100km)',
     costEstimate: 'Estimated cost',
+    premiumBadge: 'Premium',
+    premiumCostLocked: 'Cost of Ownership is a premium feature.',
+    premiumUnlock: 'Upgrade to Unlock',
+    premiumCheckoutLoading: 'Redirecting...',
+    premiumCheckoutError: 'Checkout could not be started. Please try again.',
     consumptionMissing: 'Consumption data not available',
     favoritesEmpty: 'No favorites yet.',
     addFavorite: 'Add to favorites',
@@ -1345,6 +1355,11 @@ const TRANSLATIONS = {
     unitFuel: 'Yakıt (L/100km)',
     unitElectric: 'Elektrik (kWh/100km)',
     costEstimate: 'Tahmini maliyet',
+    premiumBadge: 'Premium',
+    premiumCostLocked: 'Sahip olma maliyeti premium özelliktir.',
+    premiumUnlock: 'Yükselt ve Kilidi Aç',
+    premiumCheckoutLoading: 'Yönlendiriliyor...',
+    premiumCheckoutError: 'Ödeme ekranı başlatılamadı. Lütfen tekrar deneyin.',
     consumptionMissing: 'Tüketim verisi yok',
     favoritesEmpty: 'Henüz favori yok.',
     addFavorite: 'Favorilere ekle',
@@ -1573,6 +1588,12 @@ const t = (key) => {
 const HEART_FILLED = '&#9829;';
 const HEART_EMPTY = '&#9825;';
 const sessionUser = (window.currentUser && (window.currentUser.email || window.currentUser.name || window.currentUser.id || window.currentUser.sub)) ? window.currentUser : null;
+const hasPremiumAccess = Boolean(
+  sessionUser && (
+    sessionUser.is_premium === true
+    || ['active', 'trialing'].includes(String(sessionUser.subscription_status || '').toLowerCase())
+  )
+);
 const sessionUserId = sessionUser
   ? (sessionUser.email || sessionUser.name || sessionUser.id || sessionUser.sub || sessionUser.user_id || 'user')
   : null;
@@ -2076,8 +2097,36 @@ function updateFuelCalcLabels() {
   }
 }
 
+function isFuelPremiumLocked() {
+  return !hasPremiumAccess;
+}
+
+function updateFuelPremiumUi() {
+  const pack = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const locked = isFuelPremiumLocked();
+  if (fuelCard) fuelCard.classList.toggle('is-locked', locked);
+  if (fuelPremiumLock) fuelPremiumLock.classList.toggle('hidden', !locked);
+  if (fuelPremiumBadge) fuelPremiumBadge.textContent = pack.premiumBadge || 'Premium';
+  if (fuelPremiumLockText) {
+    fuelPremiumLockText.textContent = pack.premiumCostLocked || 'Cost of Ownership is a premium feature.';
+  }
+  if (fuelPremiumUnlockBtn) {
+    fuelPremiumUnlockBtn.textContent = locked
+      ? (sessionUserId ? (pack.premiumUnlock || 'Upgrade to Unlock') : (pack.login || 'Log In'))
+      : (pack.premiumBadge || 'Premium');
+  }
+  [fuelCalcDistance, fuelCalcPrice, fuelCalcUnit, fuelCalcConsumption].forEach((input) => {
+    if (!input) return;
+    input.disabled = locked;
+  });
+}
+
 function updateFuelCalculator() {
   if (!fuelCalcSection || !fuelCalcResult) return;
+  if (isFuelPremiumLocked()) {
+    fuelCalcResult.textContent = '-';
+    return;
+  }
   const unit = getFuelUnit();
   const priceKey = getPriceKey(unit);
   const consumptionKey = getConsumptionKey(unit);
@@ -2124,6 +2173,7 @@ function initFuelCalculator() {
   const unit = getFuelUnit();
   loadFuelInputsForUnit(unit);
   updateFuelCalcLabels();
+  updateFuelPremiumUi();
 
   [fuelCalcDistance, fuelCalcPrice, fuelCalcConsumption].forEach((input) => {
     if (!input) return;
@@ -2141,6 +2191,45 @@ function initFuelCalculator() {
   }
 
   updateFuelCalculator();
+}
+
+async function startFuelPremiumCheckout() {
+  if (!isFuelPremiumLocked()) return;
+  if (!sessionUserId) {
+    setAuthMode('login');
+    openLoginModal();
+    return;
+  }
+  if (!fuelPremiumUnlockBtn) return;
+  const loadingLabel = t('premiumCheckoutLoading');
+  const originalLabel = fuelPremiumUnlockBtn.textContent;
+  fuelPremiumUnlockBtn.disabled = true;
+  fuelPremiumUnlockBtn.textContent = loadingLabel;
+  try {
+    const res = await fetch('/api/billing/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ feature: 'cost_of_ownership' }),
+    });
+    let data = {};
+    try {
+      data = await res.json();
+    } catch (err) {
+      data = {};
+    }
+    if (!res.ok || !data.ok || !data.checkout_url) {
+      throw new Error(data.message || t('premiumCheckoutError'));
+    }
+    window.location.href = data.checkout_url;
+  } catch (err) {
+    alert(err?.message || t('premiumCheckoutError'));
+    fuelPremiumUnlockBtn.disabled = false;
+    fuelPremiumUnlockBtn.textContent = originalLabel;
+  }
+}
+
+if (fuelPremiumUnlockBtn) {
+  fuelPremiumUnlockBtn.addEventListener('click', startFuelPremiumCheckout);
 }
 
 
@@ -2608,6 +2697,7 @@ function applyTranslations() {
   updateFuelCalcLabels();
   const fuelResultLabel = document.getElementById('fuelCalcResultLabel');
   if (fuelResultLabel) fuelResultLabel.textContent = pack.costEstimate;
+  updateFuelPremiumUi();
   const commentsTitle = document.querySelector('.comment-section h3');
   if (commentsTitle) commentsTitle.textContent = pack.commentsTitle;
   const usernameInput = document.getElementById('username');
@@ -2962,6 +3052,18 @@ const stopPromoVideo = () => {
   promoVideo.pause();
 };
 
+const openLoginModal = () => {
+  if (!loginModal) return;
+  loginModal.style.display = "block";
+  ensurePromoVideoLoaded();
+};
+
+const closeLoginModal = () => {
+  if (!loginModal) return;
+  loginModal.style.display = "none";
+  stopPromoVideo();
+};
+
 const resetSignupFlow = () => {
   signupStage = "start";
   pendingSignupPayload = null;
@@ -2985,15 +3087,11 @@ const resetSignupFlow = () => {
 };
 
 if (loginBtn && loginModal) {
-  loginBtn.addEventListener("click", () => {
-    loginModal.style.display = "block";
-    ensurePromoVideoLoaded();
-  });
+  loginBtn.addEventListener("click", openLoginModal);
 
   window.addEventListener("click", (e) => {
     if (e.target === loginModal) {
-      loginModal.style.display = "none";
-      stopPromoVideo();
+      closeLoginModal();
     }
   });
 }
