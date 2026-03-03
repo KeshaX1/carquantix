@@ -777,7 +777,7 @@ def create_billing_checkout():
         success_url = f"{get_base_url()}/?billing=success"
 
     customer = find_user(email)
-    payload = {
+    payload_base = {
         "items": [{"price_id": PADDLE_PRICE_ID, "quantity": 1}],
         "collection_mode": "automatic",
         "custom_data": {
@@ -789,32 +789,23 @@ def create_billing_checkout():
             "success_url": success_url,
         },
     }
-    customer_id = (customer or {}).get("paddle_customer_id")
+    customer_id = str((customer or {}).get("paddle_customer_id") or "").strip()
+    headers = {
+        "Authorization": f"Bearer {PADDLE_API_KEY}",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+
+    payloads = []
     if customer_id:
-        payload["customer_id"] = customer_id
-    else:
-        payload["customer"] = {"email": email}
+        by_customer = dict(payload_base)
+        by_customer["customer_id"] = customer_id
+        payloads.append(by_customer)
+    by_email = dict(payload_base)
+    by_email["customer"] = {"email": email}
+    payloads.append(by_email)
 
-    try:
-        response = requests.post(
-            f"{PADDLE_API_BASE}/transactions",
-            headers={
-                "Authorization": f"Bearer {PADDLE_API_KEY}",
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            json=payload,
-            timeout=20,
-        )
-    except requests.RequestException as exc:
-        return jsonify({"ok": False, "message": f"Checkout request failed: {exc}"}), 502
-
-    try:
-        body = response.json()
-    except ValueError:
-        body = {}
-
-    if response.status_code >= 400:
+    def extract_error_detail(body):
         detail = ""
         if isinstance(body, dict):
             if isinstance(body.get("error"), dict):
@@ -822,16 +813,34 @@ def create_billing_checkout():
             if not detail and isinstance(body.get("errors"), list) and body["errors"]:
                 first_error = body["errors"][0] if isinstance(body["errors"][0], dict) else {}
                 detail = str(first_error.get("detail") or first_error.get("message") or "").strip()
+        return detail
+
+    response = None
+    body = {}
+    error_detail = ""
+    for payload in payloads:
+        try:
+            response = requests.post(
+                f"{PADDLE_API_BASE}/transactions",
+                headers=headers,
+                json=payload,
+                timeout=20,
+            )
+        except requests.RequestException as exc:
+            return jsonify({"ok": False, "message": f"Checkout request failed: {exc}"}), 502
+        try:
+            body = response.json()
+        except ValueError:
+            body = {}
+        if response.status_code < 400:
+            break
+        error_detail = extract_error_detail(body)
+
+    if not response or response.status_code >= 400:
         message = "Failed to create checkout transaction."
-        if detail:
-            message = f"{message} {detail}"
-        return jsonify(
-            {
-                "ok": False,
-                "message": message,
-                "details": body,
-            }
-        ), 502
+        if error_detail:
+            message = f"{message} {error_detail}"
+        return jsonify({"ok": False, "message": message, "details": body}), 502
 
     transaction = body.get("data") if isinstance(body, dict) else {}
     checkout = transaction.get("checkout") if isinstance(transaction, dict) else {}
@@ -840,8 +849,17 @@ def create_billing_checkout():
         return jsonify({"ok": False, "message": "Checkout URL was not returned by Paddle."}), 502
 
     transaction_id = transaction.get("id")
+    update_patch = {}
     if transaction_id:
-        upsert_user(email, {"paddle_last_transaction_id": transaction_id})
+        update_patch["paddle_last_transaction_id"] = transaction_id
+    tx_customer_id = str(transaction.get("customer_id") or "").strip()
+    if tx_customer_id:
+        update_patch["paddle_customer_id"] = tx_customer_id
+    elif customer_id:
+        # Clear stale ID that broke checkout; next requests will use email until refreshed.
+        update_patch["paddle_customer_id"] = ""
+    if update_patch:
+        upsert_user(email, update_patch)
     return jsonify({"ok": True, "checkout_url": checkout_url, "transaction_id": transaction_id})
 
 
