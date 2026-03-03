@@ -15,6 +15,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ meta_title or 'CarQuantix' }}">
   <meta name="twitter:description" content="{{ meta_description or 'Compare cars and motorcycles with CarQuantix.' }}">
+  <meta name="paddle-client-token" content="{{ paddle_client_token or '' }}">
+  <meta name="paddle-env" content="{{ paddle_env or 'sandbox' }}">
   <link rel="icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="48x48" href="/static/icon/4848px.png">
   <link rel="icon" type="image/png" sizes="64x64" href="/static/icon/6464px.png">
@@ -364,7 +366,10 @@
   <script>
     window.currentUser = {{ user | tojson | safe }};
   </script>
-  <script src="{{ url_for('static', filename='script.js', v='20260302-premium1') }}"></script>
+  {% if paddle_client_token %}
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  {% endif %}
+  <script src="{{ url_for('static', filename='script.js', v='20260303-paddle1') }}"></script>
 </body>
 </html>
 

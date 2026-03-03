@@ -87,6 +87,7 @@ PADDLE_ENV = os.environ.get("PADDLE_ENV", "sandbox").strip().strip('"').strip("'
 PADDLE_API_KEY = os.environ.get("PADDLE_API_KEY", "").strip()
 PADDLE_PRICE_ID = os.environ.get("PADDLE_PRICE_ID", "").strip()
 PADDLE_WEBHOOK_SECRET = os.environ.get("PADDLE_WEBHOOK_SECRET", "").strip()
+PADDLE_CLIENT_TOKEN = os.environ.get("PADDLE_CLIENT_TOKEN", "").strip()
 PADDLE_API_BASE = "https://api.paddle.com" if PADDLE_ENV == "production" else "https://sandbox-api.paddle.com"
 PREMIUM_ACTIVE_STATUSES = {"active", "trialing"}
 
@@ -684,6 +685,8 @@ def index():
         user=user,
         car_links=car_links,
         featured_car_links=featured_car_links,
+        paddle_client_token=PADDLE_CLIENT_TOKEN,
+        paddle_env=PADDLE_ENV,
         canonical_url=canonical_url,
         meta_title="CarQuantix - Best Cars by HP, Acceleration, Top Speed and Cost",
         meta_description="Compare car and motorcycle horsepower, acceleration and top speed. Find the best performance value with CarQuantix.",

@@ -2193,6 +2193,63 @@ function initFuelCalculator() {
   updateFuelCalculator();
 }
 
+function getMetaContent(name) {
+  const meta = document.querySelector(`meta[name="${name}"]`);
+  return meta ? String(meta.getAttribute('content') || '').trim() : '';
+}
+
+const paddleClientToken = getMetaContent('paddle-client-token');
+const paddleEnv = (getMetaContent('paddle-env') || 'sandbox').toLowerCase();
+let paddleInitialized = false;
+
+function initPaddleCheckout() {
+  if (paddleInitialized) return true;
+  if (!paddleClientToken) return false;
+  if (!window.Paddle || typeof window.Paddle.Initialize !== 'function') return false;
+  try {
+    if (window.Paddle.Environment && typeof window.Paddle.Environment.set === 'function') {
+      window.Paddle.Environment.set(paddleEnv === 'production' ? 'production' : 'sandbox');
+    }
+    window.Paddle.Initialize({ token: paddleClientToken });
+    paddleInitialized = true;
+    return true;
+  } catch (err) {
+    console.error('Paddle init failed', err);
+    return false;
+  }
+}
+
+function openPaddleCheckout(transactionId) {
+  if (!transactionId) return false;
+  if (!initPaddleCheckout()) return false;
+  if (!window.Paddle || !window.Paddle.Checkout || typeof window.Paddle.Checkout.open !== 'function') {
+    return false;
+  }
+  try {
+    window.Paddle.Checkout.open({ transactionId });
+    return true;
+  } catch (err) {
+    console.error('Paddle checkout failed', err);
+    return false;
+  }
+}
+
+function extractTransactionId(urlString) {
+  if (!urlString) return '';
+  try {
+    const url = new URL(urlString, window.location.origin);
+    return url.searchParams.get('_ptxn') || url.searchParams.get('transaction_id') || '';
+  } catch (err) {
+    return '';
+  }
+}
+
+const urlTxn = new URLSearchParams(window.location.search).get('_ptxn');
+if (urlTxn && openPaddleCheckout(urlTxn)) {
+  const cleanUrl = window.location.pathname + window.location.hash;
+  window.history.replaceState({}, document.title, cleanUrl);
+}
+
 async function startFuelPremiumCheckout() {
   if (!isFuelPremiumLocked()) return;
   if (!sessionUserId) {
@@ -2237,7 +2294,11 @@ async function startFuelPremiumCheckout() {
       })();
       throw new Error(backendDetail || t('premiumCheckoutError'));
     }
-    window.location.href = data.checkout_url;
+    const checkoutUrl = String(data.checkout_url || '');
+    const transactionId = extractTransactionId(checkoutUrl) || data.transaction_id;
+    if (!openPaddleCheckout(transactionId)) {
+      window.location.href = checkoutUrl;
+    }
   } catch (err) {
     alert(err?.message || t('premiumCheckoutError'));
     fuelPremiumUnlockBtn.disabled = false;
