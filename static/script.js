@@ -2204,6 +2204,19 @@ const paddleClientToken = getMetaContent('paddle-client-token');
 const paddleEnv = (getMetaContent('paddle-env') || 'sandbox').toLowerCase();
 let paddleInitialized = false;
 
+function getPaddleLocale() {
+  const code = String(currentLang || 'en').trim();
+  const normalized = code.toLowerCase();
+  const allowed = new Set([
+    'en', 'tr', 'de', 'fr', 'es', 'it', 'nl', 'sv', 'no', 'da', 'pl', 'pt', 'pt-br',
+    'ru', 'ja', 'ko', 'zh-hans', 'zh-hant', 'ar'
+  ]);
+  if (allowed.has(normalized)) {
+    return normalized === 'pt-br' ? 'pt-BR' : normalized;
+  }
+  return 'en';
+}
+
 function initPaddleCheckout() {
   if (paddleInitialized) return true;
   if (!paddleClientToken) return false;
@@ -2228,7 +2241,12 @@ function openPaddleCheckout(transactionId) {
     return false;
   }
   try {
-    window.Paddle.Checkout.open({ transactionId });
+    window.Paddle.Checkout.open({
+      transactionId,
+      settings: {
+        locale: getPaddleLocale(),
+      },
+    });
     return true;
   } catch (err) {
     console.error('Paddle checkout failed', err);
