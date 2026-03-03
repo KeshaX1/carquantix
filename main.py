@@ -776,8 +776,7 @@ def create_billing_checkout():
     if not success_url:
         success_url = f"{get_base_url()}/?billing=success"
 
-    customer = find_user(email)
-    payload_base = {
+    payload = {
         "items": [{"price_id": PADDLE_PRICE_ID, "quantity": 1}],
         "collection_mode": "automatic",
         "custom_data": {
@@ -788,22 +787,13 @@ def create_billing_checkout():
             "display_mode": "overlay",
             "success_url": success_url,
         },
+        "customer": {"email": email},
     }
-    customer_id = str((customer or {}).get("paddle_customer_id") or "").strip()
     headers = {
         "Authorization": f"Bearer {PADDLE_API_KEY}",
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
-
-    payloads = []
-    if customer_id:
-        by_customer = dict(payload_base)
-        by_customer["customer_id"] = customer_id
-        payloads.append(by_customer)
-    by_email = dict(payload_base)
-    by_email["customer"] = {"email": email}
-    payloads.append(by_email)
 
     def extract_error_detail(body):
         detail = ""
@@ -815,28 +805,23 @@ def create_billing_checkout():
                 detail = str(first_error.get("detail") or first_error.get("message") or "").strip()
         return detail
 
-    response = None
-    body = {}
-    error_detail = ""
-    for payload in payloads:
-        try:
-            response = requests.post(
-                f"{PADDLE_API_BASE}/transactions",
-                headers=headers,
-                json=payload,
-                timeout=20,
-            )
-        except requests.RequestException as exc:
-            return jsonify({"ok": False, "message": f"Checkout request failed: {exc}"}), 502
-        try:
-            body = response.json()
-        except ValueError:
-            body = {}
-        if response.status_code < 400:
-            break
-        error_detail = extract_error_detail(body)
+    try:
+        response = requests.post(
+            f"{PADDLE_API_BASE}/transactions",
+            headers=headers,
+            json=payload,
+            timeout=20,
+        )
+    except requests.RequestException as exc:
+        return jsonify({"ok": False, "message": f"Checkout request failed: {exc}"}), 502
 
-    if not response or response.status_code >= 400:
+    try:
+        body = response.json()
+    except ValueError:
+        body = {}
+
+    if response.status_code >= 400:
+        error_detail = extract_error_detail(body)
         message = "Failed to create checkout transaction."
         if error_detail:
             message = f"{message} {error_detail}"
@@ -855,9 +840,6 @@ def create_billing_checkout():
     tx_customer_id = str(transaction.get("customer_id") or "").strip()
     if tx_customer_id:
         update_patch["paddle_customer_id"] = tx_customer_id
-    elif customer_id:
-        # Clear stale ID that broke checkout; next requests will use email until refreshed.
-        update_patch["paddle_customer_id"] = ""
     if update_patch:
         upsert_user(email, update_patch)
     return jsonify({"ok": True, "checkout_url": checkout_url, "transaction_id": transaction_id})
