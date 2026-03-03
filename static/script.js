@@ -1292,6 +1292,7 @@ const TRANSLATIONS = {
     premiumCostLocked: 'Cost of Ownership is a premium feature.',
     premiumUnlock: 'Upgrade to Unlock',
     premiumCheckoutLoading: 'Redirecting...',
+    premiumCheckoutResume: 'Continue to Payment',
     premiumCheckoutError: 'Checkout could not be started. Please try again.',
     consumptionMissing: 'Consumption data not available',
     favoritesEmpty: 'No favorites yet.',
@@ -1359,6 +1360,7 @@ const TRANSLATIONS = {
     premiumCostLocked: 'Sahip olma maliyeti premium özelliktir.',
     premiumUnlock: 'Yükselt ve Kilidi Aç',
     premiumCheckoutLoading: 'Yönlendiriliyor...',
+    premiumCheckoutResume: 'Ödemeye Devam Et',
     premiumCheckoutError: 'Ödeme ekranı başlatılamadı. Lütfen tekrar deneyin.',
     consumptionMissing: 'Tüketim verisi yok',
     favoritesEmpty: 'Henüz favori yok.',
@@ -2244,11 +2246,47 @@ function extractTransactionId(urlString) {
   }
 }
 
-const urlTxn = new URLSearchParams(window.location.search).get('_ptxn');
-if (urlTxn && openPaddleCheckout(urlTxn)) {
-  const cleanUrl = window.location.pathname + window.location.hash;
-  window.history.replaceState({}, document.title, cleanUrl);
+const PENDING_PADDLE_TXN_KEY = 'pendingPaddleTxn';
+let pendingPaddleTxn = '';
+
+function setPendingPaddleTxn(txnId) {
+  pendingPaddleTxn = txnId || '';
+  if (pendingPaddleTxn) {
+    sessionStorage.setItem(PENDING_PADDLE_TXN_KEY, pendingPaddleTxn);
+  } else {
+    sessionStorage.removeItem(PENDING_PADDLE_TXN_KEY);
+  }
 }
+
+function getPendingPaddleTxn() {
+  if (pendingPaddleTxn) return pendingPaddleTxn;
+  const stored = sessionStorage.getItem(PENDING_PADDLE_TXN_KEY);
+  if (stored) {
+    pendingPaddleTxn = stored;
+  }
+  return pendingPaddleTxn;
+}
+
+function handlePendingPaddleCheckout() {
+  const urlTxn = new URLSearchParams(window.location.search).get('_ptxn');
+  if (urlTxn) {
+    setPendingPaddleTxn(urlTxn);
+    const cleanUrl = window.location.pathname + window.location.hash;
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
+  const pending = getPendingPaddleTxn();
+  if (!pending) return;
+  if (openPaddleCheckout(pending)) {
+    setPendingPaddleTxn('');
+    return;
+  }
+  if (fuelPremiumUnlockBtn) {
+    fuelPremiumUnlockBtn.disabled = false;
+    fuelPremiumUnlockBtn.textContent = t('premiumCheckoutResume');
+  }
+}
+
+handlePendingPaddleCheckout();
 
 async function startFuelPremiumCheckout() {
   if (!isFuelPremiumLocked()) return;
@@ -2263,6 +2301,14 @@ async function startFuelPremiumCheckout() {
   fuelPremiumUnlockBtn.disabled = true;
   fuelPremiumUnlockBtn.textContent = loadingLabel;
   try {
+    const pending = getPendingPaddleTxn();
+    if (pending) {
+      if (openPaddleCheckout(pending)) {
+        setPendingPaddleTxn('');
+        return;
+      }
+      throw new Error(t('premiumCheckoutError'));
+    }
     const res = await fetch('/api/billing/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2297,6 +2343,9 @@ async function startFuelPremiumCheckout() {
     const checkoutUrl = String(data.checkout_url || '');
     const transactionId = extractTransactionId(checkoutUrl) || data.transaction_id;
     if (!openPaddleCheckout(transactionId)) {
+      if (transactionId) {
+        setPendingPaddleTxn(transactionId);
+      }
       window.location.href = checkoutUrl;
     }
   } catch (err) {
