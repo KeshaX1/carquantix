@@ -19,7 +19,7 @@ from car_data import load_cars
 
 # Load .env explicitly so it works even if the app is started from another directory
 DOTENV_PATH = Path(__file__).with_name(".env")
-load_dotenv(DOTENV_PATH, override=True)  # override any stale env values
+load_dotenv(DOTENV_PATH, override=False)  # do not override Render env values
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret")
@@ -83,7 +83,7 @@ _BASE_URL_PARTS = urllib.parse.urlparse(BASE_URL)
 CANONICAL_SCHEME = (_BASE_URL_PARTS.scheme or "https").lower()
 CANONICAL_HOST = (_BASE_URL_PARTS.netloc or "carquantix.com").lower()
 CANONICAL_BASE_URL = f"{CANONICAL_SCHEME}://{CANONICAL_HOST}"
-PADDLE_ENV = os.environ.get("PADDLE_ENV", "sandbox").strip().lower()
+PADDLE_ENV = os.environ.get("PADDLE_ENV", "sandbox").strip().strip('"').strip("'").lower()
 PADDLE_API_KEY = os.environ.get("PADDLE_API_KEY", "").strip()
 PADDLE_PRICE_ID = os.environ.get("PADDLE_PRICE_ID", "").strip()
 PADDLE_WEBHOOK_SECRET = os.environ.get("PADDLE_WEBHOOK_SECRET", "").strip()
@@ -784,7 +784,6 @@ def create_billing_checkout():
             "feature": "cost_of_ownership",
         },
         "checkout": {
-            "display_mode": "overlay",
             "success_url": success_url,
         },
         "customer": {"email": email},
