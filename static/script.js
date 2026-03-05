@@ -2304,6 +2304,7 @@ function getMetaContent(name) {
 const paddleClientToken = getMetaContent('paddle-client-token');
 const paddleEnv = (getMetaContent('paddle-env') || 'sandbox').toLowerCase();
 let paddleInitialized = false;
+let paddleEventsBound = false;
 
 function getPaddleLocale() {
   const code = String(currentLang || 'en').trim();
@@ -2327,12 +2328,37 @@ function initPaddleCheckout() {
       window.Paddle.Environment.set(paddleEnv === 'production' ? 'production' : 'sandbox');
     }
     window.Paddle.Initialize({ token: paddleClientToken });
+    bindPaddleEvents();
     paddleInitialized = true;
     return true;
   } catch (err) {
     console.error('Paddle init failed', err);
     return false;
   }
+}
+
+function extractTransactionIdFromEvent(data) {
+  if (!data || typeof data !== 'object') return '';
+  return (
+    data.transactionId
+    || data.transaction_id
+    || (data.transaction && (data.transaction.id || data.transaction.transaction_id))
+    || ''
+  );
+}
+
+function bindPaddleEvents() {
+  if (paddleEventsBound) return;
+  if (!window.Paddle || !window.Paddle.Checkout || typeof window.Paddle.Checkout.on !== 'function') return;
+  window.Paddle.Checkout.on('complete', async (data) => {
+    const txnId = extractTransactionIdFromEvent(data);
+    if (txnId) {
+      await confirmPaddleTransaction(String(txnId));
+    }
+    setPendingPaddleTxn('');
+    window.location.reload();
+  });
+  paddleEventsBound = true;
 }
 
 function openPaddleCheckout(transactionId) {
