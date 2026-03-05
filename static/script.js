@@ -2368,6 +2368,25 @@ function extractTransactionId(urlString) {
 const PENDING_PADDLE_TXN_KEY = 'pendingPaddleTxn';
 let pendingPaddleTxn = '';
 
+async function confirmPaddleTransaction(transactionId) {
+  if (!transactionId) return false;
+  if (!sessionUserId) return false;
+  try {
+    const res = await fetch('/api/billing/confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transaction_id: transactionId }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data && data.ok) {
+      return true;
+    }
+  } catch (err) {
+    console.warn('Confirm transaction failed', err);
+  }
+  return false;
+}
+
 function setPendingPaddleTxn(txnId) {
   pendingPaddleTxn = txnId || '';
   if (pendingPaddleTxn) {
@@ -2386,7 +2405,7 @@ function getPendingPaddleTxn() {
   return pendingPaddleTxn;
 }
 
-function handlePendingPaddleCheckout() {
+async function handlePendingPaddleCheckout() {
   const urlTxn = new URLSearchParams(window.location.search).get('_ptxn');
   if (urlTxn) {
     setPendingPaddleTxn(urlTxn);
@@ -2395,6 +2414,12 @@ function handlePendingPaddleCheckout() {
   }
   const pending = getPendingPaddleTxn();
   if (!pending) return;
+  const confirmed = await confirmPaddleTransaction(pending);
+  if (confirmed) {
+    setPendingPaddleTxn('');
+    window.location.reload();
+    return;
+  }
   if (openPaddleCheckout(pending)) {
     setPendingPaddleTxn('');
     return;
@@ -2422,6 +2447,12 @@ async function startFuelPremiumCheckout() {
   try {
     const pending = getPendingPaddleTxn();
     if (pending) {
+      const confirmed = await confirmPaddleTransaction(pending);
+      if (confirmed) {
+        setPendingPaddleTxn('');
+        window.location.reload();
+        return;
+      }
       if (openPaddleCheckout(pending)) {
         setPendingPaddleTxn('');
         return;

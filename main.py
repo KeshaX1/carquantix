@@ -904,6 +904,75 @@ def paddle_webhook():
     return jsonify({"ok": True, "updated": users[idx].get("email")}), 200
 
 
+@app.route("/api/billing/confirm", methods=["POST"])
+def confirm_billing_transaction():
+    user = session.get("user") or {}
+    email = (user.get("email") or "").strip().lower()
+    if not email:
+        return jsonify({"ok": False, "message": "Login required."}), 401
+    if not PADDLE_API_KEY:
+        return jsonify({"ok": False, "message": "Billing is not configured on the server."}), 500
+
+    request_data = request.get_json(silent=True) or {}
+    transaction_id = str(request_data.get("transaction_id") or "").strip()
+    if not transaction_id:
+        return jsonify({"ok": False, "message": "Missing transaction id."}), 400
+
+    headers = {
+        "Authorization": f"Bearer {PADDLE_API_KEY}",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+
+    try:
+        response = requests.get(
+            f"{PADDLE_API_BASE}/transactions/{transaction_id}",
+            headers=headers,
+            timeout=20,
+        )
+    except requests.RequestException as exc:
+        return jsonify({"ok": False, "message": f"Confirm request failed: {exc}"}), 502
+
+    try:
+        body = response.json()
+    except ValueError:
+        body = {}
+
+    if response.status_code >= 400:
+        return jsonify({"ok": False, "message": "Failed to fetch transaction.", "details": body}), 502
+
+    data = body.get("data") if isinstance(body, dict) else {}
+    if not isinstance(data, dict):
+        data = {}
+
+    custom_data = data.get("custom_data") if isinstance(data.get("custom_data"), dict) else {}
+    customer = data.get("customer") if isinstance(data.get("customer"), dict) else {}
+    data_email = (custom_data.get("user_email") or custom_data.get("email") or customer.get("email") or "").strip().lower()
+    if data_email and data_email != email:
+        return jsonify({"ok": False, "message": "Transaction does not match this user."}), 403
+
+    status = normalize_subscription_status(data.get("status"))
+    subscription_id = str(data.get("subscription_id") or "").strip()
+    customer_id = str(data.get("customer_id") or "").strip()
+    billing_period = data.get("current_billing_period") if isinstance(data.get("current_billing_period"), dict) else {}
+    expires_at = billing_period.get("ends_at") or data.get("next_billed_at") or None
+
+    completed_statuses = {"completed", "paid", "billed", "active"}
+    if status not in completed_statuses and not subscription_id:
+        return jsonify({"ok": False, "message": "Transaction not completed yet.", "status": status}), 200
+
+    patch = {
+        "subscription_status": "active",
+        "subscription_updated_at": int(time.time()),
+        "subscription_expires_at": expires_at,
+        "paddle_customer_id": customer_id or None,
+        "paddle_subscription_id": subscription_id or None,
+        "paddle_last_transaction_id": transaction_id,
+    }
+    upsert_user(email, patch)
+    return jsonify({"ok": True, "status": "active"}), 200
+
+
 @app.route("/cars/<slug>")
 def car_detail(slug):
     _, slug_map = load_cars()
