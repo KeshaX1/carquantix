@@ -364,6 +364,58 @@ body.dark .brand-divider::after{
   color:var(--card-accent-strong);
   text-shadow:0 6px 18px rgba(0,0,0,0.6);
 }
+.compare-card .meta .price-wrapper .resale-btn{
+  position:relative;
+  z-index:1;
+  border:1px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.12);
+  color:#fff;
+  font-size:0.7rem;
+  font-weight:700;
+  padding:4px 8px;
+  border-radius:999px;
+  cursor:pointer;
+  letter-spacing:0.3px;
+}
+.compare-card .meta .price-wrapper .resale-btn:hover{
+  background: rgba(255,255,255,0.22);
+}
+.compare-card .meta .price-wrapper .resale-btn:active{
+  transform: translateY(1px);
+}
+.compare-card .meta .resale-panel{
+  width:100%;
+  background: rgba(0,0,0,0.55);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;
+  padding:10px 12px;
+  color:#fff;
+  font-size:0.75rem;
+}
+.compare-card .meta .resale-panel.hidden{
+  display:none;
+}
+.compare-card .meta .resale-title{
+  font-weight:700;
+  margin-bottom:4px;
+}
+.compare-card .meta .resale-meta{
+  color:rgba(255,255,255,0.8);
+  margin-bottom:6px;
+}
+.compare-card .meta .resale-values{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.compare-card .meta .resale-values span{
+  background: rgba(255,255,255,0.12);
+  padding:4px 8px;
+  border-radius:8px;
+  font-weight:600;
+}
 .compare-card .meta .stat-line{
   color:var(--card-accent);
   font-size:0.95rem;
