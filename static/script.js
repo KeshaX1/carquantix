@@ -1270,7 +1270,8 @@ const TRANSLATIONS = {
     priceLabel: 'Price:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Select at least one vehicle to compare',
-    maxCompare: 'Maximum 5 vehicles for comparison',
+    maxCompare: 'Maximum 5 vehicles for comparison. Premium: 8.',
+    maxComparePremium: 'Maximum 8 vehicles for comparison',
     commentsTitle: 'Comments',
     commentName: 'Your name',
     commentPlaceholder: 'Write your comment...',
@@ -1294,6 +1295,18 @@ const TRANSLATIONS = {
     premiumCheckoutLoading: 'Redirecting...',
     premiumCheckoutResume: 'Continue to Payment',
     premiumCheckoutError: 'Checkout could not be started. Please try again.',
+    resaleButton: 'Resale',
+    resaleTitle: 'Resale Value (5-10-15y)',
+    resaleDepreciation: 'Depreciation',
+    resaleAppreciation: 'Appreciation',
+    resaleCollector: 'Collector',
+    resaleCategoryEconomy: 'Economy',
+    resaleCategoryPremium: 'Premium',
+    resaleCategoryLuxury: 'Luxury',
+    resaleCategorySupercar: 'Supercar',
+    resaleYear5: '5y',
+    resaleYear10: '10y',
+    resaleYear15: '15y',
     consumptionMissing: 'Consumption data not available',
     favoritesEmpty: 'No favorites yet.',
     addFavorite: 'Add to favorites',
@@ -1338,7 +1351,8 @@ const TRANSLATIONS = {
     priceLabel: 'Fiyat:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Karşılaştırmak için en az bir araç seçin',
-    maxCompare: 'En fazla 5 araç seçebilirsiniz',
+    maxCompare: 'En fazla 5 araç seçebilirsiniz. Premium: 8.',
+    maxComparePremium: 'En fazla 8 araç seçebilirsiniz',
     commentsTitle: 'Yorumlar',
     commentName: 'Adınız',
     commentPlaceholder: 'Yorumunuzu yazın...',
@@ -1362,6 +1376,18 @@ const TRANSLATIONS = {
     premiumCheckoutLoading: 'Yönlendiriliyor...',
     premiumCheckoutResume: 'Ödemeye Devam Et',
     premiumCheckoutError: 'Ödeme ekranı başlatılamadı. Lütfen tekrar deneyin.',
+    resaleButton: 'Yeniden Satış',
+    resaleTitle: 'Yeniden Satış Tahmini (5-10-15y)',
+    resaleDepreciation: 'Değer Kaybı',
+    resaleAppreciation: 'Değer Artışı',
+    resaleCollector: 'Koleksiyon',
+    resaleCategoryEconomy: 'Ekonomi',
+    resaleCategoryPremium: 'Premium',
+    resaleCategoryLuxury: 'Lüks',
+    resaleCategorySupercar: 'Süper',
+    resaleYear5: '5 yıl',
+    resaleYear10: '10 yıl',
+    resaleYear15: '15 yıl',
     consumptionMissing: 'Tüketim verisi yok',
     favoritesEmpty: 'Henüz favori yok.',
     addFavorite: 'Favorilere ekle',
@@ -1403,7 +1429,8 @@ const TRANSLATIONS = {
     priceLabel: 'Preis:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Wähle mindestens ein Fahrzeug zum Vergleichen',
-    maxCompare: 'Maximal 5 Fahrzeuge',
+    maxCompare: 'Maximal 5 Fahrzeuge. Premium: 8.',
+    maxComparePremium: 'Maximal 8 Fahrzeuge',
     commentsTitle: 'Kommentare',
     commentName: 'Ihr Name',
     commentPlaceholder: 'Kommentar schreiben...',
@@ -1462,7 +1489,8 @@ const TRANSLATIONS = {
     priceLabel: 'Prix :',
     zeroToHundred: '0-100 :',
     selectPrompt: 'Sélectionnez au moins un véhicule pour comparer',
-    maxCompare: 'Maximum 5 véhicules',
+    maxCompare: 'Maximum 5 véhicules. Premium : 8.',
+    maxComparePremium: 'Maximum 8 véhicules',
     commentsTitle: 'Commentaires',
     commentName: 'Votre nom',
     commentPlaceholder: 'Écrivez votre commentaire...',
@@ -1521,7 +1549,8 @@ const TRANSLATIONS = {
     priceLabel: 'Precio:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Selecciona al menos un vehículo para comparar',
-    maxCompare: 'Máximo 5 vehículos',
+    maxCompare: 'Máximo 5 vehículos. Premium: 8.',
+    maxComparePremium: 'Máximo 8 vehículos',
     commentsTitle: 'Comentarios',
     commentName: 'Tu nombre',
     commentPlaceholder: 'Escribe tu comentario...',
@@ -1596,6 +1625,9 @@ const hasPremiumAccess = Boolean(
     || ['active', 'trialing'].includes(String(sessionUser.subscription_status || '').toLowerCase())
   )
 );
+const FREE_COMPARE_LIMIT = 5;
+const PREMIUM_COMPARE_LIMIT = 8;
+const compareLimit = hasPremiumAccess ? PREMIUM_COMPARE_LIMIT : FREE_COMPARE_LIMIT;
 const sessionUserId = sessionUser
   ? (sessionUser.email || sessionUser.name || sessionUser.id || sessionUser.sub || sessionUser.user_id || 'user')
   : null;
@@ -1731,7 +1763,10 @@ function renderFavorites() {
       if (!veh) return;
       const key = makeKey(parsed.catalog, parsed.id);
       if (selected.find(s => (s._key || makeKey(s.catalog || 'cars', s.id)) === key)) return;
-      if (selected.length >= 5) { alert(t('maxCompare')); return; }
+      if (selected.length >= compareLimit) {
+        alert(hasPremiumAccess ? t('maxComparePremium') : t('maxCompare'));
+        return;
+      }
       selected.push({ ...veh, _key: key, catalog: parsed.catalog });
       renderSelected();
     });
@@ -1975,6 +2010,70 @@ function parsePrice(val) {
   if (!val) return 0;
   const digits = String(val).replace(/\D/g, '');
   return Number(digits) || 0;
+}
+
+function extractVehicleYear(name) {
+  const match = String(name || '').match(/\b(19|20)\d{2}\b/);
+  if (!match) return null;
+  const year = Number(match[0]);
+  return Number.isFinite(year) ? year : null;
+}
+
+const COLLECTOR_MAX_YEAR = 2005;
+const COLLECTOR_MIN_PRICE = 150000;
+const COLLECTOR_APPRECIATION_RATE = 0.04;
+const RESALE_CATEGORIES = [
+  { key: 'economy', min: 0, max: 20000, rate: 0.12 },
+  { key: 'premium', min: 20000, max: 60000, rate: 0.10 },
+  { key: 'luxury', min: 60000, max: 150000, rate: 0.15 },
+  { key: 'supercar', min: 150000, max: Infinity, rate: 0.18 },
+];
+
+function getResaleCategory(price) {
+  const value = Number(price) || 0;
+  return RESALE_CATEGORIES.find(cat => value >= cat.min && value < cat.max) || RESALE_CATEGORIES[0];
+}
+
+function getResaleCategoryLabel(key) {
+  switch (key) {
+    case 'economy':
+      return t('resaleCategoryEconomy');
+    case 'premium':
+      return t('resaleCategoryPremium');
+    case 'luxury':
+      return t('resaleCategoryLuxury');
+    case 'supercar':
+      return t('resaleCategorySupercar');
+    default:
+      return '';
+  }
+}
+
+function buildResalePrediction(vehicle) {
+  const price = parsePrice(vehicle?.price);
+  if (!Number.isFinite(price) || price <= 0) return null;
+  const year = extractVehicleYear(vehicle?.name);
+  const isCollector = Boolean(year && year <= COLLECTOR_MAX_YEAR && price >= COLLECTOR_MIN_PRICE);
+  if (isCollector) {
+    return {
+      kind: 'appreciation',
+      rate: COLLECTOR_APPRECIATION_RATE,
+      categoryLabel: t('resaleCollector'),
+      values: [5, 10, 15].map(y => Math.round(price * Math.pow(1 + COLLECTOR_APPRECIATION_RATE, y))),
+    };
+  }
+  const category = getResaleCategory(price);
+  return {
+    kind: 'depreciation',
+    rate: category.rate,
+    categoryLabel: getResaleCategoryLabel(category.key),
+    values: [5, 10, 15].map(y => Math.round(price * Math.pow(1 - category.rate, y))),
+  };
+}
+
+function formatRate(rate) {
+  if (!Number.isFinite(rate)) return '';
+  return `${Math.round(rate * 100)}%`;
 }
 
 function formatPrice(val) {
@@ -2489,7 +2588,10 @@ function attachAddButtons() {
       if (!veh) return;
       const key = makeKey(parsed.catalog, parsed.id);
       if (selected.find(s => (s._key || makeKey(s.catalog || 'cars', s.id)) === key)) return;
-      if (selected.length >= 5) { alert(t('maxCompare')); return; }
+      if (selected.length >= compareLimit) {
+        alert(hasPremiumAccess ? t('maxComparePremium') : t('maxCompare'));
+        return;
+      }
       selected.push({ ...veh, _key: key, catalog: parsed.catalog });
       renderSelected();
     });
@@ -2526,6 +2628,19 @@ function renderSelected() {
     const detailLink = catalog === 'cars'
       ? `<a class="detail-btn" href="${buildCarDetailUrl(v)}" aria-label="${t('details')} ${v.name}">${t('details')}</a>`
       : '';
+    const resale = buildResalePrediction(v);
+    const resalePanel = resale ? `
+      <div class="resale-panel hidden" data-id="${key}">
+        <div class="resale-title">${t('resaleTitle')}</div>
+        <div class="resale-meta">${resale.kind === 'appreciation' ? t('resaleAppreciation') : t('resaleDepreciation')}: ${formatRate(resale.rate)} · ${resale.categoryLabel}</div>
+        <div class="resale-values">
+          <span>${t('resaleYear5')}: ${formatCurrency(resale.values[0])}</span>
+          <span>${t('resaleYear10')}: ${formatCurrency(resale.values[1])}</span>
+          <span>${t('resaleYear15')}: ${formatCurrency(resale.values[2])}</span>
+        </div>
+      </div>
+    ` : '';
+    const resaleButton = resale ? `<button class="resale-btn" type="button" data-id="${key}">${t('resaleButton')}</button>` : '';
     card.innerHTML = `
       <div class="thumb-row single">
         <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
@@ -2538,7 +2653,9 @@ function renderSelected() {
         <div class="price-wrapper">
           <span class="price-label">${t('priceLabel')}</span>
           <span class="price-value">${formatPrice(v.price)}</span>
+          ${resaleButton}
         </div>
+        ${resalePanel}
         <div class="stat-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</div>
         <div class="card-actions">
           <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
@@ -2578,6 +2695,15 @@ function renderSelected() {
       const id = btn.dataset.id;
       selected = selected.filter(s => (s._key || makeKey(s.catalog || 'cars', s.id)) !== id);
       renderSelected();
+    });
+  });
+  compareArea.querySelectorAll('.resale-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      if (!id) return;
+      const panel = compareArea.querySelector(`.resale-panel[data-id="${id}"]`);
+      if (!panel) return;
+      panel.classList.toggle('hidden');
     });
   });
 }
