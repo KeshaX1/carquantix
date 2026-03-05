@@ -1300,6 +1300,7 @@ const TRANSLATIONS = {
     resaleDepreciation: 'Depreciation',
     resaleAppreciation: 'Appreciation',
     resaleCollector: 'Collector',
+    resaleLocked: 'Resale value is a premium feature.',
     resaleCategoryEconomy: 'Economy',
     resaleCategoryPremium: 'Premium',
     resaleCategoryLuxury: 'Luxury',
@@ -1381,6 +1382,7 @@ const TRANSLATIONS = {
     resaleDepreciation: 'Değer Kaybı',
     resaleAppreciation: 'Değer Artışı',
     resaleCollector: 'Koleksiyon',
+    resaleLocked: 'Yeniden satış tahmini premium özelliktir.',
     resaleCategoryEconomy: 'Ekonomi',
     resaleCategoryPremium: 'Premium',
     resaleCategoryLuxury: 'Lüks',
@@ -2629,7 +2631,8 @@ function renderSelected() {
       ? `<a class="detail-btn" href="${buildCarDetailUrl(v)}" aria-label="${t('details')} ${v.name}">${t('details')}</a>`
       : '';
     const resale = buildResalePrediction(v);
-    const resalePanel = resale ? `
+    const resaleAllowed = hasPremiumAccess;
+    const resalePanel = (resale && resaleAllowed) ? `
       <div class="resale-panel hidden" data-id="${key}">
         <div class="resale-title">${t('resaleTitle')}</div>
         <div class="resale-meta">${resale.kind === 'appreciation' ? t('resaleAppreciation') : t('resaleDepreciation')}: ${formatRate(resale.rate)} · ${resale.categoryLabel}</div>
@@ -2640,7 +2643,13 @@ function renderSelected() {
         </div>
       </div>
     ` : '';
-    const resaleButton = resale ? `<button class="resale-btn" type="button" data-id="${key}">${t('resaleButton')}</button>` : '';
+    const resaleButton = resale
+      ? (
+        resaleAllowed
+          ? `<button class="resale-btn" type="button" data-id="${key}">${t('resaleButton')}</button>`
+          : `<button class="resale-btn locked" type="button" data-locked="1">${t('premiumUnlock')}</button>`
+      )
+      : '';
     card.innerHTML = `
       <div class="thumb-row single">
         <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
@@ -2699,6 +2708,10 @@ function renderSelected() {
   });
   compareArea.querySelectorAll('.resale-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (btn.dataset.locked === '1') {
+        startFuelPremiumCheckout();
+        return;
+      }
       const id = btn.dataset.id;
       if (!id) return;
       const panel = compareArea.querySelector(`.resale-panel[data-id="${id}"]`);
