@@ -2393,6 +2393,10 @@ function extractTransactionId(urlString) {
 
 const PENDING_PADDLE_TXN_KEY = 'pendingPaddleTxn';
 let pendingPaddleTxn = '';
+let pendingConfirmTimer = null;
+let pendingConfirmAttempts = 0;
+const PENDING_CONFIRM_INTERVAL_MS = 5000;
+const PENDING_CONFIRM_MAX_ATTEMPTS = 24;
 
 async function confirmPaddleTransaction(transactionId) {
   if (!transactionId) return false;
@@ -2411,6 +2415,37 @@ async function confirmPaddleTransaction(transactionId) {
     console.warn('Confirm transaction failed', err);
   }
   return false;
+}
+
+function stopPendingConfirmPolling() {
+  if (pendingConfirmTimer) {
+    clearInterval(pendingConfirmTimer);
+    pendingConfirmTimer = null;
+  }
+  pendingConfirmAttempts = 0;
+}
+
+function startPendingConfirmPolling() {
+  if (pendingConfirmTimer) return;
+  pendingConfirmAttempts = 0;
+  pendingConfirmTimer = setInterval(async () => {
+    const txn = getPendingPaddleTxn();
+    if (!txn) {
+      stopPendingConfirmPolling();
+      return;
+    }
+    const confirmed = await confirmPaddleTransaction(txn);
+    if (confirmed) {
+      setPendingPaddleTxn('');
+      stopPendingConfirmPolling();
+      window.location.reload();
+      return;
+    }
+    pendingConfirmAttempts += 1;
+    if (pendingConfirmAttempts >= PENDING_CONFIRM_MAX_ATTEMPTS) {
+      stopPendingConfirmPolling();
+    }
+  }, PENDING_CONFIRM_INTERVAL_MS);
 }
 
 function setPendingPaddleTxn(txnId) {
@@ -2446,6 +2481,7 @@ async function handlePendingPaddleCheckout() {
     window.location.reload();
     return;
   }
+  startPendingConfirmPolling();
   if (openPaddleCheckout(pending)) {
     setPendingPaddleTxn('');
     return;
@@ -2518,6 +2554,10 @@ async function startFuelPremiumCheckout() {
     }
     const checkoutUrl = String(data.checkout_url || '');
     const transactionId = extractTransactionId(checkoutUrl) || data.transaction_id;
+    if (transactionId) {
+      setPendingPaddleTxn(String(transactionId));
+      startPendingConfirmPolling();
+    }
     if (!openPaddleCheckout(transactionId)) {
       if (transactionId) {
         setPendingPaddleTxn(transactionId);
