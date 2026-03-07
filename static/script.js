@@ -562,7 +562,7 @@ const VEHICLES = [
 
   { id: 'RC F',        name: '2022 Lexus RC F', power:464, acc:4.5, topSpeed:270, engine: '5.0L V8', price: '$67.000', img: '/static/images/lexusRCF.png', rearImg: '/static/rearimg/lexusRCF-rear.png' , consumption: { value:13.0, unit: 'L/100km' }},
 
-  { id: 'RX 350h',     name: '2025 Lexus RX 350', power:250, acc:7.9, topSpeed:180, engine: '350h', price: '$69.895', img: '/static/images/lexusRX350h.png', rearImg: '/static/rearimg/lexusRX350h-rear.png' , consumption: { value:15.5, unit: 'kWh/100km' }},
+  { id: 'RX 350h',     name: '2025 Lexus RX 350', power:250, acc:7.9, topSpeed:180, engine: '350h', price: '$69.895', img: '/static/images/lexusRX350h.jpg', rearImg: '/static/rearimg/lexusRX350h-rear.png' , consumption: { value:15.5, unit: 'kWh/100km' }},
 
   { id: 'UX 300e',     name: '2022 Lexus UX 300e', power:204, acc:7.5, topSpeed:160, engine: '300e 72.8 kWh', price: '$24.900', img: '/static/images/lexusUX300e.png', rearImg: '/static/rearimg/lexusUX300e-rear.png' , consumption: { value:17.0, unit: 'kWh/100km' }},
 
@@ -642,7 +642,7 @@ const VEHICLES = [
 
   { id: '62',          name: '2011 Maybach 62', power:551, acc:5.1, topSpeed:275, engine: '6.0 V12', price: '$239.990', img: '/static/images/maybach62.jpg', rearImg: '/static/rearimg/maybach62-rear.png' , consumption: { value:17.0, unit: 'L/100km' }},
 
-  { id: 'CX-80',       name: '2024 Mazda CX-80', power:192, acc:8.4, topSpeed:219, engine: '3.3 e-Skyactiv D', price: '$54.950', img: '/static/images/mazdaCX80.png', rearImg: '/static/rearimg/mazdaCX80-rear.png' , consumption: { value:7.0, unit: 'L/100km' }},
+  { id: 'CX-80',       name: '2024 Mazda CX-80', power:192, acc:8.4, topSpeed:219, engine: '3.3 e-Skyactiv D', price: '$54.950', img: '/static/images/mazdaCX80.jpg', rearImg: '/static/rearimg/mazdaCX80-rear.png' , consumption: { value:7.0, unit: 'L/100km' }},
 
   { id: 'RX-7',        name: '1993 Mazda RX-7', power:239, acc:5.3, topSpeed:250, engine: 'Wankel Twin Turbo', price: '$65.000', img: '/static/images/mazdaRX7.jpg', rearImg: '/static/rearimg/mazdaRX7-rear.png' , consumption: { value:14.0, unit: 'L/100km' }},
   

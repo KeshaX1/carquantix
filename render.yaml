@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: car-quantix
+    env: python
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT main:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: BASE_URL
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: SMTP_USE_TLS
+        value: "1"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: FACEBOOK_CLIENT_ID
+        sync: false
+      - key: FACEBOOK_CLIENT_SECRET
+        sync: false
+      - key: PADDLE_ENV
+        value: sandbox
+      - key: PADDLE_API_KEY
+        sync: false
+      - key: PADDLE_PRICE_ID
+        sync: false
+      - key: PADDLE_WEBHOOK_SECRET
+        sync: false
+      - key: PADDLE_CLIENT_TOKEN
+        sync: false
+      - key: FEATURED_CAR_LIMIT
+        value: "10"
