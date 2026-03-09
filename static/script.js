@@ -60,6 +60,32 @@ const VEHICLES = [
 
   { id: '218',             name: '2024 BMW 218',        power:136, acc:9.1, topSpeed:215, engine: '218i', price: '$26.900', img: '/static/images/bmw218.png', rearImg: '/static/rearimg/bmw218-rear.png' , consumption: { value:6.0, unit: 'L/100km' }},
 
+  { id: '220',             name: '2020 BMW 220',       power:190, acc:7.1, topSpeed:230, engine: '220d', price: '$22,400', img: '/static/images/bmw220.jpg', rearImg: '/static/rearimg/bmw220-rear.png' , consumption: { value:6.5, unit: 'L/100km' }},
+
+  { id:'223',              name: '2025 BMW 223',       power:218, acc:6.4, topSpeed:250, engine: '223 Mild Hybrid xDrive Steptronic DCT', price: '$40,990', img: '/static/images/bmw223.png', rearImg: '/static/rearimg/bmw223-rear.png' , consumption: { value:7.0, unit: 'L/100km' }},
+
+  { id:'225',              name: '2022 BMW 225',       power:224, acc:6.7, topSpeed:202, engine: '225xe', price: '$28,900', img: '/static/images/bmw225.png', rearImg: '/static/rearimg/bmw225-rear.png' , consumption: { value:6.7, unit: 'L/100km' }},
+
+  { id:'228',              name: '2016 BMW 228',       power:245, acc:6.0, topSpeed:250, engine: '228i', price: '$21,500', img: '/static/images/bmw228.png', rearImg: '/static/rearimg/bmw228-rear.png' , consumption: { value:6.6, unit: 'L/100km' }},
+
+  { id:'235',              name: '2024 BMW 235',       power:306, acc:4.8, topSpeed:250, engine: 'M235i', price: '$38,990', img: '/static/images/bmw235.png', rearImg: '/static/rearimg/bmw235-rear.jpg' , consumption: { value:8.0, unit: 'L/100km' }},
+
+  { id:'320',              name: '2024 BMW 320',       power:156, acc:9.1, topSpeed:222, engine: '320Li Steptronic', price: '$50,600', img: '/static/images/bmw320.png', rearImg: '/static/rearimg/bmw320-rear.png' , consumption: { value:7.5, unit: 'L/100km' }},
+
+  { id:'418',              name: '2017 BMW 418',       power:136, acc:9.0, topSpeed:212, engine: '418i', price: '$17.499', img: '/static/images/bmw418.png', rearImg: '/static/rearimg/bmw418-rear.png' , consumption: { value:7.5, unit: 'L/100km' }},
+
+  { id:'420',              name: '2025 BMW 420',       power:190, acc:7.6, topSpeed:233, engine: '420d Mild Hybrid xDrive Steptronic', price: '$53.399', img: '/static/images/bmw420.png', rearImg: '/static/rearimg/bmw420-rear.jpg' , consumption: { value:6.0, unit: 'L/100km' }},
+
+  { id:'435',              name: '2016 BMW 435',       power:306, acc:5.2, topSpeed:250, engine: '435i', price: '$27.900', img: '/static/images/bmw435.png', rearImg: '/static/rearimg/bmw435-rear.jpg' , consumption: { value:9.5, unit: 'L/100km' }},
+
+  { id:'525',              name: '2015 BMW 525',       power:218, acc:7.0, topSpeed:239, engine: '525d', price: '$13.590', img: '/static/images/bmw525.png', rearImg: '/static/rearimg/bmw525-rear.png' , consumption: { value:6.0, unit: 'L/100km' }},
+
+  { id:'550',              name: '2026 BMW 550',       power:489, acc:4.4, topSpeed:250, engine: '550e', price: '$77.750', img: '/static/images/bmw550.jpg', rearImg: '/static/rearimg/bmw550-rear.jpg' , consumption: { value:23.0, unit: 'kWh/100km' }},
+
+  { id:'620',              name: '2021 BMW 620',       power:190, acc:7.9, topSpeed:220, engine: '620d', price: '$32.990', img: '/static/images/bmw620.png', rearImg: '/static/rearimg/bmw620-rear.png' , consumption: { value:5.5, unit: 'L/100km' }},
+
+  { id:'635',              name: '2010 BMW 635',       power:287, acc:6.6, topSpeed:250, engine: '635d', price: '$14.990', img: '/static/images/bmw635.jpg', rearImg: '/static/rearimg/bmw635-rear.jpg' , consumption: { value:8.5, unit: 'L/100km' }},
+
   { id: 'M1',              name: '2024 BMW M1',        power:300, acc:4.9, topSpeed:250, engine: 'M135 xDrive Steptronic DCT', price: '$43.960', img: '/static/images/bmwM1.jpg', rearImg: '/static/rearimg/bmwM1-rear.png' , consumption: { value:8.5, unit: 'L/100km' }},
   
   { id: 'M2',              name: '2024 BMW M2',        power:530, acc:3.8, topSpeed:302, engine: 'CS 3.0 M Steptronic', price: '$124.405', img: '/static/images/bmwM2.jpg', rearImg: '/static/rearimg/bmwM2-rear.png' , consumption: { value:10.0, unit: 'L/100km' }},
