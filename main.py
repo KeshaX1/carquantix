@@ -69,9 +69,23 @@ if FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET:
         client_kwargs={'scope': 'email'}
     )
 
-USERS_PATH = Path(__file__).with_name("users.json")
-PENDING_PATH = Path(__file__).with_name("pending_verifications.json")
-PENDING_RESET_PATH = Path(__file__).with_name("pending_resets.json")
+def resolve_data_path(env_var_name, filename):
+    explicit = (os.environ.get(env_var_name, "") or "").strip()
+    if explicit:
+        return Path(explicit).expanduser()
+    data_dir = (os.environ.get("APP_DATA_DIR", "") or "").strip()
+    if data_dir:
+        return Path(data_dir).expanduser() / filename
+    return Path(__file__).with_name(filename)
+
+
+def ensure_parent_dir(path_obj):
+    path_obj.parent.mkdir(parents=True, exist_ok=True)
+
+
+USERS_PATH = resolve_data_path("USERS_PATH", "users.json")
+PENDING_PATH = resolve_data_path("PENDING_PATH", "pending_verifications.json")
+PENDING_RESET_PATH = resolve_data_path("PENDING_RESET_PATH", "pending_resets.json")
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 STATIC_DIR = Path(__file__).with_name("static")
@@ -268,6 +282,7 @@ def load_users():
 
 
 def save_users(users):
+    ensure_parent_dir(USERS_PATH)
     USERS_PATH.write_text(json.dumps(users, indent=2), encoding="utf-8")
 
 
@@ -375,6 +390,7 @@ def load_pending():
 
 
 def save_pending(data):
+    ensure_parent_dir(PENDING_PATH)
     PENDING_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
@@ -408,6 +424,7 @@ def load_reset_pending():
 
 
 def save_reset_pending(data):
+    ensure_parent_dir(PENDING_RESET_PATH)
     PENDING_RESET_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
@@ -969,7 +986,9 @@ def confirm_billing_transaction():
         "paddle_subscription_id": subscription_id or None,
         "paddle_last_transaction_id": transaction_id,
     }
-    upsert_user(email, patch)
+    updated_user = upsert_user(email, patch)
+    if updated_user:
+        session["user"] = session_user_payload(updated_user)
     return jsonify({"ok": True, "status": "active"}), 200
 
 
