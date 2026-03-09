@@ -118,6 +118,22 @@ FEATURED_CAR_SLUGS = [
     "2020-ford-mustang",
 ]
 FEATURED_CAR_LIMIT = int(os.environ.get("FEATURED_CAR_LIMIT", "10"))
+FEATURED_COMPARE_REFERENCES = [
+    ("RS6", "M5 CS"),
+    ("Chiron", "Agera RS"),
+    ("Veneno", "Enzo Ferrari"),
+    ("SLS", "Lagonda"),
+    ("Huayra", "720S"),
+    ("M3", "RS3"),
+]
+FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", "12"))
+LEGACY_COMPARE_SLUGS = {
+    "audi-rs6-vs-bmw-m5-cs": ("RS6", "M5 CS"),
+    "bugatti-chiron-vs-koenigsegg-agera-rs": ("Chiron", "Agera RS"),
+    "lamborghini-veneno-vs-ferrari-enzo-ferrari": ("Veneno", "Enzo Ferrari"),
+    "mercedes-benz-sls-vs-aston-martin-lagonda": ("SLS", "Lagonda"),
+    "pagani-huayra-vs-mclaren-720s": ("Huayra", "720S"),
+}
 
 SEO_SLUGS = {
     "audi-sq8-2024-fuel-cost",
@@ -131,11 +147,6 @@ SEO_SLUGS = {
     "audi-rs6-top-speed",
     "porsche-911-turbo-top-speed",
     "mercedes-amg-gt-top-speed",
-    "audi-rs6-vs-bmw-m5-cs",
-    "bugatti-chiron-vs-koenigsegg-agera-rs",
-    "lamborghini-veneno-vs-ferrari-enzo-ferrari",
-    "mercedes-benz-sls-vs-aston-martin-lagonda",
-    "pagani-huayra-vs-mclaren-720s",
 }
 
 
@@ -228,6 +239,168 @@ def select_featured_car_links(car_links):
         if featured:
             return featured[:FEATURED_CAR_LIMIT]
     return car_links[:FEATURED_CAR_LIMIT]
+
+
+def resolve_car_reference(reference, cars, slug_map):
+    token = str(reference or "").strip().lower()
+    if not token:
+        return None
+    direct = slug_map.get(token)
+    if direct:
+        return direct
+    for car in cars:
+        car_slug = str(car.get("slug") or "").strip().lower()
+        car_id = str(car.get("id") or "").strip().lower()
+        car_name = str(car.get("name") or "").strip().lower()
+        if token in {car_slug, car_id, car_name}:
+            return car
+    return None
+
+
+def canonicalize_compare_pair(car_a, car_b):
+    if not car_a or not car_b:
+        return None, None
+    ordered = sorted(
+        [car_a, car_b],
+        key=lambda car: (
+            str(car.get("name") or "").lower(),
+            str(car.get("slug") or "").lower(),
+        ),
+    )
+    return ordered[0], ordered[1]
+
+
+def build_compare_slug(car_a, car_b):
+    left, right = canonicalize_compare_pair(car_a, car_b)
+    if not left or not right:
+        return ""
+    return f"{left['slug']}-vs-{right['slug']}"
+
+
+def build_compare_href(car_a, car_b):
+    slug = build_compare_slug(car_a, car_b)
+    if not slug:
+        return ""
+    return f"/compare/{slug}"
+
+
+def resolve_compare_slug(compare_slug, slug_map):
+    slug_text = str(compare_slug or "").strip().lower()
+    if not slug_text or "-vs-" not in slug_text:
+        return None
+    left_slug, right_slug = slug_text.split("-vs-", 1)
+    left_car = slug_map.get(left_slug)
+    right_car = slug_map.get(right_slug)
+    if not left_car or not right_car:
+        return None
+    canonical_slug = build_compare_slug(left_car, right_car)
+    if not canonical_slug:
+        return None
+    left_car, right_car = canonicalize_compare_pair(left_car, right_car)
+    return {
+        "left_car": left_car,
+        "right_car": right_car,
+        "canonical_slug": canonical_slug,
+    }
+
+
+def build_compare_spec_rows(car_a, car_b):
+    def metric_row(label, key, higher_is_better=True, formatter=None):
+        left_value = car_a.get(key)
+        right_value = car_b.get(key)
+        winner = None
+        if isinstance(left_value, (int, float)) and isinstance(right_value, (int, float)) and left_value != right_value:
+            if higher_is_better:
+                winner = "left" if left_value > right_value else "right"
+            else:
+                winner = "left" if left_value < right_value else "right"
+        return {
+            "label": label,
+            "left_value": formatter(left_value) if formatter else left_value,
+            "right_value": formatter(right_value) if formatter else right_value,
+            "winner": winner,
+        }
+
+    consumption_a = car_a.get("consumption") or {}
+    consumption_b = car_b.get("consumption") or {}
+    same_consumption_unit = consumption_a.get("unit") and consumption_a.get("unit") == consumption_b.get("unit")
+    consumption_winner = None
+    if same_consumption_unit:
+        value_a = consumption_a.get("value")
+        value_b = consumption_b.get("value")
+        if isinstance(value_a, (int, float)) and isinstance(value_b, (int, float)) and value_a != value_b:
+            consumption_winner = "left" if value_a < value_b else "right"
+
+    return [
+        metric_row("Power", "power", True, lambda value: f"{value} hp" if value is not None else "-"),
+        metric_row("0-100 km/h", "acc", False, lambda value: f"{value} s" if value is not None else "-"),
+        metric_row("Top Speed", "topSpeed", True, lambda value: f"{value} km/h" if value is not None else "-"),
+        {
+            "label": "Engine",
+            "left_value": car_a.get("engine") or "-",
+            "right_value": car_b.get("engine") or "-",
+            "winner": None,
+        },
+        {
+            "label": "Price",
+            "left_value": car_a.get("price") or "-",
+            "right_value": car_b.get("price") or "-",
+            "winner": None,
+        },
+        {
+            "label": "Consumption",
+            "left_value": (
+                f"{consumption_a.get('value')} {consumption_a.get('unit')}"
+                if consumption_a.get("value") is not None and consumption_a.get("unit")
+                else "-"
+            ),
+            "right_value": (
+                f"{consumption_b.get('value')} {consumption_b.get('unit')}"
+                if consumption_b.get("value") is not None and consumption_b.get("unit")
+                else "-"
+            ),
+            "winner": consumption_winner,
+        },
+    ]
+
+
+def build_compare_meta_description(car_a, car_b):
+    parts = []
+    if car_a.get("power") is not None and car_b.get("power") is not None:
+        parts.append(f"{car_a['power']} hp vs {car_b['power']} hp")
+    if car_a.get("acc") is not None and car_b.get("acc") is not None:
+        parts.append(f"0-100 km/h {car_a['acc']} s vs {car_b['acc']} s")
+    if car_a.get("topSpeed") is not None and car_b.get("topSpeed") is not None:
+        parts.append(f"{car_a['topSpeed']} km/h vs {car_b['topSpeed']} km/h")
+    summary = ", ".join(parts[:3])
+    if summary:
+        return f"Compare {car_a.get('name', 'Car A')} vs {car_b.get('name', 'Car B')}: {summary}."
+    return f"Compare {car_a.get('name', 'Car A')} vs {car_b.get('name', 'Car B')} on CarQuantix."
+
+
+def build_featured_compare_links(cars, slug_map):
+    links = []
+    seen = set()
+    for left_ref, right_ref in FEATURED_COMPARE_REFERENCES:
+        left_car = resolve_car_reference(left_ref, cars, slug_map)
+        right_car = resolve_car_reference(right_ref, cars, slug_map)
+        if not left_car or not right_car:
+            continue
+        href = build_compare_href(left_car, right_car)
+        if not href or href in seen:
+            continue
+        seen.add(href)
+        links.append(
+            {
+                "href": href,
+                "title": f"{left_car.get('name')} vs {right_car.get('name')}",
+                "left_car": left_car,
+                "right_car": right_car,
+            }
+        )
+        if len(links) >= FEATURED_COMPARE_LIMIT:
+            break
+    return links
 
 
 @app.before_request
@@ -693,15 +866,17 @@ def health():
 @app.route("/")
 def index():
     user = session.get("user")
-    cars, _ = load_cars()
+    cars, slug_map = load_cars()
     car_links = build_car_links(cars)
     featured_car_links = select_featured_car_links(car_links)
+    featured_compare_links = build_featured_compare_links(cars, slug_map)
     canonical_url = f"{get_base_url()}{request.path}"
     return render_template(
         "index.html",
         user=user,
         car_links=car_links,
         featured_car_links=featured_car_links,
+        featured_compare_links=featured_compare_links,
         paddle_client_token=PADDLE_CLIENT_TOKEN,
         paddle_env=PADDLE_ENV,
         canonical_url=canonical_url,
@@ -1035,9 +1210,53 @@ def car_detail_legacy(slug):
     return redirect(f"/cars/{slug}", code=301)
 
 
+@app.route("/compare/<compare_slug>")
+def compare_detail(compare_slug):
+    user = session.get("user")
+    cars, slug_map = load_cars()
+    resolved = resolve_compare_slug(compare_slug, slug_map)
+    if not resolved:
+        return "Not Found", 404
+    if compare_slug != resolved["canonical_slug"]:
+        return redirect(f"/compare/{resolved['canonical_slug']}", code=301)
+
+    left_car = resolved["left_car"]
+    right_car = resolved["right_car"]
+    compare_rows = build_compare_spec_rows(left_car, right_car)
+    canonical_url = f"{get_base_url()}/compare/{resolved['canonical_slug']}"
+    meta_title = f"{left_car.get('name')} vs {right_car.get('name')} | CarQuantix"
+    meta_description = build_compare_meta_description(left_car, right_car)
+    page_schema = {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": meta_title,
+        "description": meta_description,
+        "url": canonical_url,
+        "mainEntity": {
+            "@type": "ItemList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": left_car.get("name"), "url": f"{get_base_url()}/cars/{left_car.get('slug')}"},
+                {"@type": "ListItem", "position": 2, "name": right_car.get("name"), "url": f"{get_base_url()}/cars/{right_car.get('slug')}"},
+            ],
+        },
+    }
+    return render_template(
+        "compare_detail.html",
+        user=user,
+        left_car=left_car,
+        right_car=right_car,
+        compare_rows=compare_rows,
+        canonical_url=canonical_url,
+        meta_title=meta_title,
+        meta_description=meta_description,
+        robots_directive="index,follow",
+        page_schema=page_schema,
+    )
+
+
 @app.route("/sitemap.xml")
 def sitemap():
-    _, slug_map = load_cars()
+    cars, slug_map = load_cars()
     base_url = get_base_url()
     urls = [
         f"{base_url}/",
@@ -1049,6 +1268,7 @@ def sitemap():
         f"{base_url}/privacy-policy",
     ]
     urls.extend(f"{base_url}/cars/{slug}" for slug in sorted(slug_map.keys()))
+    urls.extend(f"{base_url}{entry['href']}" for entry in build_featured_compare_links(cars, slug_map))
     entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
     xml = (
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1072,18 +1292,28 @@ def favicon():
 @app.route("/<slug>")
 def seo_slug(slug):
     normalized = re.sub(r"\s+", "-", (slug or "").strip().lower())
+    if normalized in LEGACY_COMPARE_SLUGS:
+        cars, slug_map = load_cars()
+        left_ref, right_ref = LEGACY_COMPARE_SLUGS[normalized]
+        left_car = resolve_car_reference(left_ref, cars, slug_map)
+        right_car = resolve_car_reference(right_ref, cars, slug_map)
+        if left_car and right_car:
+            return redirect(build_compare_href(left_car, right_car), code=301)
+        return "Not Found", 404
     if normalized in SEO_SLUGS:
         if normalized != slug:
             return redirect(f"/{normalized}", code=301)
         user = session.get("user")
-        cars, _ = load_cars()
+        cars, slug_map = load_cars()
         car_links = build_car_links(cars)
         featured_car_links = select_featured_car_links(car_links)
+        featured_compare_links = build_featured_compare_links(cars, slug_map)
         return render_template(
             "index.html",
             user=user,
             car_links=car_links,
             featured_car_links=featured_car_links,
+            featured_compare_links=featured_compare_links,
             canonical_url=f"{get_base_url()}/",
             meta_title="CarQuantix - Compare Cars and Motorcycles",
             meta_description="Compare horsepower, acceleration and top speed with CarQuantix.",

@@ -320,11 +320,17 @@
 
     <h3 data-i18n="seoHeading7">Popular Comparisons</h3>
     <div class="seo-links" aria-label="Popular comparisons">
+      {% if featured_compare_links %}
+        {% for entry in featured_compare_links %}
+      <a href="{{ entry.href }}">{{ entry.title }}</a>
+        {% endfor %}
+      {% else %}
       <a href="/audi-rs6-vs-bmw-m5-cs">Audi RS6 vs BMW M5 CS</a>
       <a href="/bugatti-chiron-vs-koenigsegg-agera-rs">Bugatti Chiron vs Koenigsegg Agera RS</a>
       <a href="/lamborghini-veneno-vs-ferrari-enzo-ferrari">Lamborghini Veneno vs Ferrari Enzo Ferrari</a>
       <a href="/mercedes-benz-sls-vs-aston-martin-lagonda">Mercedes-Benz SLS vs Aston Martin Lagonda</a>
       <a href="/pagani-huayra-vs-mclaren-720s">Pagani Huayra vs McLaren 720S</a>
+      {% endif %}
     </div>
 
     {% if featured_car_links %}
