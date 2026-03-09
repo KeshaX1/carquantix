@@ -257,6 +257,37 @@ def resolve_car_reference(reference, cars, slug_map):
     return None
 
 
+def slugify_compare_token(value):
+    raw = str(value or "").strip().lower()
+    raw = re.sub(r"[^a-z0-9]+", "-", raw).strip("-")
+    return raw
+
+
+def build_compare_car_token(car):
+    base_slug = str(car.get("slug") or "").strip().lower()
+    id_slug = slugify_compare_token(car.get("id"))
+    if not base_slug:
+        return id_slug
+    if not id_slug or id_slug in base_slug:
+        return base_slug
+    return f"{base_slug}-{id_slug}"
+
+
+def compare_slug_candidates(car):
+    candidates = []
+    for value in (
+        car.get("slug"),
+        build_compare_car_token(car),
+        car.get("id"),
+        car.get("name"),
+        f"{car.get('name') or ''} {car.get('id') or ''}",
+    ):
+        token = slugify_compare_token(value)
+        if token and token not in candidates:
+            candidates.append(token)
+    return candidates
+
+
 def canonicalize_compare_pair(car_a, car_b):
     if not car_a or not car_b:
         return None, None
@@ -274,7 +305,11 @@ def build_compare_slug(car_a, car_b):
     left, right = canonicalize_compare_pair(car_a, car_b)
     if not left or not right:
         return ""
-    return f"{left['slug']}-vs-{right['slug']}"
+    left_token = build_compare_car_token(left)
+    right_token = build_compare_car_token(right)
+    if not left_token or not right_token:
+        return ""
+    return f"{left_token}-vs-{right_token}"
 
 
 def build_compare_href(car_a, car_b):
@@ -288,9 +323,10 @@ def resolve_compare_slug(compare_slug, slug_map):
     slug_text = str(compare_slug or "").strip().lower()
     if not slug_text or "-vs-" not in slug_text:
         return None
+    cars, _ = load_cars()
     left_slug, right_slug = slug_text.split("-vs-", 1)
-    left_car = slug_map.get(left_slug)
-    right_car = slug_map.get(right_slug)
+    left_car = next((car for car in cars if left_slug in compare_slug_candidates(car)), None)
+    right_car = next((car for car in cars if right_slug in compare_slug_candidates(car)), None)
     if not left_car or not right_car:
         return None
     canonical_slug = build_compare_slug(left_car, right_car)
