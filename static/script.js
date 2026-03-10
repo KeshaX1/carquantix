@@ -1652,21 +1652,50 @@ const t = (key) => {
 
 const HEART_FILLED = '&#9829;';
 const HEART_EMPTY = '&#9825;';
-const sessionUser = (window.currentUser && (window.currentUser.email || window.currentUser.name || window.currentUser.id || window.currentUser.sub)) ? window.currentUser : null;
-const hasPremiumAccess = Boolean(
-  sessionUser && (
-    sessionUser.is_premium === true
-    || ['active', 'trialing'].includes(String(sessionUser.subscription_status || '').toLowerCase())
-  )
-);
+let sessionUser = (window.currentUser && (window.currentUser.email || window.currentUser.name || window.currentUser.id || window.currentUser.sub)) ? window.currentUser : null;
+function computePremiumAccess(user) {
+  return Boolean(
+    user && (
+      user.is_premium === true
+      || ['active', 'trialing'].includes(String(user.subscription_status || '').toLowerCase())
+    )
+  );
+}
+let hasPremiumAccess = computePremiumAccess(sessionUser);
 const FREE_COMPARE_LIMIT = 5;
 const PREMIUM_COMPARE_LIMIT = 8;
-const compareLimit = hasPremiumAccess ? PREMIUM_COMPARE_LIMIT : FREE_COMPARE_LIMIT;
+let compareLimit = hasPremiumAccess ? PREMIUM_COMPARE_LIMIT : FREE_COMPARE_LIMIT;
 const sessionUserId = sessionUser
   ? (sessionUser.email || sessionUser.name || sessionUser.id || sessionUser.sub || sessionUser.user_id || 'user')
   : null;
 const favoritesKey = sessionUserId ? `favorites:${sessionUserId}` : null;
 const favoritesEnabled = Boolean(sessionUserId && favoritesListEl);
+
+function syncPremiumState(nextUser) {
+  if (nextUser) {
+    sessionUser = nextUser;
+    window.currentUser = nextUser;
+  }
+  hasPremiumAccess = computePremiumAccess(sessionUser);
+  compareLimit = hasPremiumAccess ? PREMIUM_COMPARE_LIMIT : FREE_COMPARE_LIMIT;
+}
+
+function unlockPremiumUi() {
+  if (sessionUser) {
+    syncPremiumState({
+      ...sessionUser,
+      is_premium: true,
+      subscription_status: 'active',
+    });
+  } else {
+    hasPremiumAccess = true;
+    compareLimit = PREMIUM_COMPARE_LIMIT;
+  }
+  updateFuelPremiumUi();
+  updateFuelCalculator();
+  renderSelected();
+  if (selected.length) buildTable();
+}
 
 function normalizeFavorites(list) {
   if (!Array.isArray(list)) return [];
@@ -2133,8 +2162,8 @@ function calculateCost(vehicle) {
   const info = getConsumptionInfo(vehicle);
   if (!info) return null;
   const rate = getConsumptionType(info) === 'electric'
-    ? getStoredNumber('pricePerKwh', DEFAULT_PRICE_PER_KWH)
-    : getStoredNumber('pricePerLiter', DEFAULT_PRICE_PER_LITER);
+    ? getStoredNumber('pricePerKwh', DEFAULT_PRICE_PER_KWH, 100)
+    : getStoredNumber('pricePerLiter', DEFAULT_PRICE_PER_LITER, 100);
   const value = Number(info.value);
   if (!Number.isFinite(value) || value <= 0) return null;
   if (!Number.isFinite(rate) || rate <= 0) return null;
@@ -2152,12 +2181,12 @@ function formatCostValue(value) {
   return String(value);
 }
 
-function getStoredNumber(key, fallback) {
+function getStoredNumber(key, fallback, maxValue = Infinity) {
   const raw = localStorage.getItem(key);
   if (raw === null || raw === '') return fallback;
   const normalized = String(raw).replace(',', '.');
   const num = Number(normalized);
-  return Number.isFinite(num) && num > 0 ? num : fallback;
+  return Number.isFinite(num) && num > 0 && num <= maxValue ? num : fallback;
 }
 
 function setStoredNumber(key, value) {
@@ -2198,12 +2227,33 @@ function getConsumptionUnit(unit) {
 
 function loadFuelInputsForUnit(unit) {
   if (fuelCalcPrice) {
-    fuelCalcPrice.value = getStoredNumber(getPriceKey(unit), getDefaultPrice(unit));
+    fuelCalcPrice.value = getStoredNumber(getPriceKey(unit), getDefaultPrice(unit), 100);
   }
   if (fuelCalcConsumption) {
     const savedConsumption = localStorage.getItem(getConsumptionKey(unit));
     fuelCalcConsumption.value = savedConsumption !== null ? savedConsumption : '';
   }
+}
+
+function syncFuelCalculatorToSelection(force = false) {
+  if (!fuelCalcUnit || !fuelCalcConsumption || selected.length === 0) return;
+  const preferredVehicle = selected.find(v => getConsumptionInfo(v));
+  if (!preferredVehicle) return;
+  const info = getConsumptionInfo(preferredVehicle);
+  if (!info) return;
+  const preferredUnit = getConsumptionType(info);
+  const currentUnit = getFuelUnit();
+  const currentConsumption = parseNumberInput(fuelCalcConsumption.value);
+  if (force || currentUnit !== preferredUnit) {
+    fuelCalcUnit.value = preferredUnit;
+    localStorage.setItem(FUEL_UNIT_KEY, preferredUnit);
+    loadFuelInputsForUnit(preferredUnit);
+  }
+  if (force || currentUnit !== preferredUnit || !Number.isFinite(currentConsumption) || currentConsumption <= 0) {
+    fuelCalcConsumption.value = String(info.value);
+  }
+  updateFuelCalcLabels();
+  updateFuelCalculator();
 }
 
 function updateFuelCalcLabels() {
@@ -2383,11 +2433,18 @@ function bindPaddleEvents() {
   if (paddleEventsBound) return;
   if (!window.Paddle || !window.Paddle.Checkout || typeof window.Paddle.Checkout.on !== 'function') return;
   window.Paddle.Checkout.on('complete', async (data) => {
-    const txnId = extractTransactionIdFromEvent(data);
+    const txnId = extractTransactionIdFromEvent(data) || getPendingPaddleTxn();
     if (txnId) {
-      await confirmPaddleTransaction(String(txnId));
+      setPendingPaddleTxn(String(txnId));
+      const confirmed = await confirmPaddleTransaction(String(txnId));
+      if (confirmed) {
+        setPendingPaddleTxn('');
+        window.location.reload();
+        return;
+      }
+      startPendingConfirmPolling();
+      return;
     }
-    setPendingPaddleTxn('');
     window.location.reload();
   });
   paddleEventsBound = true;
@@ -2441,6 +2498,7 @@ async function confirmPaddleTransaction(transactionId) {
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok && data && data.ok) {
+      unlockPremiumUi();
       return true;
     }
   } catch (err) {
@@ -2514,10 +2572,6 @@ async function handlePendingPaddleCheckout() {
     return;
   }
   startPendingConfirmPolling();
-  if (openPaddleCheckout(pending)) {
-    setPendingPaddleTxn('');
-    return;
-  }
   if (fuelPremiumUnlockBtn) {
     fuelPremiumUnlockBtn.disabled = false;
     fuelPremiumUnlockBtn.textContent = t('premiumCheckoutResume');
@@ -2547,8 +2601,8 @@ async function startFuelPremiumCheckout() {
         window.location.reload();
         return;
       }
+      startPendingConfirmPolling();
       if (openPaddleCheckout(pending)) {
-        setPendingPaddleTxn('');
         return;
       }
       throw new Error(t('premiumCheckoutError'));
@@ -2826,6 +2880,8 @@ function renderSelected() {
     }
     compareArea.appendChild(card);
   });
+
+  syncFuelCalculatorToSelection();
 
   // attach remove handlers
   compareArea.querySelectorAll('.remove-btn').forEach(btn => {
