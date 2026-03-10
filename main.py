@@ -17,6 +17,13 @@ from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
 from car_data import load_cars
 
+try:
+    import psycopg
+    from psycopg.rows import dict_row
+except ImportError:
+    psycopg = None
+    dict_row = None
+
 # Load .env explicitly so it works even if the app is started from another directory
 DOTENV_PATH = Path(__file__).with_name(".env")
 load_dotenv(DOTENV_PATH, override=False)  # do not override Render env values
@@ -104,6 +111,7 @@ PADDLE_WEBHOOK_SECRET = os.environ.get("PADDLE_WEBHOOK_SECRET", "").strip()
 PADDLE_CLIENT_TOKEN = os.environ.get("PADDLE_CLIENT_TOKEN", "").strip()
 PADDLE_API_BASE = "https://api.paddle.com" if PADDLE_ENV == "production" else "https://sandbox-api.paddle.com"
 PREMIUM_ACTIVE_STATUSES = {"active", "trialing"}
+DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 
 FEATURED_CAR_SLUGS = [
     "2022-bmw-m5",
@@ -495,6 +503,60 @@ def save_users(users):
     USERS_PATH.write_text(json.dumps(users, indent=2), encoding="utf-8")
 
 
+def db_enabled():
+    return bool(DATABASE_URL and psycopg is not None)
+
+
+def get_db_conn():
+    if not db_enabled():
+        return None
+    return psycopg.connect(DATABASE_URL, row_factory=dict_row)
+
+
+def init_user_db():
+    if not db_enabled():
+        if DATABASE_URL and psycopg is None:
+            print("[db] DATABASE_URL is set but psycopg is not installed; falling back to users.json")
+        return
+    with get_db_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS users (
+                    id BIGSERIAL PRIMARY KEY,
+                    email TEXT NOT NULL UNIQUE,
+                    name TEXT,
+                    picture TEXT,
+                    password_hash TEXT,
+                    provider TEXT,
+                    subscription_status TEXT NOT NULL DEFAULT 'free',
+                    subscription_expires_at TEXT,
+                    subscription_updated_at BIGINT,
+                    paddle_customer_id TEXT,
+                    paddle_subscription_id TEXT,
+                    paddle_last_transaction_id TEXT,
+                    paddle_last_event_type TEXT,
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                )
+                """
+            )
+            cur.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users (lower(email))")
+            cur.execute("CREATE INDEX IF NOT EXISTS idx_users_paddle_customer_id ON users (paddle_customer_id)")
+            cur.execute("CREATE INDEX IF NOT EXISTS idx_users_paddle_subscription_id ON users (paddle_subscription_id)")
+        conn.commit()
+
+
+def count_db_users():
+    if not db_enabled():
+        return 0
+    with get_db_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) AS count FROM users")
+            row = cur.fetchone() or {}
+            return int(row.get("count") or 0)
+
+
 def get_smtp_config():
     host = os.environ.get("SMTP_HOST")
     port = os.environ.get("SMTP_PORT")
@@ -654,6 +716,11 @@ def find_user(email):
     if not email:
         return None
     email_l = email.lower()
+    if db_enabled():
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT * FROM users WHERE lower(email) = %s LIMIT 1", (email_l,))
+                return cur.fetchone()
     for u in load_users():
         if u.get("email", "").lower() == email_l:
             return u
@@ -698,11 +765,109 @@ def find_user_index_by_billing_ids(users, customer_id=None, subscription_id=None
     return None
 
 
+def find_user_by_billing_ids(customer_id=None, subscription_id=None):
+    customer_id = (customer_id or "").strip()
+    subscription_id = (subscription_id or "").strip()
+    if not customer_id and not subscription_id:
+        return None
+    if db_enabled():
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                if customer_id and subscription_id:
+                    cur.execute(
+                        """
+                        SELECT * FROM users
+                        WHERE paddle_customer_id = %s OR paddle_subscription_id = %s
+                        LIMIT 1
+                        """,
+                        (customer_id, subscription_id),
+                    )
+                elif customer_id:
+                    cur.execute("SELECT * FROM users WHERE paddle_customer_id = %s LIMIT 1", (customer_id,))
+                else:
+                    cur.execute("SELECT * FROM users WHERE paddle_subscription_id = %s LIMIT 1", (subscription_id,))
+                return cur.fetchone()
+    users = load_users()
+    idx = find_user_index_by_billing_ids(users, customer_id, subscription_id)
+    if idx is None:
+        return None
+    return users[idx]
+
+
 def upsert_user(email, patch):
     email = (email or "").strip().lower()
     if not email:
         return None
     updates = patch or {}
+    if db_enabled():
+        payload = {
+            "email": email,
+            "name": updates.get("name"),
+            "picture": updates.get("picture"),
+            "password_hash": updates.get("password_hash"),
+            "provider": updates.get("provider"),
+            "subscription_status": updates.get("subscription_status") or "free",
+            "subscription_expires_at": updates.get("subscription_expires_at"),
+            "subscription_updated_at": updates.get("subscription_updated_at"),
+            "paddle_customer_id": updates.get("paddle_customer_id"),
+            "paddle_subscription_id": updates.get("paddle_subscription_id"),
+            "paddle_last_transaction_id": updates.get("paddle_last_transaction_id"),
+            "paddle_last_event_type": updates.get("paddle_last_event_type"),
+        }
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO users (
+                        email,
+                        name,
+                        picture,
+                        password_hash,
+                        provider,
+                        subscription_status,
+                        subscription_expires_at,
+                        subscription_updated_at,
+                        paddle_customer_id,
+                        paddle_subscription_id,
+                        paddle_last_transaction_id,
+                        paddle_last_event_type,
+                        updated_at
+                    )
+                    VALUES (
+                        %(email)s,
+                        %(name)s,
+                        %(picture)s,
+                        %(password_hash)s,
+                        %(provider)s,
+                        %(subscription_status)s,
+                        %(subscription_expires_at)s,
+                        %(subscription_updated_at)s,
+                        %(paddle_customer_id)s,
+                        %(paddle_subscription_id)s,
+                        %(paddle_last_transaction_id)s,
+                        %(paddle_last_event_type)s,
+                        NOW()
+                    )
+                    ON CONFLICT (email) DO UPDATE SET
+                        name = COALESCE(EXCLUDED.name, users.name),
+                        picture = COALESCE(EXCLUDED.picture, users.picture),
+                        password_hash = COALESCE(EXCLUDED.password_hash, users.password_hash),
+                        provider = COALESCE(EXCLUDED.provider, users.provider),
+                        subscription_status = COALESCE(EXCLUDED.subscription_status, users.subscription_status),
+                        subscription_expires_at = COALESCE(EXCLUDED.subscription_expires_at, users.subscription_expires_at),
+                        subscription_updated_at = COALESCE(EXCLUDED.subscription_updated_at, users.subscription_updated_at),
+                        paddle_customer_id = COALESCE(EXCLUDED.paddle_customer_id, users.paddle_customer_id),
+                        paddle_subscription_id = COALESCE(EXCLUDED.paddle_subscription_id, users.paddle_subscription_id),
+                        paddle_last_transaction_id = COALESCE(EXCLUDED.paddle_last_transaction_id, users.paddle_last_transaction_id),
+                        paddle_last_event_type = COALESCE(EXCLUDED.paddle_last_event_type, users.paddle_last_event_type),
+                        updated_at = NOW()
+                    RETURNING *
+                    """,
+                    payload,
+                )
+                row = cur.fetchone()
+            conn.commit()
+        return row
     users = load_users()
     idx = find_user_index(users, email)
     if idx is None:
@@ -729,6 +894,54 @@ def upsert_user(email, patch):
     if changed:
         save_users(users)
     return user
+
+
+def update_user_password(email, password_hash):
+    email = (email or "").strip().lower()
+    if not email or not password_hash:
+        return None
+    if db_enabled():
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE users
+                    SET password_hash = %s, updated_at = NOW()
+                    WHERE lower(email) = %s
+                    RETURNING *
+                    """,
+                    (password_hash, email),
+                )
+                row = cur.fetchone()
+            conn.commit()
+        return row
+    users = load_users()
+    updated_user = None
+    for idx, u in enumerate(users):
+        if u.get("email", "").lower() == email:
+            users[idx]["password_hash"] = password_hash
+            updated_user = users[idx]
+            break
+    if updated_user:
+        save_users(users)
+    return updated_user
+
+
+def migrate_json_users_to_db():
+    if not db_enabled():
+        return
+    if count_db_users() > 0:
+        return
+    users = load_users()
+    migrated = 0
+    for user in users:
+        email = (user.get("email") or "").strip().lower()
+        if not email:
+            continue
+        upsert_user(email, user)
+        migrated += 1
+    if migrated:
+        print(f"[db] migrated {migrated} users from users.json to Postgres")
 
 
 def parse_unix_timestamp(value):
@@ -890,6 +1103,10 @@ def refresh_session_user_from_store():
     normalized = session_user_payload(base)
     if normalized != current:
         session["user"] = normalized
+
+
+init_user_db()
+migrate_json_users_to_db()
 
 @app.route("/login-media/<path:filename>")
 def login_media(filename):
@@ -1091,10 +1308,9 @@ def paddle_webhook():
     ids = extract_billing_identifiers(event_data)
     status = resolve_subscription_status(event_type, event_data)
 
-    users = load_users()
-    idx = find_user_index(users, ids["email"])
-    if idx is None:
-        idx = find_user_index_by_billing_ids(users, ids["customer_id"], ids["subscription_id"])
+    matched_user = find_user(ids["email"])
+    if not matched_user:
+        matched_user = find_user_by_billing_ids(ids["customer_id"], ids["subscription_id"])
 
     now_ts = int(time.time())
     patch = {
@@ -1109,27 +1325,18 @@ def paddle_webhook():
     if event_data.get("id") and str(event_data.get("id")).startswith("txn_"):
         patch["paddle_last_transaction_id"] = event_data.get("id")
 
-    if idx is None:
+    if not matched_user:
         if not ids["email"]:
             return jsonify({"ok": True, "message": "No matching user for webhook payload."}), 200
         new_user = {"name": ids["email"], "email": ids["email"], "subscription_status": "free"}
         for key, value in patch.items():
             if value is not None:
                 new_user[key] = value
-        users.append(new_user)
-        save_users(users)
+        upsert_user(ids["email"], new_user)
         return jsonify({"ok": True, "updated": ids["email"]}), 200
 
-    changed = False
-    for key, value in patch.items():
-        if value is None:
-            continue
-        if users[idx].get(key) != value:
-            users[idx][key] = value
-            changed = True
-    if changed:
-        save_users(users)
-    return jsonify({"ok": True, "updated": users[idx].get("email")}), 200
+    updated_user = upsert_user(matched_user.get("email"), patch)
+    return jsonify({"ok": True, "updated": (updated_user or matched_user).get("email")}), 200
 
 
 @app.route("/api/billing/confirm", methods=["POST"])
@@ -1510,14 +1717,12 @@ def signup_verify():
         "password_hash": entry.get("password_hash"),
         "subscription_status": "free",
     }
-    users = load_users()
-    users.append(user_record)
-    save_users(users)
+    persisted_user = upsert_user(email, user_record) or user_record
 
     pending.pop(email, None)
     save_pending(pending)
 
-    session["user"] = session_user_payload(user_record)
+    session["user"] = session_user_payload(persisted_user)
     return jsonify({"ok": True, "message": "Account created and verified."})
 
 
@@ -1579,19 +1784,12 @@ def forgot_password_verify():
     if entry.get("code") != code:
         return jsonify({"ok": False, "message": "Invalid reset code."}), 400
 
-    users = load_users()
-    updated_user = None
-    for idx, u in enumerate(users):
-        if u.get("email", "").lower() == email:
-            users[idx]["password_hash"] = generate_password_hash(new_password)
-            updated_user = users[idx]
-            break
+    updated_user = update_user_password(email, generate_password_hash(new_password))
     if not updated_user:
         pending.pop(email, None)
         save_reset_pending(pending)
         return jsonify({"ok": False, "message": "No account found for this email."}), 400
 
-    save_users(users)
     pending.pop(email, None)
     save_reset_pending(pending)
 
