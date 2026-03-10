@@ -66,7 +66,7 @@ const VEHICLES = [
 
   { id:'225',              name: '2022 BMW 225',       power:224, acc:6.7, topSpeed:202, engine: '225xe', price: '$28,900', img: '/static/images/bmw225.png', rearImg: '/static/rearimg/bmw225-rear.png' , consumption: { value:6.7, unit: 'L/100km' }},
 
-  { id:'228',              name: '2016 BMW 228',       power:245, acc:6.0, topSpeed:250, engine: '228i', price: '$21,500', img: '/static/images/bmw228.png', rearImg: '/static/rearimg/bmw228-rear.png' , consumption: { value:6.6, unit: 'L/100km' }},
+  { id:'228',              name: '2016 BMW 228',       power:245, acc:6.0, topSpeed:250, engine: '228i', price: '$21,500', img: '/static/images/bmw228.jpg', rearImg: '/static/rearimg/bmw228-rear.png' , consumption: { value:6.6, unit: 'L/100km' }},
 
   { id:'235',              name: '2024 BMW 235',       power:306, acc:4.8, topSpeed:250, engine: 'M235i', price: '$38,990', img: '/static/images/bmw235.png', rearImg: '/static/rearimg/bmw235-rear.jpg' , consumption: { value:8.0, unit: 'L/100km' }},
 
@@ -85,6 +85,8 @@ const VEHICLES = [
   { id:'620',              name: '2021 BMW 620',       power:190, acc:7.9, topSpeed:220, engine: '620d', price: '$32.990', img: '/static/images/bmw620.png', rearImg: '/static/rearimg/bmw620-rear.png' , consumption: { value:5.5, unit: 'L/100km' }},
 
   { id:'635',              name: '2010 BMW 635',       power:287, acc:6.6, topSpeed:250, engine: '635d', price: '$14.990', img: '/static/images/bmw635.jpg', rearImg: '/static/rearimg/bmw635-rear.jpg' , consumption: { value:8.5, unit: 'L/100km' }},
+
+  { id:'i4',               name: '2025 BMW i4',        power:544, acc:3.9, topSpeed:225, engine: 'M50 83.9 kWh', price: '$53.770', img: '/static/images/bmwi4.jpg', rearImg: '/static/rearimg/bmwi4-rear.png' , consumption: { value:20.0, unit: 'kWh/100km' }},
 
   { id: 'M1',              name: '2024 BMW M1',        power:300, acc:4.9, topSpeed:250, engine: 'M135 xDrive Steptronic DCT', price: '$43.960', img: '/static/images/bmwM1.jpg', rearImg: '/static/rearimg/bmwM1-rear.png' , consumption: { value:8.5, unit: 'L/100km' }},
   
@@ -121,6 +123,8 @@ const VEHICLES = [
   { id: 'AMG ONE',         name: '2025 Mercedes-Benz AMG ONE', power:1063, acc:2.9, topSpeed:352, engine: '1.6 V6 E PERFORMANCE', price: '$3,387,950', img: '/static/images/mercedesAMGONE.jpg', rearImg: '/static/rearimg/mercedesAMGONE-rear.png' , consumption: { value:35, unit: 'L/100km' }},
 
   { id: 'C 63 AMG',        name: '2014 Mercedes-Benz C 63 AMG', power:507, acc:4.2, topSpeed:280, engine: 'AMG C 63 AMG Edition V8', price: '$91,507', img: '/static/images/mercedesC63AMG.jpg', rearImg: '/static/rearimg/mercedesC63AMG-rear.png' , consumption: { value:7.0, unit: 'L/100km' }},
+
+  { id: 'C 63 AMG 2',      name: '2020 Mercedes-Benz C 63 AMG', power:510, acc:4.0, topSpeed:280, engine: '4.0 L V8 Biturbo', price: '$63.950', img: '/static/images/mercedesC63AMG2.jpg', rearImg: '/static/rearimg/mercedesC63AMG2-rear.png' , consumption: { value:10.0, unit: 'L/100km' }},
 
   { id: 'CLK 63 AMG',      name: '2008 Mercedes-Benz CLK 63 AMG', power:507, acc:4.3, topSpeed:300, engine: 'AMG CLK 63 Black Series V8 7G-TRONIC AMG SPEEDSHIFT', price: '$118,990', img: '/static/images/mercedesCLK63AMG.jpg', rearImg: '/static/rearimg/mercedesCLK63AMG-rear.jpg' , consumption: { value:14.0, unit: 'L/100km' }},
 
@@ -178,7 +182,7 @@ const VEHICLES = [
 
   { id: 'V8',              name: '2024 Aston Martin V8', power:536, acc:3.5, topSpeed:325, engine: '4.0 V8', price: '$148.000', img: '/static/images/astonmartinV8.png', rearImg: '/static/rearimg/astonmartinV8-rear.png' , consumption: { value:13.0, unit: 'L/100km' }},
 
-  { id: 'Valkyrie',        name: '2024 Aston Martin Valkyrie', power:1.156, acc:2.5, topSpeed:400, engine: '6.5L V12 Hybrid', price: '$3.600.000', img: '/static/images/astonmartinValkyrie.jpg'  , rearImg: '/static/rearimg/astonmartinValkyrie-rear.jpg' , consumption: { value:19.0, unit: 'L/100km' }},
+  { id: 'Valkyrie',        name: '2024 Aston Martin Valkyrie', power:1156, acc:2.5, topSpeed:400, engine: '6.5L V12 Hybrid', price: '$3.600.000', img: '/static/images/astonmartinValkyrie.jpg'  , rearImg: '/static/rearimg/astonmartinValkyrie-rear.jpg' , consumption: { value:19.0, unit: 'L/100km' }},
 
   { id: 'Valour',          name: '2024 Aston Martin Valour', power:715, acc:3.0, topSpeed:322, engine: '5.2 V12', price: '$2.050.000', img: '/static/images/astonmartinValour.jpg', rearImg: '/static/rearimg/astonmartinValour-rear.png' , consumption: { value:17.0, unit: 'L/100km' }},
 
@@ -210,7 +214,9 @@ const VEHICLES = [
 
   { id: 'ATS',             name: '2019 Cadillac ATS', power:470, acc:4.2, topSpeed:298, engine: 'V 3.6 V6', price: '$49.900', img: '/static/images/cadillacAts.jpg', rearImg: '/static/rearimg/cadillacAts-rear.jpg' , consumption: { value:9.5, unit: 'L/100km' }},
 
-  { id: 'CT4',             name: '2025 Cadillac CT4', power:472, acc:4, topSpeed:304, engine: 'V Blackwing 3.6 V6', price: '$105.000', img: '/static/images/cadillacCt4.jpg', rearImg: '/static/rearimg/cadillacCt4-rear.png' , consumption: { value:11.5, unit: 'L/100km' }},
+  { id: 'CT4',             name: '2025 Cadillac CT4', power:472, acc:4.0, topSpeed:304, engine: 'V Blackwing 3.6 V6', price: '$105.000', img: '/static/images/cadillacCt4.jpg', rearImg: '/static/rearimg/cadillacCt4-rear.png' , consumption: { value:11.5, unit: 'L/100km' }},
+
+  { id: 'CT5',             name: '2025 Cadillac CT5', power:677, acc:3.7, topSpeed:322, engine: 'V Blackwing 6.2 V8', price: '$169.000', img: '/static/images/cadillacCt5.jpg', rearImg: '/static/rearimg/cadillacCt5-rear.jpg' , consumption: { value:14.0, unit: 'L/100km' }},
 
   { id: 'Escalade',        name: '2024 Cadillac Escalade', power:681, acc:4.4, topSpeed:200, engine: '6.2L V8 Supercharged', price: '$198.500', img: '/static/images/cadillacEscalade.jpg', rearImg: '/static/rearimg/cadillacEscalade-rear.png' , consumption: { value:15.0, unit: 'L/100km' }},
 
@@ -340,7 +346,7 @@ const VEHICLES = [
 
   { id: '458',            name: '2012 Ferrari 458', power:566, acc:3.4, topSpeed:320, engine: '4.5 V8', price: '$249.980', img: '/static/images/ferrari458.png', rearImg: '/static/rearimg/ferrari458-rear.jpg' , consumption: { value:13.0, unit: 'L/100km' }},
 
-  { id: '488',            name: '2022 Ferrari 488', power:721, acc:2.85, topSpeed:340, engine: '3.9 V8', price: '$465.000', img: '/static/images/ferrari488.png', rearImg: '/static/rearimg/ferrari488-rear.png' , consumption: { value:11.0, unit: 'L/100km' }},
+  { id: '488',            name: '2022 Ferrari 488', power:721, acc:2.8, topSpeed:340, engine: '3.9 V8', price: '$465.000', img: '/static/images/ferrari488.png', rearImg: '/static/rearimg/ferrari488-rear.png' , consumption: { value:11.0, unit: 'L/100km' }},
 
   { id: '512',            name: '1993 Ferrari 512', power:428, acc:4.8, topSpeed:314, engine: '4.9 i V12 48V', price: '$269.990', img: '/static/images/ferrari512.png', rearImg: '/static/rearimg/ferrari512-rear.jpg' , consumption: { value:16.0, unit: 'L/100km' }},
 
@@ -704,7 +710,7 @@ const VEHICLES = [
 
   { id: 'F1',           name: '2000 McLaren F1', power:627, acc:3.5, topSpeed:386, engine: '6.1 V12', price: '$17.000.000', img: '/static/images/mcLarenF1.jpg', rearImg: '/static/rearimg/mcLarenF1-rear.png' , consumption: { value:16.0, unit: 'L/100km' }},
 
-  { id: 'GT 2',         name: '2021 McLaren GT', power:620, acc:3.1, topSpeed:326, engine: '4.0 V8', price: '$154.740', img: '/static/images/mcLarenGT.png', rearImg: '/static/rearimg/mcLarenGT-rear.png' , consumption: { value:12.0, unit: 'L/100km' }},
+  { id: 'GT 2',          name: '2021 McLaren GT', power:620, acc:3.1, topSpeed:326, engine: '4.0 V8', price: '$154.740', img: '/static/images/mcLarenGT.png', rearImg: '/static/rearimg/mcLarenGT-rear.png' , consumption: { value:12.0, unit: 'L/100km' }},
 
   { id: 'GTS',          name: '2025 McLaren GTS', power:634, acc:3.2, topSpeed:326, engine: '4.0 V8', price: '$270.000', img: '/static/images/mcLarenGTS.png', rearImg: '/static/rearimg/mcLarenGTS-rear.png' , consumption: { value:13.0, unit: 'L/100km' }},
 
@@ -896,7 +902,7 @@ const VEHICLES = [
 
   { id: 'F-150',        name: '2017 Shelby F-150', power:700, acc:4.7, topSpeed:220, engine: '5.0L V8', price: '$90.950', img: '/static/images/shelbyF150.jpg', rearImg: '/static/rearimg/shelbyF150-rear.jpg' , consumption: { value:16.0, unit: 'L/100km' }},
 
-  { id: 'GT 2',           name: '2007 Shelby GT', power:650, acc:4.1, topSpeed:260, engine: '5.4L Supercharged V8', price: '$67.000', img: '/static/images/shelbyGT2.jpg', rearImg: '/static/rearimg/shelbyGT2-rear.png' , consumption: { value:19.0, unit: 'L/100km' }},
+  { id: 'GT 3',         name: '2007 Shelby GT', power:650, acc:4.1, topSpeed:260, engine: '5.4L Supercharged V8', price: '$67.000', img: '/static/images/shelbyGT2.jpg', rearImg: '/static/rearimg/shelbyGT2-rear.png' , consumption: { value:19.0, unit: 'L/100km' }},
 
   { id: 'Mustang GT-H', name: '1970 Shelby Mustang GT-H', power:334, acc:6.3, topSpeed:205, engine: 'GT 500 7.0 V8', price: '$289.750', img: '/static/images/shelbyMustangGT-H.jpg', rearImg: '/static/rearimg/shelbyMustangGT-H-rear.png' , consumption: { value:17.0, unit: 'L/100km' }},
 
@@ -939,7 +945,7 @@ const VEHICLES = [
   { id: 'G01F',         name: '2025 SWM G01F', power:139, acc:11.0, topSpeed:180, engine: '1.5 Turbo', price: '$25.950', img: '/static/images/suzukiG01F.png', rearImg: '/static/rearimg/suzukiG01F-rear.png' , consumption: { value:5.5, unit: 'L/100km' }},
 
   { id: 'Cybertruck',   name: '2026 Tesla Cybertruck', power:600, acc:4.3, topSpeed:180, engine: '123 kWh', price: '$204.000', img: '/static/images/teslaCybertruck.jpg', rearImg: '/static/rearimg/teslaCybertruck-rear.png' , consumption: { value:27, unit: 'kWh/100km' }},
-
+  
   { id: 'Model S',      name: '2018 Tesla Model S', power:417, acc:4.4, topSpeed:250, engine: '90D 90 kWh', price: '$29.950', img: '/static/images/teslaModelS.png', rearImg: '/static/rearimg/teslaModelS-rear.png' , consumption: { value:19.0, unit: 'kWh/100km' }},
 
   { id: 'Model X',      name: '2017 Tesla Model X', power:215, acc:4.6, topSpeed:250, engine: 'Long Range 100 kWh', price: '$35.900', img: '/static/images/teslaModelX.jpg', rearImg: '/static/rearimg/teslaModelX-rear.png' , consumption: { value:24.0, unit: 'kWh/100km' }},
@@ -2790,7 +2796,7 @@ function renderSelected() {
         ${resalePanel}
         <div class="stat-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</div>
         <div class="card-actions">
-          <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
+        <button class="remove-btn" data-id="${key}" aria-label="${t('remove')} ${v.name}">${t('remove')}</button>
           ${detailLink}
         </div>
       </div>

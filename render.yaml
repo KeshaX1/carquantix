@@ -4,6 +4,7 @@ services:
     env: python
     plan: free
     autoDeploy: true
+    healthCheckPath: /
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn --bind 0.0.0.0:$PORT main:app
     envVars:
@@ -13,6 +14,8 @@ services:
         generateValue: true
       - key: BASE_URL
         sync: false
+      - key: APP_DATA_DIR
+        value: /var/data
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT
