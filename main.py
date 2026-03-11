@@ -214,7 +214,7 @@ FEATURED_COMPARE_REFERENCES = [
     ("718 Cayman", "A110"),
     ("Supra", "Nissan Z"),
     ("Supra", "Z4"),
-    ("Supra", "Mustang GT"),
+    ("Supra", "Mustang"),
     ("Supra", "Camaro SS"),
     ("Supra", "718 Cayman"),
     ("Z4", "TTS"),

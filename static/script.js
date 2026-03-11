@@ -438,8 +438,6 @@ const VEHICLES = [
 
   { id: 'Mustang',       name: '2020 Ford Mustang', power:450, acc:4.8, topSpeed:249, engine: '5.0 SHELBY GT 500', price: '$37.950', img: '/static/images/fordMustang.png', rearImg: '/static/rearimg/fordMustang-rear.jpg' , consumption: { value:15.0, unit: 'L/100km' }},
 
-  { id: 'Mustang GT',    name: '2020 Ford Mustang GT', power:450, acc:4.8, topSpeed:249, engine: '5.0 V8', price: '$42.500', img: '/static/images/fordMustang.png', rearImg: '/static/rearimg/fordMustang-rear.jpg' , consumption: { value:12.8, unit: 'L/100km' }},
-
   { id: 'Mustang Mach-E',   name: '2023 Ford Mustang Mach-E', power:487, acc:3.8, topSpeed:200, engine: 'GT 98.7 kWh', price: '$30.990', img: '/static/images/fordMustangMachE.png', rearImg: '/static/rearimg/fordMustangMachE-rear.jpg' , consumption: { value:19.0, unit: 'kWh/100km' }},
 
   { id: 'GT',            name: '2021 Ford GT', power:649, acc:2.8, topSpeed:347, engine: '3.5L V6', price: '$890.000', img: '/static/images/fordGT.jpg', rearImg: '/static/rearimg/fordGT-rear.png' , consumption: { value:16.0, unit: 'L/100km' }},
@@ -1324,6 +1322,21 @@ const favoritesListEl = document.getElementById('favoritesList');
 const clearFavoritesBtn = document.getElementById('clearFavoritesBtn');
 const TINY_IMG = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 let listLazyObserver = null;
+const MIN_EAGER_LIST_IMAGES = 12;
+
+function loadDeferredImage(img) {
+  if (!img) return;
+  const src = img.dataset.src;
+  if (!src) return;
+  img.src = src;
+  img.removeAttribute('data-src');
+}
+
+function getInitialListImageCount() {
+  const visibleHeight = listEl?.clientHeight || Math.round(window.innerHeight * 0.75);
+  const estimatedRowHeight = 92;
+  return Math.max(MIN_EAGER_LIST_IMAGES, Math.ceil(visibleHeight / estimatedRowHeight) + 6);
+}
 
 // language + translations
 const LANGUAGES = [
@@ -2743,22 +2756,17 @@ function setupLazyThumbs(container) {
   if (!imgs.length) return;
   if (listLazyObserver) listLazyObserver.disconnect();
   if (!('IntersectionObserver' in window)) {
-    imgs.forEach(img => {
-      img.src = img.dataset.src;
-      img.removeAttribute('data-src');
-    });
+    imgs.forEach(loadDeferredImage);
     return;
   }
   listLazyObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
       const img = entry.target;
-      const src = img.dataset.src;
-      if (src) img.src = src;
-      img.removeAttribute('data-src');
+      loadDeferredImage(img);
       observer.unobserve(img);
     });
-  }, { root: container, rootMargin: '200px 0px', threshold: 0.01 });
+  }, { root: container, rootMargin: '500px 0px', threshold: 0.01 });
   imgs.forEach(img => listLazyObserver.observe(img));
 }
 
@@ -2778,9 +2786,10 @@ function renderList(filter = '') {
   });
   const ordered = sortVehicles(filtered);
   const useBrandGrouping = (!activeSort || activeSort === 'nameAZ') && !brandFilter;
+  const eagerImageCount = getInitialListImageCount();
   let lastBrand = null;
 
-  ordered.forEach((v) => {
+  ordered.forEach((v, index) => {
     const brand = getBrandLabel(v.name);
     if (useBrandGrouping && brand !== lastBrand) {
       listEl.appendChild(createBrandDivider(brand));
@@ -2801,8 +2810,12 @@ function renderList(filter = '') {
       : `
         <button class="add-btn" data-id="${key}" aria-label="${t('add')} ${v.name}">${t('add')}</button>
       `;
+    const shouldEagerLoad = index < eagerImageCount;
+    const imgAttrs = shouldEagerLoad
+      ? `src="${thumb}" loading="eager" fetchpriority="${index < 4 ? 'high' : 'auto'}"`
+      : `data-src="${thumb}" src="${TINY_IMG}" loading="lazy" fetchpriority="low"`;
     item.innerHTML = `
-      <img class="thumb list-thumb" data-src="${thumb}" src="${TINY_IMG}" alt="${v.name}" loading="lazy" decoding="async" fetchpriority="low" width="88" height="56" />
+      <img class="thumb list-thumb" ${imgAttrs} alt="${v.name}" decoding="async" width="88" height="56" />
       <div class="info">
         <h3>${v.name}</h3>
         <p>${v.engine} · ${v.power} CV · ${v.topSpeed} km/h</p>
@@ -2890,7 +2903,7 @@ function renderSelected() {
     card.innerHTML = `
       <div class="thumb-row single">
         <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
-          <img class="thumb thumb-img" data-src="${startSrc}" data-gallery="${gallery.join('|')}" data-index="0" src="${startSrc}" alt="${v.name}" loading="lazy" decoding="async" fetchpriority="low" />
+          <img class="thumb thumb-img" data-src="${startSrc}" data-gallery="${gallery.join('|')}" data-index="0" src="${startSrc}" alt="${v.name}" loading="eager" decoding="async" fetchpriority="high" />
         </div>
       </div>
       <div class="meta">
