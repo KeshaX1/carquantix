@@ -321,6 +321,18 @@ def get_forwarded_value(header_value, fallback):
     return value.split(",")[0].strip()
 
 
+def format_display_price(value):
+    raw = str(value or "").strip()
+    if not raw:
+        return "-"
+    symbol_match = re.search(r"[€$£¥]", raw)
+    digits = re.sub(r"\D", "", raw)
+    if not digits:
+        return raw
+    amount = f"{int(digits):,}"
+    return f"{symbol_match.group(0)}{amount}" if symbol_match else amount
+
+
 def build_car_specs(car):
     specs = []
     power = car.get("power")
@@ -337,7 +349,7 @@ def build_car_specs(car):
         specs.append({"label": "Engine", "value": engine})
     price = car.get("price")
     if price:
-        specs.append({"label": "Price", "value": price})
+        specs.append({"label": "Price", "value": format_display_price(price)})
     consumption = car.get("consumption") or {}
     if consumption.get("value") is not None and consumption.get("unit"):
         specs.append(
@@ -531,8 +543,8 @@ def build_compare_spec_rows(car_a, car_b):
         },
         {
             "label": "Price",
-            "left_value": car_a.get("price") or "-",
-            "right_value": car_b.get("price") or "-",
+            "left_value": format_display_price(car_a.get("price")),
+            "right_value": format_display_price(car_b.get("price")),
             "winner": None,
         },
         {

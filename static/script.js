@@ -1417,7 +1417,7 @@ const TRANSLATIONS = {
     navPricing: 'Pricing',
     navTerms: 'Terms',
     navRefund: 'Refund Policy',
-    emptyNote: 'Prices reflect average market estimates in EUR.',
+    emptyNote: 'Prices reflect estimated market values and may vary by region.',
     seoHeading1: 'Car Performance & Cost Comparison Platform',
     seoP1: 'CarQuantix allows users to compare horsepower, acceleration, top speed and fuel consumption across multiple model years. Discover the best value per HP cars and performance rankings instantly.',
     seoHeading2: 'Car Fuel Cost Calculator',
@@ -1499,7 +1499,7 @@ const TRANSLATIONS = {
     navPricing: 'Fiyatlandirma',
     navTerms: 'Kosullar',
     navRefund: 'Iade Politikasi',
-    emptyNote: 'Fiyatlar EUR cinsinden ortalama piyasa tahminlerini yansıtır.',
+    emptyNote: 'Fiyatlar tahmini piyasa degerleridir; bolgeye gore degisebilir.',
     seoHeading1: 'Araç Performans & Maliyet Karşılaştırma Platformu',
     seoP1: 'CarQuantix, farklı model yıllarında beygir gücü, hızlanma, azami hız ve yakıt tüketimini karşılaştırmanı sağlar. En iyi fiyat/performans araçlarını hızlıca keşfet.',
     seoHeading2: 'Yakıt Maliyet Hesaplayıcı',
@@ -1559,7 +1559,7 @@ const TRANSLATIONS = {
     navPricing: 'Preise',
     navTerms: 'Bedingungen',
     navRefund: 'Rueckerstattung',
-    emptyNote: 'Preise basieren auf durchschnittlichen Marktwerten in EUR.',
+    emptyNote: 'Die Preise sind geschatzte Marktwerte und konnen je nach Region variieren.',
     seoHeading1: 'Plattform fur Leistungs- & Kostenvergleich',
     seoP1: 'CarQuantix vergleicht PS, Beschleunigung, Top Speed und Verbrauch uber mehrere Modelljahre. Finde schnell das beste Preis/Leistungs-Verhaltnis.',
     seoHeading2: 'Kraftstoffkosten-Rechner',
@@ -1619,7 +1619,7 @@ const TRANSLATIONS = {
     navPricing: 'Tarifs',
     navTerms: 'Conditions',
     navRefund: 'Politique de remboursement',
-    emptyNote: 'Les prix sont des estimations moyennes du marche en EUR.',
+    emptyNote: 'Les prix sont des estimations du marche et peuvent varier selon la region.',
     seoHeading1: 'Plateforme de comparaison performance & cout',
     seoP1: 'CarQuantix compare puissance, acceleration, vitesse max et consommation sur plusieurs millesimes. Trouve rapidement le meilleur rapport prix/performances.',
     seoHeading2: 'Calculateur de cout carburant',
@@ -1679,7 +1679,7 @@ const TRANSLATIONS = {
     navPricing: 'Precios',
     navTerms: 'Terminos',
     navRefund: 'Politica de reembolso',
-    emptyNote: 'Los precios reflejan estimaciones promedio del mercado en EUR.',
+    emptyNote: 'Los precios son estimaciones de mercado y pueden variar segun la region.',
     seoHeading1: 'Plataforma de comparacion de rendimiento y costo',
     seoP1: 'CarQuantix compara potencia, aceleracion, velocidad maxima y consumo entre varios años modelo. Descubre el mejor valor por HP al instante.',
     seoHeading2: 'Calculadora de costo de combustible',
@@ -2142,6 +2142,22 @@ function parsePrice(val) {
   return Number(digits) || 0;
 }
 
+function getLocaleForLang(code) {
+  switch (String(code || 'en').toLowerCase()) {
+    case 'tr':
+      return 'tr-TR';
+    case 'de':
+      return 'de-DE';
+    case 'fr':
+      return 'fr-FR';
+    case 'es':
+      return 'es-ES';
+    case 'en':
+    default:
+      return 'en-US';
+  }
+}
+
 function extractVehicleYear(name) {
   const match = String(name || '').match(/\b(19|20)\d{2}\b/);
   if (!match) return null;
@@ -2206,9 +2222,25 @@ function formatRate(rate) {
   return `${Math.round(rate * 100)}%`;
 }
 
+function getPriceMeta(val) {
+  const raw = String(val ?? '').trim();
+  if (!raw) return { raw: '', amount: NaN, symbol: '' };
+  const symbolMatch = raw.match(/[€$£¥]/);
+  return {
+    raw,
+    amount: parsePrice(raw),
+    symbol: symbolMatch ? symbolMatch[0] : '',
+  };
+}
+
 function formatPrice(val) {
-  if (!val) return '-';
-  return String(val).replace(/^\$/, '\u20AC');
+  const meta = getPriceMeta(val);
+  if (!meta.raw) return '-';
+  if (!Number.isFinite(meta.amount) || meta.amount <= 0) return meta.raw;
+  const formattedAmount = new Intl.NumberFormat(getLocaleForLang(currentLang), {
+    maximumFractionDigits: 0,
+  }).format(meta.amount);
+  return meta.symbol ? `${meta.symbol}${formattedAmount}` : formattedAmount;
 }
 
 function getConsumptionInfo(vehicle) {
@@ -2858,7 +2890,7 @@ function renderSelected() {
     compareArea.innerHTML = `
       <div class="empty-block">
         <p class="empty">${t('empty')}</p>
-        <p class="empty-note">${emptyNoteText === 'emptyNote' ? 'Prices reflect average market estimates in EUR.' : emptyNoteText}</p>
+        <p class="empty-note">${emptyNoteText === 'emptyNote' ? 'Prices reflect estimated market values and may vary by region.' : emptyNoteText}</p>
       </div>
     `;
     compTable.innerHTML = '';
@@ -2903,6 +2935,7 @@ function renderSelected() {
     card.innerHTML = `
       <div class="thumb-row single">
         <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
+          <span class="thumb-badge">${v.id}</span>
           <img class="thumb thumb-img" data-src="${startSrc}" data-gallery="${gallery.join('|')}" data-index="0" src="${startSrc}" alt="${v.name}" loading="eager" decoding="async" fetchpriority="high" />
         </div>
       </div>
