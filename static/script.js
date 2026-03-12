@@ -1319,6 +1319,10 @@ const topFavoritesLink = document.getElementById('topFavoritesLink');
 const favoritesAreaEl = document.getElementById('favoritesArea');
 const favoritesListEl = document.getElementById('favoritesList');
 const clearFavoritesBtn = document.getElementById('clearFavoritesBtn');
+const notificationsBtn = document.getElementById('notificationsBtn');
+const notificationsBadge = document.getElementById('notificationsBadge');
+const notificationsMenu = document.getElementById('notificationsMenu');
+const notificationsList = document.getElementById('notificationsList');
 const TINY_IMG = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 let listLazyObserver = null;
 const MIN_EAGER_LIST_IMAGES = 12;
@@ -1693,6 +1697,61 @@ const TRANSLATIONS = {
   },
 };
 
+Object.assign(TRANSLATIONS.en, {
+  notificationsTitle: 'Notifications',
+  notificationsEmpty: 'No new vehicles yet.',
+  notificationsNewArrival: 'New vehicle',
+  notificationsCatalogCars: 'Car',
+  notificationsCatalogMotorcycles: 'Motorcycle',
+  notificationsToday: 'Today',
+  notificationsYesterday: '1 day ago',
+  notificationsDaysAgo: '{days} days ago',
+});
+
+Object.assign(TRANSLATIONS.tr, {
+  notificationsTitle: 'Bildirimler',
+  notificationsEmpty: 'Henüz yeni araç yok.',
+  notificationsNewArrival: 'Yeni araç',
+  notificationsCatalogCars: 'Araba',
+  notificationsCatalogMotorcycles: 'Motosiklet',
+  notificationsToday: 'Bugün',
+  notificationsYesterday: '1 gün önce',
+  notificationsDaysAgo: '{days} gün önce',
+});
+
+Object.assign(TRANSLATIONS.de, {
+  notificationsTitle: 'Benachrichtigungen',
+  notificationsEmpty: 'Noch keine neuen Fahrzeuge.',
+  notificationsNewArrival: 'Neues Fahrzeug',
+  notificationsCatalogCars: 'Auto',
+  notificationsCatalogMotorcycles: 'Motorrad',
+  notificationsToday: 'Heute',
+  notificationsYesterday: 'Vor 1 Tag',
+  notificationsDaysAgo: 'Vor {days} Tagen',
+});
+
+Object.assign(TRANSLATIONS.fr, {
+  notificationsTitle: 'Notifications',
+  notificationsEmpty: 'Aucun nouveau vehicule pour le moment.',
+  notificationsNewArrival: 'Nouveau vehicule',
+  notificationsCatalogCars: 'Voiture',
+  notificationsCatalogMotorcycles: 'Moto',
+  notificationsToday: 'Aujourd hui',
+  notificationsYesterday: 'Il y a 1 jour',
+  notificationsDaysAgo: 'Il y a {days} jours',
+});
+
+Object.assign(TRANSLATIONS.es, {
+  notificationsTitle: 'Notificaciones',
+  notificationsEmpty: 'Aun no hay vehiculos nuevos.',
+  notificationsNewArrival: 'Vehiculo nuevo',
+  notificationsCatalogCars: 'Auto',
+  notificationsCatalogMotorcycles: 'Motocicleta',
+  notificationsToday: 'Hoy',
+  notificationsYesterday: 'Hace 1 dia',
+  notificationsDaysAgo: 'Hace {days} dias',
+});
+
 const getLang = (code) => LANGUAGES.find(l => l.code === code);
 let currentLang = localStorage.getItem('appLang');
 if (!getLang(currentLang)) currentLang = LANGUAGES[0].code;
@@ -1735,7 +1794,16 @@ const sessionUserId = sessionUser
   ? (sessionUser.email || sessionUser.name || sessionUser.id || sessionUser.sub || sessionUser.user_id || 'user')
   : null;
 const favoritesKey = sessionUserId ? `favorites:${sessionUserId}` : null;
+const inventorySnapshotKey = sessionUserId ? `inventorySnapshot:${sessionUserId}` : null;
+const inventoryNotificationsKey = sessionUserId ? `inventoryNotifications:${sessionUserId}` : null;
 const favoritesEnabled = Boolean(sessionUserId && favoritesListEl);
+const notificationsEnabled = Boolean(
+  sessionUserId
+  && notificationsBtn
+  && notificationsBadge
+  && notificationsMenu
+  && notificationsList
+);
 
 function syncPremiumState(nextUser) {
   if (nextUser) {
@@ -1942,6 +2010,7 @@ function initFavoritesUI() {
 }
 
 let favorites = favoritesEnabled ? loadFavorites() : [];
+let inventoryNotifications = notificationsEnabled ? loadInventoryNotifications() : [];
 
 let selected = [];
 let activeSort = null;
@@ -1961,6 +2030,216 @@ function makeKey(catalog, id) {
 function parseKey(key) {
   const [catalog, ...rest] = String(key || '').split(':');
   return { catalog: catalog || 'cars', id: decodeURIComponent(rest.join(':') || '') };
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function readStoredJson(key, fallback) {
+  if (!key) return fallback;
+  try {
+    const parsed = JSON.parse(localStorage.getItem(key) || 'null');
+    return parsed ?? fallback;
+  } catch (err) {
+    return fallback;
+  }
+}
+
+function parseNoticeTimestamp(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (!value) return null;
+  const parsed = Date.parse(String(value));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function loadInventorySnapshot() {
+  const snapshot = readStoredJson(inventorySnapshotKey, []);
+  return Array.isArray(snapshot) ? snapshot.map(String) : [];
+}
+
+function saveInventorySnapshot(keys) {
+  if (!inventorySnapshotKey) return;
+  localStorage.setItem(inventorySnapshotKey, JSON.stringify(Array.from(new Set(keys.map(String)))));
+}
+
+function normalizeInventoryNotifications(list) {
+  if (!Array.isArray(list)) return [];
+  const seen = new Set();
+  const normalized = [];
+  list.forEach(entry => {
+    if (!entry || !entry.key || seen.has(entry.key)) return;
+    seen.add(entry.key);
+    normalized.push({
+      key: String(entry.key),
+      read: Boolean(entry.read),
+      detectedAt: parseNoticeTimestamp(entry.detectedAt) || Date.now(),
+    });
+  });
+  return normalized;
+}
+
+function loadInventoryNotifications() {
+  return normalizeInventoryNotifications(readStoredJson(inventoryNotificationsKey, []));
+}
+
+function saveInventoryNotifications() {
+  if (!inventoryNotificationsKey) return;
+  localStorage.setItem(inventoryNotificationsKey, JSON.stringify(inventoryNotifications));
+}
+
+function getInventoryNotificationFeed() {
+  return [
+    ...VEHICLES.map(vehicle => ({ catalog: 'cars', vehicle })),
+    ...MOTORCYCLES.map(vehicle => ({ catalog: 'motorcycles', vehicle })),
+  ];
+}
+
+function resolveNotificationVehicle(notice) {
+  const parsed = parseKey(notice?.key);
+  const source = parsed.catalog === 'motorcycles' ? MOTORCYCLES : VEHICLES;
+  const vehicle = source.find(item => String(item.id) === parsed.id);
+  return { vehicle, catalog: parsed.catalog || 'cars' };
+}
+
+function getNotificationAgeLabel(timestamp) {
+  const diff = Math.max(0, Date.now() - timestamp);
+  const days = Math.floor(diff / DAY_MS);
+  if (days <= 0) return t('notificationsToday');
+  if (days === 1) return t('notificationsYesterday');
+  return String(t('notificationsDaysAgo')).replace('{days}', String(days));
+}
+
+function updateNotificationsBadge() {
+  if (!notificationsEnabled) return;
+  const unreadCount = inventoryNotifications.filter(notice => !notice.read).length;
+  notificationsBadge.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+  notificationsBadge.classList.toggle('hidden', unreadCount === 0);
+  notificationsBtn.classList.toggle('has-unread', unreadCount > 0);
+  notificationsBtn.setAttribute('aria-expanded', notificationsMenu.classList.contains('open') ? 'true' : 'false');
+}
+
+function renderNotifications() {
+  if (!notificationsEnabled) return;
+  const titleEl = notificationsMenu.querySelector('.notifications-title');
+  if (titleEl) titleEl.textContent = t('notificationsTitle');
+
+  const activeKeys = new Set(getInventoryNotificationFeed().map(entry => makeKey(entry.catalog, entry.vehicle.id)));
+  const nextNotifications = normalizeInventoryNotifications(
+    inventoryNotifications.filter(notice => activeKeys.has(notice.key))
+  );
+  if (nextNotifications.length !== inventoryNotifications.length) {
+    inventoryNotifications = nextNotifications;
+    saveInventoryNotifications();
+  }
+
+  notificationsList.innerHTML = '';
+  if (!inventoryNotifications.length) {
+    notificationsList.innerHTML = `<div class="notice-empty">${t('notificationsEmpty')}</div>`;
+    updateNotificationsBadge();
+    return;
+  }
+
+  const sorted = [...inventoryNotifications].sort((left, right) => {
+    const leftTs = parseNoticeTimestamp(resolveNotificationVehicle(left).vehicle?.addedAt) || left.detectedAt || 0;
+    const rightTs = parseNoticeTimestamp(resolveNotificationVehicle(right).vehicle?.addedAt) || right.detectedAt || 0;
+    return rightTs - leftTs;
+  });
+
+  sorted.forEach(notice => {
+    const { vehicle, catalog } = resolveNotificationVehicle(notice);
+    if (!vehicle) return;
+    const itemTimestamp = parseNoticeTimestamp(vehicle.addedAt) || notice.detectedAt || Date.now();
+    const catalogLabel = catalog === 'motorcycles'
+      ? t('notificationsCatalogMotorcycles')
+      : t('notificationsCatalogCars');
+    const item = document.createElement('div');
+    item.className = `notice-item${notice.read ? '' : ' is-unread'}`;
+    item.innerHTML = `
+      <div class="notice-kicker">${t('notificationsNewArrival')}</div>
+      <div class="notice-text">${vehicle.name}</div>
+      <div class="notice-date">${catalogLabel} · ${getNotificationAgeLabel(itemTimestamp)}</div>
+    `;
+    notificationsList.appendChild(item);
+  });
+
+  updateNotificationsBadge();
+}
+
+function markNotificationsRead() {
+  if (!notificationsEnabled) return;
+  let changed = false;
+  inventoryNotifications = inventoryNotifications.map(notice => {
+    if (notice.read) return notice;
+    changed = true;
+    return { ...notice, read: true };
+  });
+  if (changed) saveInventoryNotifications();
+  renderNotifications();
+}
+
+function closeNotificationsMenu() {
+  if (!notificationsEnabled) return;
+  notificationsMenu.classList.remove('open');
+  updateNotificationsBadge();
+}
+
+function syncInventoryNotifications() {
+  if (!notificationsEnabled) return;
+  const feed = getInventoryNotificationFeed();
+  const currentKeys = feed.map(entry => makeKey(entry.catalog, entry.vehicle.id));
+  inventoryNotifications = loadInventoryNotifications();
+  const snapshot = loadInventorySnapshot();
+
+  if (!snapshot.length) {
+    saveInventorySnapshot(currentKeys);
+    renderNotifications();
+    return;
+  }
+
+  const knownKeys = new Set(snapshot);
+  const unseenArrivals = feed
+    .filter(entry => !knownKeys.has(makeKey(entry.catalog, entry.vehicle.id)))
+    .map(entry => ({
+      key: makeKey(entry.catalog, entry.vehicle.id),
+      detectedAt: parseNoticeTimestamp(entry.vehicle.addedAt) || Date.now(),
+      read: false,
+    }));
+
+  const activeKeys = new Set(currentKeys);
+  inventoryNotifications = normalizeInventoryNotifications([
+    ...unseenArrivals,
+    ...inventoryNotifications.filter(notice => activeKeys.has(notice.key)),
+  ]);
+
+  saveInventorySnapshot(currentKeys);
+  saveInventoryNotifications();
+  renderNotifications();
+}
+
+function initNotificationsUI() {
+  if (!notificationsEnabled) return;
+  syncInventoryNotifications();
+
+  notificationsBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const willOpen = !notificationsMenu.classList.contains('open');
+    notificationsMenu.classList.toggle('open', willOpen);
+    updateNotificationsBadge();
+    if (willOpen) markNotificationsRead();
+  });
+
+  notificationsMenu.addEventListener('click', event => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener('click', event => {
+    if (!notificationsMenu.contains(event.target) && !notificationsBtn.contains(event.target)) {
+      closeNotificationsMenu();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeNotificationsMenu();
+  });
 }
 
 function slugifyName(value) {
@@ -3083,6 +3362,7 @@ catalogButtons.forEach(btn => {
 setCatalog(activeCatalog);
 initFavoritesUI();
 renderFavorites();
+initNotificationsUI();
 initFuelCalculator();
 
 const SEO_PRESELECT = {
@@ -3280,10 +3560,16 @@ function applyTranslations() {
   if (loginBtnEl) loginBtnEl.textContent = pack.login;
   const formTitleEl = document.getElementById('formTitle');
   if (formTitleEl) formTitleEl.textContent = pack.login;
+  if (notificationsBtn) {
+    const notificationsLabel = pack.notificationsTitle || 'Notifications';
+    notificationsBtn.setAttribute('aria-label', notificationsLabel);
+    notificationsBtn.setAttribute('title', notificationsLabel);
+  }
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     if (pack[key]) el.textContent = pack[key];
   });
+  renderNotifications();
 }
 
 function setLanguage(code) {
