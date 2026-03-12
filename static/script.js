@@ -96,7 +96,7 @@ const VEHICLES = [
 
   { id:'635',              name: '2010 BMW 635',       power:287, acc:6.6, topSpeed:250, engine: '635d', price: '$14.990', img: '/static/images/bmw635.jpg', rearImg: '/static/rearimg/bmw635-rear.jpg' , consumption: { value:8.5, unit: 'L/100km' }},
 
-  { id:'i4',               name: '2025 BMW i4',        power:544, acc:3.9, topSpeed:225, engine: 'M50 83.9 kWh', price: '$53.770', img: '/static/images/bmwi4.jpg', rearImg: '/static/rearimg/bmwi4-rear.png' , consumption: { value:20.0, unit: 'kWh/100km' }},
+  { id:'i4',               name: '2025 BMW i4',        power:544, acc:3.9, topSpeed:225, engine: 'M50 83.9 kWh', price: '$53.770', img: '/static/images/bmwi4.jpg', rearImg: '/static/rearimg/bmwi4-rear.png' , consumption: { value:20.0, unit: 'kWh/100km' }, addedAt: '2026-03-12T09:00:00Z' },
 
   { id: 'M1',              name: '2024 BMW M1',        power:300, acc:4.9, topSpeed:250, engine: 'M135 xDrive Steptronic DCT', price: '$43.960', img: '/static/images/bmwM1.jpg', rearImg: '/static/rearimg/bmwM1-rear.png' , consumption: { value:8.5, unit: 'L/100km' }},
   
@@ -118,11 +118,11 @@ const VEHICLES = [
 
   { id: 'X3',              name: '2024 BMW X3',        power:398, acc:3.8, topSpeed:250, engine: 'M xDrive M Steptronic', price: '$67.900', img: '/static/images/bmwX3.jpg', rearImg: '/static/rearimg/bmwX3-rear.png' , consumption: { value:11.0, unit: 'L/100km' }},
 
-  { id: 'Z4',              name: '2024 BMW Z4',        power:340, acc:4.5, topSpeed:250, engine: 'M40i 3.0', price: '$68.900', img: '/static/images/bmwZ4.png', rearImg: '/static/rearimg/bmwZ4-rear.png', consumption: { value:8.0, unit: 'L/100km' }},
+  { id: 'Z4',              name: '2024 BMW Z4',        power:340, acc:4.5, topSpeed:250, engine: 'M40i 3.0', price: '$68.900', img: '/static/images/bmwZ4.png', rearImg: '/static/rearimg/bmwZ4-rear.png', consumption: { value:8.0, unit: 'L/100km' }, addedAt: '2026-03-11T09:00:00Z' },
 
   { id: 'X5',              name: '2024 BMW X5',        power:381, acc:3.9, topSpeed:250, engine: '40i xDrive', price: '$74.600', img: '/static/images/bmwX5.jpg', rearImg: '/static/rearimg/bmwX5-rear.jpg' , consumption: { value:9.0, unit: 'L/100km' }},
 
-  { id: 'iX',              name: '2024 BMW iX',        power:516, acc:4.6, topSpeed:200, engine: 'xDrive50 111.5 kWh', price: '$87.250', img: '/static/images/bmwIX.png', rearImg: '/static/rearimg/bmwIX-rear.png', consumption: { value:22.0, unit: 'kWh/100km' }},
+  { id: 'iX',              name: '2024 BMW iX',        power:516, acc:4.6, topSpeed:200, engine: 'xDrive50 111.5 kWh', price: '$87.250', img: '/static/images/bmwIX.png', rearImg: '/static/rearimg/bmwIX-rear.png', consumption: { value:22.0, unit: 'kWh/100km' }, addedAt: '2026-03-10T09:00:00Z' },
 
   { id: 'X6 M',            name: '2022 BMW X6 M',      power:625, acc:3.8, topSpeed:250, engine: '4.4 V8  xDrive Steptronic', price: '$79.900', img: '/static/images/bmwX6M.jpg', rearImg: '/static/rearimg/bmwX6M-rear.png' , consumption: { value:11.5, unit: 'L/100km' }},
 
@@ -2033,6 +2033,7 @@ function parseKey(key) {
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const NOTIFICATION_SEED_WINDOW_DAYS = 30;
 
 function readStoredJson(key, fallback) {
   if (!key) return fallback;
@@ -2091,6 +2092,21 @@ function getInventoryNotificationFeed() {
     ...VEHICLES.map(vehicle => ({ catalog: 'cars', vehicle })),
     ...MOTORCYCLES.map(vehicle => ({ catalog: 'motorcycles', vehicle })),
   ];
+}
+
+function buildRecentArrivalNotifications(feed, existingKeys = new Set()) {
+  const windowStart = Date.now() - (NOTIFICATION_SEED_WINDOW_DAYS * DAY_MS);
+  return feed
+    .filter(entry => {
+      const key = makeKey(entry.catalog, entry.vehicle.id);
+      const addedAt = parseNoticeTimestamp(entry.vehicle.addedAt);
+      return addedAt && addedAt >= windowStart && !existingKeys.has(key);
+    })
+    .map(entry => ({
+      key: makeKey(entry.catalog, entry.vehicle.id),
+      detectedAt: parseNoticeTimestamp(entry.vehicle.addedAt) || Date.now(),
+      read: false,
+    }));
 }
 
 function resolveNotificationVehicle(notice) {
@@ -2188,9 +2204,16 @@ function syncInventoryNotifications() {
   const currentKeys = feed.map(entry => makeKey(entry.catalog, entry.vehicle.id));
   inventoryNotifications = loadInventoryNotifications();
   const snapshot = loadInventorySnapshot();
+  const existingNoticeKeys = new Set(inventoryNotifications.map(notice => notice.key));
+  const seededRecentArrivals = buildRecentArrivalNotifications(feed, existingNoticeKeys);
 
   if (!snapshot.length) {
+    inventoryNotifications = normalizeInventoryNotifications([
+      ...seededRecentArrivals,
+      ...inventoryNotifications,
+    ]);
     saveInventorySnapshot(currentKeys);
+    saveInventoryNotifications();
     renderNotifications();
     return;
   }
@@ -2207,6 +2230,7 @@ function syncInventoryNotifications() {
   const activeKeys = new Set(currentKeys);
   inventoryNotifications = normalizeInventoryNotifications([
     ...unseenArrivals,
+    ...seededRecentArrivals,
     ...inventoryNotifications.filter(notice => activeKeys.has(notice.key)),
   ]);
 
