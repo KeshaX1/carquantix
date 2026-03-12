@@ -118,11 +118,11 @@ const VEHICLES = [
 
   { id: 'X3',              name: '2024 BMW X3',        power:398, acc:3.8, topSpeed:250, engine: 'M xDrive M Steptronic', price: '$67.900', img: '/static/images/bmwX3.jpg', rearImg: '/static/rearimg/bmwX3-rear.png' , consumption: { value:11.0, unit: 'L/100km' }},
 
-  { id: 'Z4',              name: '2024 BMW Z4',        power:340, acc:4.5, topSpeed:250, engine: 'M40i 3.0', price: '$68.900', consumption: { value:8.0, unit: 'L/100km' }},
+  { id: 'Z4',              name: '2024 BMW Z4',        power:340, acc:4.5, topSpeed:250, engine: 'M40i 3.0', price: '$68.900', img: '/static/images/bmwZ4.png', rearImg: '/static/rearimg/bmwZ4-rear.png', consumption: { value:8.0, unit: 'L/100km' }},
 
   { id: 'X5',              name: '2024 BMW X5',        power:381, acc:3.9, topSpeed:250, engine: '40i xDrive', price: '$74.600', img: '/static/images/bmwX5.jpg', rearImg: '/static/rearimg/bmwX5-rear.jpg' , consumption: { value:9.0, unit: 'L/100km' }},
 
-  { id: 'iX',              name: '2024 BMW iX',        power:516, acc:4.6, topSpeed:200, engine: 'xDrive50 111.5 kWh', price: '$87.250', consumption: { value:22.0, unit: 'kWh/100km' }},
+  { id: 'iX',              name: '2024 BMW iX',        power:516, acc:4.6, topSpeed:200, engine: 'xDrive50 111.5 kWh', price: '$87.250', img: '/static/images/bmwIX.png', rearImg: '/static/rearimg/bmwIX-rear.png', consumption: { value:22.0, unit: 'kWh/100km' }},
 
   { id: 'X6 M',            name: '2022 BMW X6 M',      power:625, acc:3.8, topSpeed:250, engine: '4.4 V8  xDrive Steptronic', price: '$79.900', img: '/static/images/bmwX6M.jpg', rearImg: '/static/rearimg/bmwX6M-rear.png' , consumption: { value:11.5, unit: 'L/100km' }},
 
@@ -154,13 +154,13 @@ const VEHICLES = [
 
   { id: 'GLS 63 AMG',      name: '2023 Mercedes-Benz GLS 63 AMG', power:612, acc:4.2, topSpeed:250, engine: 'AMG GLS 63 V8 Mild Hybrid 4MATIC', price: '$182,100', img: '/static/images/mercedesGLS63AMG.jpg', rearImg: '/static/rearimg/mercedesGLS63AMG-rear.png' , consumption: { value:13.5, unit: 'L/100km' }},
 
-  { id: 'GLE',             name: '2024 Mercedes-Benz GLE', power:375, acc:5.6, topSpeed:250, engine: '450 4MATIC 3.0', price: '$69.500', consumption: { value:9.8, unit: 'L/100km' }},
+  { id: 'GLE',             name: '2024 Mercedes-Benz GLE', power:375, acc:5.6, topSpeed:250, engine: '450 4MATIC 3.0', price: '$69.500', img: '/static/images/mercedesGLE450.jpg', rearImg: '/static/rearimg/mercedesGLE450-rear.png', consumption: { value:9.8, unit: 'L/100km' }},
 
-  { id: 'GLC',             name: '2024 Mercedes-Benz GLC', power:255, acc:6.2, topSpeed:240, engine: '300 4MATIC 2.0', price: '$51.400', consumption: { value:8.3, unit: 'L/100km' }},
+  { id: 'GLC',             name: '2024 Mercedes-Benz GLC', power:255, acc:6.2, topSpeed:240, engine: '300 4MATIC 2.0', price: '$51.400', img: '/static/images/mercedesGLC300.png', rearImg: '/static/rearimg/mercedesGLC300-rear.png', consumption: { value:8.3, unit: 'L/100km' }},
 
-  { id: 'GLS',             name: '2024 Mercedes-Benz GLS', power:375, acc:6.1, topSpeed:246, engine: '450 4MATIC 3.0', price: '$88.150', consumption: { value:10.5, unit: 'L/100km' }},
+  { id: 'GLS',             name: '2024 Mercedes-Benz GLS', power:375, acc:6.1, topSpeed:246, engine: '450 4MATIC 3.0', price: '$88.150', img: '/static/images/mercedesGLS450.png', rearImg: '/static/rearimg/mercedesGLS450-rear.png', consumption: { value:10.5, unit: 'L/100km' }},
 
-  { id: 'EQE SUV',         name: '2024 Mercedes-Benz EQE SUV', power:402, acc:5.4, topSpeed:210, engine: '96 kWh', price: '$79.050', consumption: { value:21.5, unit: 'kWh/100km' }},
+  { id: 'EQE SUV',         name: '2024 Mercedes-Benz EQE SUV', power:402, acc:5.4, topSpeed:210, engine: '96 kWh', price: '$79.050', img: '/static/images/mercedesEQESUV.jpg', rearImg: '/static/rearimg/mercedesEQESUV-rear.jpg', consumption: { value:21.5, unit: 'kWh/100km' }},
 
   { id: 'Maybach GLS',     name: '2025 Mercedes-Benz Maybach GLS', power:557, acc:4.9, topSpeed:250, engine: 'GLS 600 V8 Mild Hybrid 4MATIC 9G-TRONIC', price: '$220,150', img: '/static/images/mercedesMaybachGLS.jpg', rearImg: '/static/rearimg/mercedesMaybachGLS-rear.png' , consumption: { value:13.0, unit: 'L/100km' }},
 
@@ -168,7 +168,7 @@ const VEHICLES = [
 
   { id: 'SL Roadster AMG',  name: '2023 Mercedes-Benz SL Roadster AMG', power:816, acc:2.9, topSpeed:317, engine: 'AMG SL 63 S E PERFORMANCE V8  Plug-in Hybrid 4MATIC', price: '$156,875', img: '/static/images/mercedesSL Roadster AMG.png', rearImg: '/static/rearimg/mercedesSL Roadster AMG-rear.png' , consumption: { value:19.5, unit: 'kWh/100km' }},
 
-  { id: 'SLC',              name: '2020 Mercedes-Benz SLC', power:362, acc:4.7, topSpeed:250, engine: 'AMG SLC 43 3.0 V6', price: '$54.900', consumption: { value:9.4, unit: 'L/100km' }},
+  { id: 'SLC',              name: '2020 Mercedes-Benz SLC', power:362, acc:4.7, topSpeed:250, engine: 'AMG SLC 43 3.0 V6', price: '$54.900', img: '/static/images/mercedesSLC43AMG.png', rearImg: '/static/rearimg/mercedesSLC43AMG-rear.png', consumption: { value:9.4, unit: 'L/100km' }},
 
   { id: 'SLR',              name: '2007 Mercedes-Benz SLR', power:650, acc:3.6, topSpeed:337, engine: '722 Edition 5.5 V8 Kompressor AMG SPEEDSHIFT R', price: '$729,890', img: '/static/images/mercedesSLR.jpg', rearImg: '/static/rearimg/mercedesSLR-rear.png' , consumption: { value:19.5, unit: 'L/100km' }},
 
@@ -182,9 +182,9 @@ const VEHICLES = [
 
   { id: 'NSX 2',           name: '1991 Acura NSX', power:256, acc:5.9, topSpeed:260, engine: '3.0 i V6 24V', price: '$150.000', img: '/static/images/acuraNSX2.jpg', rearImg: '/static/rearimg/acuraNSX2-rear.jpg' , consumption: { value:11.0, unit: 'L/100km' }},
 
-  { id: 'MDX',             name: '2024 Acura MDX', power:355, acc:5.5, topSpeed:180, engine: 'Type S 3.0 Turbo V6', price: '$73.500', consumption: { value:11.2, unit: 'L/100km' }},
+  { id: 'MDX',             name: '2024 Acura MDX', power:355, acc:5.5, topSpeed:180, engine: 'Type S 3.0 Turbo V6', price: '$73.500', img: '/static/images/acuraMDX.jpg', rearImg: '/static/rearimg/acuraMDX-rear.jpg', consumption: { value:11.2, unit: 'L/100km' }},
 
-  { id: 'RDX',             name: '2024 Acura RDX', power:272, acc:6.4, topSpeed:180, engine: '2.0 Turbo SH-AWD', price: '$46.050', consumption: { value:9.6, unit: 'L/100km' }},
+  { id: 'RDX',             name: '2024 Acura RDX', power:272, acc:6.4, topSpeed:180, engine: '2.0 Turbo SH-AWD', price: '$46.050', img: '/static/images/acuraRDX.jpg', rearImg: '/static/rearimg/acuraRDX-rear.jpg', consumption: { value:9.6, unit: 'L/100km' }},
 
   { id: '8C',              name: '2009 Alfa Romeo 8C', power:450, acc:4.4, topSpeed:290, engine: '4.7 V8', price: '$335.000', img: '/static/images/alfaromeo8c.jpg', rearImg: '/static/rearimg/alfaromeo8c-rear.jpg' , consumption: { value:13.5, unit: 'L/100km' }},
 
@@ -192,7 +192,7 @@ const VEHICLES = [
 
   { id: 'Giulia',          name: '2024 Alfa Romeo Giulia', power:540, acc:3.9, topSpeed:308, engine: 'Quadrifoglio 2.9 V6 Bi-Turbo', price: '$220.000', img: '/static/images/alfaromeoGiulia.jpg', rearImg: '/static/rearimg/alfaromeoGiulia-rear.jpg' , consumption: { value:10.5, unit: 'L/100km' }},
 
-  { id: 'Stelvio',         name: '2024 Alfa Romeo Stelvio', power:280, acc:5.7, topSpeed:230, engine: '2.0 Turbo Q4', price: '$50.990', consumption: { value:9.0, unit: 'L/100km' }},
+  { id: 'Stelvio',         name: '2024 Alfa Romeo Stelvio', power:280, acc:5.7, topSpeed:230, engine: '2.0 Turbo Q4', price: '$50.990', img: '/static/images/alfaromeoStelvio.jpg', rearImg: '/static/rearimg/alfaromeoStelvio-rear.png', consumption: { value:9.0, unit: 'L/100km' }},
 
   { id: 'A110',            name: '2024 Alpine A110', power:300, acc:4.2, topSpeed:260, engine: 'S 1.8 DCT', price: '$81.950', img: '/static/images/alpineA110.jpg', rearImg: '/static/rearimg/alpineA110-rear.jpg' , consumption: { value:7.0, unit: 'L/100km' }},
 
@@ -546,7 +546,7 @@ const VEHICLES = [
 
   { id: 'Huracán',      name: '2024 Lamborghini Huracán', power:639, acc:3.4, topSpeed:260, engine: '5.2 V10', price: '$375.000', img: '/static/images/lamborghiniHuracán.png', rearImg: '/static/rearimg/lamborghiniHuracán-rear.png' , consumption: { value:14.0, unit: 'L/100km' }},
 
-  { id: 'Huracan',      name: '2023 Lamborghini Huracan', power:610, acc:3.2, topSpeed:325, engine: '5.2 V10', price: '$249.865', consumption: { value:14.1, unit: 'L/100km' }},
+  { id: 'Huracan',      name: '2023 Lamborghini Huracan', power:610, acc:3.2, topSpeed:325, engine: '5.2 V10', price: '$249.865', img: '/static/images/lamborghiniHuracan.png', rearImg: '/static/rearimg/lamborghiniHuracan-rear.png', consumption: { value:14.1, unit: 'L/100km' }},
 
   { id: 'Jalpa',        name: '1985 Lamborghini Jalpa', power:250, acc:6.4, topSpeed:248, engine: 'P 350 V8', price: '$128.500', img: '/static/images/lamborghiniJalpa.png', rearImg: '/static/rearimg/lamborghiniJalpa-rear.jpg' , consumption: { value:15.0, unit: 'L/100km' }},
 
@@ -600,7 +600,7 @@ const VEHICLES = [
 
   { id: 'LBX',         name: '2024 Lexus LBX', power:136, acc:9.6, topSpeed:170, engine: '1.5', price: '$31.990', img: '/static/images/lexusLBX.png', rearImg: '/static/rearimg/lexusLBX-rear.jpg' , consumption: { value:15.0, unit: 'kWh/100km' }},
 
-  { id: 'LC 500',      name: '2021 Lexus LC 500', power:477, acc:4.7, topSpeed:270, engine: '500 V8', price: '$99.900', img: '/static/images/lexusLC500.png', rearImg: '/static/rearimg/lexusLC500-rear.jpg' , consumption: { value:12.0, unit: 'L/100km' }},
+  { id: 'LC 500',      name: '2021 Lexus LC 500', power:477, acc:4.7, topSpeed:270, engine: '500 V8', price: '$99.900', img: '/static/images/lexusLC500.png', consumption: { value:12.0, unit: 'L/100km' }},
 
   { id: 'LC 500h',     name: '2018 Lexus LC 500h', power:359, acc:5.0, topSpeed:250, engine: '500h V6', price: '$77.900', img: '/static/images/lexusLC500h.png', rearImg: '/static/rearimg/lexusLC500h-rear.jpg' , consumption: { value:17.0, unit: 'L/100km' }},
 
@@ -616,7 +616,6 @@ const VEHICLES = [
 
   { id: 'LX 700h',     name: '2025 Lexus LX 700h', power:457, acc:6.8, topSpeed:210, engine: '700h V6', price: '$157.288', img: '/static/images/lexusLX700h.png', rearImg: '/static/rearimg/lexusLX700h-rear.png' , consumption: { value:17.0, unit: 'kWh/100km' }},
 
-  { id: 'LX',          name: '2025 Lexus LX', power:415, acc:6.7, topSpeed:185, engine: '600 3.5L V6 Twin-Turbo', price: '$106.850', consumption: { value:13.0, unit: 'L/100km' }},
 
   { id: 'NX',          name: '2024 Lexus NX', power:245, acc:7.2, topSpeed:200, engine: '350 2.4 Turbo', price: '$43.900', img: '/static/images/lexusNX300.png', rearImg: '/static/rearimg/lexusNX300-rear.png', consumption: { value:8.7, unit: 'L/100km' }},
 
