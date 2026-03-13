@@ -900,7 +900,7 @@ body.dark .seo-links a {
 }
 
 .icon-btn[data-action="like"]::before {
-    content: "ğŸ‘";
+    content: "\1F44D";
     margin-right: 6px;
 }
 

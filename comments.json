@@ -28,7 +28,10 @@
     "text": "Helpful for quick research before watching review videos. I found the comparison table practical and clear.",
     "rating": 4,
     "date": "10/03/2026",
-    "likes": [],
+    "likes": [
+      "seed_like_1",
+      "seed_like_2"
+    ],
     "dislikes": [],
     "replies": []
   },
@@ -61,7 +64,11 @@
     "text": "The site is straightforward and the data cards are readable on desktop. Performance comparisons are especially nice.",
     "rating": 5,
     "date": "07/03/2026",
-    "likes": [],
+    "likes": [
+      "seed_like_3",
+      "seed_like_4",
+      "seed_like_5"
+    ],
     "dislikes": [],
     "replies": []
   },
@@ -72,7 +79,9 @@
     "text": "Good design and simple navigation. The featured comparison links helped me discover cars I had not considered.",
     "rating": 4,
     "date": "06/03/2026",
-    "likes": [],
+    "likes": [
+      "seed_like_6"
+    ],
     "dislikes": [],
     "replies": []
   },
@@ -83,7 +92,10 @@
     "text": "I like how quickly I can compare horsepower and 0-100 times without opening ten different tabs.",
     "rating": 5,
     "date": "05/03/2026",
-    "likes": [],
+    "likes": [
+      "seed_like_7",
+      "seed_like_8"
+    ],
     "dislikes": [],
     "replies": []
   },
@@ -105,7 +117,9 @@
     "text": "Very clean comparison layout. I checked a few BMW and Audi models and the numbers were easy to compare.",
     "rating": 5,
     "date": "04/03/2026",
-    "likes": [],
+    "likes": [
+      "seed_like_9"
+    ],
     "dislikes": [],
     "replies": []
   }

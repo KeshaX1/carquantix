@@ -303,16 +303,16 @@ SEO_SLUGS = {
 }
 
 DEFAULT_COMMENTS = [
-    {"id": "seed_10", "username": "Ava S.", "text": "Good experience overall. It is easy to jump between models and compare specs without unnecessary clutter.", "rating": 4, "date": "12/03/2026"},
-    {"id": "seed_9", "username": "Noah G.", "text": "The interface is simple, dark theme looks solid, and the main metrics I care about are all visible.", "rating": 5, "date": "11/03/2026"},
-    {"id": "seed_8", "username": "Isabella N.", "text": "Helpful for quick research before watching review videos. I found the comparison table practical and clear.", "rating": 4, "date": "10/03/2026"},
-    {"id": "seed_7", "username": "Ryan P.", "text": "Nice project. Search works well and the comment area makes the page feel more active.", "rating": 5, "date": "09/03/2026"},
-    {"id": "seed_6", "username": "Chloe B.", "text": "I was mainly looking at SUVs and this made it much easier to compare top speed and price in one place.", "rating": 4, "date": "08/03/2026"},
-    {"id": "seed_5", "username": "Marcus L.", "text": "The site is straightforward and the data cards are readable on desktop. Performance comparisons are especially nice.", "rating": 5, "date": "07/03/2026"},
-    {"id": "seed_4", "username": "Olivia T.", "text": "Good design and simple navigation. The featured comparison links helped me discover cars I had not considered.", "rating": 4, "date": "06/03/2026"},
-    {"id": "seed_3", "username": "Daniel K.", "text": "I like how quickly I can compare horsepower and 0-100 times without opening ten different tabs.", "rating": 5, "date": "05/03/2026"},
-    {"id": "seed_2", "username": "Sofia M.", "text": "The fuel cost part is useful and the overall site feels fast. I would love even more EV entries later on.", "rating": 4, "date": "05/03/2026"},
-    {"id": "seed_1", "username": "Ethan R.", "text": "Very clean comparison layout. I checked a few BMW and Audi models and the numbers were easy to compare.", "rating": 5, "date": "04/03/2026"},
+    {"id": "seed_10", "username": "Ava S.", "text": "Good experience overall. It is easy to jump between models and compare specs without unnecessary clutter.", "rating": 4, "date": "12/03/2026", "likes": []},
+    {"id": "seed_9", "username": "Noah G.", "text": "The interface is simple, dark theme looks solid, and the main metrics I care about are all visible.", "rating": 5, "date": "11/03/2026", "likes": []},
+    {"id": "seed_8", "username": "Isabella N.", "text": "Helpful for quick research before watching review videos. I found the comparison table practical and clear.", "rating": 4, "date": "10/03/2026", "likes": ["seed_like_1", "seed_like_2"]},
+    {"id": "seed_7", "username": "Ryan P.", "text": "Nice project. Search works well and the comment area makes the page feel more active.", "rating": 5, "date": "09/03/2026", "likes": []},
+    {"id": "seed_6", "username": "Chloe B.", "text": "I was mainly looking at SUVs and this made it much easier to compare top speed and price in one place.", "rating": 4, "date": "08/03/2026", "likes": []},
+    {"id": "seed_5", "username": "Marcus L.", "text": "The site is straightforward and the data cards are readable on desktop. Performance comparisons are especially nice.", "rating": 5, "date": "07/03/2026", "likes": ["seed_like_3", "seed_like_4", "seed_like_5"]},
+    {"id": "seed_4", "username": "Olivia T.", "text": "Good design and simple navigation. The featured comparison links helped me discover cars I had not considered.", "rating": 4, "date": "06/03/2026", "likes": ["seed_like_6"]},
+    {"id": "seed_3", "username": "Daniel K.", "text": "I like how quickly I can compare horsepower and 0-100 times without opening ten different tabs.", "rating": 5, "date": "05/03/2026", "likes": ["seed_like_7", "seed_like_8"]},
+    {"id": "seed_2", "username": "Sofia M.", "text": "The fuel cost part is useful and the overall site feels fast. I would love even more EV entries later on.", "rating": 4, "date": "05/03/2026", "likes": []},
+    {"id": "seed_1", "username": "Ethan R.", "text": "Very clean comparison layout. I checked a few BMW and Audi models and the numbers were easy to compare.", "rating": 5, "date": "04/03/2026", "likes": ["seed_like_9"]},
 ]
 
 
@@ -746,10 +746,19 @@ def load_comments():
 
     comments = []
     seen_ids = set()
+    defaults_by_id = {item["id"]: _normalize_comment(item) for item in DEFAULT_COMMENTS}
     for item in raw_comments:
         normalized = _normalize_comment(item)
         if not normalized["text"] or normalized["id"] in seen_ids:
             continue
+        default_version = defaults_by_id.get(normalized["id"])
+        if default_version:
+            if not normalized.get("likes") and default_version.get("likes"):
+                normalized["likes"] = default_version["likes"][:]
+            if not normalized.get("dislikes") and default_version.get("dislikes"):
+                normalized["dislikes"] = default_version["dislikes"][:]
+            if not normalized.get("replies") and default_version.get("replies"):
+                normalized["replies"] = default_version["replies"][:]
         comments.append(normalized)
         seen_ids.add(normalized["id"])
 
