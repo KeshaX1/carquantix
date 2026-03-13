@@ -93,6 +93,7 @@ def ensure_parent_dir(path_obj):
 USERS_PATH = resolve_data_path("USERS_PATH", "users.json")
 PENDING_PATH = resolve_data_path("PENDING_PATH", "pending_verifications.json")
 PENDING_RESET_PATH = resolve_data_path("PENDING_RESET_PATH", "pending_resets.json")
+COMMENTS_PATH = resolve_data_path("COMMENTS_PATH", "comments.json")
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 STATIC_DIR = Path(__file__).with_name("static")
@@ -300,6 +301,19 @@ SEO_SLUGS = {
     "porsche-911-turbo-top-speed",
     "mercedes-amg-gt-top-speed",
 }
+
+DEFAULT_COMMENTS = [
+    {"id": "seed_10", "username": "Ava S.", "text": "Good experience overall. It is easy to jump between models and compare specs without unnecessary clutter.", "rating": 4, "date": "12/03/2026"},
+    {"id": "seed_9", "username": "Noah G.", "text": "The interface is simple, dark theme looks solid, and the main metrics I care about are all visible.", "rating": 5, "date": "11/03/2026"},
+    {"id": "seed_8", "username": "Isabella N.", "text": "Helpful for quick research before watching review videos. I found the comparison table practical and clear.", "rating": 4, "date": "10/03/2026"},
+    {"id": "seed_7", "username": "Ryan P.", "text": "Nice project. Search works well and the comment area makes the page feel more active.", "rating": 5, "date": "09/03/2026"},
+    {"id": "seed_6", "username": "Chloe B.", "text": "I was mainly looking at SUVs and this made it much easier to compare top speed and price in one place.", "rating": 4, "date": "08/03/2026"},
+    {"id": "seed_5", "username": "Marcus L.", "text": "The site is straightforward and the data cards are readable on desktop. Performance comparisons are especially nice.", "rating": 5, "date": "07/03/2026"},
+    {"id": "seed_4", "username": "Olivia T.", "text": "Good design and simple navigation. The featured comparison links helped me discover cars I had not considered.", "rating": 4, "date": "06/03/2026"},
+    {"id": "seed_3", "username": "Daniel K.", "text": "I like how quickly I can compare horsepower and 0-100 times without opening ten different tabs.", "rating": 5, "date": "05/03/2026"},
+    {"id": "seed_2", "username": "Sofia M.", "text": "The fuel cost part is useful and the overall site feels fast. I would love even more EV entries later on.", "rating": 4, "date": "05/03/2026"},
+    {"id": "seed_1", "username": "Ethan R.", "text": "Very clean comparison layout. I checked a few BMW and Audi models and the numbers were easy to compare.", "rating": 5, "date": "04/03/2026"},
+]
 
 
 def is_local_host(host):
@@ -657,6 +671,114 @@ def load_users():
 def save_users(users):
     ensure_parent_dir(USERS_PATH)
     USERS_PATH.write_text(json.dumps(users, indent=2), encoding="utf-8")
+
+
+def _generate_comment_id(prefix="c"):
+    return f"{prefix}_{int(time.time() * 1000)}_{secrets.token_hex(4)}"
+
+
+def _normalize_reply(reply):
+    payload = dict(reply or {})
+    username = str(payload.get("username") or "User").strip() or "User"
+    text = str(payload.get("text") or "").strip()
+    date = str(payload.get("date") or datetime.utcnow().strftime("%d/%m/%Y")).strip()
+    user_id = str(payload.get("userId") or "").strip() or None
+    return {
+        "id": str(payload.get("id") or _generate_comment_id("r")).strip(),
+        "username": username,
+        "userId": user_id,
+        "text": text,
+        "date": date,
+    }
+
+
+def _normalize_comment(comment):
+    payload = dict(comment or {})
+    username = str(payload.get("username") or "User").strip() or "User"
+    text = str(payload.get("text") or "").strip()
+    date = str(payload.get("date") or datetime.utcnow().strftime("%d/%m/%Y")).strip()
+    try:
+        rating = int(payload.get("rating") or 5)
+    except (TypeError, ValueError):
+        rating = 5
+    rating = max(1, min(5, rating))
+
+    likes = payload.get("likes")
+    if not isinstance(likes, list):
+        likes = []
+    likes = [str(value).strip() for value in likes if str(value).strip()]
+    likes = list(dict.fromkeys(likes))
+
+    dislikes = payload.get("dislikes")
+    if not isinstance(dislikes, list):
+        dislikes = []
+    dislikes = [str(value).strip() for value in dislikes if str(value).strip()]
+    dislikes = list(dict.fromkeys(dislikes))
+
+    replies = payload.get("replies")
+    if not isinstance(replies, list):
+        replies = []
+
+    user_id = str(payload.get("userId") or "").strip() or None
+
+    return {
+        "id": str(payload.get("id") or _generate_comment_id("c")).strip(),
+        "username": username,
+        "userId": user_id,
+        "text": text,
+        "rating": rating,
+        "date": date,
+        "likes": likes,
+        "dislikes": dislikes,
+        "replies": [_normalize_reply(reply) for reply in replies],
+    }
+
+
+def load_comments():
+    raw_comments = []
+    if COMMENTS_PATH.exists():
+        try:
+            parsed = json.loads(COMMENTS_PATH.read_text(encoding="utf-8"))
+            if isinstance(parsed, list):
+                raw_comments = parsed
+        except json.JSONDecodeError:
+            raw_comments = []
+
+    comments = []
+    seen_ids = set()
+    for item in raw_comments:
+        normalized = _normalize_comment(item)
+        if not normalized["text"] or normalized["id"] in seen_ids:
+            continue
+        comments.append(normalized)
+        seen_ids.add(normalized["id"])
+
+    changed = comments != raw_comments
+    for seed in DEFAULT_COMMENTS:
+        normalized_seed = _normalize_comment(seed)
+        if normalized_seed["id"] in seen_ids:
+            continue
+        comments.append(normalized_seed)
+        seen_ids.add(normalized_seed["id"])
+        changed = True
+
+    if changed:
+        save_comments(comments)
+    return comments
+
+
+def save_comments(comments):
+    ensure_parent_dir(COMMENTS_PATH)
+    COMMENTS_PATH.write_text(json.dumps(comments, indent=2), encoding="utf-8")
+
+
+def get_comment_identity():
+    user = session.get("user") or {}
+    email = (user.get("email") or "").strip().lower()
+    if not email:
+        return None
+    username = (user.get("name") or email).strip() or email
+    return {"user_id": email, "username": username}
 
 
 def db_enabled():
@@ -1951,6 +2073,110 @@ def forgot_password_verify():
 
     session["user"] = session_user_payload(updated_user)
     return jsonify({"ok": True, "message": "Password updated. You are now logged in."})
+
+
+@app.route("/api/comments", methods=["GET"])
+def get_comments():
+    return jsonify({"ok": True, "comments": load_comments()})
+
+
+@app.route("/api/comments", methods=["POST"])
+def create_comment():
+    identity = get_comment_identity()
+    if not identity:
+        return jsonify({"ok": False, "message": "Login required."}), 401
+
+    data = request.get_json(silent=True) or {}
+    text = str(data.get("text") or "").strip()
+    if len(text) < 10 or len(text) > 500:
+        return jsonify({"ok": False, "message": "Comment must be between 10 and 500 characters."}), 400
+
+    try:
+        rating = int(data.get("rating") or 5)
+    except (TypeError, ValueError):
+        rating = 5
+    rating = max(1, min(5, rating))
+
+    comment = _normalize_comment(
+        {
+            "id": _generate_comment_id("c"),
+            "username": identity["username"],
+            "userId": identity["user_id"],
+            "text": text,
+            "rating": rating,
+            "date": datetime.utcnow().strftime("%d/%m/%Y"),
+            "likes": [],
+            "dislikes": [],
+            "replies": [],
+        }
+    )
+
+    comments = load_comments()
+    comments.insert(0, comment)
+    save_comments(comments)
+    return jsonify({"ok": True, "comment": comment, "comments": comments}), 201
+
+
+@app.route("/api/comments/<comment_id>/like", methods=["POST"])
+def toggle_comment_like(comment_id):
+    identity = get_comment_identity()
+    if not identity:
+        return jsonify({"ok": False, "message": "Login required."}), 401
+
+    comments = load_comments()
+    target_comment = None
+    for comment in comments:
+        if comment.get("id") == comment_id:
+            likes = [value for value in comment.get("likes", []) if value != identity["user_id"]]
+            if len(likes) == len(comment.get("likes", [])):
+                likes.append(identity["user_id"])
+            comment["likes"] = likes
+            target_comment = comment
+            break
+
+    if not target_comment:
+        return jsonify({"ok": False, "message": "Comment not found."}), 404
+
+    save_comments(comments)
+    return jsonify({"ok": True, "comment": target_comment, "comments": comments})
+
+
+@app.route("/api/comments/<comment_id>/replies", methods=["POST"])
+def create_comment_reply(comment_id):
+    identity = get_comment_identity()
+    if not identity:
+        return jsonify({"ok": False, "message": "Login required."}), 401
+
+    data = request.get_json(silent=True) or {}
+    text = str(data.get("text") or "").strip()
+    if len(text) < 1 or len(text) > 500:
+        return jsonify({"ok": False, "message": "Reply must be between 1 and 500 characters."}), 400
+
+    comments = load_comments()
+    target_comment = None
+    reply = _normalize_reply(
+        {
+            "id": _generate_comment_id("r"),
+            "username": identity["username"],
+            "userId": identity["user_id"],
+            "text": text,
+            "date": datetime.utcnow().strftime("%d/%m/%Y"),
+        }
+    )
+
+    for comment in comments:
+        if comment.get("id") == comment_id:
+            replies = comment.get("replies", [])
+            replies.insert(0, reply)
+            comment["replies"] = replies
+            target_comment = comment
+            break
+
+    if not target_comment:
+        return jsonify({"ok": False, "message": "Comment not found."}), 404
+
+    save_comments(comments)
+    return jsonify({"ok": True, "reply": reply, "comment": target_comment, "comments": comments}), 201
 
 
 @app.route("/logout")

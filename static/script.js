@@ -3726,10 +3726,21 @@ setLanguage(currentLang);
   const usernameInput = document.getElementById("username");
   const commentInput = document.getElementById("commentInput");
   const ratingInput = document.getElementById("rating");
-  const currentUser = (window.currentUser && window.currentUser.email) ? window.currentUser : null;
+  if (!form || !container || !usernameInput || !commentInput || !ratingInput) return;
 
+  const currentUser = (window.currentUser && window.currentUser.email) ? window.currentUser : null;
   const currentUserId = currentUser ? (currentUser.email || currentUser.name || "anon") : null;
-  let comments = JSON.parse(localStorage.getItem("comments")) || [];
+  const commentsApiUrl = "/api/comments";
+  let comments = [];
+  let loginNote = document.getElementById("loginToCommentNote");
+
+  const escapeHtml = (value) => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+  const formatStars = (rating) => "\u2605".repeat(Math.max(0, Math.min(5, rating))) + "\u2606".repeat(Math.max(0, 5 - Math.max(0, Math.min(5, rating))));
 
   const ensureShape = (c) => {
     let changed = false;
@@ -3738,17 +3749,16 @@ setLanguage(currentLang);
     if (!Array.isArray(c.likes)) { c.likes = []; changed = true; }
     if (!Array.isArray(c.dislikes)) { c.dislikes = []; changed = true; }
     if (!Array.isArray(c.replies)) { c.replies = []; changed = true; }
+    if (!c.username) { c.username = "User"; changed = true; }
+    if (!c.date) { c.date = new Date().toLocaleDateString("en-GB"); changed = true; }
+    if (!Number.isInteger(c.rating) || c.rating < 1 || c.rating > 5) { c.rating = 5; changed = true; }
     return [c, changed];
   };
 
-  let normalized = false;
-  comments = comments.map(c => {
-    const [shaped, changed] = ensureShape(c);
-    normalized = normalized || changed;
-    return shaped;
-  });
-  if (normalized) {
-    localStorage.setItem("comments", JSON.stringify(comments));
+  function syncComments(nextComments) {
+    comments = Array.isArray(nextComments)
+      ? nextComments.map((comment) => ensureShape(comment)[0])
+      : [];
   }
 
   function renderComments() {
@@ -3758,18 +3768,22 @@ setLanguage(currentLang);
       const div = document.createElement("div");
       div.className = "comment";
 
-      const stars = "*****".slice(0, c.rating).padEnd(5, "*");
+      const stars = formatStars(c.rating);
+      const safeUsername = escapeHtml(c.username);
+      const safeDate = escapeHtml(c.date);
+      const safeText = escapeHtml(c.text);
+      const avatarLetter = (c.username || "U").trim().slice(0, 1).toUpperCase() || "U";
 
       div.innerHTML = `
         <div class="comment-header">
-          <div class="comment-avatar">${(c.username || "U").trim().slice(0,1).toUpperCase() || "U"}</div>
+          <div class="comment-avatar">${avatarLetter}</div>
           <div class="comment-meta">
-            <span class="comment-name">${c.username}</span>
-            <span>${c.date}</span>
+            <span class="comment-name">${safeUsername}</span>
+            <span>${safeDate}</span>
           </div>
         </div>
         <div class="comment-rating">${stars}</div>
-        <div class="comment-body">${c.text}</div>
+        <div class="comment-body">${safeText}</div>
         <div class="comment-actions">
           <button class="icon-btn" data-action="like" data-id="${c.id}">Like (${c.likes.length})</button>
           <button class="icon-btn" data-action="reply" data-id="${c.id}">Reply</button>
@@ -3778,69 +3792,94 @@ setLanguage(currentLang);
           ${c.replies.map(r => `
             <div class="reply">
               <div class="comment-header">
-                <span>${r.username}</span>
-                <span>${r.date}</span>
+                <span>${escapeHtml(r.username)}</span>
+                <span>${escapeHtml(r.date)}</span>
               </div>
-              <div class="comment-body">${r.text}</div>
+              <div class="comment-body">${escapeHtml(r.text)}</div>
             </div>
           `).join('')}
         </div>
       `;
       container.appendChild(div);
     });
+
+    if (!comments.length) {
+      container.innerHTML = `<p>No comments yet.</p>`;
+    }
   }
 
-  function saveAndRender() {
-    localStorage.setItem("comments", JSON.stringify(comments));
+  async function fetchComments() {
+    const response = await fetch(commentsApiUrl, {
+      headers: { "Accept": "application/json" }
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) {
+      throw new Error(data.message || "Comments could not be loaded.");
+    }
+    syncComments(data.comments);
     renderComments();
+    return data.comments;
+  }
+
+  function setFormState(isSubmitting) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (!submitBtn) return;
+    submitBtn.disabled = isSubmitting;
   }
 
   if (!currentUser) {
     form.style.display = "none";
-    container.insertAdjacentHTML(
-      "beforebegin",
-      `<p id="loginToCommentNote" data-i18n="loginToComment">${t('loginToComment')}</p>`
-    );
+    if (!loginNote) {
+      container.insertAdjacentHTML(
+        "beforebegin",
+        `<p id="loginToCommentNote" data-i18n="loginToComment">${t('loginToComment')}</p>`
+      );
+      loginNote = document.getElementById("loginToCommentNote");
+    }
   } else {
-    // prefill and lock name from session user
     if (usernameInput) {
       usernameInput.value = currentUser.name || currentUser.email || "User";
       usernameInput.readOnly = true;
     }
     form.style.display = "flex";
+    if (loginNote) loginNote.remove();
   }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const username = usernameInput.value.trim();
     const text = commentInput.value.trim();
     const rating = parseInt(ratingInput.value);
-    const date = new Date().toLocaleDateString("en-GB");
 
     if (text.length < 10 || text.length > 500) {
       alert("Comment must be between 10 and 500 characters.");
       return;
     }
 
-    const makeId = () => `c_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-    const comment = { id: makeId(), username, userId: currentUserId, text, rating, date, likes: [], dislikes: [], replies: [] };
-    comments.unshift(comment);
-    saveAndRender();
-
-    // Optional: backend hook (non-blocking)
-    fetch("http://127.0.0.1:8000/comments", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(comment)
-    }).catch(() => {});
-
-    form.reset();
-    if (usernameInput) {
-      usernameInput.value = currentUser ? (currentUser.name || currentUser.email || "User") : "";
+    try {
+      setFormState(true);
+      const response = await fetch(commentsApiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, rating })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message || "Comment could not be saved.");
+      }
+      syncComments(data.comments);
+      renderComments();
+      form.reset();
+      if (usernameInput) {
+        usernameInput.value = currentUser ? (currentUser.name || currentUser.email || "User") : "";
+      }
+    } catch (error) {
+      alert(error.message || "Comment could not be saved.");
+    } finally {
+      setFormState(false);
     }
   });
 
-  container.addEventListener("click", (e) => {
+  container.addEventListener("click", async (e) => {
     const btn = e.target.closest("[data-action]");
     if (!btn) return;
     const action = btn.dataset.action;
@@ -3855,35 +3894,47 @@ setLanguage(currentLang);
     const [comment] = ensureShape(comments[idx]);
 
     if (action === "like") {
-      const targetArr = comment.likes;
-      const has = targetArr.includes(userId);
-      if (has) {
-        comment.likes = targetArr.filter(x => x !== userId);
-      } else {
-        comment.likes = [...targetArr, userId];
+      try {
+        const response = await fetch(`${commentsApiUrl}/${encodeURIComponent(id)}/like`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.ok) {
+          throw new Error(data.message || "Like action failed.");
+        }
+        syncComments(data.comments);
+        renderComments();
+      } catch (error) {
+        alert(error.message || "Like action failed.");
       }
-      comments[idx] = comment;
-      saveAndRender();
       return;
     }
 
     if (action === "reply") {
       const replyText = prompt("Reply:");
       if (!replyText || replyText.trim().length === 0) return;
-      const reply = {
-        id: `r_${Date.now()}_${Math.random().toString(16).slice(2)}`,
-        username: currentUser.name || currentUser.email || "User",
-        userId,
-        text: replyText.trim(),
-        date: new Date().toLocaleDateString("en-GB"),
-      };
-      comment.replies.unshift(reply);
-      comments[idx] = comment;
-      saveAndRender();
+      try {
+        const response = await fetch(`${commentsApiUrl}/${encodeURIComponent(id)}/replies`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: replyText.trim() })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.ok) {
+          throw new Error(data.message || "Reply could not be saved.");
+        }
+        syncComments(data.comments);
+        renderComments();
+      } catch (error) {
+        alert(error.message || "Reply could not be saved.");
+      }
     }
   });
 
-  renderComments();
+  fetchComments().catch((error) => {
+    container.innerHTML = `<p>${escapeHtml(error.message || "Comments could not be loaded.")}</p>`;
+  });
 })();
 
 // Load existing comments
