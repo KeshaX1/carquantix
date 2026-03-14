@@ -1296,6 +1296,8 @@ const listEl = document.getElementById('itemList');
 const compareArea = document.getElementById('compareArea');
 const compTable = document.querySelector('#compTable tbody');
 const tableArea = document.getElementById('tableArea');
+const raceLinksArea = document.getElementById('raceLinksArea');
+const raceLinksList = document.getElementById('raceLinksList');
 const searchInput = document.getElementById('search');
 const brandSelect = document.getElementById('brandFilter');
 const clearBtn = document.getElementById('clearBtn');
@@ -1750,6 +1752,36 @@ Object.assign(TRANSLATIONS.es, {
   notificationsToday: 'Hoy',
   notificationsYesterday: 'Hace 1 dia',
   notificationsDaysAgo: 'Hace {days} dias',
+});
+
+Object.assign(TRANSLATIONS.en, {
+  raceLinksTitle: 'YouTube Race Links',
+  raceLinksIntro: 'Open YouTube search results for head-to-head races of the selected vehicles.',
+  raceLinksSearch: 'Search on YouTube',
+});
+
+Object.assign(TRANSLATIONS.tr, {
+  raceLinksTitle: 'YouTube Yaris Linkleri',
+  raceLinksIntro: 'Secili araclarin birebir yarislarini YouTube sonuc sayfasinda ac.',
+  raceLinksSearch: 'YouTube\'da ara',
+});
+
+Object.assign(TRANSLATIONS.de, {
+  raceLinksTitle: 'YouTube Rennlinks',
+  raceLinksIntro: 'Offne YouTube-Suchergebnisse fur direkte Rennen der ausgewahlten Fahrzeuge.',
+  raceLinksSearch: 'Auf YouTube suchen',
+});
+
+Object.assign(TRANSLATIONS.fr, {
+  raceLinksTitle: 'Liens YouTube de course',
+  raceLinksIntro: 'Ouvre les resultats YouTube pour des courses en face a face des vehicules selectionnes.',
+  raceLinksSearch: 'Chercher sur YouTube',
+});
+
+Object.assign(TRANSLATIONS.es, {
+  raceLinksTitle: 'Enlaces de carreras en YouTube',
+  raceLinksIntro: 'Abre resultados de YouTube para carreras cara a cara de los vehiculos seleccionados.',
+  raceLinksSearch: 'Buscar en YouTube',
 });
 
 const getLang = (code) => LANGUAGES.find(l => l.code === code);
@@ -3197,6 +3229,7 @@ function renderSelected() {
     `;
     compTable.innerHTML = '';
     if (tableArea) tableArea.classList.add('hidden');
+    renderComparisonRaceLinks();
     setFuelCalculatorVisible(false);
     return;
   }
@@ -3283,6 +3316,7 @@ function renderSelected() {
     compareArea.appendChild(card);
   });
 
+  renderComparisonRaceLinks();
   syncFuelCalculatorToSelection();
 
   // attach remove handlers
@@ -3306,6 +3340,70 @@ function renderSelected() {
       panel.classList.toggle('hidden');
     });
   });
+}
+
+function buildYoutubeRaceSearchQuery(leftVehicle, rightVehicle) {
+  const leftName = String(leftVehicle?.name || leftVehicle?.id || 'Vehicle A').trim();
+  const rightName = String(rightVehicle?.name || rightVehicle?.id || 'Vehicle B').trim();
+  return `${leftName} vs ${rightName} drag race`;
+}
+
+function buildYoutubeRaceSearchUrl(leftVehicle, rightVehicle) {
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(buildYoutubeRaceSearchQuery(leftVehicle, rightVehicle))}`;
+}
+
+function getComparisonRaceLinks(vehicles) {
+  const links = [];
+  const seen = new Set();
+  for (let i = 0; i < vehicles.length; i += 1) {
+    for (let j = i + 1; j < vehicles.length; j += 1) {
+      const left = vehicles[i];
+      const right = vehicles[j];
+      const leftKey = left?._key || makeKey(left?.catalog || 'cars', left?.id);
+      const rightKey = right?._key || makeKey(right?.catalog || 'cars', right?.id);
+      const pairKey = [leftKey, rightKey].sort().join('::');
+      if (seen.has(pairKey)) continue;
+      seen.add(pairKey);
+      links.push({
+        key: pairKey,
+        title: `${left.name} vs ${right.name}`,
+        url: buildYoutubeRaceSearchUrl(left, right),
+      });
+    }
+  }
+  return links;
+}
+
+function renderComparisonRaceLinks() {
+  if (!raceLinksArea || !raceLinksList) return;
+  const raceLinks = getComparisonRaceLinks(selected);
+  raceLinksList.innerHTML = '';
+  if (raceLinks.length === 0) {
+    raceLinksArea.classList.add('hidden');
+    return;
+  }
+
+  raceLinks.forEach(entry => {
+    const link = document.createElement('a');
+    link.className = 'race-link-card';
+    link.href = entry.url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+
+    const label = document.createElement('span');
+    label.className = 'race-link-label';
+    label.textContent = entry.title;
+
+    const meta = document.createElement('span');
+    meta.className = 'race-link-meta';
+    meta.textContent = t('raceLinksSearch');
+
+    link.appendChild(label);
+    link.appendChild(meta);
+    raceLinksList.appendChild(link);
+  });
+
+  raceLinksArea.classList.remove('hidden');
 }
 
 // build comparison table with maxima highlighted

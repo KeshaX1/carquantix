@@ -280,6 +280,7 @@ FEATURED_COMPARE_REFERENCES = [
     ("Urus", "Levante"),
 ]
 FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", str(len(FEATURED_COMPARE_REFERENCES))))
+COMPARE_RACE_VIDEO_OVERRIDES = {}
 LEGACY_COMPARE_SLUGS = {
     "audi-rs6-vs-bmw-m5-cs": ("RS6", "M5 CS"),
     "bugatti-chiron-vs-koenigsegg-agera-rs": ("Chiron", "Agera RS"),
@@ -495,6 +496,36 @@ def build_compare_href(car_a, car_b):
     if not slug:
         return ""
     return f"/compare/{slug}"
+
+
+def build_compare_youtube_search_query(car_a, car_b):
+    left_name = str(car_a.get("name") or "Car A").strip()
+    right_name = str(car_b.get("name") or "Car B").strip()
+    return f"{left_name} vs {right_name} drag race"
+
+
+def build_compare_race_link(car_a, car_b):
+    if not car_a or not car_b:
+        return None
+    compare_slug = build_compare_slug(car_a, car_b)
+    override = COMPARE_RACE_VIDEO_OVERRIDES.get(compare_slug) if compare_slug else None
+    if override:
+        return {
+            "title": override.get("title") or f"{car_a.get('name')} vs {car_b.get('name')}",
+            "youtube_url": override.get("youtube_url", ""),
+            "cta_label": override.get("cta_label") or "Watch on YouTube",
+            "description": override.get("description") or "Open the curated YouTube video for this matchup.",
+            "source": "direct",
+        }
+
+    query = build_compare_youtube_search_query(car_a, car_b)
+    return {
+        "title": f"{car_a.get('name')} vs {car_b.get('name')}",
+        "youtube_url": f"https://www.youtube.com/results?search_query={urllib.parse.quote_plus(query)}",
+        "cta_label": "Search on YouTube",
+        "description": "Open YouTube search results for head-to-head runs of this matchup.",
+        "source": "search",
+    }
 
 
 def resolve_compare_slug(compare_slug, slug_map):
@@ -1753,6 +1784,7 @@ def compare_detail(compare_slug):
     left_car = resolved["left_car"]
     right_car = resolved["right_car"]
     compare_rows = build_compare_spec_rows(left_car, right_car)
+    race_video = build_compare_race_link(left_car, right_car)
     canonical_url = f"{get_base_url()}/compare/{resolved['canonical_slug']}"
     meta_title = f"{left_car.get('name')} vs {right_car.get('name')} | CarQuantix"
     meta_description = build_compare_meta_description(left_car, right_car)
@@ -1776,6 +1808,7 @@ def compare_detail(compare_slug):
         left_car=left_car,
         right_car=right_car,
         compare_rows=compare_rows,
+        race_video=race_video,
         canonical_url=canonical_url,
         meta_title=meta_title,
         meta_description=meta_description,

@@ -28,7 +28,7 @@
   {% endif %}
   {% include "_adsense_head.html" %}
   <script type="application/ld+json">{{ page_schema|tojson }}</script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260305-resale-premium1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260314-youtube-race-links1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     .compare-detail-main {
@@ -151,6 +151,47 @@
       font-size: 1.05rem;
       font-weight: 700;
     }
+    .race-link-panel {
+      margin-top: 24px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--card, rgba(255, 255, 255, 0.03));
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .race-link-panel h2 {
+      margin: 4px 0 8px;
+      font-size: 1.15rem;
+    }
+    .race-link-panel p {
+      margin: 0;
+      color: var(--muted, #9fb0c5);
+      line-height: 1.6;
+    }
+    .race-link-kicker {
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted, #9fb0c5);
+      font-weight: 700;
+    }
+    .race-link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      color: #f8fbff;
+      background: linear-gradient(135deg, #ff1f57, #ff5b37);
+      box-shadow: 0 12px 28px rgba(255, 63, 63, 0.24);
+    }
   </style>
 </head>
 <body class="car-detail-page">
@@ -218,6 +259,17 @@
         <div class="summary-value">{{ left_car.topSpeed }} km/h vs {{ right_car.topSpeed }} km/h</div>
       </div>
     </section>
+
+    {% if race_video %}
+    <section class="race-link-panel" aria-label="YouTube race link">
+      <div>
+        <div class="race-link-kicker">YouTube</div>
+        <h2>{{ race_video.title }}</h2>
+        <p>{{ race_video.description }}</p>
+      </div>
+      <a class="race-link-btn" href="{{ race_video.youtube_url }}" target="_blank" rel="noopener noreferrer">{{ race_video.cta_label }}</a>
+    </section>
+    {% endif %}
 
     <section class="compare-table-wrap" aria-label="Comparison table">
       <table class="compare-table">

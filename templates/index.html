@@ -54,7 +54,7 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260305-resale-premium1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260314-youtube-race-links1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -276,6 +276,14 @@
           </table>
         </div>
       </section>
+
+      <section id="raceLinksArea" class="race-links hidden" aria-label="youtube race links">
+        <div class="race-links-header">
+          <h2 id="raceLinksTitle" data-i18n="raceLinksTitle">YouTube Race Links</h2>
+          <p id="raceLinksIntro" data-i18n="raceLinksIntro">Open YouTube search results for head-to-head races of the selected vehicles.</p>
+        </div>
+        <div id="raceLinksList" class="race-links-list"></div>
+      </section>
     </main>
   </div>
   <section class="seo-content" style="margin-top:60px; padding:40px 20px; max-width:1000px; margin-left:auto; margin-right:auto;">
@@ -384,7 +392,7 @@
   {% if paddle_client_token %}
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   {% endif %}
-  <script src="{{ url_for('static', filename='script.js', v='20260310-premium-fix1') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260314-youtube-race-links1') }}"></script>
 </body>
 </html>
 
