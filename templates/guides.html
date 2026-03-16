@@ -15,52 +15,43 @@
     gtag('config', 'G-8BTCF256NW');
   </script>
   {% include "_adsense_head.html" %}
-  <title>{{ meta_title or "CarQuantix News - Verified Automotive Updates" }}</title>
-  <meta name="description" content="{{ meta_description or 'Verified automotive news, new model announcements, EV updates and auto show highlights.' }}">
+  <title>{{ meta_title or "CarQuantix Guides - Learn Cars Faster" }}</title>
+  <meta name="description" content="{{ meta_description or 'Beginner-friendly car guides about horsepower, comparisons, sports cars, EV choices and ownership cost.' }}">
   <meta name="robots" content="{{ robots_directive or 'index,follow' }}">
-  <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/news' }}">
+  <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/guides' }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260316-guides-blog1') }}">
 </head>
-<body class="about-page news-page" data-page="news">
+<body class="about-page content-page" data-page="guides">
   <main class="about-wrap">
     <section class="about-card">
-      <div class="news-hero">
-        <span class="news-kicker" data-i18n="news.kicker">Verified updates</span>
-        <h1 data-i18n="news.title">Automotive News</h1>
-        <p data-i18n="news.lead">Recent model launches, EV developments and auto show highlights collected from official manufacturer and organizer sources.</p>
-        <p class="news-verified">
-          <strong data-i18n="news.verifiedLabel">Last verified</strong>
-          <span>{{ news_verified_on }}</span>
-        </p>
+      <div class="content-hero">
+        <span class="content-kicker" data-i18n="guides.kicker">Learn faster</span>
+        <h1 data-i18n="guides.title">Car Guides</h1>
+        <p data-i18n="guides.lead">Simple, useful explainers for buyers and enthusiasts who want to understand cars without drowning in jargon.</p>
       </div>
 
-      <div class="news-grid">
-        {% for item in news_items %}
-        <article class="news-card">
-          <div class="news-card-meta">
-            <span class="news-chip" data-news-en="{{ item.category_en }}" data-news-tr="{{ item.category_tr }}">{{ item.category_en }}</span>
-            <time class="news-date" datetime="{{ item.date_iso }}">{{ item.date_iso }}</time>
+      <div class="content-grid">
+        {% for item in guide_items %}
+        <article class="content-card">
+          <div class="content-card-header">
+            <span class="content-chip" data-copy-en="{{ item.tag_en }}" data-copy-tr="{{ item.tag_tr }}">{{ item.tag_en }}</span>
           </div>
-          <h2 data-news-en="{{ item.title_en }}" data-news-tr="{{ item.title_tr }}">{{ item.title_en }}</h2>
-          <p data-news-en="{{ item.summary_en }}" data-news-tr="{{ item.summary_tr }}">{{ item.summary_en }}</p>
-          <ul class="news-facts">
-            {% for idx in range(item.facts_en|length) %}
-            <li data-news-en="{{ item.facts_en[idx] }}" data-news-tr="{{ item.facts_tr[idx] }}">{{ item.facts_en[idx] }}</li>
+          <h2 data-copy-en="{{ item.title_en }}" data-copy-tr="{{ item.title_tr }}">{{ item.title_en }}</h2>
+          <p data-copy-en="{{ item.summary_en }}" data-copy-tr="{{ item.summary_tr }}">{{ item.summary_en }}</p>
+          <ul class="content-points">
+            {% for idx in range(item.points_en|length) %}
+            <li data-copy-en="{{ item.points_en[idx] }}" data-copy-tr="{{ item.points_tr[idx] }}">{{ item.points_en[idx] }}</li>
             {% endfor %}
           </ul>
-          <div class="news-source-row">
-            <span class="news-source-label" data-i18n="news.sourceLabel">Source</span>
-            <a class="news-source-link" href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer">{{ item.source_name }}</a>
-          </div>
         </article>
         {% endfor %}
       </div>
 
-      <section class="news-note">
-        <h2 data-i18n="news.noteTitle">Editorial note</h2>
-        <p data-i18n="news.noteBody">This page is curated from official brand newsrooms and official event organizers instead of rumor accounts or reposts.</p>
+      <section class="content-note">
+        <h2 data-i18n="guides.noteTitle">Why this page exists</h2>
+        <p data-i18n="guides.noteBody">Guides are written as practical primers. They are meant to help users ask better questions before buying or comparing a vehicle.</p>
         <p class="about-home-link">
-          <a href="/" data-i18n="news.homeLink">Back to the homepage</a>
+          <a href="/" data-i18n="guides.homeLink">Back to the homepage</a>
         </p>
       </section>
     </section>
@@ -89,8 +80,8 @@
     (() => {
       const lang = (localStorage.getItem('appLang') || 'en').toLowerCase();
       const localized = lang === 'tr' ? 'tr' : 'en';
-      document.querySelectorAll('[data-news-en]').forEach((el) => {
-        const next = el.getAttribute(`data-news-${localized}`) || el.getAttribute('data-news-en');
+      document.querySelectorAll('[data-copy-en]').forEach((el) => {
+        const next = el.getAttribute(`data-copy-${localized}`) || el.getAttribute('data-copy-en');
         if (next) el.textContent = next;
       });
     })();

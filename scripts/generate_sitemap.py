@@ -10,6 +10,8 @@ def generate_sitemap(base_url: str, output_path: Path) -> None:
     urls = [
         f"{base_url}/",
         f"{base_url}/news",
+        f"{base_url}/guides",
+        f"{base_url}/blog",
         f"{base_url}/about-us",
         f"{base_url}/contact",
         f"{base_url}/privacy-policy",

@@ -453,6 +453,180 @@ NEWS_ITEMS = [
     },
 ]
 
+GUIDE_ITEMS = [
+    {
+        "slug": "choose-a-sports-car",
+        "title_en": "How to choose a sports car",
+        "title_tr": "Spor otomobil nasil secilir",
+        "summary_en": "A simple framework for balancing power, weight, daily usability, maintenance cost and driving character before you buy.",
+        "summary_tr": "Satın almadan once guc, agirlik, gunluk kullanim, bakim maliyeti ve surus karakteri arasinda denge kurmak icin basit bir rehber.",
+        "points_en": [
+            "Start with your real use case: weekend fun, daily drive or track days.",
+            "Check running costs, not only sticker price.",
+            "Compare weight, tires and braking hardware alongside horsepower.",
+        ],
+        "points_tr": [
+            "Once gercek kullanim amacini belirle: hafta sonu keyfi, gunluk kullanim ya da pist.",
+            "Sadece etiket fiyatina degil, kullanim maliyetine de bak.",
+            "Beygir gucu kadar agirlik, lastik ve fren altyapisini da karsilastir.",
+        ],
+        "tag_en": "Buying guide",
+        "tag_tr": "Satın alma rehberi",
+    },
+    {
+        "slug": "what-is-horsepower",
+        "title_en": "What is horsepower?",
+        "title_tr": "Horsepower nedir",
+        "summary_en": "Understand what horsepower measures, how it differs from torque and why power figures alone do not tell the whole performance story.",
+        "summary_tr": "Horsepower kavraminin neyi olctugunu, torktan farkini ve tek basina neden tum performansi anlatmadigini ogren.",
+        "points_en": [
+            "Horsepower describes how quickly an engine can do work.",
+            "Torque affects low-speed punch and drivability.",
+            "Gearing, traction and weight can change real-world acceleration.",
+        ],
+        "points_tr": [
+            "Horsepower, motorun isi ne kadar hizli yapabildigini anlatir.",
+            "Tork, dusuk hizdaki cekisi ve surus hissini etkiler.",
+            "Sanziman oranlari, tutus ve agirlik gercek hizlanmayi ciddi sekilde degistirir.",
+        ],
+        "tag_en": "Basics",
+        "tag_tr": "Temel bilgiler",
+    },
+    {
+        "slug": "how-to-compare-cars",
+        "title_en": "How to compare cars",
+        "title_tr": "Arabalar nasil karsilastirilir",
+        "summary_en": "A practical checklist for comparing cars without getting lost in spec-sheet noise.",
+        "summary_tr": "Teknik veri kalabaliginda kaybolmadan araba karsilastirmak icin pratik bir kontrol listesi.",
+        "points_en": [
+            "Compare vehicles in the same price band and body type first.",
+            "Use 0-100 km/h, top speed, power-to-weight and consumption together.",
+            "Always add ownership cost and resale assumptions to the comparison.",
+        ],
+        "points_tr": [
+            "Ilk olarak ayni fiyat araligi ve ayni kasa tipindeki araclari eslestir.",
+            "0-100 km/s, azami hiz, guc/agırlik ve tuketimi birlikte degerlendir.",
+            "Karsilastirmaya mutlaka sahip olma maliyeti ve ikinci el varsayimi ekle.",
+        ],
+        "tag_en": "Comparison",
+        "tag_tr": "Karsilastirma",
+    },
+    {
+        "slug": "understanding-0-100",
+        "title_en": "How to read 0-100 km/h times",
+        "title_tr": "0-100 km/s verileri nasil okunur",
+        "summary_en": "Why launch control, traction, tire choice and test conditions can make one acceleration figure look better than another.",
+        "summary_tr": "Launch control, tutus, lastik secimi ve test kosullarinin hizlanma verilerini nasil etkiledigini aciklayan rehber.",
+        "points_en": [
+            "Factory figures are often recorded in ideal conditions.",
+            "AWD and tire setup matter at least as much as engine output off the line.",
+            "Look at repeatability, not only the best single run.",
+        ],
+        "points_tr": [
+            "Fabrika verileri genelde ideal kosullarda olculur.",
+            "Kalkista dort ceker ve lastik yapisi en az motor kadar etkilidir.",
+            "Tek en iyi deneme yerine tekrar edilebilir sonuclara bak.",
+        ],
+        "tag_en": "Performance",
+        "tag_tr": "Performans",
+    },
+    {
+        "slug": "fuel-vs-hybrid-vs-ev",
+        "title_en": "Fuel, hybrid or EV: which fits you?",
+        "title_tr": "Benzinli, hibrit veya EV: hangisi sana uygun",
+        "summary_en": "A buyer-friendly way to think about charging access, annual mileage, urban use and long-trip habits before choosing a powertrain.",
+        "summary_tr": "Guc secimini yapmadan once sarj erisimi, yillik kilometre, sehir ici kullanim ve uzun yol aliskanliklarini degerlendiren alici dostu bir rehber.",
+        "points_en": [
+            "EVs work best when charging is easy and predictable.",
+            "Hybrids can reduce fuel use without changing habits much.",
+            "Traditional combustion still suits some long-distance patterns.",
+        ],
+        "points_tr": [
+            "Elektrikli araclar sarj kolay ve duzenliyse en iyi sonucu verir.",
+            "Hibritler, aliskanliklari cok degistirmeden tuketimi dusurebilir.",
+            "Klasik icten yanmali araclar bazi uzun yol duzenlerinde hala mantikli olabilir.",
+        ],
+        "tag_en": "Powertrain",
+        "tag_tr": "Guc sistemi",
+    },
+    {
+        "slug": "ownership-cost",
+        "title_en": "How to estimate ownership cost",
+        "title_tr": "Sahip olma maliyeti nasil hesaplanir",
+        "summary_en": "Go beyond fuel with insurance, tires, servicing, depreciation and financing when comparing two cars.",
+        "summary_tr": "Iki araci karsilastirirken yakitin disinda sigorta, lastik, servis, deger kaybi ve finansmani da hesaba kat.",
+        "points_en": [
+            "Create a yearly budget instead of a one-time purchase view.",
+            "Large wheels, performance brakes and premium tires add hidden cost.",
+            "Depreciation often matters more than small fuel savings.",
+        ],
+        "points_tr": [
+            "Tek seferlik satin alma yerine yillik butce mantigi kur.",
+            "Buyuk jant, performans frenleri ve premium lastikler gizli maliyet yaratir.",
+            "Cogu zaman deger kaybi, kucuk yakit tasarrufundan daha belirleyicidir.",
+        ],
+        "tag_en": "Cost",
+        "tag_tr": "Maliyet",
+    },
+]
+
+BLOG_ITEMS = [
+    {
+        "slug": "fastest-cars-in-2026",
+        "title_en": "Fastest cars people still talk about in 2026",
+        "title_tr": "2026'da hala en cok konusulan hiz canavarlari",
+        "summary_en": "A broad editorial look at the hypercars and high-speed benchmarks that continue to shape conversations this year.",
+        "summary_tr": "Bu yil da otomobil sohbetlerini belirleyen hiper otomobillere ve yuksek hiz referanslarina genel bir editor bakisi.",
+        "tag_en": "Speed",
+        "tag_tr": "Hiz",
+    },
+    {
+        "slug": "best-sports-cars-under-50k",
+        "title_en": "Best sports cars under $50k: what buyers really compare",
+        "title_tr": "50 bin dolar alti spor otomobillerde alicilar gercekte neyi karsilastiriyor",
+        "summary_en": "Not a simple ranking, but a breakdown of the tradeoffs that matter most in the lower performance segment.",
+        "summary_tr": "Basit bir siralama yerine, ulasilabilir performans sinifinda en cok onem tasiyan denge noktalarini ele alan yazi.",
+        "tag_en": "Buying",
+        "tag_tr": "Satın alma",
+    },
+    {
+        "slug": "why-evs-are-growing",
+        "title_en": "Why electric cars are becoming more popular",
+        "title_tr": "Elektrikli araclar neden daha populer hale geliyor",
+        "summary_en": "An accessible overview of convenience, software, efficiency and regulation factors behind EV adoption.",
+        "summary_tr": "Elektrikli arac benimsenmesini etkileyen kolaylik, yazilim, verimlilik ve regülasyon dinamiklerine sade bir bakis.",
+        "tag_en": "EV",
+        "tag_tr": "EV",
+    },
+    {
+        "slug": "super-sedan-vs-coupe",
+        "title_en": "Super sedan vs coupe: which one makes more sense?",
+        "title_tr": "Super sedan mi coupe mi: hangisi daha mantikli",
+        "summary_en": "Practicality, weight distribution, comfort and image all shape this debate more than lap times alone.",
+        "summary_tr": "Bu tartismayi sadece tur zamani degil; pratiklik, agirlik dagilimi, konfor ve imaj da belirliyor.",
+        "tag_en": "Comparison",
+        "tag_tr": "Karsilastirma",
+    },
+    {
+        "slug": "digital-cockpit-trend",
+        "title_en": "Why modern dashboards feel more digital every year",
+        "title_tr": "Modern kokpitler neden her yil daha dijital hissediliyor",
+        "summary_en": "A short read on software-first interiors, display design and the balance between simplicity and distraction.",
+        "summary_tr": "Yazilim odakli kokpitler, ekran tasarimi ve sadelikle dikkat daginikligi arasindaki denge uzerine kisa bir yazi.",
+        "tag_en": "Tech",
+        "tag_tr": "Teknoloji",
+    },
+    {
+        "slug": "why-weight-matters",
+        "title_en": "Why weight matters almost as much as horsepower",
+        "title_tr": "Neden agirlik neredeyse horsepower kadar onemlidir",
+        "summary_en": "Handling, braking, efficiency and tire wear all reveal why lightness still matters in a power-focused market.",
+        "summary_tr": "Yol tutus, fren, verimlilik ve lastik asinmasi; guce odakli pazarda hafifligin neden hala kritik oldugunu gosteriyor.",
+        "tag_en": "Engineering",
+        "tag_tr": "Muhendislik",
+    },
+]
+
 
 def is_local_host(host):
     host_only = (host or "").split(":")[0].lower()
@@ -1608,6 +1782,32 @@ def news():
     )
 
 
+@app.route("/guides")
+def guides():
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "guides.html",
+        guide_items=GUIDE_ITEMS,
+        canonical_url=canonical_url,
+        meta_title="CarQuantix Guides - Learn Cars Faster",
+        meta_description="Beginner-friendly car guides about horsepower, comparisons, sports cars, EV choices and ownership cost.",
+        robots_directive="index,follow",
+    )
+
+
+@app.route("/blog")
+def blog():
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "blog.html",
+        blog_items=BLOG_ITEMS,
+        canonical_url=canonical_url,
+        meta_title="CarQuantix Blog - Car Writing and Editorials",
+        meta_description="General car writing, editorial overviews and readable automotive topics from CarQuantix.",
+        robots_directive="index,follow",
+    )
+
+
 @app.route("/privacy-policy")
 def privacy_policy():
     canonical_url = f"{get_base_url()}{request.path}"
@@ -1975,6 +2175,8 @@ def sitemap():
     urls = [
         f"{base_url}/",
         f"{base_url}/news",
+        f"{base_url}/guides",
+        f"{base_url}/blog",
         f"{base_url}/about-us",
         f"{base_url}/contact",
         f"{base_url}/pricing",

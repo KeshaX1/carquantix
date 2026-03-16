@@ -1700,6 +1700,8 @@ const TRANSLATIONS = {
 };
 
 Object.assign(TRANSLATIONS.en, {
+  navGuides: 'Guides',
+  navBlog: 'Blog',
   navNews: 'News',
   notificationsTitle: 'Notifications',
   notificationsEmpty: 'No new vehicles yet.',
@@ -1712,6 +1714,8 @@ Object.assign(TRANSLATIONS.en, {
 });
 
 Object.assign(TRANSLATIONS.tr, {
+  navGuides: 'Rehberler',
+  navBlog: 'Blog',
   navNews: 'Haberler',
   notificationsTitle: 'Bildirimler',
   notificationsEmpty: 'Henüz yeni araç yok.',
@@ -1724,6 +1728,8 @@ Object.assign(TRANSLATIONS.tr, {
 });
 
 Object.assign(TRANSLATIONS.de, {
+  navGuides: 'Guides',
+  navBlog: 'Blog',
   navNews: 'News',
   notificationsTitle: 'Benachrichtigungen',
   notificationsEmpty: 'Noch keine neuen Fahrzeuge.',
@@ -1736,6 +1742,8 @@ Object.assign(TRANSLATIONS.de, {
 });
 
 Object.assign(TRANSLATIONS.fr, {
+  navGuides: 'Guides',
+  navBlog: 'Blog',
   navNews: 'Actualites',
   notificationsTitle: 'Notifications',
   notificationsEmpty: 'Aucun nouveau vehicule pour le moment.',
@@ -1748,6 +1756,8 @@ Object.assign(TRANSLATIONS.fr, {
 });
 
 Object.assign(TRANSLATIONS.es, {
+  navGuides: 'Guias',
+  navBlog: 'Blog',
   navNews: 'Noticias',
   notificationsTitle: 'Notificaciones',
   notificationsEmpty: 'Aun no hay vehiculos nuevos.',
