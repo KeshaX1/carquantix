@@ -54,7 +54,7 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260314-youtube-race-links1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260316-news1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -76,6 +76,7 @@
       </div>
       {% endif %}
       <a href="/contact" id="topContactLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navContact">Contact</a>
+      <a href="/news" id="topNewsLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navNews">News</a>
       <a href="/about-us" id="topAboutLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navAbout">About Us</a>
       <a href="/pricing" id="topPricingLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navPricing">Pricing</a>
       <a href="/terms" id="topTermsLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navTerms">Terms</a>
@@ -379,6 +380,7 @@
       <nav class="footer-links" aria-label="Footer links">
         <a href="/about-us" data-i18n="navAbout">About Us</a>
         <a href="/contact" data-i18n="navContact">Contact</a>
+        <a href="/news" data-i18n="navNews">News</a>
         <a href="/pricing" data-i18n="navPricing">Pricing</a>
         <a href="/terms" data-i18n="navTerms">Terms</a>
         <a href="/refund-policy" data-i18n="navRefund">Refund Policy</a>
@@ -392,7 +394,7 @@
   {% if paddle_client_token %}
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   {% endif %}
-  <script src="{{ url_for('static', filename='script.js', v='20260314-youtube-race-links1') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260316-news1') }}"></script>
 </body>
 </html>
 

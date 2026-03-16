@@ -10,6 +10,7 @@
     en: {
       navAbout: 'About Us',
       navContact: 'Contact',
+      navNews: 'News',
       navPricing: 'Pricing',
       navTerms: 'Terms',
       navRefund: 'Refund Policy',
@@ -18,6 +19,7 @@
     tr: {
       navAbout: 'Hakkimizda',
       navContact: 'Iletisim',
+      navNews: 'Haberler',
       navPricing: 'Fiyatlandirma',
       navTerms: 'Kosullar',
       navRefund: 'Iade Politikasi',
@@ -26,6 +28,7 @@
     de: {
       navAbout: 'Uber uns',
       navContact: 'Kontakt',
+      navNews: 'News',
       navPricing: 'Preise',
       navTerms: 'Bedingungen',
       navRefund: 'Rueckerstattung',
@@ -34,6 +37,7 @@
     fr: {
       navAbout: 'A propos',
       navContact: 'Contact',
+      navNews: 'Actualites',
       navPricing: 'Tarifs',
       navTerms: 'Conditions',
       navRefund: 'Politique de remboursement',
@@ -42,6 +46,7 @@
     es: {
       navAbout: 'Acerca de',
       navContact: 'Contacto',
+      navNews: 'Noticias',
       navPricing: 'Precios',
       navTerms: 'Terminos',
       navRefund: 'Politica de reembolso',
@@ -717,7 +722,65 @@
     },
   };
 
-  const packs = { about: ABOUT, contact: CONTACT, privacy: PRIVACY, pricing: PRICING, terms: TERMS, refund: REFUND };
+  const NEWS = {
+    en: {
+      ...NAV.en,
+      'news.kicker': 'Verified updates',
+      'news.title': 'Automotive News',
+      'news.lead': 'Recent model launches, EV developments and auto show highlights collected from official manufacturer and organizer sources.',
+      'news.verifiedLabel': 'Last verified',
+      'news.sourceLabel': 'Source',
+      'news.noteTitle': 'Editorial note',
+      'news.noteBody': 'This page is curated from official brand newsrooms and official event organizers instead of rumor accounts or reposts.',
+      'news.homeLink': 'Back to the homepage',
+    },
+    tr: {
+      ...NAV.tr,
+      'news.kicker': 'Dogrulanmis guncellemeler',
+      'news.title': 'Otomotiv Haberleri',
+      'news.lead': 'Son donemdeki model tanitimlari, elektrikli arac gelismeleri ve otomobil fuari ozetleri resmi kaynaklardan derlendi.',
+      'news.verifiedLabel': 'Son dogrulama',
+      'news.sourceLabel': 'Kaynak',
+      'news.noteTitle': 'Editor notu',
+      'news.noteBody': 'Bu sayfadaki haberler, soylenti hesaplari yerine resmi marka newsroom sayfalari ve resmi etkinlik duyurularindan secildi.',
+      'news.homeLink': 'Ana sayfaya don',
+    },
+    de: {
+      ...NAV.de,
+      'news.kicker': 'Verifizierte Updates',
+      'news.title': 'Auto News',
+      'news.lead': 'Aktuelle Modellstarts, EV-Updates und Highlights von Automessen aus offiziellen Hersteller- und Veranstalterquellen.',
+      'news.verifiedLabel': 'Zuletzt verifiziert',
+      'news.sourceLabel': 'Quelle',
+      'news.noteTitle': 'Hinweis',
+      'news.noteBody': 'Diese Seite basiert auf offiziellen Marken-Newsrooms und offiziellen Veranstalterseiten statt auf Geruchten.',
+      'news.homeLink': 'Zur Startseite',
+    },
+    fr: {
+      ...NAV.fr,
+      'news.kicker': 'Mises a jour verifiees',
+      'news.title': 'Actualites Auto',
+      'news.lead': 'Lancements de modeles, nouveautes EV et temps forts des salons issus de sources officielles.',
+      'news.verifiedLabel': 'Derniere verification',
+      'news.sourceLabel': 'Source',
+      'news.noteTitle': 'Note editoriale',
+      'news.noteBody': 'Cette page s appuie sur des newsrooms de marques et des organisateurs officiels plutot que sur des rumeurs.',
+      'news.homeLink': 'Retour a l accueil',
+    },
+    es: {
+      ...NAV.es,
+      'news.kicker': 'Actualizaciones verificadas',
+      'news.title': 'Noticias del Motor',
+      'news.lead': 'Nuevos modelos, novedades EV y puntos clave de salones del automovil tomados de fuentes oficiales.',
+      'news.verifiedLabel': 'Ultima verificacion',
+      'news.sourceLabel': 'Fuente',
+      'news.noteTitle': 'Nota editorial',
+      'news.noteBody': 'Esta pagina se basa en newsrooms oficiales de marcas y organizadores oficiales, no en rumores.',
+      'news.homeLink': 'Volver al inicio',
+    },
+  };
+
+  const packs = { about: ABOUT, contact: CONTACT, news: NEWS, privacy: PRIVACY, pricing: PRICING, terms: TERMS, refund: REFUND };
   const packSet = packs[page];
   if (!packSet) return;
   const pack = packSet[lang] || packSet.en;

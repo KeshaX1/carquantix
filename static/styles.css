@@ -1245,6 +1245,139 @@ body.dark .comment-section textarea::placeholder {
 .contact-social .tiktok:hover { background: #121212; }
 .contact-social .linkedin:hover { background: #0a66c2; }
 
+.news-page .about-wrap {
+  width: min(1120px, 94vw);
+}
+
+.news-hero {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.news-kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(126,255,194,0.12);
+  border: 1px solid rgba(126,255,194,0.24);
+  color: #a7ffd8;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.news-verified {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.news-card {
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.02);
+  padding: 20px;
+  box-shadow: 0 18px 36px rgba(0,0,0,0.18);
+}
+
+.news-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.news-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  color: #dfe8ff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.news-date {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.news-card h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.news-card p {
+  margin: 0 0 14px;
+}
+
+.news-facts {
+  margin: 0 0 16px 18px;
+  padding: 0;
+  color: #d7def3;
+}
+
+.news-facts li {
+  margin: 7px 0;
+  line-height: 1.5;
+}
+
+.news-source-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.news-source-label {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.news-source-link {
+  color: #7ec2ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.news-source-link:hover {
+  text-decoration: underline;
+}
+
+.news-note {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+@media (max-width: 700px) {
+  .news-card {
+    padding: 18px;
+  }
+
+  .news-card-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 /* Image lightbox */
 .img-lightbox {
   position: fixed;

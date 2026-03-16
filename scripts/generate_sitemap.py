@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from pathlib import Path
 
 from car_data import load_cars
 
@@ -8,6 +9,7 @@ def generate_sitemap(base_url: str, output_path: Path) -> None:
     _, slug_map = load_cars()
     urls = [
         f"{base_url}/",
+        f"{base_url}/news",
         f"{base_url}/about-us",
         f"{base_url}/contact",
         f"{base_url}/privacy-policy",

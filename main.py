@@ -316,6 +316,143 @@ DEFAULT_COMMENTS = [
     {"id": "seed_1", "username": "Ethan R.", "text": "Very clean comparison layout. I checked a few BMW and Audi models and the numbers were easy to compare.", "rating": 5, "date": "04/03/2026", "likes": ["seed_like_9"]},
 ]
 
+NEWS_LAST_VERIFIED = "2026-03-16"
+NEWS_ITEMS = [
+    {
+        "date_iso": "2026-03-04",
+        "category_en": "New model",
+        "category_tr": "Yeni model",
+        "title_en": "Range Rover unveils the Sport SV Ultimate Edition",
+        "title_tr": "Range Rover, Sport SV Ultimate Edition modelini tanitti",
+        "summary_en": "The UK-only flagship adds a 635 PS twin-turbo mild-hybrid V8, 3.7-second 0-60 mph performance and a tightly curated SV specification.",
+        "summary_tr": "Birlesik Krallik'a ozel yeni versiyon, 635 PS twin-turbo mild-hybrid V8 motor, 3.7 saniyelik 0-60 mph verisi ve ozel SV donanimi ile duyuruldu.",
+        "facts_en": [
+            "Land Rover says the model uses a 635 PS, 750 Nm V8 mild-hybrid powertrain.",
+            "Official pricing starts from GBP 145,995 on the road in the UK.",
+        ],
+        "facts_tr": [
+            "Land Rover, modelin 635 PS ve 750 Nm ureten V8 mild-hybrid altyapi kullandigini acikladi.",
+            "Resmi baslangic fiyati Birlesik Krallik'ta 145,995 GBP olarak verildi.",
+        ],
+        "source_name": "Land Rover Media Newsroom",
+        "source_url": "https://media.landrover.com/en-gb/news/2026/03/range-rover-sport-sv-ultimate-edition-curated-performance-refined",
+    },
+    {
+        "date_iso": "2026-01-30",
+        "category_en": "Hypercar",
+        "category_tr": "Hiper otomobil",
+        "title_en": "Bugatti gives the F.K.P. Hommage its physical world premiere",
+        "title_tr": "Bugatti, F.K.P. Hommage modelinin fiziksel dunya promiyerini yapti",
+        "summary_en": "After a digital reveal on January 22, Bugatti presented the F.K.P. Hommage at Retromobile 2026 as the second creation from Programme Solitaire.",
+        "summary_tr": "22 Ocak'taki dijital tanitimin ardindan Bugatti, F.K.P. Hommage'i Retromobile 2026'da Programme Solitaire serisinin ikinci otomobili olarak sergiledi.",
+        "facts_en": [
+            "Bugatti links the car to the 20th anniversary of the Veyron.",
+            "The company says the display took place inside the new Ultimate Supercar Garage area at Retromobile 2026.",
+        ],
+        "facts_tr": [
+            "Bugatti, bu ozel otomobili Veyron'un 20. yilina adiyor.",
+            "Marka, sergilemenin Retromobile 2026 icindeki yeni Ultimate Supercar Garage alaninda yapildigini belirtiyor.",
+        ],
+        "source_name": "Bugatti Newsroom",
+        "source_url": "https://newsroom.bugatti.com/press-releases/bugatti-fkp-hommage-celebrating-20-years-of-veyron",
+    },
+    {
+        "date_iso": "2026-01-19",
+        "category_en": "Motorsport",
+        "category_tr": "Motor sporlari",
+        "title_en": "Defender wins the Dakar Stock class on its debut",
+        "title_tr": "Defender, Dakar Stock sinifini ilk denemesinde kazandi",
+        "summary_en": "Defender Rally finished first and second in the 2026 Dakar Rally Stock class, giving the brand a class win in its first competitive Dakar outing.",
+        "summary_tr": "Defender Rally, 2026 Dakar Rally'sinin Stock sinifinda birinci ve ikinci olarak markaya ilk yaris Dakar katiliminda sinif galibiyeti getirdi.",
+        "facts_en": [
+            "Land Rover says Rokas Baciuska and Oriol Vidal won with a total time of 58h 09m 45s.",
+            "The winning Defender Dakar D7X-R is derived from the Defender OCTA.",
+        ],
+        "facts_tr": [
+            "Land Rover'a gore Rokas Baciuska ve Oriol Vidal 58 saat 09 dakika 45 saniyelik toplam sureyle zafere ulasti.",
+            "Kazanan Defender Dakar D7X-R, Defender OCTA temel alinarak gelistirildi.",
+        ],
+        "source_name": "Land Rover Media Newsroom",
+        "source_url": "https://media.landrover.com/en-gb/news/2026/01/defender-rally-make-history-debut-dakar-victory",
+    },
+    {
+        "date_iso": "2026-01-09",
+        "category_en": "Electric SUV",
+        "category_tr": "Elektrikli SUV",
+        "title_en": "Jeep brings the new Compass line and Wagoneer S to Brussels",
+        "title_tr": "Jeep, yeni Compass ailesi ve Wagoneer S'i Bruksel'e getirdi",
+        "summary_en": "Jeep used the Brussels Motor Show to debut the Compass e-Hybrid Plug-In and Compass 4xe while showcasing the 600 hp electric Wagoneer S.",
+        "summary_tr": "Jeep, Bruksel Otomobil Fuari'nda Compass e-Hybrid Plug-In ve Compass 4xe versiyonlarini tanitirken 600 bg'lik elektrikli Wagoneer S'i de vitrine cikardi.",
+        "facts_en": [
+            "Jeep says the Wagoneer S reaches 0-100 km/h in 3.5 seconds with 600 horsepower.",
+            "The new Compass range adds electrified e-Hybrid Plug-In and 4xe variants.",
+        ],
+        "facts_tr": [
+            "Jeep, Wagoneer S'in 600 beygir guc ve 3.5 saniyelik 0-100 km/s verisi sundugunu acikladi.",
+            "Yeni Compass ailesine e-Hybrid Plug-In ve 4xe gibi elektrik destekli versiyonlar eklendi.",
+        ],
+        "source_name": "Stellantis Media / Jeep",
+        "source_url": "https://www.media.stellantis.com/uk-en/jeep/press/jeep-debuts-the-all-new-compass-lineup-and-the-cutting-edge-wagoneer-s-at-the-brussels-motor-show-2026",
+    },
+    {
+        "date_iso": "2026-01-09",
+        "category_en": "Electric fastback",
+        "category_tr": "Elektrikli fastback",
+        "title_en": "Peugeot refreshes the 408 and expands E-408 EV features",
+        "title_tr": "Peugeot, 408'i yeniledi ve E-408'in EV ozelliklerini genisletti",
+        "summary_en": "The updated 408 range now spans electric, plug-in hybrid and mild-hybrid powertrains, while the E-408 adds Battery Preconditioning, V2L and Plug & Charge.",
+        "summary_tr": "Guncellenen 408 ailesi elektrikli, plug-in hybrid ve mild-hybrid seceneklerle sunulurken E-408 tarafina Battery Preconditioning, V2L ve Plug & Charge eklendi.",
+        "facts_en": [
+            "Peugeot says the new 408 is the brand's first model with illuminated rear PEUGEOT lettering.",
+            "The all-electric E-408 adds EV-focused charging and power-delivery functions.",
+        ],
+        "facts_tr": [
+            "Peugeot, yeni 408'in aydinlatmali arka PEUGEOT yazisina sahip ilk marka modeli oldugunu soyluyor.",
+            "Tam elektrikli E-408'e sarj ve enerji aktarimina odakli yeni fonksiyonlar eklendi.",
+        ],
+        "source_name": "Stellantis Media / Peugeot",
+        "source_url": "https://www.media.stellantis.com/em-en/peugeot/press/the-new-peugeot-408-wow-certified",
+    },
+    {
+        "date_iso": "2026-01-09",
+        "category_en": "World premiere",
+        "category_tr": "Dunya promiyeri",
+        "title_en": "Opel premieres the new Astra and Astra Sports Tourer in Brussels",
+        "title_tr": "Opel, yeni Astra ve Astra Sports Tourer'i Bruksel'de tanitti",
+        "summary_en": "Opel opened 2026 with the world premiere of the new Astra family, bringing the illuminated Blitz, Intelli-Lux HD light and a longer-range Astra Electric.",
+        "summary_tr": "Opel, 2026'ya yeni Astra ailesinin dunya promiyeri ile girdi; aydinlatmali Blitz, Intelli-Lux HD farlar ve daha uzun menzilli Astra Electric dikkat cekti.",
+        "facts_en": [
+            "Opel states the Astra Electric can reach up to 454 km of WLTP range.",
+            "The updated Astra also brings Vehicle to Load capability for the first time.",
+        ],
+        "facts_tr": [
+            "Opel, Astra Electric'in WLTP'ye gore 454 km'ye kadar menzil sundugunu belirtiyor.",
+            "Guncellenen Astra, ilk kez Vehicle to Load ozelligi de getiriyor.",
+        ],
+        "source_name": "Stellantis Media / Opel",
+        "source_url": "https://www.media.stellantis.com/em-en/opel/press/new-opel-astra-celebrates-world-premiere-at-brussels-motor-show",
+    },
+    {
+        "date_iso": "2026-01-09",
+        "category_en": "Auto show",
+        "category_tr": "Otomobil fuari",
+        "title_en": "Brussels Motor Show 2026 closes with strong attendance and premieres",
+        "title_tr": "Brussels Motor Show 2026 guclu ziyaretci sayisi ve promiyerlerle kapandi",
+        "summary_en": "The organizers say the 2026 Brussels Motor Show welcomed 349,775 visitors and hosted 11 world premieres alongside 18 European premieres.",
+        "summary_tr": "Organizatorlere gore 2026 Brussels Motor Show, 349,775 ziyaretci agirladi; 11 dunya ve 18 Avrupa promiyerine sahne oldu.",
+        "facts_en": [
+            "FEBIAC reports more than 100 exhibitors, including 67 car brands and 28 motorcycle brands.",
+            "The event also featured 67 Belgian premieres, including 12 motorcycles.",
+        ],
+        "facts_tr": [
+            "FEBIAC, fuarda 67 otomobil ve 28 motosiklet markasi dahil 100'den fazla katilimci oldugunu acikladi.",
+            "Etkinlikte 12 motosiklet dahil 67 Belcika promiyeri de yer aldi.",
+        ],
+        "source_name": "FEBIAC / Brussels Motor Show",
+        "source_url": "https://autosalon.be/en/brussels-motor-show-in-2026",
+    },
+]
+
 
 def is_local_host(host):
     host_only = (host or "").split(":")[0].lower()
@@ -1457,6 +1594,20 @@ def index():
     )
 
 
+@app.route("/news")
+def news():
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "news.html",
+        news_items=NEWS_ITEMS,
+        news_verified_on=NEWS_LAST_VERIFIED,
+        canonical_url=canonical_url,
+        meta_title="CarQuantix News - Verified Automotive Updates",
+        meta_description="Verified automotive news, new model announcements, EV updates and auto show highlights curated from official sources.",
+        robots_directive="index,follow",
+    )
+
+
 @app.route("/privacy-policy")
 def privacy_policy():
     canonical_url = f"{get_base_url()}{request.path}"
@@ -1823,6 +1974,7 @@ def sitemap():
     base_url = get_base_url()
     urls = [
         f"{base_url}/",
+        f"{base_url}/news",
         f"{base_url}/about-us",
         f"{base_url}/contact",
         f"{base_url}/pricing",
