@@ -97,6 +97,7 @@ COMMENTS_PATH = resolve_data_path("COMMENTS_PATH", "comments.json")
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 STATIC_DIR = Path(__file__).with_name("static")
+ADS_TXT_DIR = Path(__file__).with_name("ads.txt")
 ICON_DIR = STATIC_DIR / "icon"
 BASE_URL = os.environ.get("BASE_URL", "https://carquantix.com").rstrip("/")
 if not re.match(r"^https?://", BASE_URL):
@@ -2204,6 +2205,10 @@ def robots():
 @app.route("/favicon.ico")
 def favicon():
     return send_from_directory(STATIC_DIR, "favicon.ico", mimetype="image/x-icon")
+
+@app.route("/ads.txt")
+def ads_txt():
+    return send_from_directory(ADS_TXT_DIR, "ads.txt", mimetype="text/plain")
 
 
 @app.route("/<slug>")
