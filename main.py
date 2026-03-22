@@ -114,6 +114,7 @@ PADDLE_CLIENT_TOKEN = os.environ.get("PADDLE_CLIENT_TOKEN", "").strip()
 PADDLE_API_BASE = "https://api.paddle.com" if PADDLE_ENV == "production" else "https://sandbox-api.paddle.com"
 PREMIUM_ACTIVE_STATUSES = {"active", "trialing"}
 DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
+DB_CONNECT_TIMEOUT_SECONDS = int(os.environ.get("DB_CONNECT_TIMEOUT_SECONDS", "5"))
 
 FEATURED_CAR_SLUGS = [
     "2022-bmw-m5",
@@ -1490,7 +1491,11 @@ def db_enabled():
 def get_db_conn():
     if not db_enabled():
         return None
-    return psycopg.connect(DATABASE_URL, row_factory=dict_row)
+    return psycopg.connect(
+        DATABASE_URL,
+        row_factory=dict_row,
+        connect_timeout=DB_CONNECT_TIMEOUT_SECONDS,
+    )
 
 
 def init_user_db():
@@ -1498,43 +1503,50 @@ def init_user_db():
         if DATABASE_URL and psycopg is None:
             print("[db] DATABASE_URL is set but psycopg is not installed; falling back to users.json")
         return
-    with get_db_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                CREATE TABLE IF NOT EXISTS users (
-                    id BIGSERIAL PRIMARY KEY,
-                    email TEXT NOT NULL UNIQUE,
-                    name TEXT,
-                    picture TEXT,
-                    password_hash TEXT,
-                    provider TEXT,
-                    subscription_status TEXT NOT NULL DEFAULT 'free',
-                    subscription_expires_at TEXT,
-                    subscription_updated_at BIGINT,
-                    paddle_customer_id TEXT,
-                    paddle_subscription_id TEXT,
-                    paddle_last_transaction_id TEXT,
-                    paddle_last_event_type TEXT,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    try:
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS users (
+                        id BIGSERIAL PRIMARY KEY,
+                        email TEXT NOT NULL UNIQUE,
+                        name TEXT,
+                        picture TEXT,
+                        password_hash TEXT,
+                        provider TEXT,
+                        subscription_status TEXT NOT NULL DEFAULT 'free',
+                        subscription_expires_at TEXT,
+                        subscription_updated_at BIGINT,
+                        paddle_customer_id TEXT,
+                        paddle_subscription_id TEXT,
+                        paddle_last_transaction_id TEXT,
+                        paddle_last_event_type TEXT,
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                    """
                 )
-                """
-            )
-            cur.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users (lower(email))")
-            cur.execute("CREATE INDEX IF NOT EXISTS idx_users_paddle_customer_id ON users (paddle_customer_id)")
-            cur.execute("CREATE INDEX IF NOT EXISTS idx_users_paddle_subscription_id ON users (paddle_subscription_id)")
-        conn.commit()
+                cur.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users (lower(email))")
+                cur.execute("CREATE INDEX IF NOT EXISTS idx_users_paddle_customer_id ON users (paddle_customer_id)")
+                cur.execute("CREATE INDEX IF NOT EXISTS idx_users_paddle_subscription_id ON users (paddle_subscription_id)")
+            conn.commit()
+    except Exception as exc:
+        print(f"[db] init skipped; database unavailable: {exc}")
 
 
 def count_db_users():
     if not db_enabled():
         return 0
-    with get_db_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("SELECT COUNT(*) AS count FROM users")
-            row = cur.fetchone() or {}
-            return int(row.get("count") or 0)
+    try:
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT COUNT(*) AS count FROM users")
+                row = cur.fetchone() or {}
+                return int(row.get("count") or 0)
+    except Exception as exc:
+        print(f"[db] count skipped; database unavailable: {exc}")
+        return 0
 
 
 def get_smtp_config():
@@ -1910,7 +1922,11 @@ def update_user_password(email, password_hash):
 def migrate_json_users_to_db():
     if not db_enabled():
         return
-    if count_db_users() > 0:
+    try:
+        if count_db_users() > 0:
+            return
+    except Exception as exc:
+        print(f"[db] migration skipped; database unavailable during count: {exc}")
         return
     users = load_users()
     migrated = 0
@@ -1918,8 +1934,12 @@ def migrate_json_users_to_db():
         email = (user.get("email") or "").strip().lower()
         if not email:
             continue
-        upsert_user(email, user)
-        migrated += 1
+        try:
+            upsert_user(email, user)
+            migrated += 1
+        except Exception as exc:
+            print(f"[db] migration stopped; database unavailable during upsert: {exc}")
+            break
     if migrated:
         print(f"[db] migrated {migrated} users from users.json to Postgres")
 
