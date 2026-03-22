@@ -115,6 +115,9 @@ PADDLE_API_BASE = "https://api.paddle.com" if PADDLE_ENV == "production" else "h
 PREMIUM_ACTIVE_STATUSES = {"active", "trialing"}
 DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 DB_CONNECT_TIMEOUT_SECONDS = int(os.environ.get("DB_CONNECT_TIMEOUT_SECONDS", "5"))
+DB_RUNTIME_DISABLED = False
+DB_BOOTSTRAP_ATTEMPTED = False
+DB_BOOTSTRAP_IN_PROGRESS = False
 
 FEATURED_CAR_SLUGS = [
     "2022-bmw-m5",
@@ -1333,6 +1336,8 @@ def enforce_canonical_origin():
 
 @app.before_request
 def sync_session_user_state():
+    if request.path == "/health":
+        return None
     refresh_session_user_from_store()
 
 
@@ -1485,7 +1490,33 @@ def get_comment_identity():
 
 
 def db_enabled():
-    return bool(DATABASE_URL and psycopg is not None)
+    return bool(DATABASE_URL and psycopg is not None and not DB_RUNTIME_DISABLED)
+
+
+def disable_db_runtime(reason):
+    global DB_RUNTIME_DISABLED
+    if DB_RUNTIME_DISABLED:
+        return
+    DB_RUNTIME_DISABLED = True
+    print(f"[db] runtime disabled: {reason}")
+
+
+def ensure_db_ready():
+    global DB_BOOTSTRAP_ATTEMPTED, DB_BOOTSTRAP_IN_PROGRESS
+    if DB_BOOTSTRAP_ATTEMPTED or DB_BOOTSTRAP_IN_PROGRESS:
+        return
+    if not DATABASE_URL or psycopg is None or DB_RUNTIME_DISABLED:
+        DB_BOOTSTRAP_ATTEMPTED = True
+        return
+    DB_BOOTSTRAP_IN_PROGRESS = True
+    try:
+        init_user_db()
+        migrate_json_users_to_db()
+    except Exception as exc:
+        disable_db_runtime(f"bootstrap failed: {exc}")
+    finally:
+        DB_BOOTSTRAP_IN_PROGRESS = False
+        DB_BOOTSTRAP_ATTEMPTED = True
 
 
 def get_db_conn():
@@ -1533,6 +1564,7 @@ def init_user_db():
             conn.commit()
     except Exception as exc:
         print(f"[db] init skipped; database unavailable: {exc}")
+        disable_db_runtime(exc)
 
 
 def count_db_users():
@@ -1546,6 +1578,7 @@ def count_db_users():
                 return int(row.get("count") or 0)
     except Exception as exc:
         print(f"[db] count skipped; database unavailable: {exc}")
+        disable_db_runtime(exc)
         return 0
 
 
@@ -1708,11 +1741,16 @@ def find_user(email):
     if not email:
         return None
     email_l = email.lower()
+    ensure_db_ready()
     if db_enabled():
-        with get_db_conn() as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT * FROM users WHERE lower(email) = %s LIMIT 1", (email_l,))
-                return cur.fetchone()
+        try:
+            with get_db_conn() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT * FROM users WHERE lower(email) = %s LIMIT 1", (email_l,))
+                    return cur.fetchone()
+        except Exception as exc:
+            print(f"[db] find_user fallback for {email_l}: {exc}")
+            disable_db_runtime(exc)
     for u in load_users():
         if u.get("email", "").lower() == email_l:
             return u
@@ -1762,23 +1800,28 @@ def find_user_by_billing_ids(customer_id=None, subscription_id=None):
     subscription_id = (subscription_id or "").strip()
     if not customer_id and not subscription_id:
         return None
+    ensure_db_ready()
     if db_enabled():
-        with get_db_conn() as conn:
-            with conn.cursor() as cur:
-                if customer_id and subscription_id:
-                    cur.execute(
-                        """
-                        SELECT * FROM users
-                        WHERE paddle_customer_id = %s OR paddle_subscription_id = %s
-                        LIMIT 1
-                        """,
-                        (customer_id, subscription_id),
-                    )
-                elif customer_id:
-                    cur.execute("SELECT * FROM users WHERE paddle_customer_id = %s LIMIT 1", (customer_id,))
-                else:
-                    cur.execute("SELECT * FROM users WHERE paddle_subscription_id = %s LIMIT 1", (subscription_id,))
-                return cur.fetchone()
+        try:
+            with get_db_conn() as conn:
+                with conn.cursor() as cur:
+                    if customer_id and subscription_id:
+                        cur.execute(
+                            """
+                            SELECT * FROM users
+                            WHERE paddle_customer_id = %s OR paddle_subscription_id = %s
+                            LIMIT 1
+                            """,
+                            (customer_id, subscription_id),
+                        )
+                    elif customer_id:
+                        cur.execute("SELECT * FROM users WHERE paddle_customer_id = %s LIMIT 1", (customer_id,))
+                    else:
+                        cur.execute("SELECT * FROM users WHERE paddle_subscription_id = %s LIMIT 1", (subscription_id,))
+                    return cur.fetchone()
+        except Exception as exc:
+            print(f"[db] billing lookup fallback: {exc}")
+            disable_db_runtime(exc)
     users = load_users()
     idx = find_user_index_by_billing_ids(users, customer_id, subscription_id)
     if idx is None:
@@ -1791,6 +1834,7 @@ def upsert_user(email, patch):
     if not email:
         return None
     updates = patch or {}
+    ensure_db_ready()
     if db_enabled():
         payload = {
             "email": email,
@@ -1806,60 +1850,64 @@ def upsert_user(email, patch):
             "paddle_last_transaction_id": updates.get("paddle_last_transaction_id"),
             "paddle_last_event_type": updates.get("paddle_last_event_type"),
         }
-        with get_db_conn() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    INSERT INTO users (
-                        email,
-                        name,
-                        picture,
-                        password_hash,
-                        provider,
-                        subscription_status,
-                        subscription_expires_at,
-                        subscription_updated_at,
-                        paddle_customer_id,
-                        paddle_subscription_id,
-                        paddle_last_transaction_id,
-                        paddle_last_event_type,
-                        updated_at
+        try:
+            with get_db_conn() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO users (
+                            email,
+                            name,
+                            picture,
+                            password_hash,
+                            provider,
+                            subscription_status,
+                            subscription_expires_at,
+                            subscription_updated_at,
+                            paddle_customer_id,
+                            paddle_subscription_id,
+                            paddle_last_transaction_id,
+                            paddle_last_event_type,
+                            updated_at
+                        )
+                        VALUES (
+                            %(email)s,
+                            %(name)s,
+                            %(picture)s,
+                            %(password_hash)s,
+                            %(provider)s,
+                            %(subscription_status)s,
+                            %(subscription_expires_at)s,
+                            %(subscription_updated_at)s,
+                            %(paddle_customer_id)s,
+                            %(paddle_subscription_id)s,
+                            %(paddle_last_transaction_id)s,
+                            %(paddle_last_event_type)s,
+                            NOW()
+                        )
+                        ON CONFLICT (email) DO UPDATE SET
+                            name = COALESCE(EXCLUDED.name, users.name),
+                            picture = COALESCE(EXCLUDED.picture, users.picture),
+                            password_hash = COALESCE(EXCLUDED.password_hash, users.password_hash),
+                            provider = COALESCE(EXCLUDED.provider, users.provider),
+                            subscription_status = COALESCE(EXCLUDED.subscription_status, users.subscription_status),
+                            subscription_expires_at = COALESCE(EXCLUDED.subscription_expires_at, users.subscription_expires_at),
+                            subscription_updated_at = COALESCE(EXCLUDED.subscription_updated_at, users.subscription_updated_at),
+                            paddle_customer_id = COALESCE(EXCLUDED.paddle_customer_id, users.paddle_customer_id),
+                            paddle_subscription_id = COALESCE(EXCLUDED.paddle_subscription_id, users.paddle_subscription_id),
+                            paddle_last_transaction_id = COALESCE(EXCLUDED.paddle_last_transaction_id, users.paddle_last_transaction_id),
+                            paddle_last_event_type = COALESCE(EXCLUDED.paddle_last_event_type, users.paddle_last_event_type),
+                            updated_at = NOW()
+                        RETURNING *
+                        """,
+                        payload,
                     )
-                    VALUES (
-                        %(email)s,
-                        %(name)s,
-                        %(picture)s,
-                        %(password_hash)s,
-                        %(provider)s,
-                        %(subscription_status)s,
-                        %(subscription_expires_at)s,
-                        %(subscription_updated_at)s,
-                        %(paddle_customer_id)s,
-                        %(paddle_subscription_id)s,
-                        %(paddle_last_transaction_id)s,
-                        %(paddle_last_event_type)s,
-                        NOW()
-                    )
-                    ON CONFLICT (email) DO UPDATE SET
-                        name = COALESCE(EXCLUDED.name, users.name),
-                        picture = COALESCE(EXCLUDED.picture, users.picture),
-                        password_hash = COALESCE(EXCLUDED.password_hash, users.password_hash),
-                        provider = COALESCE(EXCLUDED.provider, users.provider),
-                        subscription_status = COALESCE(EXCLUDED.subscription_status, users.subscription_status),
-                        subscription_expires_at = COALESCE(EXCLUDED.subscription_expires_at, users.subscription_expires_at),
-                        subscription_updated_at = COALESCE(EXCLUDED.subscription_updated_at, users.subscription_updated_at),
-                        paddle_customer_id = COALESCE(EXCLUDED.paddle_customer_id, users.paddle_customer_id),
-                        paddle_subscription_id = COALESCE(EXCLUDED.paddle_subscription_id, users.paddle_subscription_id),
-                        paddle_last_transaction_id = COALESCE(EXCLUDED.paddle_last_transaction_id, users.paddle_last_transaction_id),
-                        paddle_last_event_type = COALESCE(EXCLUDED.paddle_last_event_type, users.paddle_last_event_type),
-                        updated_at = NOW()
-                    RETURNING *
-                    """,
-                    payload,
-                )
-                row = cur.fetchone()
-            conn.commit()
-        return row
+                    row = cur.fetchone()
+                conn.commit()
+            return row
+        except Exception as exc:
+            print(f"[db] upsert fallback for {email}: {exc}")
+            disable_db_runtime(exc)
     users = load_users()
     idx = find_user_index(users, email)
     if idx is None:
@@ -1892,21 +1940,26 @@ def update_user_password(email, password_hash):
     email = (email or "").strip().lower()
     if not email or not password_hash:
         return None
+    ensure_db_ready()
     if db_enabled():
-        with get_db_conn() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    UPDATE users
-                    SET password_hash = %s, updated_at = NOW()
-                    WHERE lower(email) = %s
-                    RETURNING *
-                    """,
-                    (password_hash, email),
-                )
-                row = cur.fetchone()
-            conn.commit()
-        return row
+        try:
+            with get_db_conn() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        UPDATE users
+                        SET password_hash = %s, updated_at = NOW()
+                        WHERE lower(email) = %s
+                        RETURNING *
+                        """,
+                        (password_hash, email),
+                    )
+                    row = cur.fetchone()
+                conn.commit()
+            return row
+        except Exception as exc:
+            print(f"[db] password update fallback for {email}: {exc}")
+            disable_db_runtime(exc)
     users = load_users()
     updated_user = None
     for idx, u in enumerate(users):
@@ -2103,10 +2156,6 @@ def refresh_session_user_from_store():
     normalized = session_user_payload(base)
     if normalized != current:
         session["user"] = normalized
-
-
-init_user_db()
-migrate_json_users_to_db()
 
 @app.route("/login-media/<path:filename>")
 def login_media(filename):
