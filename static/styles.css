@@ -508,6 +508,135 @@ body:not(.dark) .compare-card .meta-line{
 }
 
 .table-area{margin-top:22px}
+.compare-decision{
+  margin-top:22px;
+  padding:20px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:var(--card);
+  box-shadow:0 14px 30px rgba(0,0,0,0.16);
+}
+.compare-decision-head h2{
+  margin:6px 0 0;
+}
+.compare-decision-head p{
+  margin:8px 0 0;
+  color:var(--muted);
+  line-height:1.55;
+}
+.section-kicker{
+  font-size:0.76rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:700;
+}
+.compare-decision-verdicts{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+}
+.compare-decision-verdict{
+  padding:16px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 10px 22px rgba(0,0,0,0.16);
+}
+.compare-decision-verdict .section-kicker{
+  color:rgba(226,232,240,0.78);
+}
+.compare-decision-verdict strong{
+  display:block;
+  margin-top:6px;
+  color:#f8fbff;
+  font-size:1.02rem;
+}
+.compare-decision-verdict p{
+  margin:8px 0 0;
+  color:rgba(232,241,255,0.78);
+  line-height:1.55;
+}
+.compare-decision-tradeoffs{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
+}
+.decision-tradeoff-card{
+  padding:18px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.02);
+  box-shadow:0 12px 24px rgba(0,0,0,0.12);
+}
+.decision-tradeoff-card h3{
+  margin:0 0 14px;
+}
+.decision-tradeoff-group + .decision-tradeoff-group{
+  margin-top:14px;
+}
+.decision-tradeoff-group h4{
+  margin:0 0 10px;
+  font-size:0.8rem;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--muted);
+}
+.decision-tradeoff-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  gap:8px;
+}
+.decision-tradeoff-list li{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  line-height:1.5;
+}
+.decision-tradeoff-list li::before{
+  display:inline-grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  border-radius:999px;
+  flex:0 0 22px;
+  font-size:0.9rem;
+  font-weight:700;
+}
+.decision-tradeoff-list.pros li::before{
+  content:"+";
+  background:rgba(78,214,122,0.16);
+  color:#7ee08a;
+}
+.decision-tradeoff-list.cons li::before{
+  content:"-";
+  background:rgba(255,92,92,0.14);
+  color:#ff8b8b;
+}
+body:not(.dark) .compare-decision{
+  border-color:rgba(15,23,42,0.08);
+  background:linear-gradient(180deg,#ffffff,#f8fafc);
+}
+body:not(.dark) .compare-decision-head h2,
+body:not(.dark) .decision-tradeoff-card h3{
+  color:#0f172a;
+}
+body:not(.dark) .compare-decision-head p,
+body:not(.dark) .section-kicker,
+body:not(.dark) .decision-tradeoff-group h4{
+  color:#64748b;
+}
+body:not(.dark) .decision-tradeoff-card{
+  border-color:rgba(15,23,42,0.08);
+  background:#ffffff;
+}
+body:not(.dark) .decision-tradeoff-list li{
+  color:#334155;
+}
 
 .table-wrap{overflow:auto;border-radius:10px;background:rgba(255,255,255,0.01);padding:6px}
 table{width:100%;border-collapse:collapse;min-width:720px}

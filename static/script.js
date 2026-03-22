@@ -1294,6 +1294,9 @@ const MOTORCYCLES = Array.isArray(globalThis?.Motorcycles) ? globalThis.Motorcyc
 
 const listEl = document.getElementById('itemList');
 const compareArea = document.getElementById('compareArea');
+const compareDecisionArea = document.getElementById('compareDecisionArea');
+const compareDecisionVerdicts = document.getElementById('compareDecisionVerdicts');
+const compareDecisionTradeoffs = document.getElementById('compareDecisionTradeoffs');
 const compTable = document.querySelector('#compTable tbody');
 const tableArea = document.getElementById('tableArea');
 const raceLinksArea = document.getElementById('raceLinksArea');
@@ -3244,6 +3247,7 @@ function renderSelected() {
     `;
     compTable.innerHTML = '';
     if (tableArea) tableArea.classList.add('hidden');
+    renderCompareDecisionSection();
     renderComparisonRaceLinks();
     setFuelCalculatorVisible(false);
     return;
@@ -3331,6 +3335,7 @@ function renderSelected() {
     compareArea.appendChild(card);
   });
 
+  renderCompareDecisionSection();
   renderComparisonRaceLinks();
   syncFuelCalculatorToSelection();
 
@@ -3387,6 +3392,260 @@ function getComparisonRaceLinks(vehicles) {
     }
   }
   return links;
+}
+
+function extractModelYear(vehicle) {
+  const match = String(vehicle?.name || '').match(/\b(19|20)\d{2}\b/);
+  return match ? Number(match[0]) : null;
+}
+
+function compareNumericValues(leftValue, rightValue, higherIsBetter = true) {
+  if (!Number.isFinite(Number(leftValue)) || !Number.isFinite(Number(rightValue))) return null;
+  const left = Number(leftValue);
+  const right = Number(rightValue);
+  if (left === right) return null;
+  if (higherIsBetter) return left > right ? 'left' : 'right';
+  return left < right ? 'left' : 'right';
+}
+
+function joinDecisionLabels(items) {
+  if (!items || !items.length) return '';
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+}
+
+function pushUnique(list, value) {
+  if (value && !list.includes(value)) list.push(value);
+}
+
+function buildCompareDecisionData(leftVehicle, rightVehicle) {
+  if (!leftVehicle || !rightVehicle) return null;
+
+  const leftName = String(leftVehicle.name || leftVehicle.id || 'Vehicle A').trim();
+  const rightName = String(rightVehicle.name || rightVehicle.id || 'Vehicle B').trim();
+  const leftPrice = getPriceMeta(leftVehicle.price).amount;
+  const rightPrice = getPriceMeta(rightVehicle.price).amount;
+  const leftConsumption = getConsumptionInfo(leftVehicle);
+  const rightConsumption = getConsumptionInfo(rightVehicle);
+  const leftYear = extractModelYear(leftVehicle);
+  const rightYear = extractModelYear(rightVehicle);
+
+  const powerWinner = compareNumericValues(leftVehicle.power, rightVehicle.power, true);
+  const accWinner = compareNumericValues(leftVehicle.acc, rightVehicle.acc, false);
+  const topSpeedWinner = compareNumericValues(leftVehicle.topSpeed, rightVehicle.topSpeed, true);
+  const priceWinner = compareNumericValues(leftPrice, rightPrice, false);
+  const yearWinner = compareNumericValues(leftYear, rightYear, true);
+  const consumptionWinner = (
+    leftConsumption &&
+    rightConsumption &&
+    String(leftConsumption.unit || '').toLowerCase() === String(rightConsumption.unit || '').toLowerCase()
+  ) ? compareNumericValues(leftConsumption.value, rightConsumption.value, false) : null;
+
+  const performanceScores = { left: 0, right: 0 };
+  const performanceLabels = { left: [], right: [] };
+  [
+    [powerWinner, 'power'],
+    [accWinner, '0-100 km/h'],
+    [topSpeedWinner, 'top speed'],
+  ].forEach(([winner, label]) => {
+    if (!winner) return;
+    performanceScores[winner] += 1;
+    performanceLabels[winner].push(label);
+  });
+
+  let performanceWinner = null;
+  if (performanceScores.left !== performanceScores.right) {
+    performanceWinner = performanceScores.left > performanceScores.right ? 'left' : 'right';
+  } else {
+    performanceWinner = accWinner || powerWinner || topSpeedWinner;
+  }
+
+  const valueScores = { left: 0, right: 0 };
+  const valueLabels = { left: [], right: [] };
+  [
+    [priceWinner, 'price'],
+    [consumptionWinner, 'efficiency'],
+    [yearWinner, 'model year'],
+  ].forEach(([winner, label]) => {
+    if (!winner) return;
+    valueScores[winner] += 1;
+    valueLabels[winner].push(label);
+  });
+
+  let valueWinner = null;
+  if (valueScores.left !== valueScores.right) {
+    valueWinner = valueScores.left > valueScores.right ? 'left' : 'right';
+  } else {
+    valueWinner = priceWinner || consumptionWinner || yearWinner;
+  }
+
+  const speedWinner = topSpeedWinner || accWinner || performanceWinner;
+  const overallScores = { left: 0, right: 0 };
+  [powerWinner, accWinner, topSpeedWinner, priceWinner, consumptionWinner, yearWinner, performanceWinner, valueWinner, speedWinner].forEach((winner) => {
+    if (winner) overallScores[winner] += 1;
+  });
+
+  let overallWinner = null;
+  if (overallScores.left !== overallScores.right) {
+    overallWinner = overallScores.left > overallScores.right ? 'left' : 'right';
+  } else {
+    overallWinner = performanceWinner || valueWinner || speedWinner;
+  }
+
+  const winnerName = {
+    left: leftName,
+    right: rightName,
+    null: 'Too close to call',
+  };
+
+  const verdicts = [
+    {
+      label: 'Performance winner',
+      winner: winnerName[performanceWinner ?? 'null'],
+      reason: performanceWinner
+        ? `Leads on ${joinDecisionLabels(performanceLabels[performanceWinner])}.`
+        : 'No clear edge on the recorded performance data.',
+    },
+    {
+      label: 'Speed winner',
+      winner: winnerName[speedWinner ?? 'null'],
+      reason: speedWinner
+        ? (topSpeedWinner === speedWinner ? 'Higher top speed on paper.' : 'Quicker acceleration on paper.')
+        : 'No clear speed advantage on the recorded data.',
+    },
+    {
+      label: 'Value winner',
+      winner: winnerName[valueWinner ?? 'null'],
+      reason: valueWinner
+        ? `Stronger on ${joinDecisionLabels(valueLabels[valueWinner])}.`
+        : 'No clear value edge on price, efficiency, or model year.',
+    },
+    {
+      label: 'Overall winner',
+      winner: winnerName[overallWinner ?? 'null'],
+      reason: overallWinner
+        ? 'Wins more of the recorded comparison categories overall.'
+        : 'The available data is too evenly matched to separate them.',
+    },
+  ];
+
+  const leftPros = [];
+  const leftCons = [];
+  const rightPros = [];
+  const rightCons = [];
+
+  if (powerWinner === 'left') {
+    pushUnique(leftPros, 'More power');
+    pushUnique(rightCons, 'Less power');
+  } else if (powerWinner === 'right') {
+    pushUnique(rightPros, 'More power');
+    pushUnique(leftCons, 'Less power');
+  }
+
+  if (accWinner === 'left') {
+    pushUnique(leftPros, 'Quicker 0-100 km/h');
+    pushUnique(rightCons, 'Slower off the line');
+  } else if (accWinner === 'right') {
+    pushUnique(rightPros, 'Quicker 0-100 km/h');
+    pushUnique(leftCons, 'Slower off the line');
+  }
+
+  if (topSpeedWinner === 'left') {
+    pushUnique(leftPros, 'Higher top speed');
+    pushUnique(rightCons, 'Lower top speed');
+  } else if (topSpeedWinner === 'right') {
+    pushUnique(rightPros, 'Higher top speed');
+    pushUnique(leftCons, 'Lower top speed');
+  }
+
+  if (priceWinner === 'left') {
+    pushUnique(leftPros, 'Lower price');
+    pushUnique(rightCons, 'Higher price');
+  } else if (priceWinner === 'right') {
+    pushUnique(rightPros, 'Lower price');
+    pushUnique(leftCons, 'Higher price');
+  }
+
+  if (consumptionWinner === 'left') {
+    pushUnique(leftPros, 'Better efficiency');
+    pushUnique(rightCons, 'Higher fuel consumption');
+  } else if (consumptionWinner === 'right') {
+    pushUnique(rightPros, 'Better efficiency');
+    pushUnique(leftCons, 'Higher fuel consumption');
+  }
+
+  if (yearWinner === 'left') {
+    pushUnique(leftPros, 'Newer model year');
+    pushUnique(rightCons, 'Older model year');
+  } else if (yearWinner === 'right') {
+    pushUnique(rightPros, 'Newer model year');
+    pushUnique(leftCons, 'Older model year');
+  }
+
+  if (!leftPros.length) pushUnique(leftPros, 'Competitive overall spec balance');
+  if (!rightPros.length) pushUnique(rightPros, 'Competitive overall spec balance');
+  if (!leftCons.length) pushUnique(leftCons, 'Few clear weaknesses in the recorded specs');
+  if (!rightCons.length) pushUnique(rightCons, 'Few clear weaknesses in the recorded specs');
+
+  return {
+    verdicts,
+    tradeoffs: [
+      { title: leftName, pros: leftPros.slice(0, 3), cons: leftCons.slice(0, 3) },
+      { title: rightName, pros: rightPros.slice(0, 3), cons: rightCons.slice(0, 3) },
+    ],
+  };
+}
+
+function renderCompareDecisionSection() {
+  if (!compareDecisionArea || !compareDecisionVerdicts || !compareDecisionTradeoffs) return;
+  compareDecisionVerdicts.innerHTML = '';
+  compareDecisionTradeoffs.innerHTML = '';
+
+  if (selected.length !== 2) {
+    compareDecisionArea.classList.add('hidden');
+    return;
+  }
+
+  const data = buildCompareDecisionData(selected[0], selected[1]);
+  if (!data) {
+    compareDecisionArea.classList.add('hidden');
+    return;
+  }
+
+  data.verdicts.forEach((item) => {
+    const card = document.createElement('article');
+    card.className = 'compare-decision-verdict';
+    card.innerHTML = `
+      <div class="section-kicker">${item.label}</div>
+      <strong>${item.winner}</strong>
+      <p>${item.reason}</p>
+    `;
+    compareDecisionVerdicts.appendChild(card);
+  });
+
+  data.tradeoffs.forEach((group) => {
+    const card = document.createElement('article');
+    card.className = 'decision-tradeoff-card';
+    card.innerHTML = `
+      <h3>${group.title}</h3>
+      <div class="decision-tradeoff-group">
+        <h4>Pros</h4>
+        <ul class="decision-tradeoff-list pros">
+          ${group.pros.map((item) => `<li>${item}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="decision-tradeoff-group">
+        <h4>Cons</h4>
+        <ul class="decision-tradeoff-list cons">
+          ${group.cons.map((item) => `<li>${item}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+    compareDecisionTradeoffs.appendChild(card);
+  });
+
+  compareDecisionArea.classList.remove('hidden');
 }
 
 function renderComparisonRaceLinks() {
