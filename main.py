@@ -1050,6 +1050,241 @@ def build_compare_intro_content(car_a, car_b):
     }
 
 
+def extract_model_year(car):
+    name = str((car or {}).get("name") or "").strip()
+    match = re.search(r"\b(19|20)\d{2}\b", name)
+    return int(match.group(0)) if match else None
+
+
+def compare_numeric_values(left_value, right_value, higher_is_better=True):
+    if not isinstance(left_value, (int, float)) or not isinstance(right_value, (int, float)) or left_value == right_value:
+        return None
+    if higher_is_better:
+        return "left" if left_value > right_value else "right"
+    return "left" if left_value < right_value else "right"
+
+
+def parse_price_amount(value):
+    digits = re.sub(r"\D", "", str(value or "").strip())
+    return int(digits) if digits else None
+
+
+def join_compare_labels(items):
+    if not items:
+        return ""
+    if len(items) == 1:
+        return items[0]
+    if len(items) == 2:
+        return f"{items[0]} and {items[1]}"
+    return f"{', '.join(items[:-1])}, and {items[-1]}"
+
+
+def append_unique(items, value):
+    if value and value not in items:
+        items.append(value)
+
+
+def build_compare_decision_data(car_a, car_b):
+    if not car_a or not car_b:
+        return None
+
+    left_name = str(car_a.get("name") or "Car A").strip()
+    right_name = str(car_b.get("name") or "Car B").strip()
+    left_year = extract_model_year(car_a)
+    right_year = extract_model_year(car_b)
+    left_price_amount = parse_price_amount(car_a.get("price"))
+    right_price_amount = parse_price_amount(car_b.get("price"))
+    left_consumption = car_a.get("consumption") or {}
+    right_consumption = car_b.get("consumption") or {}
+
+    power_winner = compare_numeric_values(car_a.get("power"), car_b.get("power"), True)
+    acc_winner = compare_numeric_values(car_a.get("acc"), car_b.get("acc"), False)
+    top_speed_winner = compare_numeric_values(car_a.get("topSpeed"), car_b.get("topSpeed"), True)
+    price_winner = compare_numeric_values(left_price_amount, right_price_amount, False)
+
+    consumption_winner = None
+    if (
+        left_consumption.get("unit")
+        and left_consumption.get("unit") == right_consumption.get("unit")
+        and left_consumption.get("value") is not None
+        and right_consumption.get("value") is not None
+    ):
+        consumption_winner = compare_numeric_values(left_consumption.get("value"), right_consumption.get("value"), False)
+
+    year_winner = compare_numeric_values(left_year, right_year, True)
+
+    performance_scores = {"left": 0, "right": 0}
+    performance_labels = {"left": [], "right": []}
+    for winner, label in (
+        (power_winner, "power"),
+        (acc_winner, "0-100 km/h"),
+        (top_speed_winner, "top speed"),
+    ):
+        if winner:
+            performance_scores[winner] += 1
+            performance_labels[winner].append(label)
+
+    if performance_scores["left"] > performance_scores["right"]:
+        performance_winner = "left"
+    elif performance_scores["right"] > performance_scores["left"]:
+        performance_winner = "right"
+    else:
+        performance_winner = acc_winner or power_winner or top_speed_winner
+
+    value_scores = {"left": 0, "right": 0}
+    value_labels = {"left": [], "right": []}
+    for winner, label in (
+        (price_winner, "price"),
+        (consumption_winner, "efficiency"),
+        (year_winner, "model year"),
+    ):
+        if winner:
+            value_scores[winner] += 1
+            value_labels[winner].append(label)
+
+    if value_scores["left"] > value_scores["right"]:
+        value_winner = "left"
+    elif value_scores["right"] > value_scores["left"]:
+        value_winner = "right"
+    else:
+        value_winner = price_winner or consumption_winner or year_winner
+
+    speed_winner = top_speed_winner or acc_winner or performance_winner
+
+    overall_scores = {"left": 0, "right": 0}
+    for winner in (power_winner, acc_winner, top_speed_winner, price_winner, consumption_winner, year_winner):
+        if winner:
+            overall_scores[winner] += 1
+    if performance_winner:
+        overall_scores[performance_winner] += 1
+    if value_winner:
+        overall_scores[value_winner] += 1
+    if speed_winner:
+        overall_scores[speed_winner] += 1
+
+    if overall_scores["left"] > overall_scores["right"]:
+        overall_winner = "left"
+    elif overall_scores["right"] > overall_scores["left"]:
+        overall_winner = "right"
+    else:
+        overall_winner = performance_winner or value_winner or speed_winner
+
+    winner_name = {
+        "left": left_name,
+        "right": right_name,
+        None: "Too close to call",
+    }
+
+    verdict_items = [
+        {
+            "label": "Performance winner",
+            "winner": winner_name[performance_winner],
+            "reason": (
+                f"Leads on {join_compare_labels(performance_labels[performance_winner])}."
+                if performance_winner and performance_labels[performance_winner]
+                else "No clear edge on the recorded performance data."
+            ),
+        },
+        {
+            "label": "Speed winner",
+            "winner": winner_name[speed_winner],
+            "reason": (
+                "Higher top speed on paper."
+                if speed_winner and top_speed_winner == speed_winner
+                else "Quicker acceleration on paper."
+                if speed_winner and acc_winner == speed_winner
+                else "No clear speed advantage on the recorded data."
+            ),
+        },
+        {
+            "label": "Value winner",
+            "winner": winner_name[value_winner],
+            "reason": (
+                f"Stronger on {join_compare_labels(value_labels[value_winner])}."
+                if value_winner and value_labels[value_winner]
+                else "No clear value edge on price, efficiency, or model year."
+            ),
+        },
+        {
+            "label": "Overall winner",
+            "winner": winner_name[overall_winner],
+            "reason": (
+                "Wins more of the recorded comparison categories overall."
+                if overall_winner
+                else "The available data is too evenly matched to separate them."
+            ),
+        },
+    ]
+
+    left_pros = []
+    left_cons = []
+    right_pros = []
+    right_cons = []
+
+    if power_winner == "left":
+        append_unique(left_pros, "More power")
+        append_unique(right_cons, "Less power")
+    elif power_winner == "right":
+        append_unique(right_pros, "More power")
+        append_unique(left_cons, "Less power")
+
+    if acc_winner == "left":
+        append_unique(left_pros, "Quicker 0-100 km/h")
+        append_unique(right_cons, "Slower off the line")
+    elif acc_winner == "right":
+        append_unique(right_pros, "Quicker 0-100 km/h")
+        append_unique(left_cons, "Slower off the line")
+
+    if top_speed_winner == "left":
+        append_unique(left_pros, "Higher top speed")
+        append_unique(right_cons, "Lower top speed")
+    elif top_speed_winner == "right":
+        append_unique(right_pros, "Higher top speed")
+        append_unique(left_cons, "Lower top speed")
+
+    if price_winner == "left":
+        append_unique(left_pros, "Lower price")
+        append_unique(right_cons, "Higher price")
+    elif price_winner == "right":
+        append_unique(right_pros, "Lower price")
+        append_unique(left_cons, "Higher price")
+
+    if consumption_winner == "left":
+        append_unique(left_pros, "Better efficiency")
+        append_unique(right_cons, "Higher fuel consumption")
+    elif consumption_winner == "right":
+        append_unique(right_pros, "Better efficiency")
+        append_unique(left_cons, "Higher fuel consumption")
+
+    if year_winner == "left":
+        append_unique(left_pros, "Newer model year")
+        append_unique(right_cons, "Older model year")
+    elif year_winner == "right":
+        append_unique(right_pros, "Newer model year")
+        append_unique(left_cons, "Older model year")
+
+    if not left_pros:
+        append_unique(left_pros, "Competitive overall spec balance")
+    if not right_pros:
+        append_unique(right_pros, "Competitive overall spec balance")
+    if not left_cons:
+        append_unique(left_cons, "Few clear weaknesses in the recorded specs")
+    if not right_cons:
+        append_unique(right_cons, "Few clear weaknesses in the recorded specs")
+
+    return {
+        "verdict_items": verdict_items,
+        "left": {
+            "pros": left_pros[:3],
+            "cons": left_cons[:3],
+        },
+        "right": {
+            "pros": right_pros[:3],
+            "cons": right_cons[:3],
+        },
+    }
+
+
 def build_featured_compare_links(cars, slug_map):
     links = []
     seen = set()
@@ -2252,6 +2487,7 @@ def compare_detail(compare_slug):
     right_car = resolved["right_car"]
     compare_rows = build_compare_spec_rows(left_car, right_car)
     compare_intro = build_compare_intro_content(left_car, right_car)
+    compare_decision = build_compare_decision_data(left_car, right_car)
     race_video = build_compare_race_link(left_car, right_car)
     canonical_url = f"{get_base_url()}/compare/{resolved['canonical_slug']}"
     meta_title = f"{left_car.get('name')} vs {right_car.get('name')} | CarQuantix"
@@ -2277,6 +2513,7 @@ def compare_detail(compare_slug):
         right_car=right_car,
         compare_rows=compare_rows,
         compare_intro=compare_intro,
+        compare_decision=compare_decision,
         race_video=race_video,
         canonical_url=canonical_url,
         meta_title=meta_title,
