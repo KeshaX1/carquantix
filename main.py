@@ -935,6 +935,121 @@ def build_compare_meta_description(car_a, car_b):
     return f"Compare {car_a.get('name', 'Car A')} vs {car_b.get('name', 'Car B')} on CarQuantix."
 
 
+def build_compare_intro_content(car_a, car_b):
+    if not car_a or not car_b:
+        return None
+
+    left_name = str(car_a.get("name") or "Car A").strip()
+    right_name = str(car_b.get("name") or "Car B").strip()
+    left_engine = str(car_a.get("engine") or "").strip()
+    right_engine = str(car_b.get("engine") or "").strip()
+    left_power = car_a.get("power")
+    right_power = car_b.get("power")
+    left_acc = car_a.get("acc")
+    right_acc = car_b.get("acc")
+    left_top_speed = car_a.get("topSpeed")
+    right_top_speed = car_b.get("topSpeed")
+    left_price = format_display_price(car_a.get("price"))
+    right_price = format_display_price(car_b.get("price"))
+    left_consumption = car_a.get("consumption") or {}
+    right_consumption = car_b.get("consumption") or {}
+
+    highlights = []
+    if left_power is not None and right_power is not None:
+        highlights.append(f"Power: {left_power} hp vs {right_power} hp")
+    if left_acc is not None and right_acc is not None:
+        highlights.append(f"0-100 km/h: {left_acc} s vs {right_acc} s")
+    if left_top_speed is not None and right_top_speed is not None:
+        highlights.append(f"Top speed: {left_top_speed} km/h vs {right_top_speed} km/h")
+
+    stats_sentences = []
+    if left_power is not None and right_power is not None:
+        if left_power == right_power:
+            stats_sentences.append(f"Both models are rated at {left_power} hp, so raw output is evenly matched.")
+        else:
+            power_leader = left_name if left_power > right_power else right_name
+            stats_sentences.append(
+                f"On power, {power_leader} leads the matchup with "
+                f"{max(left_power, right_power)} hp against {min(left_power, right_power)} hp."
+            )
+    if left_acc is not None and right_acc is not None:
+        if left_acc == right_acc:
+            stats_sentences.append(f"Acceleration is identical too, with both cars reaching 0-100 km/h in {left_acc} seconds.")
+        else:
+            acc_leader = left_name if left_acc < right_acc else right_name
+            stats_sentences.append(
+                f"For 0-100 km/h, {acc_leader} is quicker at {min(left_acc, right_acc)} seconds versus {max(left_acc, right_acc)} seconds."
+            )
+    if left_top_speed is not None and right_top_speed is not None:
+        if left_top_speed == right_top_speed:
+            stats_sentences.append(f"Top speed is also tied, with both reaching {left_top_speed} km/h.")
+        else:
+            speed_leader = left_name if left_top_speed > right_top_speed else right_name
+            stats_sentences.append(
+                f"At the top end, {speed_leader} reaches {max(left_top_speed, right_top_speed)} km/h, compared with {min(left_top_speed, right_top_speed)} km/h."
+            )
+
+    engine_sentence = ""
+    if left_engine and right_engine:
+        engine_sentence = f"{left_name} uses {left_engine}, while {right_name} comes with {right_engine}."
+    elif left_engine or right_engine:
+        engine_owner = left_name if left_engine else right_name
+        engine_value = left_engine or right_engine
+        engine_sentence = f"Engine character still matters here, and {engine_owner} stands out with its {engine_value} setup."
+
+    value_sentences = []
+    if left_price != "-" and right_price != "-":
+        if left_price == right_price:
+            value_sentences.append(f"Pricing is closely aligned as well, with both listed around {left_price}.")
+        else:
+            value_sentences.append(
+                f"Price can shift the answer depending on your budget: {left_name} is listed at {left_price}, while {right_name} comes in at {right_price}."
+            )
+
+    same_consumption_unit = left_consumption.get("unit") and left_consumption.get("unit") == right_consumption.get("unit")
+    if same_consumption_unit and left_consumption.get("value") is not None and right_consumption.get("value") is not None:
+        left_cons = left_consumption["value"]
+        right_cons = right_consumption["value"]
+        unit = left_consumption["unit"]
+        if left_cons == right_cons:
+            value_sentences.append(f"Efficiency is basically the same too, with both cars rated at {left_cons} {unit}.")
+        else:
+            efficiency_leader = left_name if left_cons < right_cons else right_name
+            value_sentences.append(
+                f"If running costs matter, {efficiency_leader} looks more efficient on paper at {min(left_cons, right_cons)} {unit} versus {max(left_cons, right_cons)} {unit}."
+            )
+
+    paragraph_one = (
+        f"The {left_name} vs {right_name} comparison is built for drivers who want a direct side-by-side view before making a shortlist. "
+        f"If you are asking which is better between {left_name} and {right_name}, this page brings the most important numbers together in one place, "
+        "including horsepower, 0-100 km/h performance, top speed, engine details, price, and fuel consumption. "
+        "Some matchups look obvious at first glance, but the better choice often changes once you compare acceleration, high-speed performance, and day-to-day costs in the same view. "
+        "That makes it easier to separate headline speed from real-world value without jumping between multiple tabs."
+    )
+
+    paragraph_two_bits = stats_sentences[:3]
+    if engine_sentence:
+        paragraph_two_bits.append(engine_sentence)
+    paragraph_two = " ".join(paragraph_two_bits) or (
+        f"This matchup gives you a clean look at how {left_name} and {right_name} compare across the core specs that usually decide a purchase."
+    )
+
+    paragraph_three_bits = value_sentences[:2]
+    paragraph_three_bits.append(
+        "The full comparison table adds more context beyond the headline figures, so you can judge where the performance gap is meaningful and where the differences are smaller than expected."
+    )
+    paragraph_three_bits.append(
+        f"Use the detailed table below to decide whether {left_name} or {right_name} is the better fit for your priorities, whether that means speed, character, efficiency, or overall value."
+    )
+    paragraph_three = " ".join(paragraph_three_bits)
+
+    return {
+        "heading": f"{left_name} vs {right_name}: which is better for your priorities?",
+        "paragraphs": [paragraph_one, paragraph_two, paragraph_three],
+        "highlights": highlights,
+    }
+
+
 def build_featured_compare_links(cars, slug_map):
     links = []
     seen = set()
@@ -2136,6 +2251,7 @@ def compare_detail(compare_slug):
     left_car = resolved["left_car"]
     right_car = resolved["right_car"]
     compare_rows = build_compare_spec_rows(left_car, right_car)
+    compare_intro = build_compare_intro_content(left_car, right_car)
     race_video = build_compare_race_link(left_car, right_car)
     canonical_url = f"{get_base_url()}/compare/{resolved['canonical_slug']}"
     meta_title = f"{left_car.get('name')} vs {right_car.get('name')} | CarQuantix"
@@ -2160,6 +2276,7 @@ def compare_detail(compare_slug):
         left_car=left_car,
         right_car=right_car,
         compare_rows=compare_rows,
+        compare_intro=compare_intro,
         race_video=race_video,
         canonical_url=canonical_url,
         meta_title=meta_title,
