@@ -3597,17 +3597,252 @@ function buildCompareDecisionData(leftVehicle, rightVehicle) {
   };
 }
 
+function getDecisionVehicleKey(vehicle) {
+  return vehicle?._key || makeKey(vehicle?.catalog || 'cars', vehicle?.id);
+}
+
+function getDecisionVehicleName(vehicle) {
+  return String(vehicle?.name || vehicle?.id || 'Unknown vehicle').trim();
+}
+
+function formatDecisionWinnerNames(vehicles) {
+  if (!vehicles || !vehicles.length) return 'Too close to call';
+  return joinDecisionLabels(vehicles.map(getDecisionVehicleName));
+}
+
+function getNumericDecisionMeta(vehicles, getValue, higherIsBetter = true) {
+  const values = vehicles
+    .map((vehicle) => ({ vehicle, value: Number(getValue(vehicle)) }))
+    .filter((entry) => Number.isFinite(entry.value));
+
+  if (values.length < 2) {
+    return { leaders: [], comparable: false };
+  }
+
+  const bestValue = higherIsBetter
+    ? Math.max(...values.map((entry) => entry.value))
+    : Math.min(...values.map((entry) => entry.value));
+
+  return {
+    leaders: values
+      .filter((entry) => entry.value === bestValue)
+      .map((entry) => entry.vehicle),
+    comparable: true,
+  };
+}
+
+function getConsumptionDecisionMeta(vehicles) {
+  const values = vehicles
+    .map((vehicle) => ({ vehicle, info: getConsumptionInfo(vehicle) }))
+    .filter((entry) => entry.info && Number.isFinite(Number(entry.info.value)));
+
+  if (values.length < 2) {
+    return { leaders: [], comparable: false };
+  }
+
+  const units = new Set(values.map((entry) => String(entry.info.unit || '').toLowerCase()));
+  if (units.size !== 1) {
+    return { leaders: [], comparable: false };
+  }
+
+  const bestValue = Math.min(...values.map((entry) => Number(entry.info.value)));
+  return {
+    leaders: values
+      .filter((entry) => Number(entry.info.value) === bestValue)
+      .map((entry) => entry.vehicle),
+    comparable: true,
+  };
+}
+
+function buildDecisionAggregate(vehicles, categories) {
+  const scores = new Map();
+  const labelsByKey = new Map();
+
+  categories.forEach(({ label, leaders }) => {
+    if (!leaders || !leaders.length) return;
+    leaders.forEach((vehicle) => {
+      const key = getDecisionVehicleKey(vehicle);
+      scores.set(key, (scores.get(key) || 0) + 1);
+      if (label) {
+        const labels = labelsByKey.get(key) || [];
+        if (!labels.includes(label)) labels.push(label);
+        labelsByKey.set(key, labels);
+      }
+    });
+  });
+
+  const maxScore = Math.max(0, ...scores.values());
+  const leaders = maxScore > 0
+    ? vehicles.filter((vehicle) => scores.get(getDecisionVehicleKey(vehicle)) === maxScore)
+    : [];
+
+  return { leaders, scores, labelsByKey };
+}
+
+function getAggregateLeaderLabels(aggregate) {
+  if (!aggregate || !aggregate.leaders || !aggregate.leaders.length) return [];
+  const labels = [];
+  aggregate.leaders.forEach((vehicle) => {
+    const key = getDecisionVehicleKey(vehicle);
+    (aggregate.labelsByKey.get(key) || []).forEach((label) => {
+      if (!labels.includes(label)) labels.push(label);
+    });
+  });
+  return labels;
+}
+
+function buildGroupCompareDecisionData(vehicles) {
+  const items = (vehicles || []).filter(Boolean);
+  if (items.length < 2) return null;
+
+  const powerMeta = getNumericDecisionMeta(items, (vehicle) => vehicle.power, true);
+  const accMeta = getNumericDecisionMeta(items, (vehicle) => vehicle.acc, false);
+  const topSpeedMeta = getNumericDecisionMeta(items, (vehicle) => vehicle.topSpeed, true);
+  const priceMeta = getNumericDecisionMeta(items, (vehicle) => getPriceMeta(vehicle.price).amount, false);
+  const yearMeta = getNumericDecisionMeta(items, (vehicle) => extractModelYear(vehicle), true);
+  const consumptionMeta = getConsumptionDecisionMeta(items);
+
+  const performanceAggregate = buildDecisionAggregate(items, [
+    { label: 'power', leaders: powerMeta.leaders },
+    { label: '0-100 km/h', leaders: accMeta.leaders },
+    { label: 'top speed', leaders: topSpeedMeta.leaders },
+  ]);
+
+  const valueAggregate = buildDecisionAggregate(items, [
+    { label: 'price', leaders: priceMeta.leaders },
+    { label: 'efficiency', leaders: consumptionMeta.leaders },
+    { label: 'model year', leaders: yearMeta.leaders },
+  ]);
+
+  const speedAggregate = topSpeedMeta.leaders.length
+    ? { leaders: topSpeedMeta.leaders }
+    : (accMeta.leaders.length ? { leaders: accMeta.leaders } : { leaders: performanceAggregate.leaders });
+
+  const overallAggregate = buildDecisionAggregate(items, [
+    { leaders: powerMeta.leaders },
+    { leaders: accMeta.leaders },
+    { leaders: topSpeedMeta.leaders },
+    { leaders: priceMeta.leaders },
+    { leaders: consumptionMeta.leaders },
+    { leaders: yearMeta.leaders },
+    { leaders: performanceAggregate.leaders },
+    { leaders: valueAggregate.leaders },
+    { leaders: speedAggregate.leaders },
+  ]);
+
+  const performanceLabels = getAggregateLeaderLabels(performanceAggregate);
+  const valueLabels = getAggregateLeaderLabels(valueAggregate);
+
+  const verdicts = [
+    {
+      label: 'Performance winner',
+      winner: formatDecisionWinnerNames(performanceAggregate.leaders),
+      reason: performanceAggregate.leaders.length
+        ? `${performanceAggregate.leaders.length > 1 ? 'Shared lead' : 'Leads'} on ${joinDecisionLabels(performanceLabels)}.`
+        : 'No clear edge on the recorded performance data.',
+    },
+    {
+      label: 'Speed winner',
+      winner: formatDecisionWinnerNames(speedAggregate.leaders),
+      reason: speedAggregate.leaders.length
+        ? (
+          topSpeedMeta.leaders.length
+            ? `${topSpeedMeta.leaders.length > 1 ? 'Share' : 'Has'} the highest top speed on paper.`
+            : `${accMeta.leaders.length > 1 ? 'Share' : 'Has'} the quickest acceleration on paper.`
+        )
+        : 'No clear speed advantage on the recorded data.',
+    },
+    {
+      label: 'Value winner',
+      winner: formatDecisionWinnerNames(valueAggregate.leaders),
+      reason: valueAggregate.leaders.length
+        ? `${valueAggregate.leaders.length > 1 ? 'Shared lead' : 'Stronger'} on ${joinDecisionLabels(valueLabels)}.`
+        : 'No clear value edge on price, efficiency, or model year.',
+    },
+    {
+      label: 'Overall winner',
+      winner: formatDecisionWinnerNames(overallAggregate.leaders),
+      reason: overallAggregate.leaders.length
+        ? (
+          overallAggregate.leaders.length > 1
+            ? 'Share the strongest overall score across the recorded categories.'
+            : 'Wins more of the recorded comparison categories overall.'
+        )
+        : 'The available data is too evenly matched to separate them.',
+    },
+  ];
+
+  const powerLeaderKeys = new Set(powerMeta.leaders.map(getDecisionVehicleKey));
+  const accLeaderKeys = new Set(accMeta.leaders.map(getDecisionVehicleKey));
+  const topSpeedLeaderKeys = new Set(topSpeedMeta.leaders.map(getDecisionVehicleKey));
+  const priceLeaderKeys = new Set(priceMeta.leaders.map(getDecisionVehicleKey));
+  const consumptionLeaderKeys = new Set(consumptionMeta.leaders.map(getDecisionVehicleKey));
+  const yearLeaderKeys = new Set(yearMeta.leaders.map(getDecisionVehicleKey));
+  const overallLeaderKeys = new Set(overallAggregate.leaders.map(getDecisionVehicleKey));
+
+  const tradeoffs = items.map((vehicle) => {
+    const key = getDecisionVehicleKey(vehicle);
+    const pros = [];
+    const cons = [];
+
+    if (powerMeta.comparable) {
+      if (powerLeaderKeys.has(key)) pushUnique(pros, 'Power leader');
+      else pushUnique(cons, 'Less power than the group leader');
+    }
+
+    if (accMeta.comparable) {
+      if (accLeaderKeys.has(key)) pushUnique(pros, 'Quickest 0-100 km/h');
+      else pushUnique(cons, 'Slower off the line than the quickest pick');
+    }
+
+    if (topSpeedMeta.comparable) {
+      if (topSpeedLeaderKeys.has(key)) pushUnique(pros, 'Top speed leader');
+      else pushUnique(cons, 'Lower top speed than the fastest pick');
+    }
+
+    if (priceMeta.comparable) {
+      if (priceLeaderKeys.has(key)) pushUnique(pros, 'Lowest price');
+      else pushUnique(cons, 'Higher price than the value leader');
+    }
+
+    if (consumptionMeta.comparable) {
+      if (consumptionLeaderKeys.has(key)) pushUnique(pros, 'Best efficiency');
+      else pushUnique(cons, 'Less efficient than the best option');
+    }
+
+    if (yearMeta.comparable) {
+      if (yearLeaderKeys.has(key)) pushUnique(pros, 'Newest model year');
+      else pushUnique(cons, 'Older model than the newest option');
+    }
+
+    if (overallLeaderKeys.has(key)) {
+      pushUnique(pros, 'Strong overall spec balance');
+    }
+
+    if (!pros.length) pushUnique(pros, 'Competitive overall spec balance');
+    if (!cons.length) pushUnique(cons, 'Few clear weaknesses in the recorded specs');
+
+    return {
+      title: getDecisionVehicleName(vehicle),
+      pros: pros.slice(0, 3),
+      cons: cons.slice(0, 3),
+    };
+  });
+
+  return { verdicts, tradeoffs };
+}
+
 function renderCompareDecisionSection() {
   if (!compareDecisionArea || !compareDecisionVerdicts || !compareDecisionTradeoffs) return;
   compareDecisionVerdicts.innerHTML = '';
   compareDecisionTradeoffs.innerHTML = '';
 
-  if (selected.length !== 2) {
+  if (selected.length < 2) {
     compareDecisionArea.classList.add('hidden');
     return;
   }
 
-  const data = buildCompareDecisionData(selected[0], selected[1]);
+  const data = buildGroupCompareDecisionData(selected);
   if (!data) {
     compareDecisionArea.classList.add('hidden');
     return;
