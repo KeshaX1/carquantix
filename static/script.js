@@ -3681,7 +3681,8 @@ function renderComparisonRaceLinks() {
 }
 
 // build comparison table with maxima highlighted
-function buildTable() {
+function buildTable(options = {}) {
+  const { scroll = false } = options;
   if (selected.length === 0) return;
 
   const maxPower = Math.max(...selected.map(v => Number(v.power || 0)));
@@ -3719,7 +3720,9 @@ function buildTable() {
 
   if (tableArea) {
     tableArea.classList.remove('hidden');
-    tableArea.scrollIntoView({ behavior: 'smooth' });
+    if (scroll) {
+      tableArea.scrollIntoView({ behavior: 'smooth' });
+    }
   }
   setFuelCalculatorVisible(true);
 }
@@ -3823,7 +3826,7 @@ if (brandSelect) {
 clearBtn.addEventListener('click', () => { selected = []; renderSelected(); });
 compareBtn.addEventListener('click', () => {
   if (selected.length === 0) { alert(t('selectPrompt')); return; }
-  buildTable();
+  buildTable({ scroll: true });
 });
 
 
