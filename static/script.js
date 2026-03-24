@@ -1368,7 +1368,7 @@ const TRANSLATIONS = {
     comparison: 'Comparison',
     clear: 'Clear Selected',
     compare: 'Compare',
-    empty: 'No vehicles selected. Start by adding vehicles from the left.',
+    empty: 'No vehicles selected. Start by adding vehicles from the list.',
     add: 'Add',
     remove: 'Remove',
     details: 'Details',
@@ -1450,7 +1450,7 @@ const TRANSLATIONS = {
     comparison: 'Karşılaştırma',
     clear: 'Seçilenleri Temizle',
     compare: 'Karşılaştır',
-    empty: 'Araç seçilmedi. Soldan ekleyin.',
+    empty: 'Araç seçilmedi. Listeden ekleyin.',
     add: 'Ekle',
     remove: 'Kaldır',
     details: 'Detay',
@@ -1529,7 +1529,7 @@ const TRANSLATIONS = {
     comparison: 'Vergleich',
     clear: 'Auswahl löschen',
     compare: 'Vergleichen',
-    empty: 'Keine Fahrzeuge gewählt. Füge links welche hinzu.',
+    empty: 'Keine Fahrzeuge gewählt. Füge welche aus der Liste hinzu.',
     add: 'Hinzufügen',
     remove: 'Entfernen',
     details: 'Details',
@@ -1589,7 +1589,7 @@ const TRANSLATIONS = {
     comparison: 'Comparaison',
     clear: 'Effacer la sélection',
     compare: 'Comparer',
-    empty: 'Aucun véhicule sélectionné. Ajoutez-en depuis la gauche.',
+    empty: 'Aucun véhicule sélectionné. Ajoutez-en depuis la liste.',
     add: 'Ajouter',
     remove: 'Retirer',
     details: 'Details',
@@ -1649,7 +1649,7 @@ const TRANSLATIONS = {
     comparison: 'Comparación',
     clear: 'Limpiar selección',
     compare: 'Comparar',
-    empty: 'No hay vehículos seleccionados. Añade desde la izquierda.',
+    empty: 'No hay vehículos seleccionados. Añade desde la lista.',
     add: 'Añadir',
     remove: 'Quitar',
     details: 'Detalles',
@@ -4067,20 +4067,6 @@ compareBtn.addEventListener('click', () => {
 
 // init
 
-// add at top after DOM elements defined
-// create hamburger in header
-const header = document.querySelector('.main-header');
-const hamburger = document.createElement('button');
-hamburger.className = 'header-hamburger';
-hamburger.innerHTML = '☰';
-hamburger.setAttribute('aria-label','Open sidebar');
-header.prepend(hamburger);
-
-// overlay element
-const overlay = document.createElement('div');
-overlay.className = 'overlay';
-document.body.appendChild(overlay);
-
 // image lightbox for vehicle thumbnails
 const imgLightbox = document.createElement('div');
 imgLightbox.className = 'img-lightbox';
@@ -4103,17 +4089,6 @@ const closeLightbox = () => imgLightbox.classList.remove('show');
 if (closeLightboxBtn) closeLightboxBtn.addEventListener('click', closeLightbox);
 imgLightbox.addEventListener('click', (e) => {
   if (e.target === imgLightbox) closeLightbox();
-});
-
-// open/close handlers
-// init
-hamburger.addEventListener('click', () => {
-  document.querySelector('.sidebar').classList.add('open');
-  overlay.classList.add('show');
-});
-overlay.addEventListener('click', () => {
-  document.querySelector('.sidebar').classList.remove('open');
-  overlay.classList.remove('show');
 });
 
 const themeToggle = document.getElementById('themeToggle');

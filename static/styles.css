@@ -2551,25 +2551,30 @@ body.dark #togglePassword {
 html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
 
 @media (max-width: 760px) {
-  /* Keep sidebar hidden unless opened */
-  .sidebar {
-    position: fixed;
-    inset: 0 0 0 auto;
-    width: min(86vw, 360px);
-    max-width: 360px;
-    transform: translateX(110%) !important;
-    transition: transform .28s ease;
-    z-index: 1200;
-    box-shadow: -8px 0 30px rgba(2,6,23,0.6);
+  .app {
+    flex-direction: column;
   }
-  .sidebar.open { transform: translateX(0) !important; }
 
-  .overlay { display: none; }
-  .overlay.show { display: block; }
+  .sidebar {
+    position: static;
+    inset: auto;
+    order: 1;
+    width: 100%;
+    max-width: none;
+    transform: none !important;
+    transition: none;
+    z-index: auto;
+    box-shadow: none;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 14px 14px 18px;
+  }
+  .sidebar.open { transform: none !important; }
+
+  .overlay,
+  .overlay.show { display: none !important; }
   .header-hamburger {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
+    display: none !important;
   }
 
   /* Mobile topbar layout: brand + icons row, links row */
@@ -2633,6 +2638,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
 
   /* Main header + compare button visible */
+  .main { order: 2; }
   .main-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .main-header h1 { font-size: 22px; }
   .main-header .actions { width: 100%; margin-top: 0 !important; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
@@ -2652,12 +2658,27 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .catalog-toggle button { padding: 8px 10px; font-size: 13px; }
 
   /* Sidebar list cards compact (text + buttons + images) */
-  .list { gap: 10px; }
+  .list {
+    gap: 10px;
+    max-height: none;
+    overflow: visible;
+    padding-bottom: 0;
+  }
   .item { padding: 6px 8px; gap: 8px; }
   .item .thumb { width: 110px; height: 76px; border-radius: 8px; }
   .info h3 { font-size: 0.82rem; }
   .info p { font-size: 0.72rem; margin-top: 4px; }
   .add-btn { padding: 6px 8px; font-size: 11px; min-height: 32px; }
+  .empty {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    padding: 16px 18px;
+  }
+  .empty-note {
+    font-size: 0.76rem;
+    line-height: 1.45;
+    padding: 10px 14px;
+  }
 
   /* Selected compare cards smaller */
   .compare-area {
