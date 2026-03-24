@@ -7,6 +7,7 @@ import re
 import json
 import hashlib
 import hmac
+import ipaddress
 import urllib.parse
 import time
 import secrets
@@ -635,7 +636,13 @@ BLOG_ITEMS = [
 
 def is_local_host(host):
     host_only = (host or "").split(":")[0].lower()
-    return host_only in {"127.0.0.1", "localhost", "::1"}
+    if host_only in {"127.0.0.1", "localhost", "::1", "0.0.0.0"}:
+        return True
+    try:
+        ipaddress.ip_address(host_only)
+        return True
+    except ValueError:
+        return False
 
 
 def is_platform_internal_host(host):
