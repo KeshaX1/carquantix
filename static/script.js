@@ -2403,7 +2403,23 @@ function resolveRearImage(v) {
 
 // decide fit mode based on aspect ratio
 function applyFitMode(img){
-  // using pure cover; no dynamic fit needed now
+  if (!img) return;
+  const frame = img.closest('.thumb-frame');
+  if (!frame) return;
+
+  const naturalWidth = img.naturalWidth || img.width;
+  const naturalHeight = img.naturalHeight || img.height;
+  const frameWidth = frame.clientWidth;
+  const frameHeight = frame.clientHeight;
+  if (!naturalWidth || !naturalHeight || !frameWidth || !frameHeight) return;
+
+  const imageRatio = naturalWidth / naturalHeight;
+  const frameRatio = frameWidth / frameHeight;
+  const ratioDelta = Math.abs(imageRatio - frameRatio) / frameRatio;
+  const useContain = ratioDelta > 0.08;
+
+  img.classList.toggle('fit-contain', useContain);
+  img.classList.toggle('fit-cover', !useContain);
 }
 
 function extractAverageColor(img) {
