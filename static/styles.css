@@ -2560,14 +2560,15 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     inset: auto;
     order: 1;
     width: 100%;
-    max-width: none;
+    max-width: 500px;
+    margin: 0 auto;
     transform: none !important;
     transition: none;
     z-index: auto;
     box-shadow: none;
     border-right: 0;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    padding: 12px 10px 16px;
+    padding: 14px 14px 18px;
   }
   .sidebar.open { transform: none !important; }
 
@@ -2656,8 +2657,17 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   #filterBar { flex-wrap: wrap; gap: 8px; margin: 12px 0; }
   #filterBar button { padding: 7px 10px; font-size: 12px; }
   .catalog-toggle button { padding: 8px 10px; font-size: 13px; }
+  .sidebar-header,
+  #catalogToggle,
+  #filterBar,
+  .list {
+    width: 100%;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-  /* Sidebar list cards compact (text + buttons + images) */
+  /* Sidebar list cards follow desktop sizing more closely */
   .list {
     gap: 10px;
     max-height: none;
@@ -2665,40 +2675,39 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     padding-bottom: 0;
   }
   .item {
-    display: grid;
-    grid-template-columns: 96px minmax(0, 1fr) auto;
-    gap: 8px;
-    padding: 8px;
+    display: flex;
+    gap: 12px;
+    padding: 10px;
     align-items: center;
   }
-  .item .thumb { width: 96px; height: 68px; border-radius: 8px; }
+  .item .thumb { width: 88px; height: 56px; border-radius: 8px; }
   .item .info { min-width: 0; }
   .item .info h3 {
-    font-size: 0.82rem;
-    line-height: 1.25;
+    font-size: 0.98rem;
+    line-height: 1.2;
   }
   .item .info p {
-    font-size: 0.71rem;
-    margin-top: 3px;
-    line-height: 1.35;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    line-height: 1.3;
   }
   .item-actions {
-    gap: 6px;
+    gap: 8px;
     flex-shrink: 0;
   }
   .add-btn,
   .fav-btn {
-    padding: 6px 8px;
-    min-height: 34px;
-    border-radius: 7px;
+    padding: 8px 10px;
+    min-height: 40px;
+    border-radius: 8px;
   }
   .add-btn {
-    min-width: 52px;
-    font-size: 11px;
+    min-width: 58px;
+    font-size: 1rem;
   }
   .fav-btn {
-    min-width: 34px;
-    font-size: 14px;
+    min-width: 40px;
+    font-size: 16px;
   }
   .empty {
     font-size: 0.82rem;
