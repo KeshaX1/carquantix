@@ -2068,6 +2068,8 @@ let activeCatalog = 'cars';
 const brandSelectionByCatalog = {};
 let activeBrand = 'all';
 const INVENTORY_MAP = { cars: VEHICLES, motorcycles: MOTORCYCLES };
+const MOBILE_SPLIT_QUERY = '(max-width: 760px)';
+let mobileVehicleToggleBtn = null;
 const savedCatalog = localStorage.getItem('catalogType');
 if (savedCatalog && INVENTORY_MAP[savedCatalog]) {
   activeCatalog = savedCatalog;
@@ -2075,6 +2077,36 @@ if (savedCatalog && INVENTORY_MAP[savedCatalog]) {
 
 function makeKey(catalog, id) {
   return `${catalog}:${encodeURIComponent(String(id ?? ''))}`;
+}
+
+function isMobileSplitLayout() {
+  return typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia(MOBILE_SPLIT_QUERY).matches;
+}
+
+function getVehiclePanelLabel() {
+  const translated = t('vehiclesTitle');
+  return translated && translated !== 'vehiclesTitle' ? translated : 'Vehicles';
+}
+
+function updateMobileVehicleToggle() {
+  if (!mobileVehicleToggleBtn) return;
+  const shouldShow = isMobileSplitLayout() && selected.length > 0;
+  const isCollapsed = document.body.classList.contains('mobile-sidebar-collapsed');
+  mobileVehicleToggleBtn.hidden = !shouldShow;
+  mobileVehicleToggleBtn.classList.toggle('is-collapsed', isCollapsed);
+  mobileVehicleToggleBtn.setAttribute('aria-expanded', String(!isCollapsed));
+  mobileVehicleToggleBtn.innerHTML = `
+    <span class="panel-toggle-icon">${isCollapsed ? '&#9776;' : '&times;'}</span>
+    <span>${getVehiclePanelLabel()}</span>
+  `;
+}
+
+function setMobileSidebarCollapsed(collapsed) {
+  const shouldCollapse = Boolean(collapsed) && isMobileSplitLayout() && selected.length > 0;
+  document.body.classList.toggle('mobile-sidebar-collapsed', shouldCollapse);
+  updateMobileVehicleToggle();
 }
 
 function parseKey(key) {
@@ -3229,6 +3261,9 @@ function attachAddButtons() {
         return;
       }
       selected.push({ ...veh, _key: key, catalog: parsed.catalog });
+      if (selected.length === 1) {
+        setMobileSidebarCollapsed(true);
+      }
       renderSelected();
     });
   });
@@ -3238,6 +3273,7 @@ function attachAddButtons() {
 function renderSelected() {
   compareArea.innerHTML = '';
   if (selected.length === 0) {
+    setMobileSidebarCollapsed(false);
     const emptyNoteText = t('emptyNote');
     compareArea.innerHTML = `
       <div class="empty-block">
@@ -3250,6 +3286,7 @@ function renderSelected() {
     renderCompareDecisionSection();
     renderComparisonRaceLinks();
     setFuelCalculatorVisible(false);
+    updateMobileVehicleToggle();
     return;
   }
 
@@ -3338,6 +3375,7 @@ function renderSelected() {
   renderCompareDecisionSection();
   renderComparisonRaceLinks();
   syncFuelCalculatorToSelection();
+  updateMobileVehicleToggle();
 
   // attach remove handlers
   compareArea.querySelectorAll('.remove-btn').forEach(btn => {
@@ -4293,14 +4331,32 @@ function initLanguageMenu() {
     if (e.key === 'Escape') closeMenu();
   });
 
+  const vehicleToggleBtn = document.createElement('button');
+  vehicleToggleBtn.type = 'button';
+  vehicleToggleBtn.className = 'mobile-panel-toggle';
+  vehicleToggleBtn.hidden = true;
+  vehicleToggleBtn.addEventListener('click', () => {
+    const nextCollapsed = !document.body.classList.contains('mobile-sidebar-collapsed');
+    setMobileSidebarCollapsed(nextCollapsed);
+  });
+  mobileVehicleToggleBtn = vehicleToggleBtn;
+
   wrapper.appendChild(toggleBtn);
+  wrapper.appendChild(vehicleToggleBtn);
   wrapper.appendChild(menu);
   host.prepend(wrapper);
   renderOptions();
+  updateMobileVehicleToggle();
 }
 
 initLanguageMenu();
 setLanguage(currentLang);
+window.addEventListener('resize', () => {
+  if (!isMobileSplitLayout()) {
+    document.body.classList.remove('mobile-sidebar-collapsed');
+  }
+  updateMobileVehicleToggle();
+});
 
 
 
