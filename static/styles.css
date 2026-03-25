@@ -2826,15 +2826,15 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .compare-area {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     align-items: stretch;
   }
   .compare-card {
-    padding: 6px;
-    border-radius: 9px;
-    gap: 5px;
-    width: 100%;
-    max-width: min(100%, 320px);
+    padding: 5px;
+    border-radius: 8px;
+    gap: 4px;
+    width: min(100%, 296px);
+    max-width: min(100%, 296px);
     min-width: 0;
     flex: initial;
     overflow: hidden;
@@ -2842,11 +2842,11 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-card .thumb-frame {
     height: auto;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 8.6;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 7px;
   }
   .compare-card img.thumb-img {
     width: 100%;
@@ -2856,46 +2856,47 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     object-fit: cover;
   }
   .compare-card .thumb-badge {
-    top: 6px;
-    left: 6px;
-    padding: 3px 6px;
-    font-size: 0.64rem;
+    top: 5px;
+    left: 5px;
+    padding: 2px 6px;
+    font-size: 0.6rem;
   }
   .compare-card .card-overlay {
-    padding: 8px 8px 6px;
-    gap: 3px;
+    padding: 7px 7px 5px;
+    gap: 2px;
   }
-  .compare-card .card-overlay h4 { font-size: 0.74rem; }
-  .compare-card .card-overlay .spec-line { font-size: 0.62rem; }
+  .compare-card .card-overlay h4 { font-size: 0.7rem; }
+  .compare-card .card-overlay .spec-line { font-size: 0.58rem; }
   .compare-card .card-overlay .price-pill {
-    padding: 3px 6px;
-    font-size: 0.58rem;
+    padding: 2px 6px;
+    font-size: 0.54rem;
   }
   .compare-card .meta {
-    gap: 3px;
+    gap: 2px;
   }
   .compare-card .meta h4 {
-    font-size: 0.74rem;
-    line-height: 1.2;
+    font-size: 0.68rem;
+    line-height: 1.15;
   }
   .compare-card .meta .spec-line,
   .compare-card .meta .stat-line {
-    font-size: 0.62rem;
-    line-height: 1.25;
+    font-size: 0.56rem;
+    line-height: 1.2;
   }
   .compare-card .meta .price-wrapper {
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 4px;
-    padding: 5px 6px;
-    font-size: 0.6rem;
+    gap: 3px;
+    padding: 4px 6px;
+    font-size: 0.56rem;
+    border-radius: 22px;
   }
-  .compare-card .meta .price-wrapper::before { height: 18px; bottom: -6px; }
-  .compare-card .meta .price-wrapper .price-value { font-size: 0.6rem; }
+  .compare-card .meta .price-wrapper::before { height: 14px; bottom: -4px; }
+  .compare-card .meta .price-wrapper .price-value { font-size: 0.56rem; }
   .compare-card .meta .price-wrapper .resale-btn {
-    font-size: 0.52rem;
-    padding: 3px 5px;
+    font-size: 0.48rem;
+    padding: 2px 5px;
   }
   .title-row {
     gap: 4px;
@@ -2908,23 +2909,28 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     font-size: 0.5rem;
     padding: 2px 4px;
   }
-  .meta-line { font-size: 0.58rem; }
+  .meta-line { font-size: 0.54rem; }
   .card-actions {
-    gap: 6px;
+    gap: 5px;
     flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: center;
     width: 100%;
   }
   .remove-btn {
     width: auto;
-    min-width: 78px;
-    padding: 5px 6px;
-    font-size: 9px;
+    min-width: 72px;
+    min-height: 32px;
+    padding: 4px 6px;
+    font-size: 0.6rem;
+    border-radius: 7px;
   }
   .detail-btn {
-    min-width: 78px;
-    padding: 5px 8px;
-    font-size: 0.82rem;
+    min-width: 72px;
+    min-height: 32px;
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    border-radius: 7px;
   }
 
   /* Login modal more compact + password visibility fix */
