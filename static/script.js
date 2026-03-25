@@ -2109,6 +2109,12 @@ function setMobileSidebarCollapsed(collapsed) {
   updateMobileVehicleToggle();
 }
 
+function syncMobileViewportLayout() {
+  if (typeof document === 'undefined') return;
+  const topbarHeight = topbarEl ? Math.ceil(topbarEl.getBoundingClientRect().height) : 0;
+  document.documentElement.style.setProperty('--mobile-topbar-height', `${topbarHeight}px`);
+}
+
 function parseKey(key) {
   const [catalog, ...rest] = String(key || '').split(':');
   return { catalog: catalog || 'cars', id: decodeURIComponent(rest.join(':') || '') };
@@ -4351,10 +4357,12 @@ function initLanguageMenu() {
 
 initLanguageMenu();
 setLanguage(currentLang);
+syncMobileViewportLayout();
 window.addEventListener('resize', () => {
   if (!isMobileSplitLayout()) {
     document.body.classList.remove('mobile-sidebar-collapsed');
   }
+  syncMobileViewportLayout();
   updateMobileVehicleToggle();
 });
 
