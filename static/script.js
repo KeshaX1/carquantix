@@ -1303,6 +1303,7 @@ const raceLinksArea = document.getElementById('raceLinksArea');
 const raceLinksList = document.getElementById('raceLinksList');
 const searchInput = document.getElementById('search');
 const brandSelect = document.getElementById('brandFilter');
+const brandSymbolBar = document.getElementById('brandSymbolBar');
 const clearBtn = document.getElementById('clearBtn');
 const compareBtn = document.getElementById('compareBtn');
 const fuelCalcSection = document.getElementById('fuelCalculator');
@@ -2509,6 +2510,54 @@ function getBrandList() {
   return Array.from(brands).sort((a, b) => a.localeCompare(b));
 }
 
+function hashBrand(label = '') {
+  let hash = 0;
+  for (let i = 0; i < label.length; i += 1) {
+    hash = ((hash << 5) - hash) + label.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function getBrandMonogram(label = '') {
+  const parts = String(label || '')
+    .replace(/[^a-z0-9\s-]/gi, ' ')
+    .split(/[\s-]+/)
+    .filter(Boolean);
+  if (!parts.length) return '?';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return parts.slice(0, 2).map(part => part[0]).join('').toUpperCase();
+}
+
+function buildBrandSymbolButtons(brands) {
+  if (!brandSymbolBar) return;
+  brandSymbolBar.innerHTML = '';
+
+  const entries = [{ value: 'all', label: t('brandAll') }, ...brands.map(brand => ({ value: brand, label: brand }))];
+  entries.forEach(entry => {
+    const btn = document.createElement('button');
+    const hue = entry.value === 'all' ? 205 : (hashBrand(entry.label) % 360);
+    const isActive = (activeBrand || 'all') === entry.value;
+    btn.type = 'button';
+    btn.className = `brand-symbol-btn${isActive ? ' active' : ''}`;
+    btn.dataset.brand = entry.value;
+    btn.title = entry.label;
+    btn.setAttribute('role', 'option');
+    btn.setAttribute('aria-label', entry.label);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    btn.style.setProperty('--brand-hue', String(hue));
+    btn.innerHTML = `<span class="brand-symbol-mark">${entry.value === 'all' ? 'ALL' : getBrandMonogram(entry.label)}</span>`;
+    btn.addEventListener('click', () => {
+      activeBrand = entry.value;
+      brandSelectionByCatalog[activeCatalog] = activeBrand;
+      if (brandSelect) brandSelect.value = activeBrand;
+      buildBrandSymbolButtons(brands);
+      renderList(searchInput ? searchInput.value : '');
+    });
+    brandSymbolBar.appendChild(btn);
+  });
+}
+
 function buildBrandOptions() {
   if (!brandSelect) return;
   const brands = getBrandList();
@@ -2526,6 +2575,7 @@ function buildBrandOptions() {
   const saved = brandSelectionByCatalog[activeCatalog] || activeBrand || 'all';
   activeBrand = brands.includes(saved) ? saved : 'all';
   brandSelect.value = activeBrand;
+  buildBrandSymbolButtons(brands);
 }
 
 function parsePrice(val) {
