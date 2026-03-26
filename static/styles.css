@@ -915,6 +915,13 @@ body.dark .site-footer,
   padding-right: 6px;
 }
 
+.seo-links--comparisons {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
 .seo-links a {
   text-decoration: none;
   color: var(--accent);
@@ -925,6 +932,15 @@ body.dark .site-footer,
   font-weight: 600;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.seo-links--comparisons a {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  border-radius: 16px;
+  line-height: 1.35;
+  white-space: normal;
 }
 
 .seo-links--dense a {
@@ -943,6 +959,30 @@ body.dark .seo-links a {
   background: rgba(255,255,255,0.04);
   color: #b9d8ff;
   box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+}
+
+@media (max-width: 1400px) {
+  .seo-links--comparisons {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1100px) {
+  .seo-links--comparisons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .seo-links--comparisons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .seo-links--comparisons {
+    grid-template-columns: 1fr;
+  }
 }
 
 /*                         Comment                         */     
