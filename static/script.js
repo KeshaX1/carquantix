@@ -2376,11 +2376,29 @@ function currentInventory() {
 }
 
 // util: safe image (use placeholder if image not present)
+function toWebpAssetPath(path) {
+  if (!path || /^(https?:)?\/\//.test(path)) return path;
+  const normalized = String(path).replace(/\\/g, '/');
+  if (normalized.startsWith('/static/images/')) {
+    return normalized.replace('/static/images/', '/static/images-webp/').replace(/\.(jpe?g|png)$/i, '.webp');
+  }
+  if (normalized.startsWith('/static/rearimg/')) {
+    return normalized.replace('/static/rearimg/', '/static/rearimg-webp/').replace(/\.(jpe?g|png)$/i, '.webp');
+  }
+  if (normalized.startsWith('/static/mimages/')) {
+    return normalized.replace('/static/mimages/', '/static/mimages-webp/').replace(/\.(jpe?g|png)$/i, '.webp');
+  }
+  if (normalized.startsWith('/static/mrearimg/')) {
+    return normalized.replace('/static/mrearimg/', '/static/mrearimg-webp/').replace(/\.(jpe?g|png)$/i, '.webp');
+  }
+  return normalized;
+}
+
 function safeImg(path, label){
   // If path looks like an external URL, return it directly
   if (/^(https?:)?\/\//.test(path)) return path;
   // Use placeholder if local image missing; browsers will still try to load local path
-  return path || `https://via.placeholder.com/320x180?text=${encodeURIComponent(label)}`;
+  return path ? toWebpAssetPath(path) : `https://via.placeholder.com/320x180?text=${encodeURIComponent(label)}`;
 }
 
 function normalizeMotoPath(path) {
@@ -2401,6 +2419,32 @@ function resolveRearImage(v) {
   if (v?.mimages || v?.mrearImg || v?.mrearimg) src = normalizeMotoPath(src);
   return src;
 }
+
+document.addEventListener('error', (event) => {
+  const img = event.target;
+  if (!img || img.tagName !== 'IMG') return;
+  const currentSrc = img.getAttribute('src');
+  if (!currentSrc || !currentSrc.includes('-webp/')) return;
+
+  const attempt = Number(img.dataset.webpFallbackAttempt || '0');
+  const baseSrc = currentSrc.replace(/\.webp$/i, '');
+  const jpgFallback = `${baseSrc}.jpg`
+    .replace('/static/images-webp/', '/static/images/')
+    .replace('/static/rearimg-webp/', '/static/rearimg/')
+    .replace('/static/mimages-webp/', '/static/mimages/')
+    .replace('/static/mrearimg-webp/', '/static/mrearimg/');
+  const pngFallback = jpgFallback.replace(/\.jpg$/i, '.png');
+
+  if (attempt === 0) {
+    img.dataset.webpFallbackAttempt = '1';
+    img.src = jpgFallback;
+    return;
+  }
+  if (attempt === 1) {
+    img.dataset.webpFallbackAttempt = '2';
+    img.src = pngFallback;
+  }
+}, true);
 
 // decide fit mode based on aspect ratio
 function applyFitMode(img){
