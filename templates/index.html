@@ -364,24 +364,38 @@
     </div>
     {% endif %}
   </section>
-<div class="comment-section">
-  <h3>Comments</h3>
+<div class="comment-section" id="commentSection">
+  <div class="comment-section-header">
+    <h3 id="commentsTitle">Comments</h3>
+    <button
+      type="button"
+      id="commentsToggle"
+      class="comments-toggle"
+      aria-expanded="true"
+      data-open-label="Show comments"
+      data-close-label="Hide comments"
+    >
+      Hide comments
+    </button>
+  </div>
 
-  <form id="commentForm">
-    <input type="text" id="username" placeholder="Your name" required />
-    <textarea id="commentInput" placeholder="Write your comment..." required></textarea>
-        <label for="rating">Rating:</label>
-    <select id="rating">
-      <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
-      <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734;</option>
-      <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734;</option>
-      <option value="2">&#9733;&#9733;&#9734;&#9734;&#9734;</option>
-      <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734;</option>
-    </select>
+  <div id="commentsContent" class="comments-content">
+    <form id="commentForm">
+      <input type="text" id="username" placeholder="Your name" required />
+      <textarea id="commentInput" placeholder="Write your comment..." required></textarea>
+      <label for="rating">Rating:</label>
+      <select id="rating">
+        <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
+        <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734;</option>
+        <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734;</option>
+        <option value="2">&#9733;&#9733;&#9734;&#9734;&#9734;</option>
+        <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734;</option>
+      </select>
 
-    <button type="submit">Submit</button>
-  </form>
-  <div id="commentsContainer"></div>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="commentsContainer"></div>
+  </div>
 </div>
   <footer class="site-footer">
     <div class="footer-inner">
@@ -410,8 +424,6 @@
   <script src="{{ url_for('static', filename='script.js', v='20260316-guides-blog1') }}"></script>
 </body>
 </html>
-
-
 
 
 

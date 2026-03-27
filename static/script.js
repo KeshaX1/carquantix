@@ -1381,6 +1381,8 @@ const TRANSLATIONS = {
     maxCompare: 'Maximum 5 vehicles for comparison. Premium: 8.',
     maxComparePremium: 'Maximum 8 vehicles for comparison',
     commentsTitle: 'Comments',
+    showComments: 'Show comments',
+    hideComments: 'Hide comments',
     commentName: 'Your name',
     commentPlaceholder: 'Write your comment...',
     ratingLabel: 'Rating:',
@@ -1463,6 +1465,8 @@ const TRANSLATIONS = {
     maxCompare: 'En fazla 5 araç seçebilirsiniz. Premium: 8.',
     maxComparePremium: 'En fazla 8 araç seçebilirsiniz',
     commentsTitle: 'Yorumlar',
+    showComments: 'Yorumları göster',
+    hideComments: 'Yorumları gizle',
     commentName: 'Adınız',
     commentPlaceholder: 'Yorumunuzu yazın...',
     ratingLabel: 'Puan:',
@@ -1542,6 +1546,8 @@ const TRANSLATIONS = {
     maxCompare: 'Maximal 5 Fahrzeuge. Premium: 8.',
     maxComparePremium: 'Maximal 8 Fahrzeuge',
     commentsTitle: 'Kommentare',
+    showComments: 'Kommentare anzeigen',
+    hideComments: 'Kommentare ausblenden',
     commentName: 'Ihr Name',
     commentPlaceholder: 'Kommentar schreiben...',
     ratingLabel: 'Bewertung:',
@@ -1602,6 +1608,8 @@ const TRANSLATIONS = {
     maxCompare: 'Maximum 5 véhicules. Premium : 8.',
     maxComparePremium: 'Maximum 8 véhicules',
     commentsTitle: 'Commentaires',
+    showComments: 'Afficher les commentaires',
+    hideComments: 'Masquer les commentaires',
     commentName: 'Votre nom',
     commentPlaceholder: 'Écrivez votre commentaire...',
     ratingLabel: 'Note :',
@@ -1662,6 +1670,8 @@ const TRANSLATIONS = {
     maxCompare: 'Máximo 5 vehículos. Premium: 8.',
     maxComparePremium: 'Máximo 8 vehículos',
     commentsTitle: 'Comentarios',
+    showComments: 'Mostrar comentarios',
+    hideComments: 'Ocultar comentarios',
     commentName: 'Tu nombre',
     commentPlaceholder: 'Escribe tu comentario...',
     ratingLabel: 'Puntuación:',
@@ -4375,8 +4385,15 @@ function applyTranslations() {
   const fuelResultLabel = document.getElementById('fuelCalcResultLabel');
   if (fuelResultLabel) fuelResultLabel.textContent = pack.costEstimate;
   updateFuelPremiumUi();
-  const commentsTitle = document.querySelector('.comment-section h3');
+  const commentsTitle = document.getElementById('commentsTitle');
   if (commentsTitle) commentsTitle.textContent = pack.commentsTitle;
+  const commentsToggle = document.getElementById('commentsToggle');
+  if (commentsToggle) {
+    commentsToggle.dataset.openLabel = pack.showComments;
+    commentsToggle.dataset.closeLabel = pack.hideComments;
+    const isExpanded = commentsToggle.getAttribute('aria-expanded') !== 'false';
+    commentsToggle.textContent = isExpanded ? pack.hideComments : pack.showComments;
+  }
   const usernameInput = document.getElementById('username');
   if (usernameInput) usernameInput.placeholder = pack.commentName;
   const commentInput = document.getElementById('commentInput');
@@ -4546,16 +4563,20 @@ window.addEventListener('resize', () => {
 
 // Comment
 (function(){
+  const section = document.getElementById("commentSection");
+  const content = document.getElementById("commentsContent");
+  const toggleBtn = document.getElementById("commentsToggle");
   const form = document.getElementById("commentForm");
   const container = document.getElementById("commentsContainer");
   const usernameInput = document.getElementById("username");
   const commentInput = document.getElementById("commentInput");
   const ratingInput = document.getElementById("rating");
-  if (!form || !container || !usernameInput || !commentInput || !ratingInput) return;
+  if (!section || !content || !toggleBtn || !form || !container || !usernameInput || !commentInput || !ratingInput) return;
 
   const currentUser = (window.currentUser && window.currentUser.email) ? window.currentUser : null;
   const currentUserId = currentUser ? (currentUser.email || currentUser.name || "anon") : null;
   const commentsApiUrl = "/api/comments";
+  const commentsCollapseStorageKey = "carquantix-comments-collapsed";
   let comments = [];
   let loginNote = document.getElementById("loginToCommentNote");
 
@@ -4585,6 +4606,33 @@ window.addEventListener('resize', () => {
       ? nextComments.map((comment) => ensureShape(comment)[0])
       : [];
   }
+
+  function setCommentsCollapsed(isCollapsed) {
+    section.classList.toggle("is-collapsed", isCollapsed);
+    content.hidden = isCollapsed;
+    toggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
+    const openLabel = toggleBtn.dataset.openLabel || t("showComments");
+    const closeLabel = toggleBtn.dataset.closeLabel || t("hideComments");
+    toggleBtn.textContent = isCollapsed ? openLabel : closeLabel;
+  }
+
+  let isCommentsCollapsed = false;
+  try {
+    isCommentsCollapsed = window.localStorage.getItem(commentsCollapseStorageKey) === "1";
+  } catch (error) {
+    isCommentsCollapsed = false;
+  }
+  setCommentsCollapsed(isCommentsCollapsed);
+
+  toggleBtn.addEventListener("click", () => {
+    isCommentsCollapsed = !isCommentsCollapsed;
+    setCommentsCollapsed(isCommentsCollapsed);
+    try {
+      window.localStorage.setItem(commentsCollapseStorageKey, isCommentsCollapsed ? "1" : "0");
+    } catch (error) {
+      // Ignore storage failures and keep the in-memory toggle state.
+    }
+  });
 
   function renderComments() {
     container.innerHTML = "";
@@ -4655,7 +4703,7 @@ window.addEventListener('resize', () => {
   if (!currentUser) {
     form.style.display = "none";
     if (!loginNote) {
-      container.insertAdjacentHTML(
+      form.insertAdjacentHTML(
         "beforebegin",
         `<p id="loginToCommentNote" data-i18n="loginToComment">${t('loginToComment')}</p>`
       );
