@@ -2573,6 +2573,86 @@ function getBrandMonogram(label = '') {
   return parts.slice(0, 2).map(part => part[0]).join('').toUpperCase();
 }
 
+const BRAND_LOGO_EXTENSIONS = ['svg', 'png', 'webp', 'jpg', 'jpeg'];
+const BRAND_LOGO_ALIASES = {
+  'alfa-romeo': ['alfaromeo'],
+  'aston-martin': ['astonmartin'],
+  'ds': ['dsautomobiles'],
+  'land-rover': ['landrover'],
+  'lynk-co': ['lynk&co', 'lynkco'],
+  'mercedes-benz': ['mercedesbenz', 'mercedes'],
+  'mini': ['mini cooper', 'mini-cooper'],
+  'rolls-royce': ['rollsroyce'],
+};
+
+function slugifyBrandLabel(label = '') {
+  return String(label || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function getBrandLogoNameCandidates(label = '') {
+  const normalized = String(label || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+  const slug = slugifyBrandLabel(normalized);
+  const compact = normalized.replace(/[^a-z0-9]+/g, '');
+  const spaced = normalized.replace(/\s+/g, ' ');
+  const aliasNames = BRAND_LOGO_ALIASES[slug] || [];
+  return Array.from(new Set([slug, compact, spaced, normalized, ...aliasNames].filter(Boolean)));
+}
+
+function getBrandLogoCandidates(label = '') {
+  const names = getBrandLogoNameCandidates(label);
+  return names.flatMap(name => BRAND_LOGO_EXTENSIONS.map(ext => `/static/brand-logos/${name}.${ext}`));
+}
+
+function createBrandSymbolMark(entry) {
+  const mark = document.createElement('span');
+  mark.className = 'brand-symbol-mark';
+
+  const fallback = document.createElement('span');
+  fallback.className = 'brand-symbol-fallback';
+  fallback.textContent = entry.value === 'all' ? 'ALL' : getBrandMonogram(entry.label);
+  mark.appendChild(fallback);
+
+  if (entry.value === 'all') return mark;
+
+  const candidates = getBrandLogoCandidates(entry.label);
+  if (!candidates.length) return mark;
+
+  const logo = document.createElement('img');
+  logo.className = 'brand-symbol-logo';
+  logo.alt = '';
+  logo.loading = 'lazy';
+  logo.decoding = 'async';
+  logo.draggable = false;
+
+  let candidateIndex = 0;
+  const tryNextCandidate = () => {
+    if (candidateIndex >= candidates.length) {
+      logo.remove();
+      return;
+    }
+    logo.src = candidates[candidateIndex];
+    candidateIndex += 1;
+  };
+
+  logo.addEventListener('load', () => {
+    mark.classList.add('brand-symbol-mark--has-logo');
+  });
+  logo.addEventListener('error', tryNextCandidate);
+
+  mark.appendChild(logo);
+  tryNextCandidate();
+  return mark;
+}
+
 function buildBrandSymbolButtons(brands) {
   if (!brandSymbolBar) return;
   brandSymbolBar.innerHTML = '';
@@ -2590,7 +2670,7 @@ function buildBrandSymbolButtons(brands) {
     btn.setAttribute('aria-label', entry.label);
     btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
     btn.style.setProperty('--brand-hue', String(hue));
-    btn.innerHTML = `<span class="brand-symbol-mark">${entry.value === 'all' ? 'ALL' : getBrandMonogram(entry.label)}</span>`;
+    btn.appendChild(createBrandSymbolMark(entry));
     btn.addEventListener('click', () => {
       activeBrand = entry.value;
       brandSelectionByCatalog[activeCatalog] = activeBrand;
