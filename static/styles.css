@@ -1041,6 +1041,12 @@ h1, h2, h3, p, button {
   border-color: transparent;
 }
 
+.contact-social .social-link.tiktok:hover,
+.site-footer .footer-social-link.tiktok:hover {
+  background: #121212;
+  border-color: #3b3b3b;
+}
+
 .contact-social .social-link.facebook:hover,
 .site-footer .footer-social-link.facebook:hover {
   background: #1877f2;
