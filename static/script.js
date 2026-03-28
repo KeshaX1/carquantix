@@ -1425,6 +1425,7 @@ const TRANSLATIONS = {
     navContact: 'Contact',
     navAbout: 'About Us',
     navPrivacy: 'Privacy Policy',
+    footerFollow: 'Follow Us',
     navPricing: 'Pricing',
     navTerms: 'Terms',
     navRefund: 'Refund Policy',
@@ -1509,6 +1510,7 @@ const TRANSLATIONS = {
     navContact: 'İletişim',
     navAbout: 'Hakkımızda',
     navPrivacy: 'Gizlilik Politikası',
+    footerFollow: 'Bizi Takip Edin',
     navPricing: 'Fiyatlandirma',
     navTerms: 'Kosullar',
     navRefund: 'Iade Politikasi',
@@ -1571,6 +1573,7 @@ const TRANSLATIONS = {
     navContact: 'Kontakt',
     navAbout: 'Uber uns',
     navPrivacy: 'Datenschutz',
+    footerFollow: 'Folge uns',
     navPricing: 'Preise',
     navTerms: 'Bedingungen',
     navRefund: 'Rueckerstattung',
@@ -1633,6 +1636,7 @@ const TRANSLATIONS = {
     navContact: 'Contact',
     navAbout: 'A propos',
     navPrivacy: 'Politique de confidentialite',
+    footerFollow: 'Suivez-nous',
     navPricing: 'Tarifs',
     navTerms: 'Conditions',
     navRefund: 'Politique de remboursement',
@@ -1695,6 +1699,7 @@ const TRANSLATIONS = {
     navContact: 'Contacto',
     navAbout: 'Acerca de',
     navPrivacy: 'Politica de privacidad',
+    footerFollow: 'Siguenos',
     navPricing: 'Precios',
     navTerms: 'Terminos',
     navRefund: 'Politica de reembolso',
@@ -2583,7 +2588,7 @@ function getBrandMonogram(label = '') {
   return parts.slice(0, 2).map(part => part[0]).join('').toUpperCase();
 }
 
-const BRAND_LOGO_EXTENSIONS = ['svg', 'png', 'webp', 'jpg', 'jpeg'];
+const BRAND_LOGO_EXTENSIONS = ['svg', 'webp', 'png', 'jpg', 'jpeg'];
 const BRAND_LOGO_ALIASES = {
   'alfa-romeo': ['alfaromeo'],
   'aston-martin': ['astonmartin'],

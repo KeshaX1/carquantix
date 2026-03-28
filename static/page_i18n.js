@@ -17,6 +17,7 @@
       navTerms: 'Terms',
       navRefund: 'Refund Policy',
       navPrivacy: 'Privacy Policy',
+      footerFollow: 'Follow Us',
     },
     tr: {
       navAbout: 'Hakkimizda',
@@ -28,6 +29,7 @@
       navTerms: 'Kosullar',
       navRefund: 'Iade Politikasi',
       navPrivacy: 'Gizlilik Politikasi',
+      footerFollow: 'Bizi Takip Edin',
     },
     de: {
       navAbout: 'Uber uns',
@@ -39,6 +41,7 @@
       navTerms: 'Bedingungen',
       navRefund: 'Rueckerstattung',
       navPrivacy: 'Datenschutz',
+      footerFollow: 'Folge uns',
     },
     fr: {
       navAbout: 'A propos',
@@ -50,6 +53,7 @@
       navTerms: 'Conditions',
       navRefund: 'Politique de remboursement',
       navPrivacy: 'Politique de confidentialite',
+      footerFollow: 'Suivez-nous',
     },
     es: {
       navAbout: 'Acerca de',
@@ -61,6 +65,7 @@
       navTerms: 'Terminos',
       navRefund: 'Politica de reembolso',
       navPrivacy: 'Politica de privacidad',
+      footerFollow: 'Siguenos',
     },
   };
 

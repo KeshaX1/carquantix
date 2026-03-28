@@ -924,7 +924,7 @@ h1, h2, h3, p, button {
 /* Site footer */
 .site-footer {
   margin-top: 40px;
-  padding: 22px 20px;
+  padding: 0 20px 18px;
   background: var(--card, #111827);
   border-top: 1px solid rgba(0,0,0,0.08);
   color: var(--text);
@@ -933,6 +933,7 @@ h1, h2, h3, p, button {
 .site-footer .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 22px 0 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -973,6 +974,70 @@ h1, h2, h3, p, button {
   color: var(--accent);
 }
 
+.site-footer .footer-social {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.site-footer .footer-social-title {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.site-footer .footer-social-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.site-footer .footer-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.03);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.site-footer .footer-social-link:hover {
+  transform: translateY(-1px);
+}
+
+.site-footer .footer-social-link.tiktok:hover {
+  background: #121212;
+  border-color: #3b3b3b;
+  color: #fff;
+}
+
+.site-footer .footer-social-link.instagram:hover {
+  background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+  border-color: transparent;
+  color: #fff;
+}
+
+.site-footer .footer-social-link.facebook:hover {
+  background: #1877f2;
+  border-color: #1877f2;
+  color: #fff;
+}
+
 body.dark .site-footer,
 .about-page .site-footer,
 .privacy-page .site-footer {
@@ -984,6 +1049,14 @@ body.dark .site-footer,
   .site-footer .footer-inner {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .site-footer .footer-social {
+    align-items: flex-start;
+  }
+
+  .site-footer .footer-social-links {
+    justify-content: flex-start;
   }
 }
 

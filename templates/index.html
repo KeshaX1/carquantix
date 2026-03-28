@@ -415,6 +415,14 @@
         <a href="/privacy-policy" data-i18n="navPrivacy">Privacy Policy</a>
       </nav>
     </div>
+    <div class="footer-social" aria-label="Social links">
+      <span class="footer-social-title" data-i18n="footerFollow">Follow Us</span>
+      <div class="footer-social-links">
+        <a class="footer-social-link tiktok" href="https://www.tiktok.com/@carquantix" target="_blank" rel="noopener noreferrer">TikTok</a>
+        <a class="footer-social-link instagram" href="https://www.instagram.com/CarQuantix" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a class="footer-social-link facebook" href="https://www.facebook.com/CarQuantix" target="_blank" rel="noopener noreferrer">Facebook</a>
+      </div>
+    </div>
   </footer>
   <script
     window.currentUser = {{ user | tojson | safe }};
@@ -424,7 +432,6 @@
   <script src="{{ url_for('static', filename='script.js', v='20260316-guides-blog1') }}"></script>
 </body>
 </html>
-
 
 
 

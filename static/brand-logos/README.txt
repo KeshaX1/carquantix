@@ -2,10 +2,14 @@ Put brand logo files in this folder.
 
 Supported formats:
 - .svg
-- .png
 - .webp
+- .png
 - .jpg
 - .jpeg
+
+Preferred order:
+- .svg for vector logos
+- .webp for raster logos
 
 Filename rule:
 - lowercase
