@@ -2,6 +2,7 @@ from pathlib import Path
 import json
 import re
 import unicodedata
+import urllib.parse
 
 STATIC_DIR = Path(__file__).with_name("static")
 VEHICLES_JS_PATH = STATIC_DIR / "script.js"
@@ -60,6 +61,54 @@ def _parse_js_array(array_text: str):
     return json.loads(cleaned)
 
 
+def _placeholder_image(label: str) -> str:
+    safe_label = (label or "Vehicle").strip() or "Vehicle"
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">'
+        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
+        '<stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#1e293b"/>'
+        "</linearGradient></defs>"
+        '<rect width="1200" height="675" fill="url(#g)"/>'
+        '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" '
+        'fill="#cbd5e1" font-family="Arial, sans-serif" font-size="56" font-weight="700">'
+        f"{safe_label}</text></svg>"
+    )
+    return "data:image/svg+xml;utf8," + urllib.parse.quote(svg)
+
+
+def _normalize_asset_path(path: str, label: str = "Vehicle") -> str:
+    if not path:
+        return _placeholder_image(label)
+
+    normalized = str(path).replace("\\", "/")
+    if normalized.startswith(("http://", "https://", "data:")):
+        return normalized
+
+    replacements = (
+        ("/static/images/", "/static/images-webp/"),
+        ("/static/rearimg/", "/static/rearimg-webp/"),
+        ("/static/mimages/", "/static/mimages-webp/"),
+        ("/static/mrearimg/", "/static/mrearimg-webp/"),
+    )
+
+    for source_prefix, target_prefix in replacements:
+        if not normalized.startswith(source_prefix):
+            continue
+        filename = normalized[len(source_prefix):]
+        stem = re.sub(r"\.(jpe?g|png)$", "", filename, flags=re.IGNORECASE)
+        candidate = f"{target_prefix}{stem}.webp"
+        candidate_fs = STATIC_DIR / candidate.removeprefix("/static/")
+        if candidate_fs.exists():
+            return candidate
+        break
+
+    original_fs = STATIC_DIR / normalized.removeprefix("/static/")
+    if original_fs.exists():
+        return normalized
+
+    return _placeholder_image(label)
+
+
 def load_cars():
     global _CAR_CACHE, _CAR_SLUG_MAP
     if _CAR_CACHE is not None:
@@ -84,6 +133,9 @@ def load_cars():
     slug_map = {}
     for car in cars:
         name = car.get("name") or car.get("id") or ""
+        car["img"] = _normalize_asset_path(car.get("img"), name)
+        if car.get("rearImg"):
+            car["rearImg"] = _normalize_asset_path(car.get("rearImg"), f"{name} rear view")
         base_slug = slugify(name)
         slug = base_slug
         if slug in slug_map:
