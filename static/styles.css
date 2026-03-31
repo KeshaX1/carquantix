@@ -3091,9 +3091,9 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-card,
   #compareArea.compare-area .compare-card {
-    padding: 6px;
+    padding: 7px;
     border-radius: 10px;
-    gap: 4px;
+    gap: 6px;
     width: 100%;
     max-width: none;
     min-width: 0;
@@ -3114,7 +3114,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-card .thumb-frame {
     height: auto;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 5 / 4;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
@@ -3139,10 +3139,13 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     max-width: 100%;
     height: 100%;
     display: block;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
     background: transparent;
     padding: 0;
+  }
+  .compare-card img.thumb-img.fit-cover {
+    object-fit: contain;
   }
   .compare-card .thumb-badge {
     top: 5px;
@@ -3161,10 +3164,10 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     font-size: 0.54rem;
   }
   .compare-card .meta {
-    gap: 3px;
+    gap: 4px;
   }
   .compare-card .meta h4 {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     line-height: 1.18;
   }
   .compare-card .meta .origin-line {
@@ -3173,7 +3176,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-card .meta .spec-line,
   .compare-card .meta .stat-line {
-    font-size: 0.64rem;
+    font-size: 0.66rem;
     line-height: 1.25;
   }
   .compare-card .meta .price-wrapper {
