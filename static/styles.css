@@ -3075,26 +3075,45 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
 
   /* Narrow compare rail */
-  .compare-area {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  .compare-area,
+  #compareArea.compare-area {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
     align-items: stretch;
   }
-  .compare-card {
-    padding: 5px;
-    border-radius: 8px;
+  #compareArea.compare-area {
+    width: 100%;
+  }
+  .compare-area > .empty-block,
+  #compareArea.compare-area > .empty-block {
+    grid-column: 1 / -1;
+  }
+  .compare-card,
+  #compareArea.compare-area .compare-card {
+    padding: 6px;
+    border-radius: 10px;
     gap: 4px;
-    width: min(100%, 296px);
-    max-width: min(100%, 296px);
+    width: 100%;
+    max-width: none;
     min-width: 0;
-    flex: initial;
+    min-height: 0;
     overflow: hidden;
-    margin-inline: auto;
+    margin-inline: 0;
+  }
+  #compareArea.compare-area {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  #compareArea.compare-area .compare-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
   }
   .compare-card .thumb-frame {
     height: auto;
-    aspect-ratio: 16 / 9.8;
+    aspect-ratio: 1 / 1;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
@@ -3122,12 +3141,13 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     object-fit: contain;
     object-position: center;
     background: transparent;
+    padding: 4px;
   }
   .compare-card .thumb-badge {
     top: 5px;
     left: 5px;
-    padding: 2px 6px;
-    font-size: 0.6rem;
+    padding: 2px 5px;
+    font-size: 0.55rem;
   }
   .compare-card .card-overlay {
     padding: 7px 7px 5px;
@@ -3140,35 +3160,35 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     font-size: 0.54rem;
   }
   .compare-card .meta {
-    gap: 2px;
+    gap: 3px;
   }
   .compare-card .meta h4 {
-    font-size: 0.68rem;
-    line-height: 1.15;
+    font-size: 0.78rem;
+    line-height: 1.18;
   }
   .compare-card .meta .origin-line {
-    font-size: 0.48rem;
-    padding: 2px 6px;
+    font-size: 0.52rem;
+    padding: 2px 5px;
   }
   .compare-card .meta .spec-line,
   .compare-card .meta .stat-line {
-    font-size: 0.56rem;
-    line-height: 1.2;
+    font-size: 0.64rem;
+    line-height: 1.25;
   }
   .compare-card .meta .price-wrapper {
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
     gap: 3px;
-    padding: 4px 6px;
-    font-size: 0.56rem;
-    border-radius: 22px;
+    padding: 5px 6px;
+    font-size: 0.62rem;
+    border-radius: 18px;
   }
   .compare-card .meta .price-wrapper::before { height: 14px; bottom: -4px; }
-  .compare-card .meta .price-wrapper .price-value { font-size: 0.56rem; }
+  .compare-card .meta .price-wrapper .price-value { font-size: 0.62rem; }
   .compare-card .meta .price-wrapper .resale-btn {
-    font-size: 0.48rem;
-    padding: 2px 5px;
+    font-size: 0.5rem;
+    padding: 2px 4px;
   }
   .title-row {
     gap: 4px;
@@ -3185,23 +3205,24 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .card-actions {
     gap: 5px;
     flex-direction: row;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: center;
     width: 100%;
   }
   .remove-btn {
-    width: auto;
-    min-width: 72px;
-    min-height: 32px;
-    padding: 4px 6px;
-    font-size: 0.6rem;
+    width: calc(50% - 3px);
+    min-width: 0;
+    min-height: 28px;
+    padding: 4px 5px;
+    font-size: 0.62rem;
     border-radius: 7px;
   }
   .detail-btn {
-    min-width: 72px;
-    min-height: 32px;
-    padding: 4px 8px;
-    font-size: 0.72rem;
+    width: calc(50% - 3px);
+    min-width: 0;
+    min-height: 28px;
+    padding: 4px 6px;
+    font-size: 0.66rem;
     border-radius: 7px;
   }
 
