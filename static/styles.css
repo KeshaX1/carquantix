@@ -3080,7 +3080,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-    align-items: stretch;
+    align-items: start;
   }
   #compareArea.compare-area {
     width: 100%;
@@ -3100,6 +3100,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     min-height: 0;
     overflow: hidden;
     margin-inline: 0;
+    align-self: start;
   }
   #compareArea.compare-area {
     display: grid !important;
@@ -3113,7 +3114,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-card .thumb-frame {
     height: auto;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 3;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
@@ -3138,10 +3139,10 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     max-width: 100%;
     height: 100%;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     background: transparent;
-    padding: 4px;
+    padding: 0;
   }
   .compare-card .thumb-badge {
     top: 5px;
