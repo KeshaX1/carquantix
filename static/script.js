@@ -1376,6 +1376,7 @@ const TRANSLATIONS = {
     tableTitle: 'Comparison Table',
     tableHeaders: ['Model','Power (CV)','0-100 (s)','Top Speed (km/h)','Engine','Price','Consumption','Cost'],
     priceLabel: 'Price:',
+    originLabel: 'Origin:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Select at least one vehicle to compare',
     maxCompare: 'Maximum 5 vehicles for comparison. Premium: 8.',
@@ -1461,6 +1462,7 @@ const TRANSLATIONS = {
     tableTitle: 'Karşılaştırma Tablosu',
     tableHeaders: ['Model','Güç (BG)','0-100 (sn)','Azami Hız (km/sa)','Motor','Fiyat','Tüketim','Maliyet'],
     priceLabel: 'Fiyat:',
+    originLabel: 'Ulkesi:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Karşılaştırmak için en az bir araç seçin',
     maxCompare: 'En fazla 5 araç seçebilirsiniz. Premium: 8.',
@@ -1543,6 +1545,7 @@ const TRANSLATIONS = {
     tableTitle: 'Vergleichstabelle',
     tableHeaders: ['Modell','Leistung (PS)','0-100 (s)','Vmax (km/h)','Motor','Preis','Verbrauch','Kosten'],
     priceLabel: 'Preis:',
+    originLabel: 'Herkunft:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Wähle mindestens ein Fahrzeug zum Vergleichen',
     maxCompare: 'Maximal 5 Fahrzeuge. Premium: 8.',
@@ -1606,6 +1609,7 @@ const TRANSLATIONS = {
     tableTitle: 'Tableau comparatif',
     tableHeaders: ['Modèle','Puissance (ch)','0-100 (s)','Vitesse max (km/h)','Moteur','Prix','Consommation','Coût'],
     priceLabel: 'Prix :',
+    originLabel: 'Origine :',
     zeroToHundred: '0-100 :',
     selectPrompt: 'Sélectionnez au moins un véhicule pour comparer',
     maxCompare: 'Maximum 5 véhicules. Premium : 8.',
@@ -1669,6 +1673,7 @@ const TRANSLATIONS = {
     tableTitle: 'Tabla comparativa',
     tableHeaders: ['Modelo','Potencia (CV)','0-100 (s)','Vel. máxima (km/h)','Motor','Precio','Consumo','Costo'],
     priceLabel: 'Precio:',
+    originLabel: 'Origen:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Selecciona al menos un vehículo para comparar',
     maxCompare: 'Máximo 5 vehículos. Premium: 8.',
@@ -2543,6 +2548,145 @@ const MULTI_BRAND_PREFIXES = [
   'mercedes benz',
 ];
 
+const BRAND_ORIGIN_BY_LABEL = {
+  'acura': 'USA',
+  'alfa romeo': 'Italy',
+  'alpine': 'France',
+  'aprilia': 'Italy',
+  'aston martin': 'UK',
+  'audi': 'Germany',
+  'bentley': 'UK',
+  'big dog motorcycles': 'USA',
+  'bimota': 'Italy',
+  'bmw': 'Germany',
+  'brixton': 'Austria',
+  'brough superior': 'UK',
+  'buell': 'USA',
+  'bugatti': 'France',
+  'byd': 'China',
+  'cadillac': 'USA',
+  'cagiva': 'Italy',
+  'cfmoto': 'China',
+  'chevrolet': 'USA',
+  'chrysler': 'USA',
+  'citroen': 'France',
+  'corvette': 'USA',
+  'cupra': 'Spain',
+  'dacia': 'Romania',
+  'delorean': 'USA',
+  'de tomaso': 'Italy',
+  'detomaso': 'Italy',
+  'dfsk': 'China',
+  'dodge': 'USA',
+  'donkervoort': 'Netherlands',
+  'ds automobiles': 'France',
+  'ducati': 'Italy',
+  'energica': 'Italy',
+  'fantic': 'Italy',
+  'fb mondial': 'Italy',
+  'ferrari': 'Italy',
+  'ford': 'USA',
+  'gasgas': 'Spain',
+  'genesis': 'South Korea',
+  'gg motorradtechnik': 'Germany',
+  'gilera': 'Italy',
+  'harley davidson': 'USA',
+  'harley-davidson': 'USA',
+  'honda': 'Japan',
+  'hongqi': 'China',
+  'hummer': 'USA',
+  'husqvarna': 'Sweden',
+  'hyosung': 'South Korea',
+  'hyundai': 'South Korea',
+  'indian': 'USA',
+  'infiniti': 'Japan',
+  'italjet': 'Italy',
+  'jac': 'China',
+  'jaguar': 'UK',
+  'jeep': 'USA',
+  'kawasaki': 'Japan',
+  'keeway': 'China',
+  'kia': 'South Korea',
+  'koenigsegg': 'Sweden',
+  'ktm': 'Austria',
+  'lamborghini': 'Italy',
+  'land rover': 'UK',
+  'lexus': 'Japan',
+  'li': 'China',
+  'ligier': 'France',
+  'lincoln': 'USA',
+  'lotus': 'UK',
+  'lucid': 'USA',
+  'lynk co': 'China',
+  'malaguti': 'Italy',
+  'maserati': 'Italy',
+  'maxus': 'China',
+  'maybach': 'Germany',
+  'mazda': 'Japan',
+  'mclaren': 'UK',
+  'mercedes benz': 'Germany',
+  'mg': 'UK',
+  'mini': 'UK',
+  'mitsubishi': 'Japan',
+  'morgan': 'UK',
+  'moto guzzi': 'Italy',
+  'moto morini': 'Italy',
+  'motobi': 'Italy',
+  'mv agusta': 'Italy',
+  'nio': 'China',
+  'nissan': 'Japan',
+  'opel': 'Germany',
+  'pagani': 'Italy',
+  'peugeot': 'France',
+  'plymouth': 'USA',
+  'polestar': 'Sweden',
+  'pontiac': 'USA',
+  'porsche': 'Germany',
+  'qj motor': 'China',
+  'ram': 'USA',
+  'range rover': 'UK',
+  'renault': 'France',
+  'rivian': 'USA',
+  'rolls royce': 'UK',
+  'royal enfield': 'India',
+  'ruf': 'Germany',
+  'seat': 'Spain',
+  'seres': 'China',
+  'shelby': 'USA',
+  'sherco': 'France',
+  'skoda': 'Czechia',
+  'smart': 'Germany',
+  'spyker': 'Netherlands',
+  'ssangyong': 'South Korea',
+  'stark': 'Sweden',
+  'subaru': 'Japan',
+  'suzuki': 'Japan',
+  'tesla': 'USA',
+  'togg': 'Turkey',
+  'toyota': 'Japan',
+  'triumph': 'UK',
+  'victory': 'USA',
+  'vinfast': 'Vietnam',
+  'voge': 'China',
+  'volkswagen': 'Germany',
+  'volvo': 'Sweden',
+  'voyah': 'China',
+  'wiesmann': 'Germany',
+  'xiaomi': 'China',
+  'xpeng': 'China',
+  'yamaha': 'Japan',
+  'zeekr': 'China',
+  'zero': 'USA',
+  'zontes': 'China',
+};
+
+function normalizeBrandKey(label = '') {
+  return String(label)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
 function getBrandLabel(name = '') {
   const cleaned = name.replace(/^\d{4}\s+/, '').trim();
   if (!cleaned) return 'Other';
@@ -2551,6 +2695,11 @@ function getBrandLabel(name = '') {
   if (multi) return cleaned.slice(0, multi.length);
   const first = cleaned.split(/\s+/)[0];
   return first || 'Other';
+}
+
+function getVehicleOrigin(vehicle) {
+  const brand = getBrandLabel(vehicle?.name || '');
+  return BRAND_ORIGIN_BY_LABEL[normalizeBrandKey(brand)] || '';
 }
 
 function createBrandDivider(label) {
@@ -3497,6 +3646,7 @@ function renderSelected() {
     const startSrc = gallery[0] || thumb;
     const catalog = v.catalog || 'cars';
     const key = v._key || makeKey(catalog, v.id);
+    const origin = getVehicleOrigin(v);
     const detailLink = catalog === 'cars'
       ? `<a class="detail-btn" href="${buildCarDetailUrl(v)}" aria-label="${t('details')} ${v.name}">${t('details')}</a>`
       : '';
@@ -3529,6 +3679,7 @@ function renderSelected() {
       </div>
       <div class="meta">
         <h4>${v.name}</h4>
+        ${origin ? `<div class="origin-line">${t('originLabel')} ${origin}</div>` : ''}
         <div class="spec-line">${v.engine} - ${v.power} CV - ${v.topSpeed} km/h</div>
         <div class="price-wrapper">
           <span class="price-label">${t('priceLabel')}</span>

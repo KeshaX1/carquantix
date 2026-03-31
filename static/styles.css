@@ -437,6 +437,17 @@ body.dark .brand-divider::after{
   color:var(--card-accent);
   font-size:0.95rem;
 }
+.compare-card .meta .origin-line{
+  color:var(--card-accent);
+  font-size:0.8rem;
+  font-weight:800;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:3px 10px;
+  border-radius:999px;
+  border:1px solid color-mix(in srgb, var(--card-accent-strong) 65%, rgba(255,255,255,0.16));
+  background:color-mix(in srgb, var(--card-accent-soft) 55%, rgba(10,12,18,0.78));
+}
 .compare-card .meta .price-wrapper{
   position: relative;
   display:inline-flex;
@@ -539,6 +550,7 @@ body.dark .brand-divider::after{
 }
 body:not(.dark) .compare-card .meta h4,
 body:not(.dark) .compare-card .meta .spec-line,
+body:not(.dark) .compare-card .meta .origin-line,
 body:not(.dark) .compare-card .meta .stat-line,
 body:not(.dark) .compare-card .meta-line{
   color:#1b2430;
@@ -3133,6 +3145,10 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .compare-card .meta h4 {
     font-size: 0.68rem;
     line-height: 1.15;
+  }
+  .compare-card .meta .origin-line {
+    font-size: 0.48rem;
+    padding: 2px 6px;
   }
   .compare-card .meta .spec-line,
   .compare-card .meta .stat-line {
