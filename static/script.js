@@ -3618,6 +3618,7 @@ function attachAddButtons() {
 // render selected area
 function renderSelected() {
   compareArea.innerHTML = '';
+  compareArea.dataset.count = String(selected.length);
   if (selected.length === 0) {
     setMobileSidebarCollapsed(false);
     const emptyNoteText = t('emptyNote');

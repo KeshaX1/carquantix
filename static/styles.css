@@ -3107,10 +3107,17 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
   }
+  #compareArea.compare-area[data-count="1"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
   #compareArea.compare-area .compare-card {
     width: 100% !important;
     max-width: none !important;
     margin: 0 !important;
+  }
+  #compareArea.compare-area[data-count="1"] .compare-card {
+    max-width: min(100%, 440px) !important;
+    margin-inline: auto !important;
   }
   .compare-card .thumb-frame {
     height: auto;
@@ -3119,7 +3126,10 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     max-width: 100%;
     overflow: hidden;
     border-radius: 7px;
-    background: transparent;
+    background-color: #0b0f18;
+    background-image: var(--thumb-bg);
+    background-size: cover;
+    background-position: center;
   }
   .compare-card .thumb-frame::before {
     display: none;
@@ -3136,6 +3146,13 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-card img.thumb-img.fit-cover {
     object-fit: cover;
+  }
+  #compareArea.compare-area:not([data-count="1"]) .compare-card .thumb-frame {
+    aspect-ratio: 4 / 3;
+  }
+  #compareArea.compare-area:not([data-count="1"]) .compare-card img.thumb-img,
+  #compareArea.compare-area:not([data-count="1"]) .compare-card img.thumb-img.fit-cover {
+    object-fit: contain;
   }
   .compare-card .thumb-badge {
     top: 5px;
