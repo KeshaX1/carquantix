@@ -2115,12 +2115,15 @@ function updateMobileVehicleToggle() {
   if (!mobileVehicleToggleBtn) return;
   const shouldShow = isMobileSplitLayout() && selected.length > 0;
   const isCollapsed = document.body.classList.contains('mobile-sidebar-collapsed');
+  const panelLabel = getVehiclePanelLabel();
   mobileVehicleToggleBtn.hidden = !shouldShow;
   mobileVehicleToggleBtn.classList.toggle('is-collapsed', isCollapsed);
   mobileVehicleToggleBtn.setAttribute('aria-expanded', String(!isCollapsed));
+  mobileVehicleToggleBtn.setAttribute('aria-label', panelLabel);
+  mobileVehicleToggleBtn.title = panelLabel;
   mobileVehicleToggleBtn.innerHTML = `
     <span class="panel-toggle-icon">${isCollapsed ? '&#9776;' : '&times;'}</span>
-    <span>${getVehiclePanelLabel()}</span>
+    <span>${panelLabel}</span>
   `;
 }
 

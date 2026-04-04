@@ -2826,18 +2826,38 @@ body.dark #togglePassword {
 html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
 
 @media (max-width: 760px) {
+  .topbar {
+    display: none;
+  }
+
   .mobile-panel-toggle {
     display: inline-flex;
-    padding: 7px 9px;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 14px;
     font-size: 11px;
+    order: -1;
+  }
+  .mobile-panel-toggle span:not(.panel-toggle-icon) {
+    display: none;
+  }
+  .mobile-panel-toggle .panel-toggle-icon {
+    font-size: 18px;
+  }
+  .mobile-panel-toggle[hidden] {
+    display: none !important;
   }
 
   .app {
     display: grid;
     grid-template-columns: clamp(204px, 58vw, 258px) minmax(0, 1fr);
     align-items: stretch;
-    height: calc(100dvh - var(--mobile-topbar-height, 88px));
-    min-height: calc(100dvh - var(--mobile-topbar-height, 88px));
+    height: 100dvh;
+    min-height: 100dvh;
     overflow: hidden;
   }
 
@@ -2889,66 +2909,6 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     display: none !important;
   }
 
-  /* Mobile topbar layout: brand + icons row, links row */
-  .topbar {
-    position: sticky;
-    top: 0;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    grid-template-areas:
-      "brand auth"
-      "links links";
-    align-items: center;
-    gap: 6px 8px;
-    padding: 8px 10px;
-  }
-
-  .brand-block { grid-area: brand; }
-  .auth-area { grid-area: auth; justify-content: flex-end; gap: 10px; }
-  .top-links {
-    grid-area: links;
-    width: 100%;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .brand-name { font-size: 22px; }
-  .brand-copy { font-size: 11px; }
-
-  .top-link {
-    font-size: 11px;
-    padding: 0;
-    background: transparent;
-  }
-
-  .auth-area {
-    width: auto;
-    flex-wrap: nowrap;
-  }
-
-  .top-switch { font-size: 11px; }
-  .top-switch span { display: none; }
-
-  .switch { width: 36px; height: 20px; }
-  .slider:before { width: 14px; height: 14px; left: 3px; bottom: 3px; }
-
-  #loginBtn,
-  .auth-btn {
-    padding: 7px 10px;
-    font-size: 11px;
-  }
-
-  .top-icon-btn,
-  .avatar-btn {
-    width: 36px;
-    height: 36px;
-  }
-
   /* Split mobile layout with compact comparison rail */
   .main {
     order: 2;
@@ -2961,36 +2921,48 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .main-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: flex-start;
+    gap: 14px;
+  }
+  .main-header-left {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  .lang-wrapper {
     gap: 10px;
   }
   .main-title {
     margin: 0;
-    font-size: 0;
-    line-height: 1;
+    min-width: 0;
+    font-size: clamp(2.2rem, 8vw, 3rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
   }
   .main-title::before {
-    content: "Comparison";
-    display: block;
-    font-size: 1rem;
-    line-height: 1.2;
-    font-weight: 800;
+    display: none;
   }
   .main-header .actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
     margin-top: 0 !important;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 5px;
+    justify-content: stretch;
+    gap: 12px;
     flex-shrink: 1;
   }
   .main-header .actions .btn {
     width: 100%;
     min-width: 0;
-    padding: 7px 8px;
-    font-size: 10px;
+    min-height: 60px;
+    padding: 12px 14px;
+    font-size: 1.05rem;
+    border-radius: 18px;
   }
 
   /* Language menu stays on screen */
@@ -3079,7 +3051,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   #compareArea.compare-area {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    gap: 12px;
     align-items: start;
   }
   #compareArea.compare-area {
@@ -3091,9 +3063,9 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-card,
   #compareArea.compare-area .compare-card {
-    padding: 7px;
-    border-radius: 10px;
-    gap: 6px;
+    padding: 10px;
+    border-radius: 18px;
+    gap: 10px;
     width: 100%;
     max-width: none;
     min-width: 0;
@@ -3105,7 +3077,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   #compareArea.compare-area {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 8px !important;
+    gap: 12px !important;
   }
   #compareArea.compare-area[data-count="1"] {
     grid-template-columns: minmax(0, 1fr) !important;
@@ -3121,11 +3093,11 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-card .thumb-frame {
     height: auto;
-    aspect-ratio: 6 / 5;
+    aspect-ratio: 1 / 1;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
-    border-radius: 7px;
+    border-radius: 14px;
     background-color: #0b0f18;
     background-image: var(--thumb-bg);
     background-size: cover;
@@ -3148,17 +3120,17 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     object-fit: cover;
   }
   #compareArea.compare-area:not([data-count="1"]) .compare-card .thumb-frame {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
   }
   #compareArea.compare-area:not([data-count="1"]) .compare-card img.thumb-img,
   #compareArea.compare-area:not([data-count="1"]) .compare-card img.thumb-img.fit-cover {
-    object-fit: contain;
+    object-fit: cover;
   }
   .compare-card .thumb-badge {
-    top: 5px;
-    left: 5px;
-    padding: 2px 5px;
-    font-size: 0.55rem;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
   }
   .compare-card .card-overlay {
     padding: 7px 7px 5px;
@@ -3171,35 +3143,37 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     font-size: 0.54rem;
   }
   .compare-card .meta {
-    gap: 4px;
+    gap: 8px;
   }
   .compare-card .meta h4 {
-    font-size: 0.8rem;
-    line-height: 1.18;
+    font-size: 1rem;
+    line-height: 1.14;
+    text-align: center;
   }
   .compare-card .meta .origin-line {
-    font-size: 0.52rem;
+    font-size: 0.6rem;
     padding: 2px 5px;
   }
   .compare-card .meta .spec-line,
   .compare-card .meta .stat-line {
-    font-size: 0.66rem;
-    line-height: 1.25;
+    font-size: 0.8rem;
+    line-height: 1.32;
+    text-align: center;
   }
   .compare-card .meta .price-wrapper {
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 3px;
-    padding: 5px 6px;
-    font-size: 0.62rem;
-    border-radius: 18px;
+    gap: 6px;
+    padding: 9px 10px;
+    font-size: 0.82rem;
+    border-radius: 24px;
   }
   .compare-card .meta .price-wrapper::before { height: 14px; bottom: -4px; }
-  .compare-card .meta .price-wrapper .price-value { font-size: 0.62rem; }
+  .compare-card .meta .price-wrapper .price-value { font-size: 0.9rem; }
   .compare-card .meta .price-wrapper .resale-btn {
-    font-size: 0.5rem;
-    padding: 2px 4px;
+    font-size: 0.72rem;
+    padding: 4px 8px;
   }
   .title-row {
     gap: 4px;
@@ -3214,27 +3188,27 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .meta-line { font-size: 0.54rem; }
   .card-actions {
-    gap: 5px;
+    gap: 8px;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
   }
   .remove-btn {
-    width: calc(50% - 3px);
+    width: calc(50% - 4px);
     min-width: 0;
-    min-height: 28px;
-    padding: 4px 5px;
-    font-size: 0.62rem;
-    border-radius: 7px;
+    min-height: 42px;
+    padding: 8px 10px;
+    font-size: 0.86rem;
+    border-radius: 12px;
   }
   .detail-btn {
-    width: calc(50% - 3px);
+    width: calc(50% - 4px);
     min-width: 0;
-    min-height: 28px;
-    padding: 4px 6px;
-    font-size: 0.66rem;
-    border-radius: 7px;
+    min-height: 42px;
+    padding: 8px 10px;
+    font-size: 0.92rem;
+    border-radius: 12px;
   }
 
   /* Login modal more compact + password visibility fix */
