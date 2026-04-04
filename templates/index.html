@@ -54,7 +54,7 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260404-mobile-compare-layout12') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260404-seo-comparisons-toggle13') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -340,20 +340,36 @@
       <a href="/mercedes-amg-gt-top-speed">Mercedes AMG GT Top Speed</a>
     </div>
 
-    <h3 data-i18n="seoHeading7">Popular Comparisons</h3>
-    <div class="seo-links seo-links--comparisons" aria-label="Popular comparisons">
-      {% if featured_compare_links %}
-        {% for entry in featured_compare_links %}
-      <a href="{{ entry.href }}">{{ entry.title }}</a>
-        {% endfor %}
-      {% else %}
-      <a href="/audi-rs6-vs-bmw-m5-cs">Audi RS6 vs BMW M5 CS</a>
-      <a href="/bugatti-chiron-vs-koenigsegg-agera-rs">Bugatti Chiron vs Koenigsegg Agera RS</a>
-      <a href="/lamborghini-veneno-vs-ferrari-enzo-ferrari">Lamborghini Veneno vs Ferrari Enzo Ferrari</a>
-      <a href="/mercedes-benz-sls-vs-aston-martin-lagonda">Mercedes-Benz SLS vs Aston Martin Lagonda</a>
-      <a href="/pagani-huayra-vs-mclaren-720s">Pagani Huayra vs McLaren 720S</a>
-      {% endif %}
-    </div>
+    <section id="popularComparisonsSection" class="seo-section seo-section--collapsible">
+      <div class="seo-section-header">
+        <h3 data-i18n="seoHeading7">Popular Comparisons</h3>
+        <button
+          type="button"
+          id="popularComparisonsToggle"
+          class="comments-toggle seo-section-toggle"
+          aria-expanded="true"
+          data-open-label="Show comparisons"
+          data-close-label="Hide comparisons"
+        >
+          Hide comparisons
+        </button>
+      </div>
+      <div id="popularComparisonsContent" class="seo-section-content">
+        <div class="seo-links seo-links--comparisons" aria-label="Popular comparisons">
+          {% if featured_compare_links %}
+            {% for entry in featured_compare_links %}
+          <a href="{{ entry.href }}">{{ entry.title }}</a>
+            {% endfor %}
+          {% else %}
+          <a href="/audi-rs6-vs-bmw-m5-cs">Audi RS6 vs BMW M5 CS</a>
+          <a href="/bugatti-chiron-vs-koenigsegg-agera-rs">Bugatti Chiron vs Koenigsegg Agera RS</a>
+          <a href="/lamborghini-veneno-vs-ferrari-enzo-ferrari">Lamborghini Veneno vs Ferrari Enzo Ferrari</a>
+          <a href="/mercedes-benz-sls-vs-aston-martin-lagonda">Mercedes-Benz SLS vs Aston Martin Lagonda</a>
+          <a href="/pagani-huayra-vs-mclaren-720s">Pagani Huayra vs McLaren 720S</a>
+          {% endif %}
+        </div>
+      </div>
+    </section>
 
     {% if featured_car_links %}
     <h3>Featured Car Detail Pages</h3>
@@ -435,6 +451,6 @@
   {% if paddle_client_token %}
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   {% endif %}
-  <script src="{{ url_for('static', filename='script.js', v='20260404-mobile-compare-layout12') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260404-seo-comparisons-toggle13') }}"></script>
 </body>
 </html>

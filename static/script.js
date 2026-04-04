@@ -1442,6 +1442,8 @@ const TRANSLATIONS = {
     seoHeading5: 'Popular Fuel Cost Pages',
     seoHeading6: 'Popular Performance & Top Speed',
     seoHeading7: 'Popular Comparisons',
+    showComparisons: 'Show comparisons',
+    hideComparisons: 'Hide comparisons',
   },
   tr: {
     vehiclesTitle: 'Araçlar',
@@ -1528,6 +1530,8 @@ const TRANSLATIONS = {
     seoHeading5: 'Popüler Yakıt Maliyet Sayfaları',
     seoHeading6: 'Popüler Performans & Azami Hız',
     seoHeading7: 'Popüler Karşılaştırmalar',
+    showComparisons: 'Karsilastirmalari goster',
+    hideComparisons: 'Karsilastirmalari gizle',
   },
   de: {
     vehiclesTitle: 'Fahrzeuge',
@@ -1592,6 +1596,8 @@ const TRANSLATIONS = {
     seoHeading5: 'Beliebte Kraftstoffkosten-Seiten',
     seoHeading6: 'Beliebte Performance & Top Speed',
     seoHeading7: 'Beliebte Vergleiche',
+    showComparisons: 'Vergleiche anzeigen',
+    hideComparisons: 'Vergleiche ausblenden',
   },
   fr: {
     vehiclesTitle: 'Véhicules',
@@ -1656,6 +1662,8 @@ const TRANSLATIONS = {
     seoHeading5: 'Pages populaires de cout carburant',
     seoHeading6: 'Performances & Vitesse max populaires',
     seoHeading7: 'Comparaisons populaires',
+    showComparisons: 'Afficher les comparaisons',
+    hideComparisons: 'Masquer les comparaisons',
   },
   es: {
     vehiclesTitle: 'Vehículos',
@@ -1720,6 +1728,8 @@ const TRANSLATIONS = {
     seoHeading5: 'Paginas populares de costo de combustible',
     seoHeading6: 'Rendimiento y velocidad maxima populares',
     seoHeading7: 'Comparaciones populares',
+    showComparisons: 'Mostrar comparaciones',
+    hideComparisons: 'Ocultar comparaciones',
   },
 };
 
@@ -4554,6 +4564,15 @@ function applyTranslations() {
     const isExpanded = commentsToggle.getAttribute('aria-expanded') !== 'false';
     commentsToggle.textContent = isExpanded ? pack.hideComments : pack.showComments;
   }
+  const popularComparisonsToggle = document.getElementById('popularComparisonsToggle');
+  if (popularComparisonsToggle) {
+    const openLabel = pack.showComparisons || pack.showComments || 'Show comparisons';
+    const closeLabel = pack.hideComparisons || pack.hideComments || 'Hide comparisons';
+    popularComparisonsToggle.dataset.openLabel = openLabel;
+    popularComparisonsToggle.dataset.closeLabel = closeLabel;
+    const isExpanded = popularComparisonsToggle.getAttribute('aria-expanded') !== 'false';
+    popularComparisonsToggle.textContent = isExpanded ? closeLabel : openLabel;
+  }
   const usernameInput = document.getElementById('username');
   if (usernameInput) usernameInput.placeholder = pack.commentName;
   const commentInput = document.getElementById('commentInput');
@@ -4718,6 +4737,43 @@ window.addEventListener('resize', () => {
   syncMobileViewportLayout();
   updateMobileVehicleToggle();
 });
+
+
+(function(){
+  const section = document.getElementById("popularComparisonsSection");
+  const content = document.getElementById("popularComparisonsContent");
+  const toggleBtn = document.getElementById("popularComparisonsToggle");
+  if (!section || !content || !toggleBtn) return;
+
+  const storageKey = "carquantix-popular-comparisons-collapsed";
+
+  function setCollapsed(isCollapsed) {
+    section.classList.toggle("is-collapsed", isCollapsed);
+    content.hidden = isCollapsed;
+    toggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
+    const openLabel = toggleBtn.dataset.openLabel || t("showComparisons");
+    const closeLabel = toggleBtn.dataset.closeLabel || t("hideComparisons");
+    toggleBtn.textContent = isCollapsed ? openLabel : closeLabel;
+  }
+
+  let isCollapsed = false;
+  try {
+    isCollapsed = window.localStorage.getItem(storageKey) === "1";
+  } catch (error) {
+    isCollapsed = false;
+  }
+  setCollapsed(isCollapsed);
+
+  toggleBtn.addEventListener("click", () => {
+    isCollapsed = !isCollapsed;
+    setCollapsed(isCollapsed);
+    try {
+      window.localStorage.setItem(storageKey, isCollapsed ? "1" : "0");
+    } catch (error) {
+      // Ignore storage failures and keep the in-memory toggle state.
+    }
+  });
+})();
 
 
 
