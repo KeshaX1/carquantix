@@ -3111,15 +3111,12 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   /* Narrow compare rail */
   .compare-area,
   #compareArea.compare-area {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     align-items: start;
     align-content: start;
-    justify-content: start;
-    justify-items: stretch;
-    grid-auto-rows: max-content;
-    grid-auto-flow: row;
+    justify-content: space-between;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
@@ -3131,43 +3128,45 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
   .compare-area > .empty-block,
   #compareArea.compare-area > .empty-block {
-    grid-column: 1 / -1;
+    flex: 0 0 100%;
+    width: 100%;
   }
   .compare-card,
   #compareArea.compare-area .compare-card {
     padding: 8px;
     border-radius: 16px;
     gap: 8px;
-    width: 100%;
-    max-width: none;
+    flex: 0 0 calc(50% - 4px);
+    width: calc(50% - 4px);
+    max-width: calc(50% - 4px);
     min-width: 0;
     min-height: 0;
     overflow: hidden;
     margin-inline: 0;
     margin-bottom: 0 !important;
     align-self: start;
-    justify-self: stretch;
   }
   #compareArea.compare-area {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
     gap: 8px !important;
-    place-content: start !important;
+    justify-content: space-between !important;
     align-content: start !important;
-    grid-auto-rows: max-content !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
   }
   #compareArea.compare-area[data-count="1"] {
-    grid-template-columns: minmax(0, 1fr) !important;
+    justify-content: center !important;
   }
   #compareArea.compare-area .compare-card {
-    width: 100% !important;
-    max-width: none !important;
+    width: calc(50% - 4px) !important;
+    max-width: calc(50% - 4px) !important;
     margin: 0 !important;
   }
   #compareArea.compare-area[data-count="1"] .compare-card {
+    flex-basis: min(100%, 440px) !important;
+    width: min(100%, 440px) !important;
     max-width: min(100%, 440px) !important;
     margin-inline: auto !important;
   }
