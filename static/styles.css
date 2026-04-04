@@ -3116,6 +3116,15 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     gap: 8px;
     align-items: start;
     align-content: start;
+    justify-content: start;
+    justify-items: stretch;
+    grid-auto-rows: max-content;
+    grid-auto-flow: row;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin-bottom: 0;
+    padding-bottom: 0;
   }
   #compareArea.compare-area {
     width: 100%;
@@ -3135,12 +3144,20 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     min-height: 0;
     overflow: hidden;
     margin-inline: 0;
+    margin-bottom: 0 !important;
     align-self: start;
+    justify-self: stretch;
   }
   #compareArea.compare-area {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
+    place-content: start !important;
+    align-content: start !important;
+    grid-auto-rows: max-content !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
   }
   #compareArea.compare-area[data-count="1"] {
     grid-template-columns: minmax(0, 1fr) !important;
