@@ -4756,11 +4756,16 @@ window.addEventListener('resize', () => {
     toggleBtn.textContent = isCollapsed ? openLabel : closeLabel;
   }
 
-  let isCollapsed = false;
+  let isCollapsed = true;
   try {
-    isCollapsed = window.localStorage.getItem(storageKey) === "1";
+    const savedState = window.localStorage.getItem(storageKey);
+    if (savedState === "0") {
+      isCollapsed = false;
+    } else if (savedState === "1") {
+      isCollapsed = true;
+    }
   } catch (error) {
-    isCollapsed = false;
+    isCollapsed = true;
   }
   setCollapsed(isCollapsed);
 
