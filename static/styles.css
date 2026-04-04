@@ -2970,6 +2970,20 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     -webkit-overflow-scrolling: touch;
     padding: 8px 6px 16px;
   }
+  .compare-area,
+  #compareArea.compare-area,
+  .compare-decision,
+  #compareDecisionArea.compare-decision,
+  .fuel-calculator,
+  .table-area,
+  .race-links {
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    width: 100%;
+    min-height: 0;
+    overflow: visible;
+    position: relative;
+  }
   .main-header {
     flex-direction: column;
     align-items: stretch;
