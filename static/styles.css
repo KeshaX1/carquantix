@@ -2834,19 +2834,17 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    min-width: 44px;
+    width: auto;
+    min-width: 0;
     height: 44px;
-    padding: 0;
+    padding: 0 14px;
     border-radius: 14px;
-    font-size: 11px;
+    font-size: 0.95rem;
     order: -1;
-  }
-  .mobile-panel-toggle span:not(.panel-toggle-icon) {
-    display: none;
   }
   .mobile-panel-toggle .panel-toggle-icon {
     font-size: 18px;
+    margin-right: 8px;
   }
   .mobile-panel-toggle[hidden] {
     display: none !important;
@@ -2929,11 +2927,11 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     display: grid;
     grid-template-columns: auto auto minmax(0, 1fr);
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
   }
   .lang-wrapper {
-    gap: 10px;
+    gap: 8px;
   }
   .main-title {
     margin: 0;
