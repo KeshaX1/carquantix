@@ -2460,23 +2460,23 @@ document.addEventListener('error', (event) => {
   if (!currentSrc || !currentSrc.includes('-webp/')) return;
 
   const attempt = Number(img.dataset.webpFallbackAttempt || '0');
-  const baseSrc = currentSrc.replace(/\.webp$/i, '');
-  const jpgFallback = `${baseSrc}.jpg`
+  const baseSrc = currentSrc.replace(/\.(webp|jpe?g|png)$/i, '');
+  const originalBase = baseSrc
     .replace('/static/images-webp/', '/static/images/')
     .replace('/static/rearimg-webp/', '/static/rearimg/')
     .replace('/static/mimages-webp/', '/static/mimages/')
     .replace('/static/mrearimg-webp/', '/static/mrearimg/');
-  const pngFallback = jpgFallback.replace(/\.jpg$/i, '.png');
+  const fallbacks = [
+    `${baseSrc}.jpg`,
+    `${baseSrc}.png`,
+    `${originalBase}.jpg`,
+    `${originalBase}.png`,
+  ];
+  const nextSrc = fallbacks[attempt];
+  if (!nextSrc) return;
 
-  if (attempt === 0) {
-    img.dataset.webpFallbackAttempt = '1';
-    img.src = jpgFallback;
-    return;
-  }
-  if (attempt === 1) {
-    img.dataset.webpFallbackAttempt = '2';
-    img.src = pngFallback;
-  }
+  img.dataset.webpFallbackAttempt = String(attempt + 1);
+  img.src = nextSrc;
 }, true);
 
 // decide fit mode based on aspect ratio
