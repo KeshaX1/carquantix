@@ -1356,6 +1356,8 @@ const LANGUAGES = [
   { code: 'es', label: 'Español' },
 ];
 
+LANGUAGES.push({ code: 'ru', label: 'Русский' });
+
 const TRANSLATIONS = {
   en: {
     vehiclesTitle: 'Vehicles',
@@ -1832,6 +1834,110 @@ Object.assign(TRANSLATIONS.es, {
   raceLinksIntro: 'Abre resultados de YouTube para carreras cara a cara de los vehiculos seleccionados.',
   raceLinksSearch: 'Buscar en YouTube',
 });
+
+TRANSLATIONS.ru = {
+  ...TRANSLATIONS.en,
+  vehiclesTitle: 'Транспорт',
+  motorcyclesTitle: 'Мотоциклы',
+  catalogCars: 'Автомобили',
+  catalogMotorcycles: 'Мотоциклы',
+  searchPlaceholder: 'Поиск (модель или марка)...',
+  brandLabel: 'Марка',
+  brandAll: 'Все марки',
+  filters: { topSpeed: 'Макс. скорость', nameAZ: 'А-Я', acc: '0-100 (с)', price: 'Цена' },
+  comparison: 'Сравнение',
+  clear: 'Очистить выбор',
+  compare: 'Сравнить',
+  empty: 'Транспорт не выбран. Добавьте его из списка.',
+  add: 'Добавить',
+  remove: 'Удалить',
+  details: 'Подробнее',
+  tableTitle: 'Таблица сравнения',
+  tableHeaders: ['Модель', 'Мощность (л.с.)', '0-100 (с)', 'Макс. скорость (км/ч)', 'Двигатель', 'Цена', 'Расход', 'Стоимость'],
+  priceLabel: 'Цена:',
+  originLabel: 'Страна:',
+  zeroToHundred: '0-100:',
+  selectPrompt: 'Выберите хотя бы один транспорт для сравнения',
+  maxCompare: 'Максимум 5 транспортных средств. Premium: 8.',
+  maxComparePremium: 'Максимум 8 транспортных средств',
+  commentsTitle: 'Комментарии',
+  showComments: 'Показать комментарии',
+  hideComments: 'Скрыть комментарии',
+  commentName: 'Ваше имя',
+  commentPlaceholder: 'Напишите комментарий...',
+  ratingLabel: 'Оценка:',
+  submit: 'Отправить',
+  login: 'Войти',
+  darkMode: 'Темный режим',
+  loginToComment: 'Войдите, чтобы оставить комментарий.',
+  costTitle: 'Стоимость владения',
+  consumptionLabel: 'Расход',
+  distanceLabel: 'Расстояние (км)',
+  pricePerLiter: 'Цена за л',
+  pricePerKwh: 'Цена за кВт⋅ч',
+  unitLabel: 'Единица',
+  unitFuel: 'Топливо (л/100 км)',
+  unitElectric: 'Электро (кВт⋅ч/100 км)',
+  costEstimate: 'Примерная стоимость',
+  premiumBadge: 'Премиум',
+  premiumCostLocked: 'Стоимость владения доступна только в Premium.',
+  premiumUnlock: 'Обновить и разблокировать',
+  premiumCheckoutLoading: 'Переадресация...',
+  premiumCheckoutResume: 'Перейти к оплате',
+  premiumCheckoutError: 'Не удалось запустить оплату. Попробуйте еще раз.',
+  resaleButton: 'Перепродажа',
+  resaleTitle: 'Стоимость перепродажи (5-10-15 лет)',
+  resaleDepreciation: 'Уценка',
+  resaleAppreciation: 'Рост стоимости',
+  resaleCollector: 'Коллекционный',
+  resaleLocked: 'Оценка перепродажи доступна только в Premium.',
+  resaleCategoryEconomy: 'Эконом',
+  resaleCategoryPremium: 'Премиум',
+  resaleCategoryLuxury: 'Люкс',
+  resaleCategorySupercar: 'Суперкар',
+  resaleYear5: '5 лет',
+  resaleYear10: '10 лет',
+  resaleYear15: '15 лет',
+  consumptionMissing: 'Данные о расходе недоступны',
+  favoritesEmpty: 'Пока нет избранного.',
+  addFavorite: 'Добавить в избранное',
+  removeFavorite: 'Убрать из избранного',
+  navContact: 'Контакты',
+  navAbout: 'О нас',
+  navPrivacy: 'Политика конфиденциальности',
+  footerFollow: 'Подписывайтесь',
+  navPricing: 'Цены',
+  navTerms: 'Условия',
+  navRefund: 'Политика возврата',
+  navGuides: 'Гайды',
+  navBlog: 'Блог',
+  navNews: 'Новости',
+  notificationsTitle: 'Уведомления',
+  notificationsEmpty: 'Пока новых транспортных средств нет.',
+  notificationsNewArrival: 'Новая модель',
+  notificationsCatalogCars: 'Автомобиль',
+  notificationsCatalogMotorcycles: 'Мотоцикл',
+  notificationsToday: 'Сегодня',
+  notificationsYesterday: '1 день назад',
+  notificationsDaysAgo: '{days} дней назад',
+  emptyNote: 'Цены отражают ориентировочную рыночную стоимость и могут различаться по регионам.',
+  seoHeading1: 'Платформа сравнения характеристик и стоимости автомобилей',
+  seoP1: 'CarQuantix позволяет сравнивать мощность, разгон, максимальную скорость и расход топлива у разных модельных годов. Быстро находите лучший баланс цены и характеристик.',
+  seoHeading2: 'Калькулятор затрат на топливо',
+  seoP2: 'С CarQuantix вы можете легко рассчитать расход, стоимость за километр и ежемесячные расходы на топливо. Сравнивайте бензиновые, дизельные и электрические автомобили по реальным ценам.',
+  seoHeading3: 'Расчет стоимости за километр',
+  seoP3: 'Введите расход топлива на 100 км и текущую цену топлива, чтобы сразу увидеть стоимость за километр, месяц и год.',
+  seoHeading4: 'Стоимость зарядки электромобиля',
+  seoP4: 'Рассчитывайте стоимость зарядки электромобилей по значениям кВт⋅ч/100 км и получайте подробный анализ по актуальным ценам на электроэнергию.',
+  seoHeading5: 'Популярные страницы по затратам на топливо',
+  seoHeading6: 'Популярные характеристики и максимальная скорость',
+  seoHeading7: 'Популярные сравнения',
+  showComparisons: 'Показать сравнения',
+  hideComparisons: 'Скрыть сравнения',
+  raceLinksTitle: 'Ссылки на заезды YouTube',
+  raceLinksIntro: 'Откройте результаты поиска YouTube с заездами выбранных транспортных средств.',
+  raceLinksSearch: 'Искать на YouTube',
+};
 
 const getLang = (code) => LANGUAGES.find(l => l.code === code);
 let currentLang = localStorage.getItem('appLang');
@@ -2895,6 +3001,8 @@ function getLocaleForLang(code) {
       return 'fr-FR';
     case 'es':
       return 'es-ES';
+    case 'ru':
+      return 'ru-RU';
     case 'en':
     default:
       return 'en-US';
@@ -4601,6 +4709,7 @@ function setLanguage(code) {
   const langObj = getLang(code) || LANGUAGES[0];
   currentLang = langObj.code;
   localStorage.setItem('appLang', currentLang);
+  if (document.documentElement) document.documentElement.lang = currentLang;
   if (langToggleBtn) {
     const labelEl = langToggleBtn.querySelector('.lang-label');
     if (labelEl) labelEl.textContent = langObj.label;
