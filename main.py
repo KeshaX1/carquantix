@@ -77,14 +77,38 @@ if FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET:
         client_kwargs={'scope': 'email'}
     )
 
+def can_write_storage_path(path_obj):
+    parent = path_obj.parent
+    probe = parent / f".cq_write_test_{os.getpid()}"
+    try:
+        parent.mkdir(parents=True, exist_ok=True)
+        probe.write_text("", encoding="utf-8")
+        probe.unlink(missing_ok=True)
+        return True
+    except OSError as exc:
+        print(f"[fs] storage path unavailable for {path_obj}: {exc}")
+        return False
+
+
 def resolve_data_path(env_var_name, filename):
+    fallback = Path(__file__).with_name(filename)
     explicit = (os.environ.get(env_var_name, "") or "").strip()
     if explicit:
         return Path(explicit).expanduser()
     data_dir = (os.environ.get("APP_DATA_DIR", "") or "").strip()
-    if data_dir:
-        return Path(data_dir).expanduser() / filename
-    return Path(__file__).with_name(filename)
+    if not data_dir:
+        return fallback
+
+    candidate = Path(data_dir).expanduser() / filename
+    if candidate.exists():
+        return candidate
+    if fallback.exists():
+        print(f"[fs] using local fallback for {filename}: {fallback}")
+        return fallback
+    if can_write_storage_path(candidate):
+        return candidate
+    print(f"[fs] falling back to local storage for {filename}: {fallback}")
+    return fallback
 
 
 def ensure_parent_dir(path_obj):
