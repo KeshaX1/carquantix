@@ -3421,15 +3421,14 @@ function bindPaddleEvents() {
     const txnId = extractTransactionIdFromEvent(data) || getPendingPaddleTxn();
     if (txnId) {
       setPendingPaddleTxn(String(txnId));
-      const confirmed = await confirmPaddleTransaction(String(txnId));
+      const confirmed = await refreshPendingBillingState();
       if (confirmed) {
-        setPendingPaddleTxn('');
-        window.location.reload();
         return;
       }
       startPendingConfirmPolling();
       return;
     }
+    clearBillingQueryState();
     window.location.reload();
   });
   paddleEventsBound = true;
@@ -3469,8 +3468,29 @@ const PENDING_PADDLE_TXN_KEY = 'pendingPaddleTxn';
 let pendingPaddleTxn = '';
 let pendingConfirmTimer = null;
 let pendingConfirmAttempts = 0;
+let pendingBillingRefreshInFlight = false;
 const PENDING_CONFIRM_INTERVAL_MS = 5000;
 const PENDING_CONFIRM_MAX_ATTEMPTS = 24;
+
+function buildBillingSuccessUrl() {
+  const url = new URL(window.location.href);
+  url.searchParams.set('billing', 'success');
+  return url.toString();
+}
+
+function clearBillingQueryState() {
+  const url = new URL(window.location.href);
+  let changed = false;
+  ['_ptxn', 'transaction_id', 'billing'].forEach((key) => {
+    if (url.searchParams.has(key)) {
+      url.searchParams.delete(key);
+      changed = true;
+    }
+  });
+  if (!changed) return;
+  const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+  window.history.replaceState({}, document.title, nextUrl);
+}
 
 async function confirmPaddleTransaction(transactionId) {
   if (!transactionId) return false;
@@ -3500,6 +3520,23 @@ function stopPendingConfirmPolling() {
   pendingConfirmAttempts = 0;
 }
 
+async function refreshPendingBillingState() {
+  const txn = getPendingPaddleTxn();
+  if (!txn || pendingBillingRefreshInFlight) return false;
+  pendingBillingRefreshInFlight = true;
+  try {
+    const confirmed = await confirmPaddleTransaction(txn);
+    if (!confirmed) return false;
+    setPendingPaddleTxn('');
+    stopPendingConfirmPolling();
+    clearBillingQueryState();
+    window.location.reload();
+    return true;
+  } finally {
+    pendingBillingRefreshInFlight = false;
+  }
+}
+
 function startPendingConfirmPolling() {
   if (pendingConfirmTimer) return;
   pendingConfirmAttempts = 0;
@@ -3509,11 +3546,8 @@ function startPendingConfirmPolling() {
       stopPendingConfirmPolling();
       return;
     }
-    const confirmed = await confirmPaddleTransaction(txn);
+    const confirmed = await refreshPendingBillingState();
     if (confirmed) {
-      setPendingPaddleTxn('');
-      stopPendingConfirmPolling();
-      window.location.reload();
       return;
     }
     pendingConfirmAttempts += 1;
@@ -3542,18 +3576,19 @@ function getPendingPaddleTxn() {
 }
 
 async function handlePendingPaddleCheckout() {
-  const urlTxn = new URLSearchParams(window.location.search).get('_ptxn');
+  const url = new URL(window.location.href);
+  const urlTxn = url.searchParams.get('_ptxn') || url.searchParams.get('transaction_id');
+  const billingStatus = url.searchParams.get('billing');
   if (urlTxn) {
     setPendingPaddleTxn(urlTxn);
-    const cleanUrl = window.location.pathname + window.location.hash;
-    window.history.replaceState({}, document.title, cleanUrl);
+  }
+  if (urlTxn || billingStatus) {
+    clearBillingQueryState();
   }
   const pending = getPendingPaddleTxn();
   if (!pending) return;
-  const confirmed = await confirmPaddleTransaction(pending);
+  const confirmed = await refreshPendingBillingState();
   if (confirmed) {
-    setPendingPaddleTxn('');
-    window.location.reload();
     return;
   }
   startPendingConfirmPolling();
@@ -3564,6 +3599,21 @@ async function handlePendingPaddleCheckout() {
 }
 
 handlePendingPaddleCheckout();
+window.addEventListener('focus', () => {
+  if (getPendingPaddleTxn()) {
+    void refreshPendingBillingState();
+  }
+});
+window.addEventListener('pageshow', () => {
+  if (getPendingPaddleTxn()) {
+    void refreshPendingBillingState();
+  }
+});
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && getPendingPaddleTxn()) {
+    void refreshPendingBillingState();
+  }
+});
 
 async function startFuelPremiumCheckout() {
   if (!isFuelPremiumLocked()) return;
@@ -3580,10 +3630,8 @@ async function startFuelPremiumCheckout() {
   try {
     const pending = getPendingPaddleTxn();
     if (pending) {
-      const confirmed = await confirmPaddleTransaction(pending);
+      const confirmed = await refreshPendingBillingState();
       if (confirmed) {
-        setPendingPaddleTxn('');
-        window.location.reload();
         return;
       }
       startPendingConfirmPolling();
@@ -3595,7 +3643,10 @@ async function startFuelPremiumCheckout() {
     const res = await fetch('/api/billing/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ feature: 'cost_of_ownership' }),
+      body: JSON.stringify({
+        feature: 'cost_of_ownership',
+        success_url: buildBillingSuccessUrl(),
+      }),
     });
     let data = {};
     try {
