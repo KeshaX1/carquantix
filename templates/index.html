@@ -454,8 +454,9 @@
       </div>
     </div>
   </footer>
-  <script
+  <script>
     window.currentUser = {{ user | tojson | safe }};
+  </script>
   {% if paddle_client_token %}
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   {% endif %}
