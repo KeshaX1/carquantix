@@ -1325,6 +1325,8 @@ const topFavoritesLink = document.getElementById('topFavoritesLink');
 const favoritesAreaEl = document.getElementById('favoritesArea');
 const favoritesListEl = document.getElementById('favoritesList');
 const clearFavoritesBtn = document.getElementById('clearFavoritesBtn');
+const categoryMenuTrigger = document.getElementById('categoryMenuTrigger');
+const categoryMenu = document.getElementById('categoryMenu');
 const notificationsBtn = document.getElementById('notificationsBtn');
 const notificationsBadge = document.getElementById('notificationsBadge');
 const notificationsMenu = document.getElementById('notificationsMenu');
@@ -1736,6 +1738,7 @@ const TRANSLATIONS = {
 };
 
 Object.assign(TRANSLATIONS.en, {
+  navCategories: 'Categories',
   navGuides: 'Guides',
   navBlog: 'Blog',
   navNews: 'News',
@@ -1750,6 +1753,7 @@ Object.assign(TRANSLATIONS.en, {
 });
 
 Object.assign(TRANSLATIONS.tr, {
+  navCategories: 'Kategoriler',
   navGuides: 'Rehberler',
   navBlog: 'Blog',
   navNews: 'Haberler',
@@ -1764,6 +1768,7 @@ Object.assign(TRANSLATIONS.tr, {
 });
 
 Object.assign(TRANSLATIONS.de, {
+  navCategories: 'Kategorien',
   navGuides: 'Guides',
   navBlog: 'Blog',
   navNews: 'News',
@@ -1778,6 +1783,7 @@ Object.assign(TRANSLATIONS.de, {
 });
 
 Object.assign(TRANSLATIONS.fr, {
+  navCategories: 'Categories',
   navGuides: 'Guides',
   navBlog: 'Blog',
   navNews: 'Actualites',
@@ -1792,6 +1798,7 @@ Object.assign(TRANSLATIONS.fr, {
 });
 
 Object.assign(TRANSLATIONS.es, {
+  navCategories: 'Categorias',
   navGuides: 'Guias',
   navBlog: 'Blog',
   navNews: 'Noticias',
@@ -1909,6 +1916,7 @@ TRANSLATIONS.ru = {
   navPricing: 'Цены',
   navTerms: 'Условия',
   navRefund: 'Политика возврата',
+  navCategories: 'Категории',
   navGuides: 'Гайды',
   navBlog: 'Блог',
   navNews: 'Новости',
@@ -2194,6 +2202,33 @@ function initFavoritesUI() {
       updateListFavoriteButtons();
     });
   }
+}
+
+function initCategoryMenu() {
+  if (!categoryMenuTrigger || !categoryMenu) return;
+
+  const closeCategoryMenu = () => {
+    categoryMenu.classList.remove('open');
+    categoryMenuTrigger.setAttribute('aria-expanded', 'false');
+    categoryMenu.setAttribute('aria-hidden', 'true');
+  };
+
+  categoryMenuTrigger.addEventListener('click', () => {
+    const willOpen = !categoryMenu.classList.contains('open');
+    categoryMenu.classList.toggle('open', willOpen);
+    categoryMenuTrigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    categoryMenu.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!categoryMenu.contains(event.target) && !categoryMenuTrigger.contains(event.target)) {
+      closeCategoryMenu();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeCategoryMenu();
+  });
 }
 
 let favorites = favoritesEnabled ? loadFavorites() : [];
@@ -4503,6 +4538,7 @@ catalogButtons.forEach(btn => {
 
 setCatalog(activeCatalog);
 initFavoritesUI();
+initCategoryMenu();
 renderFavorites();
 initNotificationsUI();
 initFuelCalculator();
