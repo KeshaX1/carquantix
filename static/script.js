@@ -737,7 +737,7 @@ const VEHICLES = [
 
   { id: '650S Spider', name: '2014 McLaren 650S Spider', power:650, acc:3, topSpeed:329, engine: '3.8 V8', price: '$162.500', img: '/static/images/mclaren650SSpider.png', rearImg: '/static/rearimg/mclaren650SSpider-rear.jpg' , consumption: { value:13.0, unit: 'L/100km' }},
 
-  { id: '675LT',       name: '2017 McLaren 675LT', power:675, acc:2.9, topSpeed:326, engine: '3.8 V8', price: '$309.980', img: '/static/images/mclaren675LT.webp', rearImg: '/static/rearimg/mclaren675LT-rear.png' , consumption: { value:13.0, unit: 'L/100km' }},
+  { id: '675LT',       name: '2017 McLaren 675LT', power:675, acc:2.9, topSpeed:326, engine: '3.8 V8', price: '$309.980', img: '/static/images/mclaren675LT.jpg', rearImg: '/static/rearimg/mclaren675LT-rear.png' , consumption: { value:13.0, unit: 'L/100km' }},
 
   { id: '720S',        name: '2018 McLaren 720S', power:806, acc:2.9, topSpeed:341, engine: '4.0 V8', price: '$219.995', img: '/static/images/mclaren720S.jpg', rearImg: '/static/rearimg/mclaren720S-rear.jpg' , consumption: { value:13.0, unit: 'L/100km' }},
 
