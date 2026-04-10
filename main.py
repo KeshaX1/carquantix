@@ -2223,7 +2223,7 @@ def index():
         paddle_client_token=PADDLE_CLIENT_TOKEN,
         paddle_env=PADDLE_ENV,
         canonical_url=canonical_url,
-        meta_title="CarQuantix - Best Cars by HP, Acceleration, Top Speed and Cost",
+        meta_title="CarQuantix - Smart Car Comparison",
         meta_description="Compare car and motorcycle horsepower, acceleration and top speed. Find the best performance value with CarQuantix.",
         robots_directive="index,follow",
     )
