@@ -194,7 +194,6 @@
       'contact.p1': 'You can reach the CarQuantix team for support, partnerships, or product questions.',
       'contact.emailLabel': 'Email',
       'contact.websiteLabel': 'Website',
-      'contact.socialTitle': 'Social',
       'contact.p2': 'We usually respond within 1-2 business days.',
     },
     tr: {
@@ -203,7 +202,6 @@
       'contact.p1': 'Destek, is birlikleri veya urun sorulari icin CarQuantix ekibine ulasabilirsiniz.',
       'contact.emailLabel': 'E-posta',
       'contact.websiteLabel': 'Web sitesi',
-      'contact.socialTitle': 'Sosyal',
       'contact.p2': 'Genellikle 1-2 is gunu icinde yanit veririz.',
     },
     de: {
@@ -212,7 +210,6 @@
       'contact.p1': 'Du erreichst das CarQuantix Team fur Support, Partnerschaften oder Produktfragen.',
       'contact.emailLabel': 'E-Mail',
       'contact.websiteLabel': 'Webseite',
-      'contact.socialTitle': 'Social',
       'contact.p2': 'Wir antworten meist innerhalb von 1-2 Werktagen.',
     },
     fr: {
@@ -221,7 +218,6 @@
       'contact.p1': 'Vous pouvez contacter l equipe CarQuantix pour support, partenariats ou questions produit.',
       'contact.emailLabel': 'Email',
       'contact.websiteLabel': 'Site web',
-      'contact.socialTitle': 'Social',
       'contact.p2': 'Nous repondons generalement sous 1-2 jours ouvrables.',
     },
     es: {
@@ -230,7 +226,6 @@
       'contact.p1': 'Puedes contactar al equipo de CarQuantix para soporte, alianzas o preguntas del producto.',
       'contact.emailLabel': 'Email',
       'contact.websiteLabel': 'Sitio web',
-      'contact.socialTitle': 'Social',
       'contact.p2': 'Normalmente respondemos en 1-2 dias habiles.',
     },
   };
