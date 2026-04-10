@@ -318,6 +318,16 @@ FEATURED_COMPARE_REFERENCES = [
     ("Urus", "Purosangue"),
     ("Urus", "Bentayga"),
     ("Urus", "Levante"),
+    ("Taycan", "Model S"),
+    ("Air", "Taycan"),
+    ("IONIQ 5", "EV6"),
+    ("GR86", "BRZ"),
+    ("M2", "RS3"),
+    ("Revuelto", "SF90 Spider"),
+    ("Urus", "RS Q8"),
+    ("Escalade", "GLS"),
+    ("Model X", "EX90"),
+    ("Artura", "911 Turbo"),
 ]
 FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", str(len(FEATURED_COMPARE_REFERENCES))))
 COMPARE_RACE_VIDEO_OVERRIDES = {}
