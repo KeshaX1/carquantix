@@ -4,18 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ meta_title or "CarQuantix - Smart Car Comparison" }}</title>
-  <meta name="description" content="{{ meta_description or 'Compare car horsepower, acceleration and top speed with CarQuantix.' }}">
+  <meta name="description" content="{{ meta_description or 'Compare cars and motorcycles by horsepower, acceleration and top speed. Make smarter decisions with CarQuantix.' }}">
   <meta name="robots" content="{{ robots_directive or 'index,follow' }}">
   <meta name="verify-admitad" content="eb1685d0ae" />
   <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/' }}">
   <meta property="og:type" content="website">
   <meta property="og:title" content="{{ meta_title or 'CarQuantix' }}">
-  <meta property="og:description" content="{{ meta_description or 'Compare cars and motorcycles with CarQuantix.' }}">
+  <meta property="og:description" content="{{ meta_description or 'Compare cars and motorcycles by horsepower, acceleration and top speed. Make smarter decisions with CarQuantix.' }}">
   <meta property="og:url" content="{{ canonical_url or 'https://carquantix.com/' }}">
   <meta property="og:site_name" content="CarQuantix">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ meta_title or 'CarQuantix' }}">
-  <meta name="twitter:description" content="{{ meta_description or 'Compare cars and motorcycles with CarQuantix.' }}">
+  <meta name="twitter:description" content="{{ meta_description or 'Compare cars and motorcycles by horsepower, acceleration and top speed. Make smarter decisions with CarQuantix.' }}">
   <meta name="paddle-client-token" content="{{ paddle_client_token or '' }}">
   <meta name="paddle-env" content="{{ paddle_env or 'sandbox' }}">
   <link rel="icon" href="/favicon.ico">
@@ -38,7 +38,7 @@
     "@type": "WebSite",
     "name": "CarQuantix",
     "url": {{ (canonical_url or "https://carquantix.com/")|tojson }},
-    "description": {{ (meta_description or "Compare cars by horsepower, acceleration, top speed and fuel cost.")|tojson }},
+    "description": {{ (meta_description or "Compare cars and motorcycles by horsepower, acceleration and top speed. Make smarter decisions with CarQuantix.")|tojson }},
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://carquantix.com/?q={search_term_string}",

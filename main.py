@@ -2224,7 +2224,7 @@ def index():
         paddle_env=PADDLE_ENV,
         canonical_url=canonical_url,
         meta_title="CarQuantix - Smart Car Comparison",
-        meta_description="Compare car and motorcycle horsepower, acceleration and top speed. Find the best performance value with CarQuantix.",
+        meta_description="Compare cars and motorcycles by horsepower, acceleration and top speed. Make smarter decisions with CarQuantix.",
         robots_directive="index,follow",
     )
 
