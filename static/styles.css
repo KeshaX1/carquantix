@@ -1118,6 +1118,32 @@ body.dark .site-footer,
   border-color: #b7caef;
 }
 
+.seo-section-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.seo-section-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid #d9dce3;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f2430;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.seo-section-more:hover {
+  background: #eef4ff;
+  border-color: #b7caef;
+}
+
 .seo-section.is-collapsed .seo-section-toggle::after {
   transform: rotate(-90deg);
 }
@@ -1130,6 +1156,18 @@ body.dark .seo-section-toggle {
 }
 
 body.dark .seo-section-toggle:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(185,216,255,0.35);
+}
+
+body.dark .seo-section-more {
+  background: rgba(255,255,255,0.04);
+  color: #eaf0ff;
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+}
+
+body.dark .seo-section-more:hover {
   background: rgba(255,255,255,0.08);
   border-color: rgba(185,216,255,0.35);
 }

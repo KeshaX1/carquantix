@@ -363,7 +363,12 @@
         </button>
       </div>
       <div id="popularComparisonsContent" class="seo-section-content" hidden>
-        <div class="seo-links seo-links--comparisons" aria-label="Popular comparisons">
+        <div
+          id="popularComparisonsGrid"
+          class="seo-links seo-links--comparisons"
+          aria-label="Popular comparisons"
+          data-preview-count="8"
+        >
           {% if featured_compare_links %}
             {% for entry in featured_compare_links %}
           <a href="{{ entry.href }}">{{ entry.title }}</a>
@@ -375,6 +380,17 @@
           <a href="/mercedes-benz-sls-vs-aston-martin-lagonda">Mercedes-Benz SLS vs Aston Martin Lagonda</a>
           <a href="/pagani-huayra-vs-mclaren-720s">Pagani Huayra vs McLaren 720S</a>
           {% endif %}
+        </div>
+        <div class="seo-section-actions">
+          <button
+            type="button"
+            id="popularComparisonsViewAll"
+            class="seo-section-more"
+            data-i18n="viewAllComparisons"
+            hidden
+          >
+            View all
+          </button>
         </div>
       </div>
     </section>

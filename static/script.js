@@ -1742,6 +1742,7 @@ Object.assign(TRANSLATIONS.en, {
   navGuides: 'Guides',
   navBlog: 'Blog',
   navNews: 'News',
+  viewAllComparisons: 'View all',
   notificationsTitle: 'Notifications',
   notificationsEmpty: 'No new vehicles yet.',
   notificationsNewArrival: 'New vehicle',
@@ -1757,6 +1758,7 @@ Object.assign(TRANSLATIONS.tr, {
   navGuides: 'Rehberler',
   navBlog: 'Blog',
   navNews: 'Haberler',
+  viewAllComparisons: 'Tumunu goster',
   notificationsTitle: 'Bildirimler',
   notificationsEmpty: 'Henüz yeni araç yok.',
   notificationsNewArrival: 'Yeni araç',
@@ -1772,6 +1774,7 @@ Object.assign(TRANSLATIONS.de, {
   navGuides: 'Guides',
   navBlog: 'Blog',
   navNews: 'News',
+  viewAllComparisons: 'Alle anzeigen',
   notificationsTitle: 'Benachrichtigungen',
   notificationsEmpty: 'Noch keine neuen Fahrzeuge.',
   notificationsNewArrival: 'Neues Fahrzeug',
@@ -1787,6 +1790,7 @@ Object.assign(TRANSLATIONS.fr, {
   navGuides: 'Guides',
   navBlog: 'Blog',
   navNews: 'Actualites',
+  viewAllComparisons: 'Voir tout',
   notificationsTitle: 'Notifications',
   notificationsEmpty: 'Aucun nouveau vehicule pour le moment.',
   notificationsNewArrival: 'Nouveau vehicule',
@@ -1802,6 +1806,7 @@ Object.assign(TRANSLATIONS.es, {
   navGuides: 'Guias',
   navBlog: 'Blog',
   navNews: 'Noticias',
+  viewAllComparisons: 'Ver todo',
   notificationsTitle: 'Notificaciones',
   notificationsEmpty: 'Aun no hay vehiculos nuevos.',
   notificationsNewArrival: 'Vehiculo nuevo',
@@ -4939,9 +4944,24 @@ window.addEventListener('resize', () => {
   const section = document.getElementById("popularComparisonsSection");
   const content = document.getElementById("popularComparisonsContent");
   const toggleBtn = document.getElementById("popularComparisonsToggle");
-  if (!section || !content || !toggleBtn) return;
+  const comparisonsGrid = document.getElementById("popularComparisonsGrid");
+  const viewAllBtn = document.getElementById("popularComparisonsViewAll");
+  if (!section || !content || !toggleBtn || !comparisonsGrid) return;
 
   const storageKey = "carquantix-popular-comparisons-collapsed";
+  const previewCount = Math.max(1, Number.parseInt(comparisonsGrid.dataset.previewCount || "8", 10) || 8);
+  const comparisonLinks = Array.from(comparisonsGrid.querySelectorAll("a"));
+  let showingAllComparisons = false;
+
+  function syncComparisonPreview() {
+    const shouldLimit = comparisonLinks.length > previewCount && !showingAllComparisons;
+    comparisonLinks.forEach((link, index) => {
+      link.hidden = shouldLimit && index >= previewCount;
+    });
+    if (viewAllBtn) {
+      viewAllBtn.hidden = !shouldLimit;
+    }
+  }
 
   function setCollapsed(isCollapsed) {
     section.classList.toggle("is-collapsed", isCollapsed);
@@ -4963,10 +4983,22 @@ window.addEventListener('resize', () => {
   } catch (error) {
     isCollapsed = true;
   }
+  syncComparisonPreview();
   setCollapsed(isCollapsed);
+
+  if (viewAllBtn) {
+    viewAllBtn.addEventListener("click", () => {
+      showingAllComparisons = true;
+      syncComparisonPreview();
+    });
+  }
 
   toggleBtn.addEventListener("click", () => {
     isCollapsed = !isCollapsed;
+    if (isCollapsed) {
+      showingAllComparisons = false;
+      syncComparisonPreview();
+    }
     setCollapsed(isCollapsed);
     try {
       window.localStorage.setItem(storageKey, isCollapsed ? "1" : "0");
