@@ -1743,6 +1743,7 @@ Object.assign(TRANSLATIONS.en, {
   navBlog: 'Blog',
   navNews: 'News',
   viewAllComparisons: 'View all',
+  hideAllComparisons: 'Hide',
   notificationsTitle: 'Notifications',
   notificationsEmpty: 'No new vehicles yet.',
   notificationsNewArrival: 'New vehicle',
@@ -1759,6 +1760,7 @@ Object.assign(TRANSLATIONS.tr, {
   navBlog: 'Blog',
   navNews: 'Haberler',
   viewAllComparisons: 'Tumunu goster',
+  hideAllComparisons: 'Gizle',
   notificationsTitle: 'Bildirimler',
   notificationsEmpty: 'Henüz yeni araç yok.',
   notificationsNewArrival: 'Yeni araç',
@@ -1775,6 +1777,7 @@ Object.assign(TRANSLATIONS.de, {
   navBlog: 'Blog',
   navNews: 'News',
   viewAllComparisons: 'Alle anzeigen',
+  hideAllComparisons: 'Ausblenden',
   notificationsTitle: 'Benachrichtigungen',
   notificationsEmpty: 'Noch keine neuen Fahrzeuge.',
   notificationsNewArrival: 'Neues Fahrzeug',
@@ -1791,6 +1794,7 @@ Object.assign(TRANSLATIONS.fr, {
   navBlog: 'Blog',
   navNews: 'Actualites',
   viewAllComparisons: 'Voir tout',
+  hideAllComparisons: 'Masquer',
   notificationsTitle: 'Notifications',
   notificationsEmpty: 'Aucun nouveau vehicule pour le moment.',
   notificationsNewArrival: 'Nouveau vehicule',
@@ -1807,6 +1811,7 @@ Object.assign(TRANSLATIONS.es, {
   navBlog: 'Blog',
   navNews: 'Noticias',
   viewAllComparisons: 'Ver todo',
+  hideAllComparisons: 'Ocultar',
   notificationsTitle: 'Notificaciones',
   notificationsEmpty: 'Aun no hay vehiculos nuevos.',
   notificationsNewArrival: 'Vehiculo nuevo',
@@ -4794,6 +4799,15 @@ function applyTranslations() {
     const key = el.dataset.i18n;
     if (pack[key]) el.textContent = pack[key];
   });
+  const popularComparisonsViewAll = document.getElementById('popularComparisonsViewAll');
+  if (popularComparisonsViewAll) {
+    const openLabel = pack.viewAllComparisons || 'View all';
+    const closeLabel = pack.hideAllComparisons || pack.hideComparisons || 'Hide';
+    popularComparisonsViewAll.dataset.openLabel = openLabel;
+    popularComparisonsViewAll.dataset.closeLabel = closeLabel;
+    const isExpanded = popularComparisonsViewAll.getAttribute('aria-expanded') === 'true';
+    popularComparisonsViewAll.textContent = isExpanded ? closeLabel : openLabel;
+  }
   renderNotifications();
 }
 
@@ -4963,12 +4977,17 @@ window.addEventListener('resize', () => {
 
   function syncComparisonPreview() {
     const previewCount = getComparisonPreviewCount();
-    const shouldLimit = comparisonLinks.length > previewCount && !showingAllComparisons;
+    const hasOverflow = comparisonLinks.length > previewCount;
+    const shouldLimit = hasOverflow && !showingAllComparisons;
     comparisonLinks.forEach((link, index) => {
       link.hidden = shouldLimit && index >= previewCount;
     });
     if (viewAllBtn) {
-      viewAllBtn.hidden = !shouldLimit;
+      viewAllBtn.hidden = !hasOverflow;
+      viewAllBtn.setAttribute("aria-expanded", String(showingAllComparisons));
+      const openLabel = viewAllBtn.dataset.openLabel || t("viewAllComparisons") || "View all";
+      const closeLabel = viewAllBtn.dataset.closeLabel || t("hideAllComparisons") || t("hideComparisons") || "Hide";
+      viewAllBtn.textContent = showingAllComparisons ? closeLabel : openLabel;
     }
   }
 
@@ -4976,7 +4995,7 @@ window.addEventListener('resize', () => {
 
   if (viewAllBtn) {
     viewAllBtn.addEventListener("click", () => {
-      showingAllComparisons = true;
+      showingAllComparisons = !showingAllComparisons;
       syncComparisonPreview();
     });
   }
