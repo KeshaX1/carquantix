@@ -157,7 +157,19 @@ FEATURED_CAR_SLUGS = [
     "2020-ford-mustang",
 ]
 FEATURED_CAR_LIMIT = int(os.environ.get("FEATURED_CAR_LIMIT", "10"))
-FEATURED_COMPARE_REFERENCES = [
+CURATED_COMPARE_REFERENCES = [
+    ("M5", "M8"),
+    ("M5", "AMG GT"),
+    ("RS7", "911 Turbo"),
+    ("Panamera", "AMG GT"),
+    ("Panamera", "911 Turbo"),
+    ("M8", "911 Turbo"),
+    ("X5", "GLS"),
+    ("Q8", "GLS"),
+    ("C8", "Huracan"),
+    ("GT-R", "720S"),
+]
+FEATURED_COMPARE_REFERENCES = CURATED_COMPARE_REFERENCES + [
     ("M3", "RS5"),
     ("M3", "C 63 AMG 2"),
     ("M3", "CT4"),
