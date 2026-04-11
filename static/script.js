@@ -4941,14 +4941,10 @@ window.addEventListener('resize', () => {
 
 
 (function(){
-  const section = document.getElementById("popularComparisonsSection");
-  const content = document.getElementById("popularComparisonsContent");
-  const toggleBtn = document.getElementById("popularComparisonsToggle");
   const comparisonsGrid = document.getElementById("popularComparisonsGrid");
   const viewAllBtn = document.getElementById("popularComparisonsViewAll");
-  if (!section || !content || !toggleBtn || !comparisonsGrid) return;
+  if (!comparisonsGrid) return;
 
-  const storageKey = "carquantix-popular-comparisons-collapsed";
   const previewCount = Math.max(1, Number.parseInt(comparisonsGrid.dataset.previewCount || "8", 10) || 8);
   const comparisonLinks = Array.from(comparisonsGrid.querySelectorAll("a"));
   let showingAllComparisons = false;
@@ -4963,28 +4959,7 @@ window.addEventListener('resize', () => {
     }
   }
 
-  function setCollapsed(isCollapsed) {
-    section.classList.toggle("is-collapsed", isCollapsed);
-    content.hidden = isCollapsed;
-    toggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
-    const openLabel = toggleBtn.dataset.openLabel || t("showComparisons");
-    const closeLabel = toggleBtn.dataset.closeLabel || t("hideComparisons");
-    toggleBtn.textContent = isCollapsed ? openLabel : closeLabel;
-  }
-
-  let isCollapsed = true;
-  try {
-    const savedState = window.localStorage.getItem(storageKey);
-    if (savedState === "0") {
-      isCollapsed = false;
-    } else if (savedState === "1") {
-      isCollapsed = true;
-    }
-  } catch (error) {
-    isCollapsed = true;
-  }
   syncComparisonPreview();
-  setCollapsed(isCollapsed);
 
   if (viewAllBtn) {
     viewAllBtn.addEventListener("click", () => {
@@ -4992,20 +4967,6 @@ window.addEventListener('resize', () => {
       syncComparisonPreview();
     });
   }
-
-  toggleBtn.addEventListener("click", () => {
-    isCollapsed = !isCollapsed;
-    if (isCollapsed) {
-      showingAllComparisons = false;
-      syncComparisonPreview();
-    }
-    setCollapsed(isCollapsed);
-    try {
-      window.localStorage.setItem(storageKey, isCollapsed ? "1" : "0");
-    } catch (error) {
-      // Ignore storage failures and keep the in-memory toggle state.
-    }
-  });
 })();
 
 
