@@ -4945,11 +4945,24 @@ window.addEventListener('resize', () => {
   const viewAllBtn = document.getElementById("popularComparisonsViewAll");
   if (!comparisonsGrid) return;
 
-  const previewCount = Math.max(1, Number.parseInt(comparisonsGrid.dataset.previewCount || "8", 10) || 8);
+  const previewRows = Math.max(1, Number.parseInt(comparisonsGrid.dataset.previewRows || "2", 10) || 2);
   const comparisonLinks = Array.from(comparisonsGrid.querySelectorAll("a"));
   let showingAllComparisons = false;
 
+  function getComparisonPreviewCount() {
+    const gridColumns = window.getComputedStyle(comparisonsGrid).gridTemplateColumns || "";
+    const columnCount = Math.max(
+      1,
+      gridColumns
+        .split(" ")
+        .map((value) => value.trim())
+        .filter(Boolean).length
+    );
+    return previewRows * columnCount;
+  }
+
   function syncComparisonPreview() {
+    const previewCount = getComparisonPreviewCount();
     const shouldLimit = comparisonLinks.length > previewCount && !showingAllComparisons;
     comparisonLinks.forEach((link, index) => {
       link.hidden = shouldLimit && index >= previewCount;
@@ -4967,6 +4980,8 @@ window.addEventListener('resize', () => {
       syncComparisonPreview();
     });
   }
+
+  window.addEventListener("resize", syncComparisonPreview);
 })();
 
 

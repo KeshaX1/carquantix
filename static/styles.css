@@ -1213,6 +1213,10 @@ body.dark .seo-section-more:hover {
   white-space: normal;
 }
 
+.seo-links--comparisons a[hidden] {
+  display: none !important;
+}
+
 .seo-links--dense a {
   padding: 6px 10px;
   font-size: 0.82rem;
