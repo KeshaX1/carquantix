@@ -158,6 +158,11 @@ FEATURED_CAR_SLUGS = [
 ]
 FEATURED_CAR_LIMIT = int(os.environ.get("FEATURED_CAR_LIMIT", "10"))
 CURATED_COMPARE_REFERENCES = [
+    ("M5", "RS6"),
+    ("M8", "AMG GT"),
+    ("RS7", "GT-R"),
+    ("Panamera", "M8"),
+    ("C8", "911 Turbo"),
     ("M5", "M8"),
     ("M5", "AMG GT"),
     ("RS7", "911 Turbo"),
