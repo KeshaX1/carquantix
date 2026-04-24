@@ -345,6 +345,16 @@ FEATURED_COMPARE_REFERENCES = CURATED_COMPARE_REFERENCES + [
     ("Escalade", "GLS"),
     ("Model X", "EX90"),
     ("Artura", "911 Turbo"),
+    ("Model Y", "Mustang Mach-E"),
+    ("Model Y", "EV6"),
+    ("Model Y", "IONIQ 5"),
+    ("Aventador", "Chiron"),
+    ("Aventador", "Agera"),
+    ("Chiron", "Veneno"),
+    ("Huayra", "Aventador"),
+    ("DB", "Roma"),
+    ("F-Type", "Mustang"),
+    ("Charger", "Demon"),
 ]
 FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", str(len(FEATURED_COMPARE_REFERENCES))))
 COMPARE_RACE_VIDEO_OVERRIDES = {}
