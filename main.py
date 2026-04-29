@@ -365,6 +365,16 @@ FEATURED_COMPARE_REFERENCES = CURATED_COMPARE_REFERENCES + [
     ("DB", "Roma"),
     ("F-Type", "Mustang"),
     ("Charger", "Demon"),
+    ("AMG ONE", "Revuelto"),
+    ("Temerario", "296"),
+    ("12 Cilindri", "Vanquish"),
+    ("GT2 Stradale", "911 Turbo"),
+    ("Cybertruck", "R1S"),
+    ("SU7", "Taycan"),
+    ("Eletre", "RS Q8"),
+    ("EV3", "EX30"),
+    ("EV4", "ID.7"),
+    ("Corvette", "911 Turbo"),
 ]
 FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", str(len(FEATURED_COMPARE_REFERENCES))))
 COMPARE_RACE_VIDEO_OVERRIDES = {}
