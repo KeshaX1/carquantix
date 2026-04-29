@@ -5026,8 +5026,9 @@ window.addEventListener('resize', () => {
 
   const currentUser = (window.currentUser && window.currentUser.email) ? window.currentUser : null;
   const currentUserId = currentUser ? (currentUser.email || currentUser.name || "anon") : null;
-  const commentsApiUrl = "/api/comments";
-  const commentsCollapseStorageKey = "carquantix-comments-collapsed";
+  const commentsPage = section.dataset.commentsPage || "home";
+  const commentsApiUrl = `/api/comments?page=${encodeURIComponent(commentsPage)}`;
+  const commentsCollapseStorageKey = `carquantix-comments-collapsed:${commentsPage}`;
   let comments = [];
   let loginNote = document.getElementById("loginToCommentNote");
 
@@ -5151,28 +5152,25 @@ window.addEventListener('resize', () => {
     submitBtn.disabled = isSubmitting;
   }
 
-  if (!currentUser) {
-    form.style.display = "none";
-    if (!loginNote) {
-      form.insertAdjacentHTML(
-        "beforebegin",
-        `<p id="loginToCommentNote" data-i18n="loginToComment">${t('loginToComment')}</p>`
-      );
-      loginNote = document.getElementById("loginToCommentNote");
-    }
-  } else {
-    if (usernameInput) {
-      usernameInput.value = currentUser.name || currentUser.email || "User";
-      usernameInput.readOnly = true;
-    }
-    form.style.display = "flex";
-    if (loginNote) loginNote.remove();
+  if (currentUser && usernameInput) {
+    usernameInput.value = currentUser.name || currentUser.email || "User";
+    usernameInput.readOnly = true;
+  } else if (usernameInput) {
+    usernameInput.readOnly = false;
   }
+  form.style.display = "flex";
+  if (loginNote) loginNote.remove();
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const username = usernameInput.value.trim();
     const text = commentInput.value.trim();
     const rating = parseInt(ratingInput.value);
+
+    if (!currentUser && (username.length < 2 || username.length > 60)) {
+      alert("Name must be between 2 and 60 characters.");
+      return;
+    }
 
     if (text.length < 10 || text.length > 500) {
       alert("Comment must be between 10 and 500 characters.");
@@ -5184,7 +5182,7 @@ window.addEventListener('resize', () => {
       const response = await fetch(commentsApiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, rating })
+        body: JSON.stringify({ username, text, rating, page: commentsPage })
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) {

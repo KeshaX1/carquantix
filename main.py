@@ -1491,6 +1491,7 @@ def _normalize_comment(comment):
     username = str(payload.get("username") or "User").strip() or "User"
     text = str(payload.get("text") or "").strip()
     date = str(payload.get("date") or datetime.utcnow().strftime("%d/%m/%Y")).strip()
+    page = str(payload.get("page") or "home").strip() or "home"
     try:
         rating = int(payload.get("rating") or 5)
     except (TypeError, ValueError):
@@ -1520,6 +1521,7 @@ def _normalize_comment(comment):
         "username": username,
         "userId": user_id,
         "text": text,
+        "page": page,
         "rating": rating,
         "date": date,
         "likes": likes,
@@ -1582,6 +1584,14 @@ def get_comment_identity():
         return None
     username = (user.get("name") or email).strip() or email
     return {"user_id": email, "username": username}
+
+
+def get_comment_page(value=None):
+    page = str(value or request.args.get("page") or "home").strip()
+    if not page:
+        return "home"
+    page = re.sub(r"[^a-zA-Z0-9:_./-]+", "-", page)[:120].strip("-")
+    return page or "home"
 
 
 def db_enabled():
@@ -2679,6 +2689,7 @@ def compare_detail(compare_slug):
         compare_intro=compare_intro,
         compare_decision=compare_decision,
         race_video=race_video,
+        comments_page=f"compare:{resolved['canonical_slug']}",
         canonical_url=canonical_url,
         meta_title=meta_title,
         meta_description=meta_description,
@@ -2996,19 +3007,22 @@ def forgot_password_verify():
 
 @app.route("/api/comments", methods=["GET"])
 def get_comments():
-    return jsonify({"ok": True, "comments": load_comments()})
+    page = get_comment_page()
+    comments = [comment for comment in load_comments() if comment.get("page", "home") == page]
+    return jsonify({"ok": True, "comments": comments})
 
 
 @app.route("/api/comments", methods=["POST"])
 def create_comment():
     identity = get_comment_identity()
-    if not identity:
-        return jsonify({"ok": False, "message": "Login required."}), 401
 
     data = request.get_json(silent=True) or {}
     text = str(data.get("text") or "").strip()
     if len(text) < 10 or len(text) > 500:
         return jsonify({"ok": False, "message": "Comment must be between 10 and 500 characters."}), 400
+    guest_username = str(data.get("username") or "").strip()
+    if not identity and (len(guest_username) < 2 or len(guest_username) > 60):
+        return jsonify({"ok": False, "message": "Name must be between 2 and 60 characters."}), 400
 
     try:
         rating = int(data.get("rating") or 5)
@@ -3019,9 +3033,10 @@ def create_comment():
     comment = _normalize_comment(
         {
             "id": _generate_comment_id("c"),
-            "username": identity["username"],
-            "userId": identity["user_id"],
+            "username": identity["username"] if identity else guest_username,
+            "userId": identity["user_id"] if identity else None,
             "text": text,
+            "page": get_comment_page(data.get("page")),
             "rating": rating,
             "date": datetime.utcnow().strftime("%d/%m/%Y"),
             "likes": [],
@@ -3033,7 +3048,8 @@ def create_comment():
     comments = load_comments()
     comments.insert(0, comment)
     save_comments(comments)
-    return jsonify({"ok": True, "comment": comment, "comments": comments}), 201
+    page_comments = [item for item in comments if item.get("page", "home") == comment["page"]]
+    return jsonify({"ok": True, "comment": comment, "comments": page_comments}), 201
 
 
 @app.route("/api/comments/<comment_id>/like", methods=["POST"])
@@ -3057,7 +3073,9 @@ def toggle_comment_like(comment_id):
         return jsonify({"ok": False, "message": "Comment not found."}), 404
 
     save_comments(comments)
-    return jsonify({"ok": True, "comment": target_comment, "comments": comments})
+    page = target_comment.get("page", "home")
+    page_comments = [item for item in comments if item.get("page", "home") == page]
+    return jsonify({"ok": True, "comment": target_comment, "comments": page_comments})
 
 
 @app.route("/api/comments/<comment_id>/replies", methods=["POST"])
@@ -3095,7 +3113,9 @@ def create_comment_reply(comment_id):
         return jsonify({"ok": False, "message": "Comment not found."}), 404
 
     save_comments(comments)
-    return jsonify({"ok": True, "reply": reply, "comment": target_comment, "comments": comments}), 201
+    page = target_comment.get("page", "home")
+    page_comments = [item for item in comments if item.get("page", "home") == page]
+    return jsonify({"ok": True, "reply": reply, "comment": target_comment, "comments": page_comments}), 201
 
 
 @app.route("/logout")

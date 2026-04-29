@@ -539,6 +539,26 @@
         </tbody>
       </table>
     </section>
+
+    <section class="comment-section compare-comments" id="compareCommentSection" data-comments-page="{{ comments_page }}">
+      <div class="comment-section-header">
+        <h3>Comments</h3>
+      </div>
+      <form id="compareCommentForm">
+        <input type="text" id="compareCommentName" placeholder="Your name" maxlength="60" required>
+        <textarea id="compareCommentInput" placeholder="Write your comment..." maxlength="500" required></textarea>
+        <label for="compareCommentRating">Rating:</label>
+        <select id="compareCommentRating">
+          <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
+          <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734;</option>
+          <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734;</option>
+          <option value="2">&#9733;&#9733;&#9734;&#9734;&#9734;</option>
+          <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734;</option>
+        </select>
+        <button type="submit">Submit</button>
+      </form>
+      <div id="compareCommentsContainer"></div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -574,5 +594,97 @@
       </div>
     </div>
   </footer>
+  <script>
+    (function(){
+      const section = document.getElementById("compareCommentSection");
+      const form = document.getElementById("compareCommentForm");
+      const nameInput = document.getElementById("compareCommentName");
+      const commentInput = document.getElementById("compareCommentInput");
+      const ratingInput = document.getElementById("compareCommentRating");
+      const container = document.getElementById("compareCommentsContainer");
+      if (!section || !form || !nameInput || !commentInput || !ratingInput || !container) return;
+
+      const page = section.dataset.commentsPage || "home";
+      const apiUrl = "/api/comments?page=" + encodeURIComponent(page);
+      const escapeHtml = (value) => String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+      const formatStars = (rating) => {
+        const score = Math.max(1, Math.min(5, Number.parseInt(rating || 5, 10)));
+        return "\u2605".repeat(score) + "\u2606".repeat(5 - score);
+      };
+
+      function render(comments) {
+        if (!Array.isArray(comments) || !comments.length) {
+          container.innerHTML = "<p>No comments yet.</p>";
+          return;
+        }
+        container.innerHTML = comments.map((comment) => {
+          const name = comment.username || "User";
+          const avatar = escapeHtml(name.trim().slice(0, 1).toUpperCase() || "U");
+          return `
+            <article class="comment">
+              <div class="comment-header">
+                <div class="comment-avatar">${avatar}</div>
+                <div class="comment-meta">
+                  <span class="comment-name">${escapeHtml(name)}</span>
+                  <span>${escapeHtml(comment.date || "")}</span>
+                </div>
+              </div>
+              <div class="comment-rating">${formatStars(comment.rating)}</div>
+              <div class="comment-body">${escapeHtml(comment.text)}</div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      async function loadComments() {
+        const response = await fetch(apiUrl, { headers: { "Accept": "application/json" } });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.ok) throw new Error(data.message || "Comments could not be loaded.");
+        render(data.comments);
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const username = nameInput.value.trim();
+        const text = commentInput.value.trim();
+        const rating = Number.parseInt(ratingInput.value || "5", 10);
+        if (username.length < 2 || username.length > 60) {
+          alert("Name must be between 2 and 60 characters.");
+          return;
+        }
+        if (text.length < 10 || text.length > 500) {
+          alert("Comment must be between 10 and 500 characters.");
+          return;
+        }
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+        try {
+          const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, text, rating, page })
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.ok) throw new Error(data.message || "Comment could not be saved.");
+          commentInput.value = "";
+          ratingInput.value = "5";
+          render(data.comments);
+        } catch (error) {
+          alert(error.message || "Comment could not be saved.");
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+        }
+      });
+
+      loadComments().catch((error) => {
+        container.innerHTML = `<p>${escapeHtml(error.message || "Comments could not be loaded.")}</p>`;
+      });
+    })();
+  </script>
 </body>
 </html>

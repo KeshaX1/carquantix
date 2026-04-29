@@ -1328,21 +1328,26 @@ body.dark .seo-links a {
     display: none !important;
 }
 
-#commentForm {
+#commentForm,
+.comment-section form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
 #commentForm input,
-#commentForm textarea {
+#commentForm textarea,
+.comment-section form input,
+.comment-section form textarea,
+.comment-section form select {
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #d9dce3;
     background: #fff;
 }
 
-#commentForm button {
+#commentForm button,
+.comment-section form button {
     align-self: flex-end;
     padding: 10px 18px;
     background: #007bff;
@@ -1455,13 +1460,17 @@ body.dark .comment-section {
 }
 
 body.dark #commentForm input,
-body.dark #commentForm textarea {
+body.dark #commentForm textarea,
+body.dark .comment-section form input,
+body.dark .comment-section form textarea,
+body.dark .comment-section form select {
     background: #161922;
     border: 1px solid #2a2f3b;
     color: var(--text);
 }
 
-body.dark #commentForm button {
+body.dark #commentForm button,
+body.dark .comment-section form button {
     background: #4ea1ff;
     color: #0a0c12;
 }
