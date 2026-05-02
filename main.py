@@ -422,34 +422,64 @@ DEFAULT_COMMENTS = [
 
 COMPARE_COMMENT_SEEDS = [
     {
-        "username": "Mert A.",
+        "username": "Max Torque",
         "text": "This comparison is exactly what I needed. Seeing power, acceleration and price together makes the choice much clearer.",
         "rating": 5,
         "date": "14/03/2026",
     },
     {
-        "username": "Emir K.",
+        "username": "Car Guy 47",
         "text": "Nice matchup. The table makes it easy to see which car is stronger for performance and which one makes more sense for daily use.",
         "rating": 4,
         "date": "13/03/2026",
     },
     {
-        "username": "Can B.",
+        "username": "Liam V.",
         "text": "I was checking these two models and this page saved time. The top speed and 0-100 numbers are very easy to compare.",
         "rating": 5,
         "date": "12/03/2026",
     },
     {
-        "username": "Arda S.",
+        "username": "Turbo Dad",
         "text": "Good comparison page. I like that the specs are direct and there is no extra clutter around the important numbers.",
         "rating": 4,
         "date": "11/03/2026",
     },
     {
-        "username": "Eren T.",
+        "username": "Jake Miles",
         "text": "Useful for quick research before watching long reviews. The winner highlights make the differences obvious.",
         "rating": 5,
         "date": "10/03/2026",
+    },
+    {
+        "username": "V8 Enjoyer",
+        "text": "The numbers are laid out cleanly. I can tell very quickly which one is the faster car and which one is the better buy.",
+        "rating": 5,
+        "date": "09/03/2026",
+    },
+    {
+        "username": "Oscar Lane",
+        "text": "I like these direct comparisons. Price, power and fuel use are all in the same place without having to search around.",
+        "rating": 4,
+        "date": "08/03/2026",
+    },
+    {
+        "username": "Spec Hunter",
+        "text": "This is the kind of page I check before arguing with friends about which car is actually quicker.",
+        "rating": 5,
+        "date": "07/03/2026",
+    },
+    {
+        "username": "Noah Shift",
+        "text": "Solid comparison. The acceleration difference stands out immediately, and the table is easy to read on desktop.",
+        "rating": 4,
+        "date": "06/03/2026",
+    },
+    {
+        "username": "Garage Wizard",
+        "text": "I came for the horsepower numbers and stayed for the clean layout. Pretty useful for quick car debates.",
+        "rating": 5,
+        "date": "05/03/2026",
     },
 ]
 
@@ -1583,11 +1613,14 @@ def build_compare_seed_comments(page, existing_count=0):
         return []
 
     seed_key = _comment_seed_key(page)
-    start = sum(ord(char) for char in page) % len(COMPARE_COMMENT_SEEDS)
+    digest = hashlib.sha256(page.encode("utf-8")).digest()
     needed = max(0, 2 - int(existing_count or 0))
     comments = []
     for offset in range(needed):
-        template = COMPARE_COMMENT_SEEDS[(start + offset) % len(COMPARE_COMMENT_SEEDS)]
+        seed_index = digest[offset % len(digest)] % len(COMPARE_COMMENT_SEEDS)
+        while any(item["username"] == COMPARE_COMMENT_SEEDS[seed_index]["username"] for item in comments):
+            seed_index = (seed_index + 1) % len(COMPARE_COMMENT_SEEDS)
+        template = COMPARE_COMMENT_SEEDS[seed_index]
         comments.append(
             _normalize_comment(
                 {
