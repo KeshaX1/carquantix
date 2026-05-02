@@ -420,6 +420,39 @@ DEFAULT_COMMENTS = [
     {"id": "seed_1", "username": "Ethan R.", "text": "Very clean comparison layout. I checked a few BMW and Audi models and the numbers were easy to compare.", "rating": 5, "date": "04/03/2026", "likes": ["seed_like_9"]},
 ]
 
+COMPARE_COMMENT_SEEDS = [
+    {
+        "username": "Mert A.",
+        "text": "This comparison is exactly what I needed. Seeing power, acceleration and price together makes the choice much clearer.",
+        "rating": 5,
+        "date": "14/03/2026",
+    },
+    {
+        "username": "Emir K.",
+        "text": "Nice matchup. The table makes it easy to see which car is stronger for performance and which one makes more sense for daily use.",
+        "rating": 4,
+        "date": "13/03/2026",
+    },
+    {
+        "username": "Can B.",
+        "text": "I was checking these two models and this page saved time. The top speed and 0-100 numbers are very easy to compare.",
+        "rating": 5,
+        "date": "12/03/2026",
+    },
+    {
+        "username": "Arda S.",
+        "text": "Good comparison page. I like that the specs are direct and there is no extra clutter around the important numbers.",
+        "rating": 4,
+        "date": "11/03/2026",
+    },
+    {
+        "username": "Eren T.",
+        "text": "Useful for quick research before watching long reviews. The winner highlights make the differences obvious.",
+        "rating": 5,
+        "date": "10/03/2026",
+    },
+]
+
 NEWS_LAST_VERIFIED = "2026-03-16"
 NEWS_ITEMS = [
     {
@@ -1538,6 +1571,48 @@ def _normalize_comment(comment):
         "dislikes": dislikes,
         "replies": [_normalize_reply(reply) for reply in replies],
     }
+
+
+def _comment_seed_key(page):
+    return re.sub(r"[^a-zA-Z0-9_-]+", "_", str(page or "home")).strip("_")[:80] or "home"
+
+
+def build_compare_seed_comments(page, existing_count=0):
+    page = get_comment_page(page)
+    if not page.startswith("compare:"):
+        return []
+
+    seed_key = _comment_seed_key(page)
+    start = sum(ord(char) for char in page) % len(COMPARE_COMMENT_SEEDS)
+    needed = max(0, 2 - int(existing_count or 0))
+    comments = []
+    for offset in range(needed):
+        template = COMPARE_COMMENT_SEEDS[(start + offset) % len(COMPARE_COMMENT_SEEDS)]
+        comments.append(
+            _normalize_comment(
+                {
+                    **template,
+                    "id": f"seed_{seed_key}_{offset + 1}",
+                    "page": page,
+                    "likes": [f"seed_like_{seed_key}_{offset + 1}"] if template["rating"] >= 5 else [],
+                    "dislikes": [],
+                    "replies": [],
+                }
+            )
+        )
+    return comments
+
+
+def get_comments_for_page(page, comments=None):
+    page = get_comment_page(page)
+    source_comments = load_comments() if comments is None else comments
+    page_comments = [comment for comment in source_comments if comment.get("page", "home") == page]
+    existing_ids = {comment.get("id") for comment in page_comments}
+    seed_comments = [
+        comment for comment in build_compare_seed_comments(page, len(page_comments))
+        if comment.get("id") not in existing_ids
+    ]
+    return page_comments + seed_comments
 
 
 def load_comments():
@@ -3018,7 +3093,7 @@ def forgot_password_verify():
 @app.route("/api/comments", methods=["GET"])
 def get_comments():
     page = get_comment_page()
-    comments = [comment for comment in load_comments() if comment.get("page", "home") == page]
+    comments = get_comments_for_page(page)
     return jsonify({"ok": True, "comments": comments})
 
 
@@ -3058,7 +3133,7 @@ def create_comment():
     comments = load_comments()
     comments.insert(0, comment)
     save_comments(comments)
-    page_comments = [item for item in comments if item.get("page", "home") == comment["page"]]
+    page_comments = get_comments_for_page(comment["page"], comments)
     return jsonify({"ok": True, "comment": comment, "comments": page_comments}), 201
 
 
@@ -3084,7 +3159,7 @@ def toggle_comment_like(comment_id):
 
     save_comments(comments)
     page = target_comment.get("page", "home")
-    page_comments = [item for item in comments if item.get("page", "home") == page]
+    page_comments = get_comments_for_page(page, comments)
     return jsonify({"ok": True, "comment": target_comment, "comments": page_comments})
 
 
@@ -3124,7 +3199,7 @@ def create_comment_reply(comment_id):
 
     save_comments(comments)
     page = target_comment.get("page", "home")
-    page_comments = [item for item in comments if item.get("page", "home") == page]
+    page_comments = get_comments_for_page(page, comments)
     return jsonify({"ok": True, "reply": reply, "comment": target_comment, "comments": page_comments}), 201
 
 
