@@ -1338,6 +1338,12 @@ const favoritesListEl = document.getElementById('favoritesList');
 const clearFavoritesBtn = document.getElementById('clearFavoritesBtn');
 const categoryMenuTrigger = document.getElementById('categoryMenuTrigger');
 const categoryMenu = document.getElementById('categoryMenu');
+const countryCompareArea = document.getElementById('countryCompareArea');
+const countryCompareContent = document.getElementById('countryCompareContent');
+const countryCompareTitle = document.getElementById('countryCompareTitle');
+const countryCompareKicker = document.getElementById('countryCompareKicker');
+const countryCompareSource = document.getElementById('countryCompareSource');
+const countryCompareClearBtn = document.getElementById('countryCompareClearBtn');
 const notificationsBtn = document.getElementById('notificationsBtn');
 const notificationsBadge = document.getElementById('notificationsBadge');
 const notificationsMenu = document.getElementById('notificationsMenu');
@@ -1381,7 +1387,21 @@ const TRANSLATIONS = {
     brandLabel: 'Brand',
     brandAll: 'All brands',
     countriesTitle: 'Countries',
-    countryAll: 'All countries',
+    countryClear: 'Clear countries',
+    countryCompareKicker: 'Country comparison',
+    countryCompareTitle: 'Select two countries',
+    countryCompareSingle: 'Select one more country to compare with {country}.',
+    countryCompareLoading: 'Loading country indicators...',
+    countryCompareError: 'Country indicators could not be loaded right now.',
+    countryCompareSource: 'Economic indicators load from the World Bank open data API.',
+    countryMetrics: {
+      gdpPerCapita: 'GDP per capita',
+      gniPerCapita: 'GNI per capita',
+      gdp: 'GDP',
+      population: 'Population',
+      inflation: 'Inflation',
+      unemployment: 'Unemployment',
+    },
     filters: { topSpeed: 'Top Speed', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Price' },
     comparison: 'Comparison',
     clear: 'Clear Selected',
@@ -1471,7 +1491,21 @@ const TRANSLATIONS = {
     brandLabel: 'Marka',
     brandAll: 'Tüm markalar',
     countriesTitle: 'Ülkeler',
-    countryAll: 'Tüm ülkeler',
+    countryClear: 'Ülkeleri temizle',
+    countryCompareKicker: 'Ülke karşılaştırması',
+    countryCompareTitle: 'İki ülke seçin',
+    countryCompareSingle: '{country} ile karşılaştırmak için bir ülke daha seçin.',
+    countryCompareLoading: 'Ülke göstergeleri yükleniyor...',
+    countryCompareError: 'Ülke göstergeleri şu anda yüklenemedi.',
+    countryCompareSource: 'Ekonomik göstergeler World Bank açık veri API üzerinden yüklenir.',
+    countryMetrics: {
+      gdpPerCapita: 'Kişi başı milli gelir',
+      gniPerCapita: 'Kişi başı GSMH',
+      gdp: 'GSYH',
+      population: 'Nüfus',
+      inflation: 'Enflasyon',
+      unemployment: 'İşsizlik',
+    },
     filters: { topSpeed: 'En yüksek hız', nameAZ: 'A-Z', acc: '0-100 (sn)', price: 'Fiyat' },
     comparison: 'Karşılaştırma',
     clear: 'Seçilenleri Temizle',
@@ -1558,7 +1592,13 @@ const TRANSLATIONS = {
     brandLabel: 'Marke',
     brandAll: 'Alle Marken',
     countriesTitle: 'Länder',
-    countryAll: 'Alle Länder',
+    countryClear: 'Länder löschen',
+    countryCompareKicker: 'Ländervergleich',
+    countryCompareTitle: 'Zwei Länder wählen',
+    countryCompareSingle: 'Wählen Sie ein weiteres Land für den Vergleich mit {country}.',
+    countryCompareLoading: 'Länderindikatoren werden geladen...',
+    countryCompareError: 'Länderindikatoren konnten nicht geladen werden.',
+    countryCompareSource: 'Wirtschaftsindikatoren werden aus der offenen World-Bank-API geladen.',
     filters: { topSpeed: 'Höchstgeschwindigkeit', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Preis' },
     comparison: 'Vergleich',
     clear: 'Auswahl löschen',
@@ -1626,7 +1666,13 @@ const TRANSLATIONS = {
     brandLabel: 'Marque',
     brandAll: 'Toutes les marques',
     countriesTitle: 'Pays',
-    countryAll: 'Tous les pays',
+    countryClear: 'Effacer les pays',
+    countryCompareKicker: 'Comparaison de pays',
+    countryCompareTitle: 'Sélectionnez deux pays',
+    countryCompareSingle: 'Sélectionnez un autre pays à comparer avec {country}.',
+    countryCompareLoading: 'Chargement des indicateurs...',
+    countryCompareError: 'Les indicateurs ne peuvent pas être chargés.',
+    countryCompareSource: 'Les indicateurs économiques viennent de l API ouverte de la Banque mondiale.',
     filters: { topSpeed: 'Vitesse max', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Prix' },
     comparison: 'Comparaison',
     clear: 'Effacer la sélection',
@@ -1694,7 +1740,13 @@ const TRANSLATIONS = {
     brandLabel: 'Marca',
     brandAll: 'Todas las marcas',
     countriesTitle: 'Países',
-    countryAll: 'Todos los países',
+    countryClear: 'Limpiar países',
+    countryCompareKicker: 'Comparación de países',
+    countryCompareTitle: 'Selecciona dos países',
+    countryCompareSingle: 'Selecciona otro país para comparar con {country}.',
+    countryCompareLoading: 'Cargando indicadores...',
+    countryCompareError: 'No se pudieron cargar los indicadores.',
+    countryCompareSource: 'Los indicadores económicos se cargan desde la API abierta del Banco Mundial.',
     filters: { topSpeed: 'Velocidad máx', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Precio' },
     comparison: 'Comparación',
     clear: 'Limpiar selección',
@@ -1883,7 +1935,13 @@ TRANSLATIONS.ru = {
   brandLabel: 'Марка',
   brandAll: 'Все марки',
   countriesTitle: 'Страны',
-  countryAll: 'Все страны',
+  countryClear: 'Очистить страны',
+  countryCompareKicker: 'Сравнение стран',
+  countryCompareTitle: 'Выберите две страны',
+  countryCompareSingle: 'Выберите еще одну страну для сравнения с {country}.',
+  countryCompareLoading: 'Загрузка показателей...',
+  countryCompareError: 'Не удалось загрузить показатели стран.',
+  countryCompareSource: 'Экономические показатели загружаются из открытого API Всемирного банка.',
   filters: { topSpeed: 'Макс. скорость', nameAZ: 'А-Я', acc: '0-100 (с)', price: 'Цена' },
   comparison: 'Сравнение',
   clear: 'Очистить выбор',
@@ -2273,9 +2331,9 @@ let selected = [];
 let activeSort = null;
 let activeCatalog = 'cars';
 const brandSelectionByCatalog = {};
-const countrySelectionByCatalog = {};
 let activeBrand = 'all';
-let activeCountry = 'all';
+let selectedCountries = [];
+const countryDataCache = new Map();
 const INVENTORY_MAP = { cars: VEHICLES, motorcycles: MOTORCYCLES };
 const MOBILE_SPLIT_QUERY = '(max-width: 760px)';
 let mobileVehicleToggleBtn = null;
@@ -2871,6 +2929,34 @@ const BRAND_ORIGIN_BY_LABEL = {
   'zontes': 'China',
 };
 
+const COUNTRY_CODE_BY_NAME = {
+  'Austria': 'AUT',
+  'China': 'CHN',
+  'Czechia': 'CZE',
+  'France': 'FRA',
+  'Germany': 'DEU',
+  'Italy': 'ITA',
+  'Japan': 'JPN',
+  'Netherlands': 'NLD',
+  'Romania': 'ROU',
+  'South Korea': 'KOR',
+  'Spain': 'ESP',
+  'Sweden': 'SWE',
+  'Turkey': 'TUR',
+  'UK': 'GBR',
+  'USA': 'USA',
+  'Vietnam': 'VNM',
+};
+
+const COUNTRY_INDICATORS = [
+  { key: 'gdpPerCapita', code: 'NY.GDP.PCAP.CD', format: 'currency', higherIsBetter: true },
+  { key: 'gniPerCapita', code: 'NY.GNP.PCAP.CD', format: 'currency', higherIsBetter: true },
+  { key: 'gdp', code: 'NY.GDP.MKTP.CD', format: 'largeCurrency', higherIsBetter: true },
+  { key: 'population', code: 'SP.POP.TOTL', format: 'compact', higherIsBetter: null },
+  { key: 'inflation', code: 'FP.CPI.TOTL.ZG', format: 'percent', higherIsBetter: false },
+  { key: 'unemployment', code: 'SL.UEM.TOTL.ZS', format: 'percent', higherIsBetter: false },
+];
+
 function normalizeBrandKey(label = '') {
   return String(label)
     .toLowerCase()
@@ -3067,32 +3153,157 @@ function getCountryList() {
   return Array.from(countries).sort((a, b) => a.localeCompare(b));
 }
 
+function getCountryMetricLabel(key) {
+  const langPack = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  return langPack.countryMetrics?.[key] || TRANSLATIONS.en.countryMetrics?.[key] || key;
+}
+
+function formatCountryMetric(value, format) {
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) return '-';
+  const number = Number(value);
+  const locale = getLocaleForLang(currentLang);
+  if (format === 'currency') {
+    return new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(number);
+  }
+  if (format === 'largeCurrency') {
+    return new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 2 }).format(number);
+  }
+  if (format === 'percent') {
+    return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(number)}%`;
+  }
+  if (format === 'compact') {
+    return new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 }).format(number);
+  }
+  return new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(number);
+}
+
+function getCountryNameByCode(code) {
+  return Object.keys(COUNTRY_CODE_BY_NAME).find(name => COUNTRY_CODE_BY_NAME[name] === code) || code;
+}
+
+async function loadCountryData(countryName) {
+  const code = COUNTRY_CODE_BY_NAME[countryName];
+  if (!code) throw new Error(`Missing country code for ${countryName}`);
+  if (countryDataCache.has(code)) return countryDataCache.get(code);
+  const dataPromise = fetch(`/api/country-indicators/${encodeURIComponent(code)}`)
+    .then(response => {
+      if (!response.ok) throw new Error('Country indicator request failed');
+      return response.json();
+    })
+    .then(payload => ({
+      name: getCountryNameByCode(code),
+      code,
+      metrics: Object.fromEntries(COUNTRY_INDICATORS.map(indicator => [
+        indicator.key,
+        { ...(payload.metrics?.[indicator.key] || {}), ...indicator },
+      ])),
+    }));
+  countryDataCache.set(code, dataPromise);
+  return dataPromise;
+}
+
+function renderCountryComparePlaceholder() {
+  if (!countryCompareArea || !countryCompareContent) return;
+  countryCompareArea.classList.toggle('hidden', selectedCountries.length === 0);
+  if (countryCompareKicker) countryCompareKicker.textContent = t('countryCompareKicker');
+  if (countryCompareClearBtn) countryCompareClearBtn.textContent = t('countryClear');
+  if (countryCompareSource) countryCompareSource.textContent = t('countryCompareSource');
+  if (!selectedCountries.length) return;
+  const first = selectedCountries[0];
+  if (countryCompareTitle) {
+    countryCompareTitle.textContent = selectedCountries.length === 1
+      ? String(t('countryCompareSingle')).replace('{country}', first)
+      : `${selectedCountries[0]} vs ${selectedCountries[1]}`;
+  }
+  countryCompareContent.innerHTML = `<div class="country-compare-loading">${t('countryCompareLoading')}</div>`;
+}
+
+async function renderCountryComparison() {
+  renderCountryComparePlaceholder();
+  if (!countryCompareContent || selectedCountries.length !== 2) return;
+  const [leftName, rightName] = selectedCountries;
+  try {
+    const [left, right] = await Promise.all([loadCountryData(leftName), loadCountryData(rightName)]);
+    if (selectedCountries[0] !== leftName || selectedCountries[1] !== rightName) return;
+    const rows = COUNTRY_INDICATORS.map(indicator => {
+      const leftMetric = left.metrics[indicator.key] || {};
+      const rightMetric = right.metrics[indicator.key] || {};
+      const leftValue = leftMetric.value;
+      const rightValue = rightMetric.value;
+      const canCompare = indicator.higherIsBetter !== null
+        && Number.isFinite(Number(leftValue))
+        && Number.isFinite(Number(rightValue))
+        && Number(leftValue) !== Number(rightValue);
+      const leftWins = canCompare && (indicator.higherIsBetter ? Number(leftValue) > Number(rightValue) : Number(leftValue) < Number(rightValue));
+      const rightWins = canCompare && !leftWins;
+      const year = leftMetric.year && rightMetric.year && leftMetric.year !== rightMetric.year
+        ? `${leftMetric.year}/${rightMetric.year}`
+        : (leftMetric.year || rightMetric.year || '');
+      return `
+        <tr>
+          <th scope="row">
+            <span>${getCountryMetricLabel(indicator.key)}</span>
+            ${year ? `<small>${year}</small>` : ''}
+          </th>
+          <td class="${leftWins ? 'metric-winner' : ''}">${formatCountryMetric(leftValue, indicator.format)}</td>
+          <td class="${rightWins ? 'metric-winner' : ''}">${formatCountryMetric(rightValue, indicator.format)}</td>
+        </tr>
+      `;
+    }).join('');
+    countryCompareContent.innerHTML = `
+      <div class="country-vs">
+        <div class="country-name">${left.name}</div>
+        <div class="country-vs-mark">VS</div>
+        <div class="country-name">${right.name}</div>
+      </div>
+      <div class="country-table-wrap">
+        <table class="country-table">
+          <thead>
+            <tr><th>Metric</th><th>${left.name}</th><th>${right.name}</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+  } catch (error) {
+    countryCompareContent.innerHTML = `<div class="country-compare-error">${t('countryCompareError')}</div>`;
+  }
+}
+
+function toggleCountrySelection(countryName) {
+  if (!countryName) return;
+  if (selectedCountries.includes(countryName)) {
+    selectedCountries = selectedCountries.filter(country => country !== countryName);
+  } else {
+    selectedCountries = selectedCountries.length >= 2
+      ? [selectedCountries[1], countryName]
+      : [...selectedCountries, countryName];
+  }
+  renderCategoryMenu();
+  renderCountryComparison();
+}
+
 function createCategoryFilterButton(entry, kind) {
   const button = document.createElement('button');
-  const activeValue = kind === 'country' ? activeCountry : activeBrand;
+  const isActive = kind === 'country'
+    ? selectedCountries.includes(entry.value)
+    : entry.value === activeBrand;
   button.type = 'button';
-  button.className = `category-filter-btn${entry.value === activeValue ? ' active' : ''}`;
+  button.className = `category-filter-btn${isActive ? ' active' : ''}`;
   button.dataset.value = entry.value;
   button.textContent = entry.label;
-  button.setAttribute('aria-pressed', entry.value === activeValue ? 'true' : 'false');
+  button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
   button.addEventListener('click', () => {
     if (kind === 'country') {
-      activeCountry = entry.value;
-      countrySelectionByCatalog[activeCatalog] = activeCountry;
-      activeBrand = 'all';
-      brandSelectionByCatalog[activeCatalog] = activeBrand;
-      if (brandSelect) brandSelect.value = activeBrand;
-      buildBrandOptions();
+      toggleCountrySelection(entry.value);
     } else {
       activeBrand = entry.value;
       brandSelectionByCatalog[activeCatalog] = activeBrand;
-      activeCountry = 'all';
-      countrySelectionByCatalog[activeCatalog] = activeCountry;
       if (brandSelect) brandSelect.value = activeBrand;
       buildBrandSymbolButtons(getBrandList());
+      renderCategoryMenu();
+      renderList(searchInput ? searchInput.value : '');
     }
-    renderCategoryMenu();
-    renderList(searchInput ? searchInput.value : '');
     categoryMenu?.classList.remove('open');
     categoryMenuTrigger?.setAttribute('aria-expanded', 'false');
     categoryMenu?.setAttribute('aria-hidden', 'true');
@@ -3104,10 +3315,7 @@ function renderCategoryMenu() {
   if (!categoryMenu) return;
   const countries = getCountryList();
   const brands = getBrandList();
-  const countryEntries = [
-    { value: 'all', label: t('countryAll') },
-    ...countries.map(country => ({ value: country, label: country })),
-  ];
+  const countryEntries = countries.map(country => ({ value: country, label: country }));
   const brandEntries = [
     { value: 'all', label: t('brandAll') },
     ...brands.map(brand => ({ value: brand, label: brand })),
@@ -3860,17 +4068,12 @@ function renderList(filter = '') {
   listEl.innerHTML = '';
   const q = filter.trim().toLowerCase();
   const brandFilter = activeBrand && activeBrand !== 'all' ? activeBrand.toLowerCase() : '';
-  const countryFilter = activeCountry && activeCountry !== 'all' ? activeCountry.toLowerCase() : '';
   const filtered = currentInventory().filter(v => {
     const haystack = (v.name + ' ' + v.engine).toLowerCase();
     if (q && !haystack.includes(q)) return false;
     if (brandFilter) {
       const brand = getBrandLabel(v.name).toLowerCase();
       if (brand !== brandFilter) return false;
-    }
-    if (countryFilter) {
-      const origin = getVehicleOrigin(v).toLowerCase();
-      if (origin !== countryFilter) return false;
     }
     return true;
   });
@@ -4700,10 +4903,6 @@ function setCatalog(nextCatalog) {
     btn.setAttribute('aria-selected', isActive);
   });
   activeBrand = brandSelectionByCatalog[activeCatalog] || 'all';
-  const countries = getCountryList();
-  const savedCountry = countrySelectionByCatalog[activeCatalog] || activeCountry || 'all';
-  activeCountry = countries.includes(savedCountry) ? savedCountry : 'all';
-  countrySelectionByCatalog[activeCatalog] = activeCountry;
   buildBrandOptions();
   renderCategoryMenu();
   renderList(searchInput ? searchInput.value : '');
@@ -4718,6 +4917,7 @@ catalogButtons.forEach(btn => {
 setCatalog(activeCatalog);
 initFavoritesUI();
 initCategoryMenu();
+renderCountryComparison();
 renderFavorites();
 initNotificationsUI();
 initFuelCalculator();
@@ -4790,6 +4990,13 @@ if (brandSelect) {
   });
 }
 clearBtn.addEventListener('click', () => { selected = []; renderSelected(); });
+if (countryCompareClearBtn) {
+  countryCompareClearBtn.addEventListener('click', () => {
+    selectedCountries = [];
+    renderCategoryMenu();
+    renderCountryComparison();
+  });
+}
 compareBtn.addEventListener('click', () => {
   if (selected.length === 0) { alert(t('selectPrompt')); return; }
   buildTable({ scroll: true });
@@ -4863,6 +5070,7 @@ function applyTranslations() {
   if (brandLabel) brandLabel.textContent = pack.brandLabel || 'Brand';
   if (brandSelect) buildBrandOptions();
   renderCategoryMenu();
+  renderCountryComparison();
   document.querySelectorAll('#filterBar button').forEach(btn => {
     const key = btn.dataset.sort || btn.dataset.type;
     if (pack.filters && pack.filters[key]) btn.textContent = pack.filters[key];

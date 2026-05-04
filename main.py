@@ -2388,6 +2388,54 @@ def login_media(filename):
 def health():
     return jsonify({"ok": True}), 200
 
+
+COUNTRY_INDICATOR_DEFS = {
+    "gdpPerCapita": {"code": "NY.GDP.PCAP.CD"},
+    "gniPerCapita": {"code": "NY.GNP.PCAP.CD"},
+    "gdp": {"code": "NY.GDP.MKTP.CD"},
+    "population": {"code": "SP.POP.TOTL"},
+    "inflation": {"code": "FP.CPI.TOTL.ZG"},
+    "unemployment": {"code": "SL.UEM.TOTL.ZS"},
+}
+COUNTRY_INDICATOR_CACHE = {}
+COUNTRY_INDICATOR_CACHE_TTL = 6 * 60 * 60
+
+
+def fetch_latest_country_indicator(country_code, indicator_code):
+    url = f"https://api.worldbank.org/v2/country/{country_code}/indicator/{indicator_code}"
+    response = requests.get(url, params={"format": "json", "per_page": 8}, timeout=8)
+    response.raise_for_status()
+    payload = response.json()
+    rows = payload[1] if isinstance(payload, list) and len(payload) > 1 and isinstance(payload[1], list) else []
+    latest = next((row for row in rows if row.get("value") is not None), None)
+    if not latest:
+        return {"value": None, "year": ""}
+    return {"value": latest.get("value"), "year": latest.get("date", "")}
+
+
+@app.route("/api/country-indicators/<country_code>")
+def country_indicators(country_code):
+    code = re.sub(r"[^A-Za-z]", "", country_code or "").upper()[:3]
+    if len(code) != 3:
+        return jsonify({"error": "Invalid country code"}), 400
+
+    now = time.time()
+    cached = COUNTRY_INDICATOR_CACHE.get(code)
+    if cached and now - cached["timestamp"] < COUNTRY_INDICATOR_CACHE_TTL:
+        return jsonify(cached["data"])
+
+    metrics = {}
+    for key, indicator in COUNTRY_INDICATOR_DEFS.items():
+        try:
+            metrics[key] = fetch_latest_country_indicator(code, indicator["code"])
+        except requests.RequestException:
+            metrics[key] = {"value": None, "year": ""}
+
+    data = {"country_code": code, "metrics": metrics, "source": "World Bank"}
+    COUNTRY_INDICATOR_CACHE[code] = {"timestamp": now, "data": data}
+    return jsonify(data)
+
+
 @app.route("/")
 def index():
     user = session.get("user")
