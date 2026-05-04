@@ -55,7 +55,7 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260408-category-menu1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260504-country-categories1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -284,6 +284,7 @@
             <thead>
               <tr>
                 <th>Model</th>
+                <th>Country</th>
                 <th>Power (CV)</th>
                 <th>0â€”100 (s)</th>
                 <th>Top Speed (km/h)</th>
@@ -461,12 +462,10 @@
       </div>
     </div>
   </footer>
-  <script>
-    window.currentUser = {{ user | tojson | safe }};
-  </script>
+  <div id="current-user-data" hidden data-user='{{ user | tojson | safe }}'></div>
   {% if paddle_client_token %}
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   {% endif %}
-  <script src="{{ url_for('static', filename='script.js', v='20260408-category-menu1') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260504-country-categories1') }}"></script>
 </body>
 </html>

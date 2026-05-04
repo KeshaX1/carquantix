@@ -1,3 +1,14 @@
+(() => {
+  const currentUserData = document.getElementById('current-user-data');
+  if (!currentUserData) return;
+
+  try {
+    window.currentUser = JSON.parse(currentUserData.dataset.user || 'null');
+  } catch (error) {
+    window.currentUser = null;
+  }
+})();
+
 // Dataset: update image paths or replace with placeholders
 const VEHICLES = [
   { id: 'R8',              name: '2024 Audi R8',       power:570, acc:3.2, topSpeed:330, engine: '5.2 V10', price: '$239.800', img: '/static/images/audiR8.jpg', rearImg: '/static/rearimg/audiR8-rear.jpg', consumption: { value: 14.8, unit: 'L/100km' }},
@@ -1369,6 +1380,8 @@ const TRANSLATIONS = {
     searchPlaceholder: 'Search (model or brand)...',
     brandLabel: 'Brand',
     brandAll: 'All brands',
+    countriesTitle: 'Countries',
+    countryAll: 'All countries',
     filters: { topSpeed: 'Top Speed', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Price' },
     comparison: 'Comparison',
     clear: 'Clear Selected',
@@ -1378,7 +1391,7 @@ const TRANSLATIONS = {
     remove: 'Remove',
     details: 'Details',
     tableTitle: 'Comparison Table',
-    tableHeaders: ['Model','Power (CV)','0-100 (s)','Top Speed (km/h)','Engine','Price','Consumption','Cost'],
+    tableHeaders: ['Model','Country','Power (CV)','0-100 (s)','Top Speed (km/h)','Engine','Price','Consumption','Cost'],
     priceLabel: 'Price:',
     originLabel: 'Origin:',
     zeroToHundred: '0-100:',
@@ -1457,6 +1470,8 @@ const TRANSLATIONS = {
     searchPlaceholder: 'Ara (model veya marka)...',
     brandLabel: 'Marka',
     brandAll: 'Tüm markalar',
+    countriesTitle: 'Ülkeler',
+    countryAll: 'Tüm ülkeler',
     filters: { topSpeed: 'En yüksek hız', nameAZ: 'A-Z', acc: '0-100 (sn)', price: 'Fiyat' },
     comparison: 'Karşılaştırma',
     clear: 'Seçilenleri Temizle',
@@ -1466,7 +1481,7 @@ const TRANSLATIONS = {
     remove: 'Kaldır',
     details: 'Detay',
     tableTitle: 'Karşılaştırma Tablosu',
-    tableHeaders: ['Model','Güç (BG)','0-100 (sn)','Azami Hız (km/sa)','Motor','Fiyat','Tüketim','Maliyet'],
+    tableHeaders: ['Model','Ülke','Güç (BG)','0-100 (sn)','Azami Hız (km/sa)','Motor','Fiyat','Tüketim','Maliyet'],
     priceLabel: 'Fiyat:',
     originLabel: 'Ulkesi:',
     zeroToHundred: '0-100:',
@@ -1542,6 +1557,8 @@ const TRANSLATIONS = {
     searchPlaceholder: 'Suche (Modell oder Marke)...',
     brandLabel: 'Marke',
     brandAll: 'Alle Marken',
+    countriesTitle: 'Länder',
+    countryAll: 'Alle Länder',
     filters: { topSpeed: 'Höchstgeschwindigkeit', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Preis' },
     comparison: 'Vergleich',
     clear: 'Auswahl löschen',
@@ -1551,7 +1568,7 @@ const TRANSLATIONS = {
     remove: 'Entfernen',
     details: 'Details',
     tableTitle: 'Vergleichstabelle',
-    tableHeaders: ['Modell','Leistung (PS)','0-100 (s)','Vmax (km/h)','Motor','Preis','Verbrauch','Kosten'],
+    tableHeaders: ['Modell','Land','Leistung (PS)','0-100 (s)','Vmax (km/h)','Motor','Preis','Verbrauch','Kosten'],
     priceLabel: 'Preis:',
     originLabel: 'Herkunft:',
     zeroToHundred: '0-100:',
@@ -1608,6 +1625,8 @@ const TRANSLATIONS = {
     searchPlaceholder: 'Rechercher (modèle ou marque)...',
     brandLabel: 'Marque',
     brandAll: 'Toutes les marques',
+    countriesTitle: 'Pays',
+    countryAll: 'Tous les pays',
     filters: { topSpeed: 'Vitesse max', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Prix' },
     comparison: 'Comparaison',
     clear: 'Effacer la sélection',
@@ -1617,7 +1636,7 @@ const TRANSLATIONS = {
     remove: 'Retirer',
     details: 'Details',
     tableTitle: 'Tableau comparatif',
-    tableHeaders: ['Modèle','Puissance (ch)','0-100 (s)','Vitesse max (km/h)','Moteur','Prix','Consommation','Coût'],
+    tableHeaders: ['Modèle','Pays','Puissance (ch)','0-100 (s)','Vitesse max (km/h)','Moteur','Prix','Consommation','Coût'],
     priceLabel: 'Prix :',
     originLabel: 'Origine :',
     zeroToHundred: '0-100 :',
@@ -1674,6 +1693,8 @@ const TRANSLATIONS = {
     searchPlaceholder: 'Buscar (modelo o marca)...',
     brandLabel: 'Marca',
     brandAll: 'Todas las marcas',
+    countriesTitle: 'Países',
+    countryAll: 'Todos los países',
     filters: { topSpeed: 'Velocidad máx', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Precio' },
     comparison: 'Comparación',
     clear: 'Limpiar selección',
@@ -1683,7 +1704,7 @@ const TRANSLATIONS = {
     remove: 'Quitar',
     details: 'Detalles',
     tableTitle: 'Tabla comparativa',
-    tableHeaders: ['Modelo','Potencia (CV)','0-100 (s)','Vel. máxima (km/h)','Motor','Precio','Consumo','Costo'],
+    tableHeaders: ['Modelo','País','Potencia (CV)','0-100 (s)','Vel. máxima (km/h)','Motor','Precio','Consumo','Costo'],
     priceLabel: 'Precio:',
     originLabel: 'Origen:',
     zeroToHundred: '0-100:',
@@ -1861,6 +1882,8 @@ TRANSLATIONS.ru = {
   searchPlaceholder: 'Поиск (модель или марка)...',
   brandLabel: 'Марка',
   brandAll: 'Все марки',
+  countriesTitle: 'Страны',
+  countryAll: 'Все страны',
   filters: { topSpeed: 'Макс. скорость', nameAZ: 'А-Я', acc: '0-100 (с)', price: 'Цена' },
   comparison: 'Сравнение',
   clear: 'Очистить выбор',
@@ -1870,7 +1893,7 @@ TRANSLATIONS.ru = {
   remove: 'Удалить',
   details: 'Подробнее',
   tableTitle: 'Таблица сравнения',
-  tableHeaders: ['Модель', 'Мощность (л.с.)', '0-100 (с)', 'Макс. скорость (км/ч)', 'Двигатель', 'Цена', 'Расход', 'Стоимость'],
+  tableHeaders: ['Модель', 'Страна', 'Мощность (л.с.)', '0-100 (с)', 'Макс. скорость (км/ч)', 'Двигатель', 'Цена', 'Расход', 'Стоимость'],
   priceLabel: 'Цена:',
   originLabel: 'Страна:',
   zeroToHundred: '0-100:',
@@ -2216,6 +2239,7 @@ function initFavoritesUI() {
 
 function initCategoryMenu() {
   if (!categoryMenuTrigger || !categoryMenu) return;
+  renderCategoryMenu();
 
   const closeCategoryMenu = () => {
     categoryMenu.classList.remove('open');
@@ -2225,6 +2249,7 @@ function initCategoryMenu() {
 
   categoryMenuTrigger.addEventListener('click', () => {
     const willOpen = !categoryMenu.classList.contains('open');
+    if (willOpen) renderCategoryMenu();
     categoryMenu.classList.toggle('open', willOpen);
     categoryMenuTrigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
     categoryMenu.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
@@ -2248,7 +2273,9 @@ let selected = [];
 let activeSort = null;
 let activeCatalog = 'cars';
 const brandSelectionByCatalog = {};
+const countrySelectionByCatalog = {};
 let activeBrand = 'all';
+let activeCountry = 'all';
 const INVENTORY_MAP = { cars: VEHICLES, motorcycles: MOTORCYCLES };
 const MOBILE_SPLIT_QUERY = '(max-width: 760px)';
 let mobileVehicleToggleBtn = null;
@@ -3004,6 +3031,7 @@ function buildBrandSymbolButtons(brands) {
       brandSelectionByCatalog[activeCatalog] = activeBrand;
       if (brandSelect) brandSelect.value = activeBrand;
       buildBrandSymbolButtons(brands);
+      renderCategoryMenu();
       renderList(searchInput ? searchInput.value : '');
     });
     brandSymbolBar.appendChild(btn);
@@ -3028,6 +3056,84 @@ function buildBrandOptions() {
   activeBrand = brands.includes(saved) ? saved : 'all';
   brandSelect.value = activeBrand;
   buildBrandSymbolButtons(brands);
+}
+
+function getCountryList() {
+  const countries = new Set();
+  currentInventory().forEach(vehicle => {
+    const origin = getVehicleOrigin(vehicle);
+    if (origin) countries.add(origin);
+  });
+  return Array.from(countries).sort((a, b) => a.localeCompare(b));
+}
+
+function createCategoryFilterButton(entry, kind) {
+  const button = document.createElement('button');
+  const activeValue = kind === 'country' ? activeCountry : activeBrand;
+  button.type = 'button';
+  button.className = `category-filter-btn${entry.value === activeValue ? ' active' : ''}`;
+  button.dataset.value = entry.value;
+  button.textContent = entry.label;
+  button.setAttribute('aria-pressed', entry.value === activeValue ? 'true' : 'false');
+  button.addEventListener('click', () => {
+    if (kind === 'country') {
+      activeCountry = entry.value;
+      countrySelectionByCatalog[activeCatalog] = activeCountry;
+      activeBrand = 'all';
+      brandSelectionByCatalog[activeCatalog] = activeBrand;
+      if (brandSelect) brandSelect.value = activeBrand;
+      buildBrandOptions();
+    } else {
+      activeBrand = entry.value;
+      brandSelectionByCatalog[activeCatalog] = activeBrand;
+      activeCountry = 'all';
+      countrySelectionByCatalog[activeCatalog] = activeCountry;
+      if (brandSelect) brandSelect.value = activeBrand;
+      buildBrandSymbolButtons(getBrandList());
+    }
+    renderCategoryMenu();
+    renderList(searchInput ? searchInput.value : '');
+    categoryMenu?.classList.remove('open');
+    categoryMenuTrigger?.setAttribute('aria-expanded', 'false');
+    categoryMenu?.setAttribute('aria-hidden', 'true');
+  });
+  return button;
+}
+
+function renderCategoryMenu() {
+  if (!categoryMenu) return;
+  const countries = getCountryList();
+  const brands = getBrandList();
+  const countryEntries = [
+    { value: 'all', label: t('countryAll') },
+    ...countries.map(country => ({ value: country, label: country })),
+  ];
+  const brandEntries = [
+    { value: 'all', label: t('brandAll') },
+    ...brands.map(brand => ({ value: brand, label: brand })),
+  ];
+
+  categoryMenu.innerHTML = '';
+  const inner = document.createElement('div');
+  inner.className = 'category-menu-inner';
+
+  [
+    { title: t('countriesTitle'), kind: 'country', entries: countryEntries },
+    { title: t('brandLabel'), kind: 'brand', entries: brandEntries },
+  ].forEach(section => {
+    const sectionEl = document.createElement('section');
+    sectionEl.className = 'category-section';
+    const title = document.createElement('h3');
+    title.textContent = section.title;
+    const grid = document.createElement('div');
+    grid.className = 'category-filter-grid';
+    section.entries.forEach(entry => grid.appendChild(createCategoryFilterButton(entry, section.kind)));
+    sectionEl.appendChild(title);
+    sectionEl.appendChild(grid);
+    inner.appendChild(sectionEl);
+  });
+
+  categoryMenu.appendChild(inner);
 }
 
 function parsePrice(val) {
@@ -3754,12 +3860,17 @@ function renderList(filter = '') {
   listEl.innerHTML = '';
   const q = filter.trim().toLowerCase();
   const brandFilter = activeBrand && activeBrand !== 'all' ? activeBrand.toLowerCase() : '';
+  const countryFilter = activeCountry && activeCountry !== 'all' ? activeCountry.toLowerCase() : '';
   const filtered = currentInventory().filter(v => {
     const haystack = (v.name + ' ' + v.engine).toLowerCase();
     if (q && !haystack.includes(q)) return false;
     if (brandFilter) {
       const brand = getBrandLabel(v.name).toLowerCase();
       if (brand !== brandFilter) return false;
+    }
+    if (countryFilter) {
+      const origin = getVehicleOrigin(v).toLowerCase();
+      if (origin !== countryFilter) return false;
     }
     return true;
   });
@@ -4545,8 +4656,10 @@ function buildTable(options = {}) {
     const consumptionText = consumptionInfo ? `${consumptionInfo.value} ${consumptionInfo.unit}` : '-';
     const computedCost = calculateCost(v);
     const costValue = (v.cost !== undefined && v.cost !== null && v.cost !== '') ? v.cost : computedCost;
+    const origin = getVehicleOrigin(v) || '-';
 
     tr.appendChild(td(v.name));
+    tr.appendChild(td(origin));
     tr.appendChild(td(v.power, Number(v.power) === maxPower));
     tr.appendChild(td(v.acc, Number(v.acc) === minAcc));
     tr.appendChild(td(v.topSpeed, Number(v.topSpeed) === maxTop));
@@ -4587,7 +4700,12 @@ function setCatalog(nextCatalog) {
     btn.setAttribute('aria-selected', isActive);
   });
   activeBrand = brandSelectionByCatalog[activeCatalog] || 'all';
+  const countries = getCountryList();
+  const savedCountry = countrySelectionByCatalog[activeCatalog] || activeCountry || 'all';
+  activeCountry = countries.includes(savedCountry) ? savedCountry : 'all';
+  countrySelectionByCatalog[activeCatalog] = activeCountry;
   buildBrandOptions();
+  renderCategoryMenu();
   renderList(searchInput ? searchInput.value : '');
   renderSelected();
   applyTranslations();
@@ -4667,6 +4785,7 @@ if (brandSelect) {
   brandSelect.addEventListener('change', (e) => {
     activeBrand = e.target.value || 'all';
     brandSelectionByCatalog[activeCatalog] = activeBrand;
+    renderCategoryMenu();
     renderList(searchInput ? searchInput.value : '');
   });
 }
@@ -4743,6 +4862,7 @@ function applyTranslations() {
   const brandLabel = document.querySelector('.brand-label');
   if (brandLabel) brandLabel.textContent = pack.brandLabel || 'Brand';
   if (brandSelect) buildBrandOptions();
+  renderCategoryMenu();
   document.querySelectorAll('#filterBar button').forEach(btn => {
     const key = btn.dataset.sort || btn.dataset.type;
     if (pack.filters && pack.filters[key]) btn.textContent = pack.filters[key];
