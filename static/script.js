@@ -1391,6 +1391,7 @@ const TRANSLATIONS = {
     countryCompareKicker: 'Country comparison',
     countryCompareTitle: 'Select two countries',
     countryCompareSingle: 'Select one more country to compare with {country}.',
+    countryCompareReady: 'Press Compare to load country indicators.',
     countryCompareLoading: 'Loading country indicators...',
     countryCompareError: 'Country indicators could not be loaded right now.',
     countryCompareSource: 'Economic indicators load from the World Bank open data API.',
@@ -1495,6 +1496,7 @@ const TRANSLATIONS = {
     countryCompareKicker: 'Ülke karşılaştırması',
     countryCompareTitle: 'İki ülke seçin',
     countryCompareSingle: '{country} ile karşılaştırmak için bir ülke daha seçin.',
+    countryCompareReady: 'Ülke göstergelerini yüklemek için Karşılaştır butonuna basın.',
     countryCompareLoading: 'Ülke göstergeleri yükleniyor...',
     countryCompareError: 'Ülke göstergeleri şu anda yüklenemedi.',
     countryCompareSource: 'Ekonomik göstergeler World Bank açık veri API üzerinden yüklenir.',
@@ -1596,6 +1598,7 @@ const TRANSLATIONS = {
     countryCompareKicker: 'Ländervergleich',
     countryCompareTitle: 'Zwei Länder wählen',
     countryCompareSingle: 'Wählen Sie ein weiteres Land für den Vergleich mit {country}.',
+    countryCompareReady: 'Drücken Sie Vergleichen, um Länderindikatoren zu laden.',
     countryCompareLoading: 'Länderindikatoren werden geladen...',
     countryCompareError: 'Länderindikatoren konnten nicht geladen werden.',
     countryCompareSource: 'Wirtschaftsindikatoren werden aus der offenen World-Bank-API geladen.',
@@ -1670,6 +1673,7 @@ const TRANSLATIONS = {
     countryCompareKicker: 'Comparaison de pays',
     countryCompareTitle: 'Sélectionnez deux pays',
     countryCompareSingle: 'Sélectionnez un autre pays à comparer avec {country}.',
+    countryCompareReady: 'Appuyez sur Comparer pour charger les indicateurs.',
     countryCompareLoading: 'Chargement des indicateurs...',
     countryCompareError: 'Les indicateurs ne peuvent pas être chargés.',
     countryCompareSource: 'Les indicateurs économiques viennent de l API ouverte de la Banque mondiale.',
@@ -1744,6 +1748,7 @@ const TRANSLATIONS = {
     countryCompareKicker: 'Comparación de países',
     countryCompareTitle: 'Selecciona dos países',
     countryCompareSingle: 'Selecciona otro país para comparar con {country}.',
+    countryCompareReady: 'Pulsa Comparar para cargar los indicadores.',
     countryCompareLoading: 'Cargando indicadores...',
     countryCompareError: 'No se pudieron cargar los indicadores.',
     countryCompareSource: 'Los indicadores económicos se cargan desde la API abierta del Banco Mundial.',
@@ -1939,6 +1944,7 @@ TRANSLATIONS.ru = {
   countryCompareKicker: 'Сравнение стран',
   countryCompareTitle: 'Выберите две страны',
   countryCompareSingle: 'Выберите еще одну страну для сравнения с {country}.',
+  countryCompareReady: 'Нажмите Сравнить, чтобы загрузить показатели стран.',
   countryCompareLoading: 'Загрузка показателей...',
   countryCompareError: 'Не удалось загрузить показатели стран.',
   countryCompareSource: 'Экономические показатели загружаются из открытого API Всемирного банка.',
@@ -2967,38 +2973,94 @@ const BRAND_ORIGIN_BY_LABEL = {
 };
 
 const COUNTRY_CODE_BY_NAME = {
+  'Argentina': 'ARG',
+  'Australia': 'AUS',
   'Austria': 'AUT',
+  'Belgium': 'BEL',
+  'Brazil': 'BRA',
+  'Canada': 'CAN',
   'China': 'CHN',
   'Czechia': 'CZE',
+  'Denmark': 'DNK',
+  'Egypt': 'EGY',
+  'Finland': 'FIN',
   'France': 'FRA',
   'Germany': 'DEU',
+  'Greece': 'GRC',
+  'India': 'IND',
+  'Indonesia': 'IDN',
+  'Ireland': 'IRL',
+  'Israel': 'ISR',
   'Italy': 'ITA',
   'Japan': 'JPN',
+  'Malaysia': 'MYS',
+  'Mexico': 'MEX',
+  'Morocco': 'MAR',
   'Netherlands': 'NLD',
+  'New Zealand': 'NZL',
+  'Nigeria': 'NGA',
+  'Norway': 'NOR',
+  'Poland': 'POL',
+  'Portugal': 'PRT',
+  'Qatar': 'QAT',
   'Romania': 'ROU',
+  'Saudi Arabia': 'SAU',
+  'Singapore': 'SGP',
+  'South Africa': 'ZAF',
   'South Korea': 'KOR',
   'Spain': 'ESP',
   'Sweden': 'SWE',
+  'Switzerland': 'CHE',
+  'Thailand': 'THA',
   'Turkey': 'TUR',
+  'UAE': 'ARE',
   'UK': 'GBR',
   'USA': 'USA',
   'Vietnam': 'VNM',
 };
 
 const COUNTRY_ISO2_BY_NAME = {
+  'Argentina': 'AR',
+  'Australia': 'AU',
   'Austria': 'AT',
+  'Belgium': 'BE',
+  'Brazil': 'BR',
+  'Canada': 'CA',
   'China': 'CN',
   'Czechia': 'CZ',
+  'Denmark': 'DK',
+  'Egypt': 'EG',
+  'Finland': 'FI',
   'France': 'FR',
   'Germany': 'DE',
+  'Greece': 'GR',
+  'India': 'IN',
+  'Indonesia': 'ID',
+  'Ireland': 'IE',
+  'Israel': 'IL',
   'Italy': 'IT',
   'Japan': 'JP',
+  'Malaysia': 'MY',
+  'Mexico': 'MX',
+  'Morocco': 'MA',
   'Netherlands': 'NL',
+  'New Zealand': 'NZ',
+  'Nigeria': 'NG',
+  'Norway': 'NO',
+  'Poland': 'PL',
+  'Portugal': 'PT',
+  'Qatar': 'QA',
   'Romania': 'RO',
+  'Saudi Arabia': 'SA',
+  'Singapore': 'SG',
+  'South Africa': 'ZA',
   'South Korea': 'KR',
   'Spain': 'ES',
   'Sweden': 'SE',
+  'Switzerland': 'CH',
+  'Thailand': 'TH',
   'Turkey': 'TR',
+  'UAE': 'AE',
   'UK': 'GB',
   'USA': 'US',
   'Vietnam': 'VN',
@@ -3201,12 +3263,7 @@ function buildBrandOptions() {
 }
 
 function getCountryList() {
-  const countries = new Set();
-  currentInventory().forEach(vehicle => {
-    const origin = getVehicleOrigin(vehicle);
-    if (origin) countries.add(origin);
-  });
-  return Array.from(countries).sort((a, b) => a.localeCompare(b));
+  return Object.keys(COUNTRY_CODE_BY_NAME).sort((a, b) => a.localeCompare(b));
 }
 
 function getCountryMetricLabel(key) {
@@ -3268,7 +3325,7 @@ async function loadCountryData(countryName) {
   return dataPromise;
 }
 
-function renderCountryComparePlaceholder() {
+function renderCountryComparePlaceholder(isLoading = false) {
   if (!countryCompareArea || !countryCompareContent) return;
   countryCompareArea.classList.toggle('hidden', selectedCountries.length === 0);
   if (countryCompareKicker) countryCompareKicker.textContent = t('countryCompareKicker');
@@ -3281,11 +3338,12 @@ function renderCountryComparePlaceholder() {
       ? String(t('countryCompareSingle')).replace('{country}', first)
       : `${selectedCountries[0]} vs ${selectedCountries[1]}`;
   }
-  countryCompareContent.innerHTML = `<div class="country-compare-loading">${t('countryCompareLoading')}</div>`;
+  const message = isLoading ? t('countryCompareLoading') : t('countryCompareReady');
+  countryCompareContent.innerHTML = `<div class="country-compare-loading">${message}</div>`;
 }
 
 async function renderCountryComparison() {
-  renderCountryComparePlaceholder();
+  renderCountryComparePlaceholder(true);
   if (!countryCompareContent || selectedCountries.length !== 2) return;
   const [leftName, rightName] = selectedCountries;
   try {
@@ -3346,7 +3404,7 @@ function toggleCountrySelection(countryName) {
       : [...selectedCountries, countryName];
   }
   renderCategoryMenu();
-  renderCountryComparison();
+  renderCountryComparePlaceholder();
 }
 
 function createCategoryFilterButton(entry, kind) {
@@ -5029,7 +5087,7 @@ catalogButtons.forEach(btn => {
 setCatalog(activeCatalog);
 initFavoritesUI();
 initCategoryMenu();
-renderCountryComparison();
+renderCountryComparePlaceholder();
 renderFavorites();
 initNotificationsUI();
 initFuelCalculator();
@@ -5106,10 +5164,19 @@ if (countryCompareClearBtn) {
   countryCompareClearBtn.addEventListener('click', () => {
     selectedCountries = [];
     renderCategoryMenu();
-    renderCountryComparison();
+    renderCountryComparePlaceholder();
   });
 }
 compareBtn.addEventListener('click', () => {
+  if (selectedCountries.length === 1 && selected.length === 0) {
+    alert(String(t('countryCompareSingle')).replace('{country}', selectedCountries[0]));
+    return;
+  }
+  if (selectedCountries.length === 2) {
+    renderCountryComparison();
+    if (countryCompareArea) countryCompareArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
   if (selected.length === 0) { alert(t('selectPrompt')); return; }
   buildTable({ scroll: true });
 });

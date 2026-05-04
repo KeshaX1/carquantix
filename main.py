@@ -13,6 +13,7 @@ import time
 import secrets
 import smtplib
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -2424,12 +2425,21 @@ def country_indicators(country_code):
     if cached and now - cached["timestamp"] < COUNTRY_INDICATOR_CACHE_TTL:
         return jsonify(cached["data"])
 
-    metrics = {}
-    for key, indicator in COUNTRY_INDICATOR_DEFS.items():
+    def load_metric(metric_key, indicator_code):
         try:
-            metrics[key] = fetch_latest_country_indicator(code, indicator["code"])
+            return metric_key, fetch_latest_country_indicator(code, indicator_code)
         except requests.RequestException:
-            metrics[key] = {"value": None, "year": ""}
+            return metric_key, {"value": None, "year": ""}
+
+    metrics = {}
+    with ThreadPoolExecutor(max_workers=len(COUNTRY_INDICATOR_DEFS)) as executor:
+        futures = [
+            executor.submit(load_metric, key, indicator["code"])
+            for key, indicator in COUNTRY_INDICATOR_DEFS.items()
+        ]
+        for future in as_completed(futures):
+            key, value = future.result()
+            metrics[key] = value
 
     data = {"country_code": code, "metrics": metrics, "source": "World Bank"}
     COUNTRY_INDICATOR_CACHE[code] = {"timestamp": now, "data": data}
