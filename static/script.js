@@ -2301,13 +2301,17 @@ function initCategoryMenu() {
 
   const closeCategoryMenu = () => {
     categoryMenu.classList.remove('open');
+    categoryMenuView = 'root';
     categoryMenuTrigger.setAttribute('aria-expanded', 'false');
     categoryMenu.setAttribute('aria-hidden', 'true');
   };
 
   categoryMenuTrigger.addEventListener('click', () => {
     const willOpen = !categoryMenu.classList.contains('open');
-    if (willOpen) renderCategoryMenu();
+    if (willOpen) {
+      categoryMenuView = 'root';
+      renderCategoryMenu();
+    }
     categoryMenu.classList.toggle('open', willOpen);
     categoryMenuTrigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
     categoryMenu.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
@@ -2333,6 +2337,7 @@ let activeCatalog = 'cars';
 const brandSelectionByCatalog = {};
 let activeBrand = 'all';
 let selectedCountries = [];
+let categoryMenuView = 'root';
 const countryDataCache = new Map();
 const INVENTORY_MAP = { cars: VEHICLES, motorcycles: MOTORCYCLES };
 const MOBILE_SPLIT_QUERY = '(max-width: 760px)';
@@ -2948,6 +2953,25 @@ const COUNTRY_CODE_BY_NAME = {
   'Vietnam': 'VNM',
 };
 
+const COUNTRY_ISO2_BY_NAME = {
+  'Austria': 'AT',
+  'China': 'CN',
+  'Czechia': 'CZ',
+  'France': 'FR',
+  'Germany': 'DE',
+  'Italy': 'IT',
+  'Japan': 'JP',
+  'Netherlands': 'NL',
+  'Romania': 'RO',
+  'South Korea': 'KR',
+  'Spain': 'ES',
+  'Sweden': 'SE',
+  'Turkey': 'TR',
+  'UK': 'GB',
+  'USA': 'US',
+  'Vietnam': 'VN',
+};
+
 const COUNTRY_INDICATORS = [
   { key: 'gdpPerCapita', code: 'NY.GDP.PCAP.CD', format: 'currency', higherIsBetter: true },
   { key: 'gniPerCapita', code: 'NY.GNP.PCAP.CD', format: 'currency', higherIsBetter: true },
@@ -3181,6 +3205,16 @@ function getCountryNameByCode(code) {
   return Object.keys(COUNTRY_CODE_BY_NAME).find(name => COUNTRY_CODE_BY_NAME[name] === code) || code;
 }
 
+function getCountryFlag(countryName) {
+  const iso2 = COUNTRY_ISO2_BY_NAME[countryName];
+  if (!iso2 || iso2.length !== 2) return '??';
+  return iso2
+    .toUpperCase()
+    .split('')
+    .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+    .join('');
+}
+
 async function loadCountryData(countryName) {
   const code = COUNTRY_CODE_BY_NAME[countryName];
   if (!code) throw new Error(`Missing country code for ${countryName}`);
@@ -3311,35 +3345,74 @@ function createCategoryFilterButton(entry, kind) {
   return button;
 }
 
+function createCountryCard(countryName) {
+  const button = document.createElement('button');
+  const selectedIndex = selectedCountries.indexOf(countryName);
+  const isSelected = selectedIndex !== -1;
+  const iso2 = COUNTRY_ISO2_BY_NAME[countryName] || COUNTRY_CODE_BY_NAME[countryName] || '';
+  button.type = 'button';
+  button.className = `country-card-btn${isSelected ? ' active' : ''}`;
+  button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+  button.innerHTML = `
+    <span class="country-card-count">${isSelected ? selectedIndex + 1 : '&nbsp;'}</span>
+    <span class="country-card-visual">${getCountryFlag(countryName)}</span>
+    <span class="country-card-name">${countryName}</span>
+    <span class="country-card-meta">${iso2} · ${COUNTRY_CODE_BY_NAME[countryName] || ''}</span>
+  `;
+  button.addEventListener('click', () => {
+    toggleCountrySelection(countryName);
+  });
+  return button;
+}
+
+function renderCategoryRoot(inner) {
+  const countries = getCountryList();
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = 'category-entry-card';
+  card.innerHTML = `
+    <span class="category-entry-icon">🌐</span>
+    <span class="category-entry-copy">
+      <strong>${t('countriesTitle')}</strong>
+      <small>${countries.length} ${t('countriesTitle')}</small>
+    </span>
+  `;
+  card.addEventListener('click', () => {
+    categoryMenuView = 'countries';
+    renderCategoryMenu();
+  });
+  inner.appendChild(card);
+}
+
+function renderCountryCards(inner) {
+  const header = document.createElement('div');
+  header.className = 'category-menu-header';
+  header.innerHTML = `
+    <button type="button" class="category-back-btn" aria-label="Back">‹</button>
+    <h3>${t('countriesTitle')}</h3>
+  `;
+  header.querySelector('button').addEventListener('click', () => {
+    categoryMenuView = 'root';
+    renderCategoryMenu();
+  });
+
+  const grid = document.createElement('div');
+  grid.className = 'country-card-grid';
+  getCountryList().forEach(country => grid.appendChild(createCountryCard(country)));
+  inner.appendChild(header);
+  inner.appendChild(grid);
+}
+
 function renderCategoryMenu() {
   if (!categoryMenu) return;
-  const countries = getCountryList();
-  const brands = getBrandList();
-  const countryEntries = countries.map(country => ({ value: country, label: country }));
-  const brandEntries = [
-    { value: 'all', label: t('brandAll') },
-    ...brands.map(brand => ({ value: brand, label: brand })),
-  ];
-
   categoryMenu.innerHTML = '';
   const inner = document.createElement('div');
-  inner.className = 'category-menu-inner';
-
-  [
-    { title: t('countriesTitle'), kind: 'country', entries: countryEntries },
-    { title: t('brandLabel'), kind: 'brand', entries: brandEntries },
-  ].forEach(section => {
-    const sectionEl = document.createElement('section');
-    sectionEl.className = 'category-section';
-    const title = document.createElement('h3');
-    title.textContent = section.title;
-    const grid = document.createElement('div');
-    grid.className = 'category-filter-grid';
-    section.entries.forEach(entry => grid.appendChild(createCategoryFilterButton(entry, section.kind)));
-    sectionEl.appendChild(title);
-    sectionEl.appendChild(grid);
-    inner.appendChild(sectionEl);
-  });
+  inner.className = `category-menu-inner category-menu-inner--${categoryMenuView}`;
+  if (categoryMenuView === 'countries') {
+    renderCountryCards(inner);
+  } else {
+    renderCategoryRoot(inner);
+  }
 
   categoryMenu.appendChild(inner);
 }

@@ -2310,8 +2310,8 @@ input {
   top: 72px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(840px, calc(100vw - 36px));
-  min-height: 180px;
+  width: min(940px, calc(100vw - 36px));
+  min-height: 150px;
   border-radius: 18px;
   border: 1px solid rgba(255,255,255,0.08);
   background: linear-gradient(180deg, rgba(18,21,29,0.98), rgba(18,21,29,0.94));
@@ -2326,10 +2326,148 @@ input {
 }
 
 .category-menu-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   padding: 18px;
+}
+
+.category-menu-inner--root {
+  width: min(360px, calc(100vw - 72px));
+}
+
+.category-entry-card {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  min-height: 86px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.category-entry-card:hover {
+  border-color: rgba(0,174,255,0.65);
+  background: rgba(0,174,255,0.1);
+}
+
+.category-entry-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,#0b8df5,#08bdf0);
+  font-size: 1.55rem;
+}
+
+.category-entry-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.category-entry-copy strong {
+  font-size: 1.05rem;
+}
+
+.category-entry-copy small {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.category-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-menu-header h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.category-back-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.country-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  max-height: min(66vh, 620px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.country-card-btn {
+  min-height: 172px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.045);
+  color: var(--text);
+  padding: 14px;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.country-card-btn:hover,
+.country-card-btn.active {
+  border-color: rgba(0,174,255,0.7);
+  background: linear-gradient(180deg, rgba(0,174,255,0.18), rgba(255,255,255,0.04));
+}
+
+.country-card-count {
+  justify-self: end;
+  min-width: 26px;
+  min-height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.country-card-btn.active .country-card-count {
+  background: linear-gradient(135deg,#0b8df5,#08bdf0);
+  color: #00121e;
+}
+
+.country-card-visual {
+  align-self: center;
+  justify-self: center;
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.country-card-name {
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.country-card-meta {
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.86rem;
 }
 
 .category-section h3 {
@@ -2375,6 +2513,20 @@ body:not(.dark) .category-menu {
 body:not(.dark) .category-filter-btn {
   border-color: rgba(15,23,42,0.12);
   background: rgba(15,23,42,0.04);
+}
+
+body:not(.dark) .category-entry-card,
+body:not(.dark) .country-card-btn,
+body:not(.dark) .category-back-btn {
+  border-color: rgba(15,23,42,0.12);
+  background: rgba(15,23,42,0.04);
+}
+
+body:not(.dark) .country-card-btn:hover,
+body:not(.dark) .country-card-btn.active,
+body:not(.dark) .category-entry-card:hover {
+  border-color: rgba(0,174,255,0.55);
+  background: rgba(0,174,255,0.12);
 }
 
 .auth-area {
@@ -3165,13 +3317,25 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     min-height: 132px;
   }
   .category-menu-inner {
-    grid-template-columns: 1fr;
     gap: 14px;
     padding: 12px;
+  }
+  .category-menu-inner--root {
+    width: auto;
   }
   .category-filter-grid {
     grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
     max-height: 180px;
+  }
+  .country-card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    max-height: 62vh;
+  }
+  .country-card-btn {
+    min-height: 150px;
+  }
+  .country-card-visual {
+    font-size: 2.6rem;
   }
   .country-compare {
     padding: 12px;
