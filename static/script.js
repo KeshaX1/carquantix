@@ -2319,6 +2319,34 @@ function initCategoryMenu() {
 
   categoryMenu.addEventListener('click', (event) => {
     event.stopPropagation();
+    const categoryEntry = event.target.closest('.category-entry-card');
+    if (categoryEntry) {
+      event.preventDefault();
+      categoryMenuView = 'countries';
+      renderCategoryMenu();
+      categoryMenu.classList.add('open');
+      categoryMenuTrigger.setAttribute('aria-expanded', 'true');
+      categoryMenu.setAttribute('aria-hidden', 'false');
+      return;
+    }
+    const countryCard = event.target.closest('.country-card-btn');
+    if (countryCard) {
+      event.preventDefault();
+      toggleCountrySelection(countryCard.dataset.country);
+      categoryMenu.classList.add('open');
+      categoryMenuTrigger.setAttribute('aria-expanded', 'true');
+      categoryMenu.setAttribute('aria-hidden', 'false');
+      return;
+    }
+    const backButton = event.target.closest('.category-back-btn');
+    if (backButton) {
+      event.preventDefault();
+      categoryMenuView = 'root';
+      renderCategoryMenu();
+      categoryMenu.classList.add('open');
+      categoryMenuTrigger.setAttribute('aria-expanded', 'true');
+      categoryMenu.setAttribute('aria-hidden', 'false');
+    }
   });
 
   document.addEventListener('click', (event) => {
@@ -3356,6 +3384,7 @@ function createCountryCard(countryName) {
   const iso2 = COUNTRY_ISO2_BY_NAME[countryName] || COUNTRY_CODE_BY_NAME[countryName] || '';
   button.type = 'button';
   button.className = `country-card-btn${isSelected ? ' active' : ''}`;
+  button.dataset.country = countryName;
   button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
   button.innerHTML = `
     <span class="country-card-count">${isSelected ? selectedIndex + 1 : '&nbsp;'}</span>
@@ -3364,6 +3393,7 @@ function createCountryCard(countryName) {
     <span class="country-card-meta">${iso2} · ${COUNTRY_CODE_BY_NAME[countryName] || ''}</span>
   `;
   button.addEventListener('click', (event) => {
+    event.preventDefault();
     event.stopPropagation();
     toggleCountrySelection(countryName);
   });
@@ -3383,6 +3413,7 @@ function renderCategoryRoot(inner) {
     </span>
   `;
   card.addEventListener('click', (event) => {
+    event.preventDefault();
     event.stopPropagation();
     categoryMenuView = 'countries';
     renderCategoryMenu();
@@ -3398,6 +3429,7 @@ function renderCountryCards(inner) {
     <h3>${t('countriesTitle')}</h3>
   `;
   header.querySelector('button').addEventListener('click', (event) => {
+    event.preventDefault();
     event.stopPropagation();
     categoryMenuView = 'root';
     renderCategoryMenu();
