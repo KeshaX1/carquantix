@@ -1306,6 +1306,8 @@ const MOTORCYCLES = Array.isArray(globalThis?.Motorcycles) ? globalThis.Motorcyc
 const listEl = document.getElementById('itemList');
 const compareArea = document.getElementById('compareArea');
 const compareSlotGrid = document.getElementById('compareSlotGrid');
+const compareBuilderTitle = document.getElementById('compareBuilderTitle');
+const compareBuilderKicker = document.getElementById('compareBuilderKicker');
 const compareBuilderClearBtn = document.getElementById('compareBuilderClearBtn');
 const vehiclePickerModal = document.getElementById('vehiclePickerModal');
 const vehiclePickerGrid = document.getElementById('vehiclePickerGrid');
@@ -2697,6 +2699,93 @@ function buildCarDetailUrl(vehicle) {
 
 function currentInventory() {
   return INVENTORY_MAP[activeCatalog] || VEHICLES;
+}
+
+function isMotorcycleVehicle(vehicle) {
+  return (vehicle?.catalog || activeCatalog) === 'motorcycles' || Boolean(vehicle?.mimages || vehicle?.mrearImg);
+}
+
+function estimateVehicleDimensions(vehicle) {
+  const name = String(vehicle?.name || '').toLowerCase();
+  const engine = String(vehicle?.engine || '').toLowerCase();
+  const power = Number(vehicle?.power || 0);
+  const speed = Number(vehicle?.topSpeed || 0);
+  const price = getPriceMeta(vehicle?.price).amount;
+
+  if (isMotorcycleVehicle(vehicle)) {
+    let length = 208;
+    let width = 82;
+    let weight = 185;
+    if (/scooter|vespa|pm-01|125/.test(name)) {
+      length = 195; width = 74; weight = 135;
+    } else if (/tour|adventure|gs|tiger|africa|crf|norden|x-cape|srt|ds /.test(name)) {
+      length = 224; width = 91; weight = 235;
+    } else if (/sport|rr|r1|h2|hayabusa|panigale|brutale|ninja|cbr|gsx/.test(name)) {
+      length = 210; width = 78; weight = 200;
+    } else if (/cruiser|softail|street|scout|gunner|harley|indian|victory/.test(name)) {
+      length = 235; width = 92; weight = 285;
+    }
+    if (power >= 150) weight += 22;
+    if (power <= 25) weight -= 28;
+    return { length, width, weight: Math.max(95, weight) };
+  }
+
+  let length = 465;
+  let width = 184;
+  let weight = 1580;
+  if (/smart|a1|mini|fiat 500|abarth|spring|microlino|ami|twingo|aygo|picanto/.test(name)) {
+    length = 374; width = 169; weight = 1040;
+  } else if (/hatch|golf|a3|focus|civic|corolla|megane|i20|clio|polo|208|308/.test(name)) {
+    length = 430; width = 179; weight = 1360;
+  } else if (/suv|x3|x5|x6|x7|q3|q5|q7|q8|rav4|cr-v|hr-v|range rover|land rover|defender|urus|cayenne|tiguan|captur|tucson|sportage|duster|forester|outback|yangwang|u9/.test(name)) {
+    length = 485; width = 195; weight = 2150;
+  } else if (/truck|pickup|f-150|ram|silverado|ranger|hilux|tundra|cybertruck/.test(name)) {
+    length = 565; width = 203; weight = 2450;
+  } else if (/van|minivan|sienna|odyssey|carnival|transporter|multivan/.test(name)) {
+    length = 510; width = 198; weight = 2150;
+  } else if (/coupe|911|r8|amg gt|mustang|camaro|challenger|corvette|supra|z4|tt|chiron|bugatti|ferrari|lamborghini|mclaren|aston|bentley azure|wiesmann/.test(name)) {
+    length = 455; width = 193; weight = 1650;
+  } else if (/limousine|maybach|phantom|ghost|a8|s-class|7 series|i7|flying spur/.test(name)) {
+    length = 535; width = 195; weight = 2250;
+  } else if (/wagon|avant|touring|estate|allroad/.test(name)) {
+    length = 490; width = 187; weight = 1750;
+  }
+
+  if (engine.includes('kwh') || /tesla|byd|xpeng|zeekr|nio|lucid|rivian|polestar|vinfast|voyah/.test(name)) weight += 280;
+  if (power >= 700) weight += 180;
+  else if (power >= 450) weight += 90;
+  else if (power <= 80) weight -= 220;
+  if (Number.isFinite(price) && price > 500000) weight += 80;
+  if (speed >= 330) width += 4;
+
+  return {
+    length: Math.max(300, length),
+    width: Math.max(145, width),
+    weight: Math.max(700, weight),
+  };
+}
+
+function getVehicleDimensions(vehicle) {
+  const recorded = vehicle?.dimensions || {};
+  const estimated = estimateVehicleDimensions(vehicle);
+  return {
+    length: recorded.length ?? estimated.length,
+    width: recorded.width ?? estimated.width,
+    weight: recorded.weight ?? estimated.weight,
+  };
+}
+
+function updateCompareBuilderCopy() {
+  if (compareBuilderTitle) {
+    compareBuilderTitle.textContent = activeCatalog === 'motorcycles'
+      ? 'Compare Motorcycles Side-by-Side'
+      : 'Compare Cars Side-by-Side';
+  }
+  if (compareBuilderKicker) {
+    compareBuilderKicker.textContent = activeCatalog === 'motorcycles'
+      ? 'Motorcycle compare builder'
+      : 'Compare builder';
+  }
 }
 
 // util: safe image (use placeholder if image not present)
@@ -4315,6 +4404,10 @@ function renderList(filter = '') {
   setupLazyThumbs(listEl);
 }
 
+function syncSelectedCatalog() {
+  selected = selected.filter(vehicle => (vehicle.catalog || 'cars') === activeCatalog);
+}
+
 function getSelectedKey(vehicle) {
   return vehicle?._key || makeKey(vehicle?.catalog || 'cars', vehicle?.id);
 }
@@ -4377,9 +4470,10 @@ function renderCompareSlots() {
         <span class="compare-slot-remove" data-remove-slot="${index}" aria-label="Remove">x</span>
       `;
     } else {
+      const addLabel = activeCatalog === 'motorcycles' ? 'Add a motorcycle' : 'Add a vehicle';
       button.innerHTML = `
         <span class="compare-slot-plus">+</span>
-        <span>Add a vehicle</span>
+        <span>${addLabel}</span>
       `;
     }
     compareSlotGrid.appendChild(button);
@@ -4506,17 +4600,11 @@ function attachAddButtons() {
 // render selected area
 function renderSelected() {
   renderCompareSlots();
+  compareArea.classList.add('hidden');
   compareArea.innerHTML = '';
   compareArea.dataset.count = String(selected.length);
   if (selected.length === 0) {
     setMobileSidebarCollapsed(false);
-    const emptyNoteText = t('emptyNote');
-    compareArea.innerHTML = `
-      <div class="empty-block">
-        <p class="empty">${t('empty')}</p>
-        <p class="empty-note">${emptyNoteText === 'emptyNote' ? 'Prices reflect estimated market values and may vary by region.' : emptyNoteText}</p>
-      </div>
-    `;
     compTable.innerHTML = '';
     if (tableArea) tableArea.classList.add('hidden');
     renderCompareDecisionSection();
@@ -5218,7 +5306,7 @@ function buildTable(options = {}) {
     const computedCost = calculateCost(v);
     const costValue = (v.cost !== undefined && v.cost !== null && v.cost !== '') ? v.cost : computedCost;
     const origin = getVehicleOrigin(v) || '-';
-    const dimensions = v.dimensions || {};
+    const dimensions = getVehicleDimensions(v);
 
     tr.appendChild(td(v.name));
     tr.appendChild(td(origin));
@@ -5290,6 +5378,7 @@ function setCatalog(nextCatalog) {
   const next = INVENTORY_MAP[nextCatalog] ? nextCatalog : 'cars';
   activeCatalog = next;
   localStorage.setItem('catalogType', next);
+  syncSelectedCatalog();
   catalogButtons.forEach(btn => {
     const isActive = btn.dataset.catalog === next;
     btn.classList.toggle('active', isActive);
@@ -5298,6 +5387,7 @@ function setCatalog(nextCatalog) {
   activeBrand = brandSelectionByCatalog[activeCatalog] || 'all';
   buildBrandOptions();
   renderCategoryMenu();
+  updateCompareBuilderCopy();
   renderList(searchInput ? searchInput.value : '');
   renderSelected();
   applyTranslations();

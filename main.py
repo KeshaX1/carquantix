@@ -1051,11 +1051,45 @@ def build_compare_spec_rows(car_a, car_b):
             "winner": winner,
         }
 
+    def estimated_dimensions(car):
+        name = str(car.get("name") or "").lower()
+        engine = str(car.get("engine") or "").lower()
+        power = car.get("power") if isinstance(car.get("power"), (int, float)) else 0
+
+        length, width, weight = 465, 184, 1580
+        if re.search(r"smart|a1|mini|fiat 500|abarth|spring|microlino|ami|twingo|aygo|picanto", name):
+            length, width, weight = 374, 169, 1040
+        elif re.search(r"hatch|golf|a3|focus|civic|corolla|megane|i20|clio|polo|208|308", name):
+            length, width, weight = 430, 179, 1360
+        elif re.search(r"suv|x3|x5|x6|x7|q3|q5|q7|q8|rav4|cr-v|hr-v|range rover|land rover|defender|urus|cayenne|tiguan|captur|tucson|sportage|duster|forester|outback|yangwang|u9", name):
+            length, width, weight = 485, 195, 2150
+        elif re.search(r"truck|pickup|f-150|ram|silverado|ranger|hilux|tundra|cybertruck", name):
+            length, width, weight = 565, 203, 2450
+        elif re.search(r"van|minivan|sienna|odyssey|carnival|transporter|multivan", name):
+            length, width, weight = 510, 198, 2150
+        elif re.search(r"coupe|911|r8|amg gt|mustang|camaro|challenger|corvette|supra|z4|tt|chiron|bugatti|ferrari|lamborghini|mclaren|aston|bentley azure|wiesmann", name):
+            length, width, weight = 455, 193, 1650
+        elif re.search(r"limousine|maybach|phantom|ghost|a8|s-class|7 series|i7|flying spur", name):
+            length, width, weight = 535, 195, 2250
+        elif re.search(r"wagon|avant|touring|estate|allroad", name):
+            length, width, weight = 490, 187, 1750
+
+        if "kwh" in engine or re.search(r"tesla|byd|xpeng|zeekr|nio|lucid|rivian|polestar|vinfast|voyah", name):
+            weight += 280
+        if power >= 700:
+            weight += 180
+        elif power >= 450:
+            weight += 90
+        elif power <= 80:
+            weight -= 220
+
+        return {"length": length, "width": width, "weight": max(700, weight)}
+
     def dimension_row(label, key, unit):
         left_dimensions = car_a.get("dimensions") or {}
         right_dimensions = car_b.get("dimensions") or {}
-        left_value = left_dimensions.get(key)
-        right_value = right_dimensions.get(key)
+        left_value = left_dimensions.get(key, estimated_dimensions(car_a).get(key))
+        right_value = right_dimensions.get(key, estimated_dimensions(car_b).get(key))
         return {
             "label": label,
             "left_value": f"{left_value:g} {unit}" if isinstance(left_value, (int, float)) else "-",
