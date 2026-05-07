@@ -148,7 +148,7 @@ body.dark .brand-symbol-btn{
   gap:12px;
 }
 .compare-slot{
-  min-height:112px;
+  min-height:148px;
   border:1px solid rgba(86,166,255,0.48);
   border-radius:8px;
   background:rgba(8,14,24,0.58);
@@ -179,13 +179,14 @@ body.dark .brand-symbol-btn{
   position:relative;
   align-items:stretch;
   justify-content:flex-start;
-  gap:10px;
+  gap:14px;
+  padding:14px;
 }
 .compare-slot-filled img{
-  width:76px;
-  height:52px;
+  width:148px;
+  height:96px;
   object-fit:cover;
-  border-radius:7px;
+  border-radius:8px;
   flex:0 0 auto;
   background:#0b0f18;
 }
@@ -196,12 +197,12 @@ body.dark .brand-symbol-btn{
   gap:4px;
 }
 .compare-slot-meta strong{
-  font-size:0.9rem;
+  font-size:1rem;
   line-height:1.2;
   color:#fff;
 }
 .compare-slot-meta span{
-  font-size:0.75rem;
+  font-size:0.82rem;
   color:var(--muted);
 }
 .compare-slot-remove{
@@ -338,7 +339,8 @@ body.modal-open{overflow:hidden}
   .compare-builder{padding:14px}
   .compare-builder-head{align-items:stretch;flex-direction:column}
   .compare-slot-grid{grid-template-columns:1fr}
-  .compare-slot{min-height:86px}
+  .compare-slot{min-height:118px}
+  .compare-slot-filled img{width:128px;height:82px}
   .vehicle-picker-modal{padding:12px}
   .vehicle-picker-panel{width:calc(100vw - 24px);max-height:calc(100vh - 24px)}
   .vehicle-picker-grid{grid-template-columns:1fr;padding:14px}
