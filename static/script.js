@@ -1309,6 +1309,9 @@ const compareSlotGrid = document.getElementById('compareSlotGrid');
 const compareBuilderTitle = document.getElementById('compareBuilderTitle');
 const compareBuilderKicker = document.getElementById('compareBuilderKicker');
 const compareBuilderClearBtn = document.getElementById('compareBuilderClearBtn');
+const seoContent = document.getElementById('seoContent');
+const seoTopSlot = document.getElementById('seoTopSlot');
+const seoAfterBuilderSlot = document.getElementById('seoAfterBuilderSlot');
 const vehiclePickerModal = document.getElementById('vehiclePickerModal');
 const vehiclePickerGrid = document.getElementById('vehiclePickerGrid');
 const vehiclePickerTitle = document.getElementById('vehiclePickerTitle');
@@ -2784,6 +2787,14 @@ function updateCompareBuilderCopy() {
     compareBuilderKicker.textContent = activeCatalog === 'motorcycles'
       ? 'Motorcycle compare builder'
       : 'Compare builder';
+  }
+}
+
+function syncSeoContentPosition() {
+  if (!seoContent || !seoTopSlot || !seoAfterBuilderSlot) return;
+  const target = selected.length > 0 ? seoAfterBuilderSlot : seoTopSlot;
+  if (seoContent.parentElement !== target) {
+    target.appendChild(seoContent);
   }
 }
 
@@ -4600,6 +4611,7 @@ function attachAddButtons() {
 
 // render selected area
 function renderSelected() {
+  syncSeoContentPosition();
   renderCompareSlots();
   compareArea.classList.add('hidden');
   compareArea.innerHTML = '';

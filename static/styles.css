@@ -1408,6 +1408,9 @@ body.dark .site-footer,
 /* SEO links */
 .seo-content {
   color: var(--text);
+  width:min(1000px,100%);
+  margin:0 0 24px;
+  padding:0;
 }
 
 .seo-section {
