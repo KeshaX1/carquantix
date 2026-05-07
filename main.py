@@ -1051,6 +1051,18 @@ def build_compare_spec_rows(car_a, car_b):
             "winner": winner,
         }
 
+    def dimension_row(label, key, unit):
+        left_dimensions = car_a.get("dimensions") or {}
+        right_dimensions = car_b.get("dimensions") or {}
+        left_value = left_dimensions.get(key)
+        right_value = right_dimensions.get(key)
+        return {
+            "label": label,
+            "left_value": f"{left_value:g} {unit}" if isinstance(left_value, (int, float)) else "-",
+            "right_value": f"{right_value:g} {unit}" if isinstance(right_value, (int, float)) else "-",
+            "winner": None,
+        }
+
     consumption_a = car_a.get("consumption") or {}
     consumption_b = car_b.get("consumption") or {}
     same_consumption_unit = consumption_a.get("unit") and consumption_a.get("unit") == consumption_b.get("unit")
@@ -1071,6 +1083,9 @@ def build_compare_spec_rows(car_a, car_b):
             "right_value": car_b.get("engine") or "-",
             "winner": None,
         },
+        dimension_row("Length", "length", "cm"),
+        dimension_row("Width", "width", "cm"),
+        dimension_row("Weight", "weight", "kg"),
         {
             "label": "Price",
             "left_value": format_display_price(car_a.get("price")),

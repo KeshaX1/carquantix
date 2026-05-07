@@ -847,7 +847,7 @@ body:not(.dark) .decision-tradeoff-list li{
 }
 
 .table-wrap{overflow:auto;border-radius:10px;background:rgba(255,255,255,0.01);padding:6px}
-table{width:100%;border-collapse:collapse;min-width:720px}
+table{width:100%;border-collapse:collapse;min-width:960px}
 th,td{padding:12px 14px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
 th{color:var(--muted);font-weight:600}
 .race-links{

@@ -11,11 +11,11 @@
 
 // Dataset: update image paths or replace with placeholders
 const VEHICLES = [
-  { id: 'R8',              name: '2024 Audi R8',       power:570, acc:3.2, topSpeed:330, engine: '5.2 V10', price: '$239.800', img: '/static/images/audiR8.jpg', rearImg: '/static/rearimg/audiR8-rear.jpg', consumption: { value: 14.8, unit: 'L/100km' }},
+  { id: 'R8',              name: '2024 Audi R8',       power:570, acc:3.2, topSpeed:330, engine: '5.2 V10', price: '$239.800', img: '/static/images/audiR8.jpg', rearImg: '/static/rearimg/audiR8-rear.jpg', consumption: { value: 14.8, unit: 'L/100km' }, dimensions: { length: 442.9, width: 194, weight: 1590 }},
 
-  { id: 'A1',              name: '2024 Audi A1',       power:110, acc:10.5, topSpeed:194, engine: '30 TFSI', price: '$22.490', img: '/static/images/audiA1.png', rearImg: '/static/rearimg/audiA1-rear.png', consumption: { value: 5.4, unit: 'L/100km' }},
+  { id: 'A1',              name: '2024 Audi A1',       power:110, acc:10.5, topSpeed:194, engine: '30 TFSI', price: '$22.490', img: '/static/images/audiA1.png', rearImg: '/static/rearimg/audiA1-rear.png', consumption: { value: 5.4, unit: 'L/100km' }, dimensions: { length: 402.9, width: 174, weight: 1125 }},
 
-  { id: 'A2',              name: '2001 Audi A2',       power:173, acc:12.3, topSpeed:173, engine: '1.4i 16V', price: '$3.990', img: '/static/images/audiA2.png', rearImg: '/static/rearimg/audiA2-rear.png', consumption: { value: 6.5, unit: 'L/100km' }},
+  { id: 'A2',              name: '2001 Audi A2',       power:173, acc:12.3, topSpeed:173, engine: '1.4i 16V', price: '$3.990', img: '/static/images/audiA2.png', rearImg: '/static/rearimg/audiA2-rear.png', consumption: { value: 6.5, unit: 'L/100km' }, dimensions: { length: 382.6, width: 167.3, weight: 895 }},
 
   { id: 'A3',              name: '2024 Audi A3',       power:204, acc:6.3, topSpeed:250, engine: '40 TFSI', price: '$29.470', img: '/static/images/audiA3.png', rearImg: '/static/rearimg/audiA3-rear.png', consumption: { value: 6.3, unit: 'L/100km' }},
 
@@ -1412,7 +1412,7 @@ const TRANSLATIONS = {
     remove: 'Remove',
     details: 'Details',
     tableTitle: 'Comparison Table',
-    tableHeaders: ['Model','Country','Power (CV)','0-100 (s)','Top Speed (km/h)','Engine','Price','Consumption','Cost'],
+    tableHeaders: ['Model','Country','Power (CV)','0-100 (s)','Top Speed (km/h)','Engine','Length','Width','Weight','Price','Consumption','Cost'],
     priceLabel: 'Price:',
     originLabel: 'Origin:',
     zeroToHundred: '0-100:',
@@ -1517,7 +1517,7 @@ const TRANSLATIONS = {
     remove: 'Kaldır',
     details: 'Detay',
     tableTitle: 'Karşılaştırma Tablosu',
-    tableHeaders: ['Model','Ülke','Güç (BG)','0-100 (sn)','Azami Hız (km/sa)','Motor','Fiyat','Tüketim','Maliyet'],
+    tableHeaders: ['Model','Ülke','Güç (BG)','0-100 (sn)','Azami Hız (km/sa)','Motor','Uzunluk','Genişlik','Ağırlık','Fiyat','Tüketim','Maliyet'],
     priceLabel: 'Fiyat:',
     originLabel: 'Ulkesi:',
     zeroToHundred: '0-100:',
@@ -1611,7 +1611,7 @@ const TRANSLATIONS = {
     remove: 'Entfernen',
     details: 'Details',
     tableTitle: 'Vergleichstabelle',
-    tableHeaders: ['Modell','Land','Leistung (PS)','0-100 (s)','Vmax (km/h)','Motor','Preis','Verbrauch','Kosten'],
+    tableHeaders: ['Modell','Land','Leistung (PS)','0-100 (s)','Vmax (km/h)','Motor','Laenge','Breite','Gewicht','Preis','Verbrauch','Kosten'],
     priceLabel: 'Preis:',
     originLabel: 'Herkunft:',
     zeroToHundred: '0-100:',
@@ -1686,7 +1686,7 @@ const TRANSLATIONS = {
     remove: 'Retirer',
     details: 'Details',
     tableTitle: 'Tableau comparatif',
-    tableHeaders: ['Modèle','Pays','Puissance (ch)','0-100 (s)','Vitesse max (km/h)','Moteur','Prix','Consommation','Coût'],
+    tableHeaders: ['Modèle','Pays','Puissance (ch)','0-100 (s)','Vitesse max (km/h)','Moteur','Longueur','Largeur','Poids','Prix','Consommation','Coût'],
     priceLabel: 'Prix :',
     originLabel: 'Origine :',
     zeroToHundred: '0-100 :',
@@ -1761,7 +1761,7 @@ const TRANSLATIONS = {
     remove: 'Quitar',
     details: 'Detalles',
     tableTitle: 'Tabla comparativa',
-    tableHeaders: ['Modelo','País','Potencia (CV)','0-100 (s)','Vel. máxima (km/h)','Motor','Precio','Consumo','Costo'],
+    tableHeaders: ['Modelo','País','Potencia (CV)','0-100 (s)','Vel. máxima (km/h)','Motor','Largo','Ancho','Peso','Precio','Consumo','Costo'],
     priceLabel: 'Precio:',
     originLabel: 'Origen:',
     zeroToHundred: '0-100:',
@@ -1957,7 +1957,7 @@ TRANSLATIONS.ru = {
   remove: 'Удалить',
   details: 'Подробнее',
   tableTitle: 'Таблица сравнения',
-  tableHeaders: ['Модель', 'Страна', 'Мощность (л.с.)', '0-100 (с)', 'Макс. скорость (км/ч)', 'Двигатель', 'Цена', 'Расход', 'Стоимость'],
+  tableHeaders: ['Модель', 'Страна', 'Мощность (л.с.)', '0-100 (с)', 'Макс. скорость (км/ч)', 'Двигатель', 'Длина', 'Ширина', 'Вес', 'Цена', 'Расход', 'Стоимость'],
   priceLabel: 'Цена:',
   originLabel: 'Страна:',
   zeroToHundred: '0-100:',
@@ -3660,6 +3660,16 @@ function formatCostValue(value) {
   return String(value);
 }
 
+function formatDimensionValue(value, unit) {
+  if (value === null || value === undefined || value === '') return '-';
+  const num = Number(value);
+  if (!Number.isFinite(num)) return String(value);
+  const formatted = new Intl.NumberFormat(getLocaleForLang(currentLang), {
+    maximumFractionDigits: Number.isInteger(num) ? 0 : 1,
+  }).format(num);
+  return `${formatted} ${unit}`;
+}
+
 function getStoredNumber(key, fallback, maxValue = Infinity) {
   const raw = localStorage.getItem(key);
   if (raw === null || raw === '') return fallback;
@@ -5030,6 +5040,7 @@ function buildTable(options = {}) {
     const computedCost = calculateCost(v);
     const costValue = (v.cost !== undefined && v.cost !== null && v.cost !== '') ? v.cost : computedCost;
     const origin = getVehicleOrigin(v) || '-';
+    const dimensions = v.dimensions || {};
 
     tr.appendChild(td(v.name));
     tr.appendChild(td(origin));
@@ -5037,6 +5048,9 @@ function buildTable(options = {}) {
     tr.appendChild(td(v.acc, Number(v.acc) === minAcc));
     tr.appendChild(td(v.topSpeed, Number(v.topSpeed) === maxTop));
     tr.appendChild(td(v.engine));
+    tr.appendChild(td(formatDimensionValue(dimensions.length, 'cm')));
+    tr.appendChild(td(formatDimensionValue(dimensions.width, 'cm')));
+    tr.appendChild(td(formatDimensionValue(dimensions.weight, 'kg')));
     tr.appendChild(td(formatPrice(v.price) || '-'));
     tr.appendChild(td(consumptionText, false, 'col-consumption'));
     tr.appendChild(td(formatCostValue(costValue), false, 'col-cost'));
