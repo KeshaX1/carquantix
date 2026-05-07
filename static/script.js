@@ -1305,6 +1305,15 @@ const MOTORCYCLES = Array.isArray(globalThis?.Motorcycles) ? globalThis.Motorcyc
 
 const listEl = document.getElementById('itemList');
 const compareArea = document.getElementById('compareArea');
+const compareSlotGrid = document.getElementById('compareSlotGrid');
+const compareBuilderClearBtn = document.getElementById('compareBuilderClearBtn');
+const vehiclePickerModal = document.getElementById('vehiclePickerModal');
+const vehiclePickerGrid = document.getElementById('vehiclePickerGrid');
+const vehiclePickerTitle = document.getElementById('vehiclePickerTitle');
+const vehiclePickerKicker = document.getElementById('vehiclePickerKicker');
+const vehiclePickerCloseBtn = document.getElementById('vehiclePickerCloseBtn');
+const vehiclePickerBackBtn = document.getElementById('vehiclePickerBackBtn');
+const vehiclePickerSearch = document.getElementById('vehiclePickerSearch');
 const compareDecisionArea = document.getElementById('compareDecisionArea');
 const compareDecisionVerdicts = document.getElementById('compareDecisionVerdicts');
 const compareDecisionTradeoffs = document.getElementById('compareDecisionTradeoffs');
@@ -2374,10 +2383,13 @@ let activeSort = null;
 let activeCatalog = 'cars';
 const brandSelectionByCatalog = {};
 let activeBrand = 'all';
+let vehiclePickerSlotIndex = 0;
+let vehiclePickerBrand = null;
 let selectedCountries = [];
 let categoryMenuView = 'root';
 const countryDataCache = new Map();
 const INVENTORY_MAP = { cars: VEHICLES, motorcycles: MOTORCYCLES };
+const QUICK_COMPARE_SLOT_COUNT = 5;
 const MOBILE_SPLIT_QUERY = '(max-width: 760px)';
 let mobileVehicleToggleBtn = null;
 const savedCatalog = localStorage.getItem('catalogType');
@@ -4303,31 +4315,197 @@ function renderList(filter = '') {
   setupLazyThumbs(listEl);
 }
 
+function getSelectedKey(vehicle) {
+  return vehicle?._key || makeKey(vehicle?.catalog || 'cars', vehicle?.id);
+}
+
+function findInventoryVehicle(catalog, id) {
+  const source = INVENTORY_MAP[catalog] || VEHICLES;
+  return source.find(item => String(item.id) === String(id));
+}
+
+function addVehicleToSelection(vehicle, catalog = activeCatalog, slotIndex = null) {
+  if (!vehicle) return false;
+  const key = makeKey(catalog, vehicle.id);
+  const existingIndex = selected.findIndex(item => getSelectedKey(item) === key);
+  if (existingIndex !== -1 && existingIndex !== slotIndex) {
+    return false;
+  }
+
+  const nextVehicle = { ...vehicle, _key: key, catalog };
+  if (Number.isInteger(slotIndex) && slotIndex >= 0 && slotIndex < QUICK_COMPARE_SLOT_COUNT) {
+    if (slotIndex < selected.length) {
+      selected[slotIndex] = nextVehicle;
+    } else if (selected.length < compareLimit) {
+      selected.push(nextVehicle);
+    } else {
+      alert(hasPremiumAccess ? t('maxComparePremium') : t('maxCompare'));
+      return false;
+    }
+  } else {
+    if (selected.length >= compareLimit) {
+      alert(hasPremiumAccess ? t('maxComparePremium') : t('maxCompare'));
+      return false;
+    }
+    selected.push(nextVehicle);
+  }
+
+  if (selected.length === 1) {
+    setMobileSidebarCollapsed(true);
+  }
+  renderSelected();
+  return true;
+}
+
+function renderCompareSlots() {
+  if (!compareSlotGrid) return;
+  compareSlotGrid.innerHTML = '';
+  for (let index = 0; index < QUICK_COMPARE_SLOT_COUNT; index += 1) {
+    const vehicle = selected[index];
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = vehicle ? 'compare-slot compare-slot-filled' : 'compare-slot compare-slot-empty';
+    button.dataset.slotIndex = String(index);
+    if (vehicle) {
+      const thumb = safeImg(resolveMainImage(vehicle), vehicle.name);
+      button.innerHTML = `
+        <img src="${thumb}" alt="${vehicle.name}" loading="lazy" decoding="async" />
+        <span class="compare-slot-meta">
+          <strong>${vehicle.name}</strong>
+          <span>${vehicle.power} CV - ${vehicle.topSpeed} km/h</span>
+        </span>
+        <span class="compare-slot-remove" data-remove-slot="${index}" aria-label="Remove">x</span>
+      `;
+    } else {
+      button.innerHTML = `
+        <span class="compare-slot-plus">+</span>
+        <span>Add a vehicle</span>
+      `;
+    }
+    compareSlotGrid.appendChild(button);
+  }
+
+  compareSlotGrid.querySelectorAll('.compare-slot').forEach(button => {
+    button.addEventListener('click', () => openVehiclePicker(Number(button.dataset.slotIndex || 0)));
+  });
+  compareSlotGrid.querySelectorAll('.compare-slot-remove').forEach(removeBtn => {
+    removeBtn.addEventListener('click', event => {
+      event.stopPropagation();
+      const index = Number(removeBtn.dataset.removeSlot);
+      selected.splice(index, 1);
+      renderSelected();
+    });
+  });
+}
+
+function getPickerBrandEntries() {
+  const grouped = new Map();
+  currentInventory().forEach(vehicle => {
+    const brand = getBrandLabel(vehicle.name);
+    if (!grouped.has(brand)) grouped.set(brand, []);
+    grouped.get(brand).push(vehicle);
+  });
+  return Array.from(grouped.entries())
+    .map(([brand, vehicles]) => ({ brand, vehicles }))
+    .sort((a, b) => a.brand.localeCompare(b.brand));
+}
+
+function openVehiclePicker(slotIndex = selected.length) {
+  if (!vehiclePickerModal || !vehiclePickerGrid) return;
+  vehiclePickerSlotIndex = Math.min(Math.max(Number(slotIndex) || 0, 0), QUICK_COMPARE_SLOT_COUNT - 1);
+  vehiclePickerBrand = null;
+  if (vehiclePickerSearch) vehiclePickerSearch.value = '';
+  vehiclePickerModal.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  renderVehiclePickerBrands();
+}
+
+function closeVehiclePicker() {
+  if (!vehiclePickerModal) return;
+  vehiclePickerModal.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+}
+
+function renderVehiclePickerBrands() {
+  if (!vehiclePickerGrid) return;
+  const query = (vehiclePickerSearch?.value || '').trim().toLowerCase();
+  if (vehiclePickerTitle) vehiclePickerTitle.textContent = 'Choose a brand';
+  if (vehiclePickerKicker) vehiclePickerKicker.textContent = activeCatalog === 'motorcycles' ? 'Add motorcycle' : 'Add vehicle';
+  if (vehiclePickerBackBtn) vehiclePickerBackBtn.classList.add('hidden');
+  vehiclePickerGrid.innerHTML = '';
+
+  getPickerBrandEntries()
+    .filter(entry => !query || entry.brand.toLowerCase().includes(query))
+    .forEach(entry => {
+      const representative = entry.vehicles[0];
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'vehicle-picker-card';
+      card.innerHTML = `
+        <span class="model-count">${entry.vehicles.length} ${entry.vehicles.length === 1 ? 'Model' : 'Models'}</span>
+        <img src="${safeImg(resolveMainImage(representative), entry.brand)}" alt="${entry.brand}" loading="lazy" decoding="async" />
+        <strong>${entry.brand}</strong>
+        <small>${getVehicleOrigin(representative) || 'Vehicle brand'}</small>
+      `;
+      card.addEventListener('click', () => {
+        vehiclePickerBrand = entry.brand;
+        if (vehiclePickerSearch) vehiclePickerSearch.value = '';
+        renderVehiclePickerModels();
+      });
+      vehiclePickerGrid.appendChild(card);
+    });
+}
+
+function renderVehiclePickerModels() {
+  if (!vehiclePickerGrid || !vehiclePickerBrand) return;
+  const query = (vehiclePickerSearch?.value || '').trim().toLowerCase();
+  const models = currentInventory().filter(vehicle => {
+    if (getBrandLabel(vehicle.name) !== vehiclePickerBrand) return false;
+    if (!query) return true;
+    return `${vehicle.name} ${vehicle.engine}`.toLowerCase().includes(query);
+  });
+
+  if (vehiclePickerTitle) vehiclePickerTitle.textContent = vehiclePickerBrand;
+  if (vehiclePickerKicker) vehiclePickerKicker.textContent = 'Choose a model';
+  if (vehiclePickerBackBtn) vehiclePickerBackBtn.classList.remove('hidden');
+  vehiclePickerGrid.innerHTML = '';
+
+  models.forEach(vehicle => {
+    const key = makeKey(activeCatalog, vehicle.id);
+    const isSelected = selected.some(item => getSelectedKey(item) === key);
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'vehicle-picker-card';
+    card.disabled = isSelected && getSelectedKey(selected[vehiclePickerSlotIndex]) !== key;
+    card.innerHTML = `
+      <span class="model-count">${vehicle.power} CV - ${vehicle.topSpeed} km/h</span>
+      <img src="${safeImg(resolveMainImage(vehicle), vehicle.name)}" alt="${vehicle.name}" loading="lazy" decoding="async" />
+      <strong>${vehicle.name}</strong>
+      <small>${vehicle.engine}</small>
+    `;
+    card.addEventListener('click', () => {
+      if (addVehicleToSelection(vehicle, activeCatalog, vehiclePickerSlotIndex)) {
+        closeVehiclePicker();
+      }
+    });
+    vehiclePickerGrid.appendChild(card);
+  });
+}
+
 // attach add listeners
 function attachAddButtons() {
   listEl.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const parsed = parseKey(btn.dataset.id);
-      const source = parsed.catalog === 'motorcycles' ? MOTORCYCLES : VEHICLES;
-      const veh = source.find(x => String(x.id) === parsed.id);
-      if (!veh) return;
-      const key = makeKey(parsed.catalog, parsed.id);
-      if (selected.find(s => (s._key || makeKey(s.catalog || 'cars', s.id)) === key)) return;
-      if (selected.length >= compareLimit) {
-        alert(hasPremiumAccess ? t('maxComparePremium') : t('maxCompare'));
-        return;
-      }
-      selected.push({ ...veh, _key: key, catalog: parsed.catalog });
-      if (selected.length === 1) {
-        setMobileSidebarCollapsed(true);
-      }
-      renderSelected();
+      const veh = findInventoryVehicle(parsed.catalog, parsed.id);
+      addVehicleToSelection(veh, parsed.catalog);
     });
   });
 }
 
 // render selected area
 function renderSelected() {
+  renderCompareSlots();
   compareArea.innerHTML = '';
   compareArea.dataset.count = String(selected.length);
   if (selected.length === 0) {
@@ -4441,7 +4619,7 @@ function renderSelected() {
   compareArea.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
-      selected = selected.filter(s => (s._key || makeKey(s.catalog || 'cars', s.id)) !== id);
+      selected = selected.filter(s => getSelectedKey(s) !== id);
       renderSelected();
     });
   });
@@ -5067,6 +5245,37 @@ function buildTable(options = {}) {
 }
 
 // events
+if (compareBuilderClearBtn) {
+  compareBuilderClearBtn.addEventListener('click', () => {
+    selected = [];
+    renderSelected();
+  });
+}
+if (vehiclePickerCloseBtn) vehiclePickerCloseBtn.addEventListener('click', closeVehiclePicker);
+if (vehiclePickerModal) {
+  vehiclePickerModal.querySelectorAll('[data-close-picker="1"]').forEach(el => {
+    el.addEventListener('click', closeVehiclePicker);
+  });
+}
+if (vehiclePickerBackBtn) {
+  vehiclePickerBackBtn.addEventListener('click', () => {
+    vehiclePickerBrand = null;
+    if (vehiclePickerSearch) vehiclePickerSearch.value = '';
+    renderVehiclePickerBrands();
+  });
+}
+if (vehiclePickerSearch) {
+  vehiclePickerSearch.addEventListener('input', () => {
+    if (vehiclePickerBrand) renderVehiclePickerModels();
+    else renderVehiclePickerBrands();
+  });
+}
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && vehiclePickerModal && !vehiclePickerModal.classList.contains('hidden')) {
+    closeVehiclePicker();
+  }
+});
+
 const sortButtons = Array.from(document.querySelectorAll('#filterBar button'));
 function setSort(sortKey) {
   activeSort = sortKey || null;

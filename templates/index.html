@@ -55,7 +55,7 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260507-dimensions1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260507-compare-builder1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -235,6 +235,17 @@
         </div>
         <div id="countryCompareContent" class="country-compare-content"></div>
         <p id="countryCompareSource" class="country-compare-source">Economic indicators load from the World Bank open data API.</p>
+      </section>
+
+      <section class="compare-builder" aria-label="compare cars side by side">
+        <div class="compare-builder-head">
+          <div>
+            <div class="section-kicker">Compare builder</div>
+            <h2>Compare Cars Side-by-Side</h2>
+          </div>
+          <button id="compareBuilderClearBtn" class="btn muted" type="button">Clear</button>
+        </div>
+        <div id="compareSlotGrid" class="compare-slot-grid" aria-live="polite"></div>
       </section>
 
       <section id="compareArea" class="compare-area" aria-live="polite">
@@ -481,6 +492,23 @@
   {% if paddle_client_token %}
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   {% endif %}
-  <script src="{{ url_for('static', filename='script.js', v='20260507-dimensions1') }}"></script>
+  <div id="vehiclePickerModal" class="vehicle-picker-modal hidden" role="dialog" aria-modal="true" aria-labelledby="vehiclePickerTitle">
+    <div class="vehicle-picker-backdrop" data-close-picker="1"></div>
+    <div class="vehicle-picker-panel">
+      <div class="vehicle-picker-head">
+        <div>
+          <div id="vehiclePickerKicker" class="section-kicker">Add vehicle</div>
+          <h2 id="vehiclePickerTitle">Choose a brand</h2>
+        </div>
+        <button id="vehiclePickerCloseBtn" class="vehicle-picker-close" type="button" aria-label="Close">x</button>
+      </div>
+      <div class="vehicle-picker-tools">
+        <button id="vehiclePickerBackBtn" class="btn muted hidden" type="button">Brands</button>
+        <input id="vehiclePickerSearch" type="search" placeholder="Search vehicle..." aria-label="Search vehicle" />
+      </div>
+      <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='script.js', v='20260507-compare-builder1') }}"></script>
 </body>
 </html>
