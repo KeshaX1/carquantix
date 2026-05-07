@@ -2416,7 +2416,7 @@ function getVehiclePanelLabel() {
 
 function updateMobileVehicleToggle() {
   if (!mobileVehicleToggleBtn) return;
-  const shouldShow = isMobileSplitLayout() && selected.length > 0;
+  const shouldShow = false;
   const isCollapsed = document.body.classList.contains('mobile-sidebar-collapsed');
   const panelLabel = getVehiclePanelLabel();
   mobileVehicleToggleBtn.hidden = !shouldShow;
@@ -2431,8 +2431,7 @@ function updateMobileVehicleToggle() {
 }
 
 function setMobileSidebarCollapsed(collapsed) {
-  const shouldCollapse = Boolean(collapsed) && isMobileSplitLayout() && selected.length > 0;
-  document.body.classList.toggle('mobile-sidebar-collapsed', shouldCollapse);
+  document.body.classList.remove('mobile-sidebar-collapsed');
   updateMobileVehicleToggle();
 }
 
@@ -4346,6 +4345,7 @@ function setupLazyThumbs(container) {
 
 // render sidebar list
 function renderList(filter = '') {
+  if (!listEl) return;
   listEl.innerHTML = '';
   const q = filter.trim().toLowerCase();
   const brandFilter = activeBrand && activeBrand !== 'all' ? activeBrand.toLowerCase() : '';
@@ -4588,6 +4588,7 @@ function renderVehiclePickerModels() {
 
 // attach add listeners
 function attachAddButtons() {
+  if (!listEl) return;
   listEl.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const parsed = parseKey(btn.dataset.id);
@@ -5463,7 +5464,9 @@ function applySeoPreselect() {
 
 applySeoPreselect();
 
-searchInput.addEventListener('input', (e) => renderList(e.target.value));
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => renderList(e.target.value));
+}
 if (brandSelect) {
   brandSelect.addEventListener('change', (e) => {
     activeBrand = e.target.value || 'all';

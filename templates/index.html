@@ -55,7 +55,7 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260507-dimensions-all1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260507-picker-only1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -187,33 +187,6 @@
   </div>
   
   <div class="app">
-    <aside class="sidebar" aria-label="vehicles list">
-      <div class="sidebar-header">
-        <h2>Vehicles</h2>
-        <input id="search" type="search" placeholder="Search (model or brand)..." aria-label="search" />
-        <div class="brand-filter">
-          <div id="brandSymbolBar" class="brand-symbol-bar" aria-label="Brand filter" role="listbox"></div>
-          <select id="brandFilter" class="brand-select brand-select--hidden" aria-label="Brand filter"></select>
-        </div>
-      </div>
-
-      <div id="catalogToggle" class="catalog-toggle" role="tablist" aria-label="Vehicle type switcher">
-        <button type="button" data-catalog="cars" class="active" aria-selected="true" data-i18n="catalogCars">Cars</button>
-        <button type="button" data-catalog="motorcycles" aria-selected="false" data-i18n="catalogMotorcycles">Motorcycles</button>
-      </div>
-
-      <div id="filterBar">
-  <button data-sort="topSpeed">Top Speed</button>
-  <button data-sort="nameAZ">A-Z</button>
-  <button data-sort="acc">0-100 (s)</button>
-  <button data-sort="price">Price</button>
-</div>
-
-      <div id="itemList" class="list" role="list">
-        <!-- Items populated by script -->
-      </div>
-    </aside>
-
     <main class="main" role="main">
       <header class="main-header">
         <h1 class="main-title">
@@ -242,6 +215,10 @@
           <div>
             <div id="compareBuilderKicker" class="section-kicker">Compare builder</div>
             <h2 id="compareBuilderTitle">Compare Cars Side-by-Side</h2>
+            <div id="catalogToggle" class="catalog-toggle compare-builder-toggle" role="tablist" aria-label="Vehicle type switcher">
+              <button type="button" data-catalog="cars" class="active" aria-selected="true" data-i18n="catalogCars">Cars</button>
+              <button type="button" data-catalog="motorcycles" aria-selected="false" data-i18n="catalogMotorcycles">Motorcycles</button>
+            </div>
           </div>
           <button id="compareBuilderClearBtn" class="btn muted" type="button">Clear</button>
         </div>
@@ -509,6 +486,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260507-dimensions-all1') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260507-picker-only1') }}"></script>
 </body>
 </html>
