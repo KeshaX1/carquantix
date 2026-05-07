@@ -4472,12 +4472,16 @@ function renderCompareSlots() {
     button.dataset.slotIndex = String(index);
     if (vehicle) {
       const thumb = safeImg(resolveMainImage(vehicle), vehicle.name);
+      const detailsLink = (vehicle.catalog || 'cars') === 'cars'
+        ? `<a class="compare-slot-detail" href="${buildCarDetailUrl(vehicle)}">Details</a>`
+        : '';
       button.innerHTML = `
         <img src="${thumb}" alt="${vehicle.name}" loading="lazy" decoding="async" />
         <span class="compare-slot-meta">
           <strong>${vehicle.name}</strong>
           <span>${vehicle.power} CV - ${vehicle.topSpeed} km/h</span>
         </span>
+        ${detailsLink}
         <span class="compare-slot-remove" data-remove-slot="${index}" aria-label="Remove">x</span>
       `;
     } else {
@@ -4499,6 +4503,11 @@ function renderCompareSlots() {
       const index = Number(removeBtn.dataset.removeSlot);
       selected.splice(index, 1);
       renderSelected();
+    });
+  });
+  compareSlotGrid.querySelectorAll('.compare-slot-detail').forEach(link => {
+    link.addEventListener('click', event => {
+      event.stopPropagation();
     });
   });
 }
