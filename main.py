@@ -176,6 +176,16 @@ CURATED_COMPARE_REFERENCES = [
     ("GT-R", "720S"),
 ]
 FEATURED_COMPARE_REFERENCES = CURATED_COMPARE_REFERENCES + [
+    ("M8", "R8"),
+    ("M2", "TT RS"),
+    ("Z4", "TT RS"),
+    ("i4", "e-tron GT"),
+    ("iX", "e-tron"),
+    ("X6 M", "RS Q8"),
+    ("XM", "SQ8"),
+    ("550", "A6"),
+    ("420", "A5"),
+    ("320", "A4"),
     ("M3", "RS5"),
     ("M3", "C 63 AMG 2"),
     ("M3", "CT4"),
