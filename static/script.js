@@ -2378,12 +2378,10 @@ let inventoryNotifications = notificationsEnabled ? loadInventoryNotifications()
 
 let activeSort = null;
 let activeCatalog = 'cars';
-const selectedByCatalog = { cars: [], motorcycles: [] };
-let selected = selectedByCatalog.cars;
+let selected = [];
 
 function setSelected(nextSelected) {
   selected = Array.isArray(nextSelected) ? nextSelected : [];
-  selectedByCatalog[activeCatalog] = selected;
 }
 const brandSelectionByCatalog = {};
 let activeBrand = 'all';
@@ -4415,8 +4413,7 @@ function renderList(filter = '') {
 }
 
 function syncSelectedCatalog() {
-  if (!selectedByCatalog[activeCatalog]) selectedByCatalog[activeCatalog] = [];
-  selected = selectedByCatalog[activeCatalog];
+  return selected;
 }
 
 function getSelectedKey(vehicle) {
@@ -4430,9 +4427,6 @@ function findInventoryVehicle(catalog, id) {
 
 function addVehicleToSelection(vehicle, catalog = activeCatalog, slotIndex = null) {
   if (!vehicle) return false;
-  if (catalog !== activeCatalog && INVENTORY_MAP[catalog]) {
-    setCatalog(catalog);
-  }
   const key = makeKey(catalog, vehicle.id);
   const existingIndex = selected.findIndex(item => getSelectedKey(item) === key);
   if (existingIndex !== -1 && existingIndex !== slotIndex) {
