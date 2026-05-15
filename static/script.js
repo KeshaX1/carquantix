@@ -2264,14 +2264,7 @@ function renderFavorites() {
       const source = parsed.catalog === 'motorcycles' ? MOTORCYCLES : VEHICLES;
       const veh = source.find(x => String(x.id) === parsed.id);
       if (!veh) return;
-      const key = makeKey(parsed.catalog, parsed.id);
-      if (selected.find(s => (s._key || makeKey(s.catalog || 'cars', s.id)) === key)) return;
-      if (selected.length >= compareLimit) {
-        alert(hasPremiumAccess ? t('maxComparePremium') : t('maxCompare'));
-        return;
-      }
-      selected.push({ ...veh, _key: key, catalog: parsed.catalog });
-      renderSelected();
+      addVehicleToSelection(veh, parsed.catalog);
     });
   });
   favoritesListEl.querySelectorAll('.fav-btn').forEach(btn => {
@@ -2383,9 +2376,15 @@ function initCategoryMenu() {
 let favorites = favoritesEnabled ? loadFavorites() : [];
 let inventoryNotifications = notificationsEnabled ? loadInventoryNotifications() : [];
 
-let selected = [];
 let activeSort = null;
 let activeCatalog = 'cars';
+const selectedByCatalog = { cars: [], motorcycles: [] };
+let selected = selectedByCatalog.cars;
+
+function setSelected(nextSelected) {
+  selected = Array.isArray(nextSelected) ? nextSelected : [];
+  selectedByCatalog[activeCatalog] = selected;
+}
 const brandSelectionByCatalog = {};
 let activeBrand = 'all';
 let vehiclePickerSlotIndex = 0;
@@ -4416,7 +4415,8 @@ function renderList(filter = '') {
 }
 
 function syncSelectedCatalog() {
-  selected = selected.filter(vehicle => (vehicle.catalog || 'cars') === activeCatalog);
+  if (!selectedByCatalog[activeCatalog]) selectedByCatalog[activeCatalog] = [];
+  selected = selectedByCatalog[activeCatalog];
 }
 
 function getSelectedKey(vehicle) {
@@ -4430,6 +4430,9 @@ function findInventoryVehicle(catalog, id) {
 
 function addVehicleToSelection(vehicle, catalog = activeCatalog, slotIndex = null) {
   if (!vehicle) return false;
+  if (catalog !== activeCatalog && INVENTORY_MAP[catalog]) {
+    setCatalog(catalog);
+  }
   const key = makeKey(catalog, vehicle.id);
   const existingIndex = selected.findIndex(item => getSelectedKey(item) === key);
   if (existingIndex !== -1 && existingIndex !== slotIndex) {
@@ -4472,11 +4475,21 @@ function renderCompareSlots() {
     button.dataset.slotIndex = String(index);
     if (vehicle) {
       const thumb = safeImg(resolveMainImage(vehicle), vehicle.name);
+      const rearSrc = resolveRearImage(vehicle);
+      const rearThumb = rearSrc ? safeImg(rearSrc, `${vehicle.name} rear`) : null;
+      const imageHtml = rearThumb
+        ? `
+        <span class="compare-slot-images">
+          <img src="${thumb}" alt="${vehicle.name} front" loading="lazy" decoding="async" />
+          <img src="${rearThumb}" alt="${vehicle.name} rear" loading="lazy" decoding="async" />
+        </span>
+        `
+        : `<img src="${thumb}" alt="${vehicle.name}" loading="lazy" decoding="async" />`;
       const detailsLink = (vehicle.catalog || 'cars') === 'cars'
         ? `<a class="compare-slot-detail" href="${buildCarDetailUrl(vehicle)}">Details</a>`
         : '';
       button.innerHTML = `
-        <img src="${thumb}" alt="${vehicle.name}" loading="lazy" decoding="async" />
+        ${imageHtml}
         <span class="compare-slot-meta">
           <strong>${vehicle.name}</strong>
           <span>${vehicle.power} CV - ${vehicle.topSpeed} km/h</span>
@@ -4644,6 +4657,12 @@ function renderSelected() {
     const rearThumb = rearSrc ? safeImg(rearSrc, `${v.name} rear`) : null;
     const gallery = [thumb, rearThumb].filter(Boolean);
     const startSrc = gallery[0] || thumb;
+    const thumbFrames = gallery.map((src, imageIndex) => `
+      <div class="thumb-frame" style="--thumb-bg:url('${src}')">
+        <span class="thumb-badge">${imageIndex === 0 ? v.id : 'Rear'}</span>
+        <img class="thumb thumb-img" data-src="${src}" src="${src}" alt="${v.name}${imageIndex === 0 ? '' : ' rear'}" loading="eager" decoding="async" fetchpriority="high" />
+      </div>
+    `).join('');
     const catalog = v.catalog || 'cars';
     const key = v._key || makeKey(catalog, v.id);
     const origin = getVehicleOrigin(v);
@@ -4671,11 +4690,13 @@ function renderSelected() {
       )
       : '';
     card.innerHTML = `
-      <div class="thumb-row single">
-        <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
-          <span class="thumb-badge">${v.id}</span>
-          <img class="thumb thumb-img" data-src="${startSrc}" data-gallery="${gallery.join('|')}" data-index="0" src="${startSrc}" alt="${v.name}" loading="eager" decoding="async" fetchpriority="high" />
-        </div>
+      <div class="thumb-row ${gallery.length > 1 ? 'dual' : 'single'}">
+        ${thumbFrames || `
+          <div class="thumb-frame" style="--thumb-bg:url('${startSrc}')">
+            <span class="thumb-badge">${v.id}</span>
+            <img class="thumb thumb-img" data-src="${startSrc}" src="${startSrc}" alt="${v.name}" loading="eager" decoding="async" fetchpriority="high" />
+          </div>
+        `}
       </div>
       <div class="meta">
         <h4>${v.name}</h4>
@@ -4694,29 +4715,20 @@ function renderSelected() {
         </div>
       </div>
     `;
-    const mainThumb = card.querySelector('.thumb-img');
-    if (mainThumb) {
+    const cardThumbs = card.querySelectorAll('.thumb-img');
+    cardThumbs.forEach(mainThumb => {
       const applyVisual = () => {
         applyFitMode(mainThumb);
         applyCardAccent(card, mainThumb);
       };
       mainThumb.addEventListener('load', applyVisual);
       if (mainThumb.complete) applyVisual();
-      const galleryImgs = gallery.length ? gallery : [thumb].filter(Boolean);
       mainThumb.addEventListener('click', () => {
-        if (galleryImgs.length > 1) {
-          const nextIdx = (Number(mainThumb.dataset.index || 0) + 1) % galleryImgs.length;
-          const nextSrc = galleryImgs[nextIdx];
-          mainThumb.dataset.index = nextIdx;
-          mainThumb.dataset.src = nextSrc;
-          mainThumb.src = nextSrc;
-          return;
-        }
         if (mainThumb.dataset.src) {
           openLightbox(mainThumb.dataset.src);
         }
       });
-    }
+    });
     compareArea.appendChild(card);
   });
 
@@ -4729,7 +4741,7 @@ function renderSelected() {
   compareArea.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
-      selected = selected.filter(s => getSelectedKey(s) !== id);
+      setSelected(selected.filter(s => getSelectedKey(s) !== id));
       renderSelected();
     });
   });
@@ -5357,7 +5369,7 @@ function buildTable(options = {}) {
 // events
 if (compareBuilderClearBtn) {
   compareBuilderClearBtn.addEventListener('click', () => {
-    selected = [];
+    setSelected([]);
     renderSelected();
   });
 }
@@ -5470,7 +5482,7 @@ function applySeoPreselect() {
   if (!entry) return;
   const catalog = entry.catalog || 'cars';
   setCatalog(catalog);
-  selected = [];
+  setSelected([]);
   const source = catalog === 'motorcycles' ? MOTORCYCLES : VEHICLES;
   entry.ids.forEach(id => {
     const veh = source.find(x => String(x.id).toLowerCase() === String(id).toLowerCase());
@@ -5496,7 +5508,7 @@ if (brandSelect) {
     renderList(searchInput ? searchInput.value : '');
   });
 }
-clearBtn.addEventListener('click', () => { selected = []; renderSelected(); });
+clearBtn.addEventListener('click', () => { setSelected([]); renderSelected(); });
 if (countryCompareClearBtn) {
   countryCompareClearBtn.addEventListener('click', () => {
     selectedCountries = [];
