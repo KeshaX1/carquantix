@@ -3057,7 +3057,8 @@ body.dark .mobile-panel-toggle {
 .lang-menu {
   position: absolute;
   top: calc(100% + 6px);
-  right: 0;
+  left: 0;
+  right: auto;
   min-width: 190px;
   background: var(--card);
   color: var(--text);
