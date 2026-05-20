@@ -1311,7 +1311,7 @@ const compareBuilderKicker = document.getElementById('compareBuilderKicker');
 const compareBuilderClearBtn = document.getElementById('compareBuilderClearBtn');
 const seoContent = document.getElementById('seoContent');
 const seoTopSlot = document.getElementById('seoTopSlot');
-const seoAfterBuilderSlot = document.getElementById('seoAfterBuilderSlot');
+const seoResultSlot = document.getElementById('seoResultSlot');
 const vehiclePickerModal = document.getElementById('vehiclePickerModal');
 const vehiclePickerGrid = document.getElementById('vehiclePickerGrid');
 const vehiclePickerTitle = document.getElementById('vehiclePickerTitle');
@@ -2788,8 +2788,8 @@ function updateCompareBuilderCopy() {
 }
 
 function syncSeoContentPosition() {
-  if (!seoContent || !seoTopSlot || !seoAfterBuilderSlot) return;
-  const target = selected.length > 0 ? seoAfterBuilderSlot : seoTopSlot;
+  if (!seoContent || !seoTopSlot || !seoResultSlot) return;
+  const target = selected.length > 0 ? seoResultSlot : seoTopSlot;
   if (seoContent.parentElement !== target) {
     target.appendChild(seoContent);
   }
