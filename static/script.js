@@ -2331,7 +2331,7 @@ function initCategoryMenu() {
     trigger.addEventListener('click', () => {
       const willOpen = !categoryMenu.classList.contains('open');
       if (willOpen) {
-        categoryMenuView = 'root';
+        categoryMenuView = 'countries';
         renderCategoryMenu();
       }
       categoryMenu.classList.toggle('open', willOpen);
