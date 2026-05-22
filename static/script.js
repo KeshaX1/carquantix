@@ -1351,6 +1351,7 @@ const favoritesAreaEl = document.getElementById('favoritesArea');
 const favoritesListEl = document.getElementById('favoritesList');
 const clearFavoritesBtn = document.getElementById('clearFavoritesBtn');
 const categoryMenuTrigger = document.getElementById('categoryMenuTrigger');
+const mobileCategoryMenuTrigger = document.getElementById('mobileCategoryMenuTrigger');
 const categoryMenu = document.getElementById('categoryMenu');
 const countryCompareArea = document.getElementById('countryCompareArea');
 const countryCompareContent = document.getElementById('countryCompareContent');
@@ -2309,25 +2310,34 @@ function initFavoritesUI() {
 }
 
 function initCategoryMenu() {
-  if (!categoryMenuTrigger || !categoryMenu) return;
+  const categoryMenuTriggers = [categoryMenuTrigger, mobileCategoryMenuTrigger].filter(Boolean);
+  if (!categoryMenuTriggers.length || !categoryMenu) return;
   renderCategoryMenu();
+
+  const setCategoryExpanded = (expanded) => {
+    categoryMenuTriggers.forEach((trigger) => {
+      trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    });
+  };
 
   const closeCategoryMenu = () => {
     categoryMenu.classList.remove('open');
     categoryMenuView = 'root';
-    categoryMenuTrigger.setAttribute('aria-expanded', 'false');
+    setCategoryExpanded(false);
     categoryMenu.setAttribute('aria-hidden', 'true');
   };
 
-  categoryMenuTrigger.addEventListener('click', () => {
-    const willOpen = !categoryMenu.classList.contains('open');
-    if (willOpen) {
-      categoryMenuView = 'root';
-      renderCategoryMenu();
-    }
-    categoryMenu.classList.toggle('open', willOpen);
-    categoryMenuTrigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-    categoryMenu.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
+  categoryMenuTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const willOpen = !categoryMenu.classList.contains('open');
+      if (willOpen) {
+        categoryMenuView = 'root';
+        renderCategoryMenu();
+      }
+      categoryMenu.classList.toggle('open', willOpen);
+      setCategoryExpanded(willOpen);
+      categoryMenu.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
+    });
   });
 
   categoryMenu.addEventListener('click', (event) => {
@@ -2338,7 +2348,7 @@ function initCategoryMenu() {
       categoryMenuView = 'countries';
       renderCategoryMenu();
       categoryMenu.classList.add('open');
-      categoryMenuTrigger.setAttribute('aria-expanded', 'true');
+      setCategoryExpanded(true);
       categoryMenu.setAttribute('aria-hidden', 'false');
       return;
     }
@@ -2347,7 +2357,7 @@ function initCategoryMenu() {
       event.preventDefault();
       toggleCountrySelection(countryCard.dataset.country);
       categoryMenu.classList.add('open');
-      categoryMenuTrigger.setAttribute('aria-expanded', 'true');
+      setCategoryExpanded(true);
       categoryMenu.setAttribute('aria-hidden', 'false');
       return;
     }
@@ -2357,13 +2367,14 @@ function initCategoryMenu() {
       categoryMenuView = 'root';
       renderCategoryMenu();
       categoryMenu.classList.add('open');
-      categoryMenuTrigger.setAttribute('aria-expanded', 'true');
+      setCategoryExpanded(true);
       categoryMenu.setAttribute('aria-hidden', 'false');
     }
   });
 
   document.addEventListener('click', (event) => {
-    if (!categoryMenu.contains(event.target) && !categoryMenuTrigger.contains(event.target)) {
+    const clickedTrigger = categoryMenuTriggers.some((trigger) => trigger.contains(event.target));
+    if (!categoryMenu.contains(event.target) && !clickedTrigger) {
       closeCategoryMenu();
     }
   });
@@ -3538,6 +3549,7 @@ function createCategoryFilterButton(entry, kind) {
     }
     categoryMenu?.classList.remove('open');
     categoryMenuTrigger?.setAttribute('aria-expanded', 'false');
+    mobileCategoryMenuTrigger?.setAttribute('aria-expanded', 'false');
     categoryMenu?.setAttribute('aria-hidden', 'true');
   });
   return button;

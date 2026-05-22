@@ -55,7 +55,7 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260507-slot-details1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260522-mobile-categories1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -189,9 +189,15 @@
   <div class="app">
     <main class="main" role="main">
       <header class="main-header">
-        <h1 class="main-title">
-          CarQuantix – Compare Cars by Horsepower, 0-100 Acceleration, Top Speed & Fuel Cost
-        </h1>
+        <div class="main-header-left">
+          <button id="mobileCategoryMenuTrigger" class="category-mobile-toggle" type="button" aria-expanded="false" aria-controls="categoryMenu">
+            <span data-i18n="navCategories">Categories</span>
+            <span class="top-link-caret" aria-hidden="true">&#9662;</span>
+          </button>
+          <h1 class="main-title">
+            CarQuantix – Compare Cars by Horsepower, 0-100 Acceleration, Top Speed & Fuel Cost
+          </h1>
+        </div>
         <div class="actions">
           <button id="clearBtn" class="btn muted">Clear Selected</button>
           <button id="compareBtn" class="btn primary">Compare</button>
@@ -492,6 +498,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260507-slot-details1') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260522-mobile-categories1') }}"></script>
 </body>
 </html>
