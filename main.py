@@ -2521,6 +2521,17 @@ def country_indicators(country_code):
 def index():
     user = session.get("user")
     cars, slug_map = load_cars()
+    search_query = str(request.args.get("q") or "").strip()
+    if search_query:
+        parsed_query = urllib.parse.urlparse(search_query)
+        query_path = parsed_query.path if parsed_query.scheme or parsed_query.netloc else search_query
+        normalized_query = re.sub(r"\s+", "-", query_path.strip().lower()).strip("/")
+        if normalized_query.startswith("compare/"):
+            normalized_query = normalized_query[len("compare/"):]
+        if "-vs-" in normalized_query:
+            resolved = resolve_compare_slug(normalized_query, slug_map)
+            if resolved:
+                return redirect(f"/compare/{resolved['canonical_slug']}", code=302)
     car_links = build_car_links(cars)
     featured_car_links = select_featured_car_links(car_links)
     featured_compare_links = build_featured_compare_links(cars, slug_map)
