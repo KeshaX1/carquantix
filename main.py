@@ -175,7 +175,19 @@ CURATED_COMPARE_REFERENCES = [
     ("C8", "Huracan"),
     ("GT-R", "720S"),
 ]
-FEATURED_COMPARE_REFERENCES = CURATED_COMPARE_REFERENCES + [
+NEW_SEO_COMPARE_REFERENCES = [
+    ("Aventador", "LaFerrari"),
+    ("Aventador", "SF90 Spider"),
+    ("Revuelto", "Chiron"),
+    ("Chiron", "LaFerrari"),
+    ("SF90 Spider", "911 Turbo"),
+    ("296", "Artura"),
+    ("M4", "Camaro SS"),
+    ("Mustang", "M4"),
+    ("Supra", "GT-R"),
+    ("R8", "SF90 Spider"),
+]
+FEATURED_COMPARE_REFERENCES = CURATED_COMPARE_REFERENCES + NEW_SEO_COMPARE_REFERENCES + [
     ("M8", "R8"),
     ("M2", "TT RS"),
     ("Z4", "TT RS"),
