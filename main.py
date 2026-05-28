@@ -399,7 +399,7 @@ FEATURED_COMPARE_REFERENCES = CURATED_COMPARE_REFERENCES + NEW_SEO_COMPARE_REFER
     ("EV4", "ID.7"),
     ("Corvette", "911 Turbo"),
 ]
-FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", str(len(FEATURED_COMPARE_REFERENCES))))
+FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", "30"))
 COMPARE_RACE_VIDEO_OVERRIDES = {}
 LEGACY_COMPARE_SLUGS = {
     "audi-rs6-vs-bmw-m5-cs": ("RS6", "M5 CS"),
@@ -430,81 +430,10 @@ SEO_SLUGS = {
     "mercedes-amg-gt-top-speed",
 }
 
-DEFAULT_COMMENTS = [
-    {"id": "seed_10", "username": "Ava S.", "text": "Good experience overall easy to jump between models and compare specs without too much clutter", "rating": 4, "date": "12/03/2026", "likes": []},
-    {"id": "seed_9", "username": "Noah G.", "text": "The interface is simple dark theme looks solid and the main metrics I care about are all visible", "rating": 5, "date": "11/03/2026", "likes": []},
-    {"id": "seed_8", "username": "Isabella N.", "text": "Helpful for quick research before watching review videos i found the comparison table practical and clear", "rating": 4, "date": "10/03/2026", "likes": ["seed_like_1", "seed_like_2"]},
-    {"id": "seed_7", "username": "Ryan P.", "text": "Nice project search works well and the comment area makes the page feel more active", "rating": 5, "date": "09/03/2026", "likes": []},
-    {"id": "seed_6", "username": "Chloe B.", "text": "I was mainly looking at SUVs and this made it much easier to compare top speed and price in one place", "rating": 4, "date": "08/03/2026", "likes": []},
-    {"id": "seed_5", "username": "Marcus L.", "text": "The site is straightforward and the data cards are readable on desktop performance comparisons are especially nice", "rating": 5, "date": "07/03/2026", "likes": ["seed_like_3", "seed_like_4", "seed_like_5"]},
-    {"id": "seed_4", "username": "Olivia T.", "text": "Good design and simple navigation the featured comparison links helped me discover cars I had not considered", "rating": 4, "date": "06/03/2026", "likes": ["seed_like_6"]},
-    {"id": "seed_3", "username": "Daniel K.", "text": "I like how quickly I can compare horsepower and 0-100 times without opening like ten different tabs", "rating": 5, "date": "05/03/2026", "likes": ["seed_like_7", "seed_like_8"]},
-    {"id": "seed_2", "username": "Sofia M.", "text": "The fuel cost part is useful and the overall site feels fast would love even more EV entries later on", "rating": 4, "date": "05/03/2026", "likes": []},
-    {"id": "seed_1", "username": "Ethan R.", "text": "Very clean comparison layout checked a few BMW and Audi models and the numbers were easy to compare", "rating": 5, "date": "04/03/2026", "likes": ["seed_like_9"]},
-]
-
-COMPARE_COMMENT_SEEDS = [
-    {
-        "username": "Max Torque",
-        "text": "This comparison is exactly what I needed seeing power acceleration and price together makes the choice much clearer",
-        "rating": 5,
-        "date": "14/03/2026",
-    },
-    {
-        "username": "Car Guy 47",
-        "text": "Nice matchup the table makes it easy to see which car is stronger for performance and which one makes more sense for daily use",
-        "rating": 4,
-        "date": "13/03/2026",
-    },
-    {
-        "username": "Liam V.",
-        "text": "I was checking these two models and this page saved time top speed and 0-100 numbers are very easy to compare",
-        "rating": 5,
-        "date": "12/03/2026",
-    },
-    {
-        "username": "Turbo Dad",
-        "text": "Good comparison page i like that the specs are direct and there is no extra clutter around the important numbers",
-        "rating": 4,
-        "date": "11/03/2026",
-    },
-    {
-        "username": "Jake Miles",
-        "text": "Useful for quick research before watching long reviews the winner highlights make the differences obvious",
-        "rating": 5,
-        "date": "10/03/2026",
-    },
-    {
-        "username": "V8 Enjoyer",
-        "text": "The numbers are laid out cleanly i can tell very quickly which one is the faster car and which one is the better buy",
-        "rating": 5,
-        "date": "09/03/2026",
-    },
-    {
-        "username": "Oscar Lane",
-        "text": "I like these direct comparisons price power and fuel use are all in the same place without having to search around",
-        "rating": 4,
-        "date": "08/03/2026",
-    },
-    {
-        "username": "Spec Hunter",
-        "text": "This is the kind of page I check before arguing with friends about which car is actually quicker",
-        "rating": 5,
-        "date": "07/03/2026",
-    },
-    {
-        "username": "Noah Shift",
-        "text": "Solid comparison the acceleration difference stands out immediately and the table is easy to read on desktop",
-        "rating": 4,
-        "date": "06/03/2026",
-    },
-    {
-        "username": "Garage Wizard",
-        "text": "I came for the horsepower numbers and stayed for the clean layout pretty useful for quick car debates",
-        "rating": 5,
-        "date": "05/03/2026",
-    },
-]
+# Only show comments that users actually submit. Synthetic review/comment seeds
+# can make the site look misleading during AdSense review.
+DEFAULT_COMMENTS = []
+COMPARE_COMMENT_SEEDS = []
 
 NEWS_LAST_VERIFIED = "2026-03-16"
 NEWS_ITEMS = [
@@ -817,6 +746,382 @@ BLOG_ITEMS = [
     },
 ]
 
+GUIDE_ARTICLE_SECTIONS = {
+    "choose-a-sports-car": [
+        {
+            "heading": "Start with the job the car has to do",
+            "paragraphs": [
+                "A sports car that feels brilliant on a Sunday morning can become the wrong choice if it has to handle school runs, winter roads, heavy traffic, or long motorway days. Before looking at horsepower, write down the real use case: weekend drives, daily commuting, track days, or a mixed role. That first filter removes cars that only look right on a spec sheet.",
+                "The best short list usually includes cars with similar price, age, body style, and running cost. Comparing a lightweight two-seat coupe with a heavy luxury GT can be fun, but it rarely answers a buying question unless you are honest about comfort, luggage space, fuel use, tire cost, and servicing.",
+            ],
+            "bullets": [
+                "Weekend use can prioritize steering feel, sound, and weight.",
+                "Daily use should add visibility, ride comfort, and cabin ergonomics.",
+                "Track use needs brakes, tire availability, cooling, and reliability history.",
+            ],
+        },
+        {
+            "heading": "Use power as one input, not the whole decision",
+            "paragraphs": [
+                "Horsepower matters, but it does not explain how easy a car is to drive quickly. Weight, gearing, traction, tire compound, and suspension setup can make a lower-power car feel sharper and more confidence-inspiring than a heavier model with a bigger number. That is why CarQuantix shows acceleration, top speed, engine type, and price together instead of isolating one headline metric.",
+                "For road driving, repeatable acceleration and usable torque often matter more than a maximum power figure reached near the top of the rev range. A car with less peak power but better traction can feel faster in normal conditions, especially in wet weather or on uneven roads.",
+            ],
+        },
+        {
+            "heading": "Look beyond the purchase price",
+            "paragraphs": [
+                "Sports cars often hide cost in tires, brakes, insurance, depreciation, and scheduled maintenance. Large wheels and high-performance tires can make routine ownership noticeably more expensive. Carbon-ceramic brakes, exotic tire sizes, or rare body panels can also change the financial picture even when the initial price looks attractive.",
+                "A practical buying comparison should estimate one full year of ownership. Include expected mileage, fuel or charging cost, insurance, service intervals, tire replacement, tax, and likely resale value. This turns the question from which car is fastest into which car fits your budget without constant compromise.",
+            ],
+        },
+        {
+            "heading": "Build a balanced short list",
+            "paragraphs": [
+                "A strong short list normally has one emotional choice, one value choice, and one safe choice. The emotional choice is the car you want most. The value choice offers the best performance or usability for the money. The safe choice is the one with the clearest ownership case. If one model wins two of those roles, it deserves serious attention.",
+                "Use the comparison table to check the obvious numbers, then read owner reports and professional reviews for ride quality, reliability, and day-to-day usability. Specs start the decision; real-world ownership context finishes it.",
+            ],
+        },
+    ],
+    "what-is-horsepower": [
+        {
+            "heading": "What horsepower actually measures",
+            "paragraphs": [
+                "Horsepower is a measure of how quickly an engine or motor can do work. In simple terms, it describes the rate at which energy is delivered. More horsepower can support stronger acceleration and a higher top speed, but only if the rest of the vehicle can turn that output into motion effectively.",
+                "Two cars with the same horsepower can feel completely different. One may deliver power smoothly across the rev range, while another may only feel strong at high rpm. Electric vehicles can deliver torque instantly, while turbocharged combustion engines may build boost before peak output arrives.",
+            ],
+        },
+        {
+            "heading": "Horsepower versus torque",
+            "paragraphs": [
+                "Torque describes twisting force, while horsepower combines torque with engine speed. Torque strongly affects the feeling of pull at low and mid speeds. Horsepower becomes more important as speed rises and the car needs sustained power to keep accelerating against aerodynamic drag.",
+                "A high-torque car can feel effortless in traffic and when overtaking. A high-horsepower car can feel more dramatic as speed builds. Neither number should be read alone, because gearing and vehicle weight decide how those numbers reach the road.",
+            ],
+        },
+        {
+            "heading": "Why weight changes the answer",
+            "paragraphs": [
+                "Power-to-weight ratio is often more useful than horsepower alone. A lighter car needs less energy to accelerate, brake, and change direction. This is why lightweight sports cars can feel lively even when their horsepower is modest next to modern performance sedans or SUVs.",
+                "Weight also affects tire wear, brake temperatures, and agility. If two cars have similar power, the lighter one may feel more responsive. If a heavier car has much more power, it may win straight-line acceleration but still feel less precise on a twisty road.",
+            ],
+        },
+        {
+            "heading": "How to use horsepower in CarQuantix",
+            "paragraphs": [
+                "Use horsepower as a starting point, then compare 0-100 km/h, top speed, engine type, fuel or energy consumption, and price. When those numbers tell the same story, the performance ranking is straightforward. When they conflict, the better car depends on your priorities.",
+                "For a buying decision, ask what the number means in daily use: will the car be easier to overtake with, more expensive to fuel, harder to insure, or simply more enjoyable? The useful answer is not the biggest number; it is the number that fits the job.",
+            ],
+        },
+    ],
+    "how-to-compare-cars": [
+        {
+            "heading": "Compare cars inside the same real category",
+            "paragraphs": [
+                "The first rule of useful comparison is matching cars that solve the same problem. Body style, price range, model year, and intended use matter. A luxury SUV and a lightweight coupe can both be quick, but they serve different drivers and should not be judged by acceleration alone.",
+                "Start by asking whether both cars would realistically appear on the same shopping list. If the answer is no, the comparison can still be interesting, but it should be read as entertainment or research rather than a direct buying decision.",
+            ],
+        },
+        {
+            "heading": "Use a group of metrics",
+            "paragraphs": [
+                "A good comparison uses several metrics at once: horsepower, 0-100 km/h, top speed, engine type, consumption, and price. Each metric explains a different part of the ownership experience. Acceleration shows launch and traction. Top speed shows high-speed capability. Consumption and price reveal day-to-day cost pressure.",
+                "CarQuantix places these values in one table so the trade-offs are visible. A car can be faster but more expensive, cheaper but slower, or more efficient but less emotional. The table helps identify where the compromise actually sits.",
+            ],
+            "bullets": [
+                "Use 0-100 km/h for short acceleration comparisons.",
+                "Use top speed for high-speed capability, not daily usefulness.",
+                "Use consumption and price to test the ownership case.",
+            ],
+        },
+        {
+            "heading": "Separate objective data from preference",
+            "paragraphs": [
+                "Specs can show which car is quicker or cheaper, but they cannot fully measure design, sound, steering feel, comfort, or brand preference. Those subjective factors are still valid. The mistake is pretending they are data. Treat the table as the objective layer and your preferences as the personal layer.",
+                "This approach makes decisions clearer. If one car wins on numbers and the other wins emotionally, you can decide knowingly instead of forcing the data to support the choice you already wanted.",
+            ],
+        },
+        {
+            "heading": "Check the source and freshness of data",
+            "paragraphs": [
+                "Vehicle data can vary by market, trim, transmission, tire package, battery size, and model year. Use published figures as a comparison baseline, not a promise that every local version is identical. When a detail matters, confirm the exact trim from the manufacturer or seller before buying.",
+                "CarQuantix is designed for fast research and shortlist building. It should help you find the right questions to ask next: Which trim is this? Which market figure is being used? What does ownership cost after fuel, tires, insurance, and depreciation?",
+            ],
+        },
+    ],
+    "understanding-0-100": [
+        {
+            "heading": "What a 0-100 km/h time tells you",
+            "paragraphs": [
+                "A 0-100 km/h figure shows how quickly a car accelerates from a standstill to road speed under test conditions. It is useful because it compresses launch traction, engine response, gearing, weight, and tire performance into one easy number.",
+                "The number is not a complete performance score. It says little about braking, cornering, high-speed stability, comfort, or repeatability. A car can have a strong 0-100 time and still feel less satisfying than a slower car on real roads.",
+            ],
+        },
+        {
+            "heading": "Why launch conditions matter",
+            "paragraphs": [
+                "Factory acceleration numbers are often recorded with ideal surfaces, fresh tires, experienced drivers, and launch control where available. All-wheel drive cars can gain a major advantage from a standing start because they distribute torque more effectively.",
+                "On a normal road, temperature, tire age, surface quality, driver reaction, and fuel or battery state can change the result. That is why a small difference on paper is not always meaningful in daily driving.",
+            ],
+        },
+        {
+            "heading": "How to read close results",
+            "paragraphs": [
+                "If two cars are separated by a tenth or two, treat them as effectively similar unless repeat tests show a consistent gap. A half-second difference is easier to feel. A difference of one second or more usually changes the character of the car noticeably.",
+                "For buying, ask whether the acceleration advantage supports your actual use. A quicker launch may matter for track days or enthusiast driving, while ride quality, fuel use, or cabin space may matter more for a daily commute.",
+            ],
+        },
+        {
+            "heading": "Use acceleration with other metrics",
+            "paragraphs": [
+                "Acceleration is most useful when compared with horsepower, weight, transmission type, and price. A car with moderate power but a strong 0-100 time may have excellent traction and gearing. A car with high power but a slower time may struggle with weight or grip.",
+                "CarQuantix shows 0-100 km/h beside other specs so the number has context. This helps separate genuine performance from a single impressive statistic.",
+            ],
+        },
+    ],
+    "fuel-vs-hybrid-vs-ev": [
+        {
+            "heading": "Match the powertrain to your routine",
+            "paragraphs": [
+                "The best powertrain depends on where and how you drive. A gasoline car can still make sense for irregular long trips, rural use, or drivers without predictable charging. A hybrid can reduce fuel use in traffic without requiring a charging habit. An EV can be excellent when home or workplace charging is easy.",
+                "Before comparing performance, map your weekly driving. Annual mileage, trip length, parking situation, climate, electricity price, and charging access all affect the ownership result.",
+            ],
+        },
+        {
+            "heading": "When gasoline still works",
+            "paragraphs": [
+                "Combustion cars remain convenient for drivers who take frequent long trips, need quick refueling, or live where charging infrastructure is weak. They may also be lighter than comparable EVs, which can help steering feel and tire wear in some performance cars.",
+                "The trade-off is running cost and emissions. Fuel prices, maintenance, and city traffic can make a traditional powertrain more expensive over time, especially for high-mileage drivers.",
+            ],
+        },
+        {
+            "heading": "Where hybrids fit",
+            "paragraphs": [
+                "Hybrids are useful when you want lower fuel consumption without fully changing your routine. They work especially well in stop-start traffic because the electric motor can reduce engine load and recover energy through braking.",
+                "A hybrid is not automatically the cheapest option. Purchase price, battery warranty, service requirements, and highway efficiency all matter. Compare the full ownership cost instead of assuming the badge guarantees savings.",
+            ],
+        },
+        {
+            "heading": "When an EV is strongest",
+            "paragraphs": [
+                "An EV is strongest when charging is predictable and cheap. Home charging can make day-to-day use very convenient, and instant torque can make even ordinary EVs feel quick in city driving. Lower mechanical complexity can also reduce some routine maintenance needs.",
+                "The weaknesses are charging time, cold-weather range loss, highway energy use, and public charger reliability. If those are manageable in your routine, an EV can be the most practical and efficient choice.",
+            ],
+        },
+    ],
+    "ownership-cost": [
+        {
+            "heading": "Think in annual cost, not purchase price",
+            "paragraphs": [
+                "Ownership cost is the amount a vehicle costs to run over time, not just the price you pay on day one. Fuel or charging, insurance, tax, maintenance, tires, financing, depreciation, and repairs all belong in the calculation.",
+                "A cheaper car can become expensive if it has high fuel use, costly tires, poor resale value, or frequent service needs. A more expensive car can sometimes be easier to justify if it holds value and has predictable running costs.",
+            ],
+        },
+        {
+            "heading": "Fuel and energy are only one line",
+            "paragraphs": [
+                "Fuel cost is easy to calculate, so it often gets too much attention. It matters, especially for high-mileage drivers, but depreciation and insurance can outweigh fuel savings. Performance cars can also add large tire and brake costs that are not obvious from the spec sheet.",
+                "Use the fuel calculator for a quick estimate, then add the hidden items manually. The more expensive the car, the more important depreciation becomes.",
+            ],
+        },
+        {
+            "heading": "Performance parts change the budget",
+            "paragraphs": [
+                "Large wheels, wide tires, adaptive dampers, carbon-ceramic brakes, complex hybrid systems, and rare body panels can all raise ownership cost. These features may be worth it, but they should be counted before buying.",
+                "A practical comparison includes realistic tire replacement, brake service, and warranty coverage. If the car will be driven hard, add more margin for consumables.",
+            ],
+        },
+        {
+            "heading": "Build a simple ownership worksheet",
+            "paragraphs": [
+                "Create a yearly estimate with expected distance, fuel or electricity price, insurance, service, tires, tax, financing, and depreciation. Then compare that number between vehicles. This gives a clearer answer than looking at monthly payment alone.",
+                "CarQuantix helps with the first layer by placing consumption and performance data together. The final step is adapting those figures to your local prices and your real mileage.",
+            ],
+        },
+    ],
+}
+
+BLOG_ARTICLE_SECTIONS = {
+    "fastest-cars-in-2026": [
+        {
+            "heading": "Speed is no longer just a top-speed number",
+            "paragraphs": [
+                "The fastest cars people discuss in 2026 are not judged by top speed alone. Acceleration, repeatability, hybrid assistance, electric torque delivery, aerodynamics, tire technology, and brand story all shape the conversation. A car that can launch hard again and again may feel more relevant than a machine built only for one extreme run.",
+                "That is why modern performance debates often compare different kinds of speed. Hypercars chase very high ceilings, electric sedans deliver instant response, and lightweight sports cars focus on feel. Each offers a different answer to the same question: what does fast actually mean to the driver?",
+            ],
+        },
+        {
+            "heading": "Acceleration changed the public benchmark",
+            "paragraphs": [
+                "A decade ago, top speed carried more weight in casual car conversations. Today, 0-100 km/h and quarter-mile performance are easier to understand and easier to experience. Electric vehicles pushed that shift because instant torque made extreme launch figures more common.",
+                "The result is a broader performance field. A family EV can now post acceleration numbers that once belonged to supercars, while dedicated sports cars must prove their value through handling, braking, consistency, sound, and engagement.",
+            ],
+        },
+        {
+            "heading": "Top speed still matters, but context matters more",
+            "paragraphs": [
+                "Top speed remains technically impressive because it requires power, aero stability, cooling, tire capability, and gearing. It is also the least accessible metric for normal drivers. Few owners will ever use a maximum speed figure, which makes the number more symbolic than practical.",
+                "For research, top speed is best read alongside acceleration and power. A very high top speed suggests strong engineering depth, but it does not automatically make a car more enjoyable or more useful on ordinary roads.",
+            ],
+        },
+        {
+            "heading": "The useful way to compare fast cars",
+            "paragraphs": [
+                "Use CarQuantix to compare the numbers, then separate the cars by purpose. A luxury GT, a track-focused coupe, a hypercar, and a performance EV can all be fast, but they are fast in different ways. The strongest comparison asks which type of speed fits the use case.",
+                "The cars that remain interesting are usually the ones with a clear identity. Raw performance gets attention, but balance keeps a car in the conversation.",
+            ],
+        },
+    ],
+    "best-sports-cars-under-50k": [
+        {
+            "heading": "The under-50k segment is about trade-offs",
+            "paragraphs": [
+                "Sports cars under 50k rarely win by being perfect. They win by giving buyers a strong mix of feel, reliability, running cost, performance, and everyday usability. The right choice depends less on a universal ranking and more on what compromise you accept.",
+                "Some cars focus on lightness and steering. Others offer more power, better comfort, or easier daily use. A smart buyer decides which experience matters before comparing the numbers.",
+            ],
+        },
+        {
+            "heading": "Power is tempting, but weight is decisive",
+            "paragraphs": [
+                "In this price range, a lighter car with modest power can feel more alive than a heavier car with a bigger engine. Lower weight helps braking, steering, tire wear, and fuel use. It can also make legal road speeds more engaging.",
+                "A high-power option may still be the right answer if straight-line speed and tuning potential matter most. The important step is knowing whether you value lap-time potential, road feel, comfort, or easy ownership.",
+            ],
+        },
+        {
+            "heading": "Daily usability should not be ignored",
+            "paragraphs": [
+                "A car that is difficult to see out of, harsh over broken roads, or expensive to insure can lose its appeal quickly. Seat comfort, cabin noise, cargo room, technology, and service access all matter if the car is more than a weekend toy.",
+                "Buyers should also check tire sizes, fuel economy, and common service items. These practical details can separate a fun purchase from a car that becomes stressful to keep.",
+            ],
+        },
+        {
+            "heading": "How to build a better short list",
+            "paragraphs": [
+                "Choose three finalists: the most emotional option, the most practical option, and the best value option. Compare horsepower, acceleration, top speed, price, and consumption, then add local ownership costs. This turns a broad market into a manageable decision.",
+                "The best under-50k sports car is the one you can enjoy often, maintain properly, and still feel excited to drive after the first month.",
+            ],
+        },
+    ],
+    "why-evs-are-growing": [
+        {
+            "heading": "EV growth is driven by convenience as much as efficiency",
+            "paragraphs": [
+                "Electric cars are becoming more popular because they can make everyday driving simpler for people with reliable charging. Waking up to a charged vehicle changes the ownership routine. Instant torque, quiet operation, and lower local emissions add to the appeal.",
+                "The shift is not only about environmental messaging. For many drivers, the strongest argument is practical: fewer fuel stops, strong city performance, and smoother low-speed driving.",
+            ],
+        },
+        {
+            "heading": "Software changed buyer expectations",
+            "paragraphs": [
+                "Modern EVs often feel like software products as much as vehicles. Navigation, charging route planning, remote climate control, over-the-air updates, and energy monitoring are part of the ownership experience. Buyers now compare digital convenience alongside acceleration and range.",
+                "This software layer can be a strength or a weakness. A good interface makes the car easier to live with. A confusing or unreliable interface can damage trust even when the hardware is strong.",
+            ],
+        },
+        {
+            "heading": "Charging access decides the experience",
+            "paragraphs": [
+                "The same EV can be excellent for one owner and frustrating for another. Home charging, workplace charging, public charger density, weather, electricity prices, and trip length all change the answer. That is why EV advice should start with the driver's routine.",
+                "For buyers without dependable charging, a hybrid or efficient combustion car may still be more practical. The right comparison is not EV versus gasoline in general; it is EV versus gasoline for a specific driver.",
+            ],
+        },
+        {
+            "heading": "What to compare before choosing an EV",
+            "paragraphs": [
+                "Look at usable range, charging speed, efficiency, battery warranty, cabin packaging, weight, and tire cost. Acceleration is often strong, but ownership value depends on more than a quick launch.",
+                "CarQuantix helps by showing performance and consumption together. The next step is applying local charging prices and real route needs to the numbers.",
+            ],
+        },
+    ],
+    "super-sedan-vs-coupe": [
+        {
+            "heading": "The two body styles solve different problems",
+            "paragraphs": [
+                "A super sedan tries to combine speed with space, comfort, and everyday usability. A coupe usually gives up some practicality for style, lower seating, and a more focused driving feel. Both can be fast, but they create different ownership experiences.",
+                "The right choice depends on whether the car needs to carry passengers and luggage regularly. If it does, the sedan's flexibility can make it easier to enjoy more often.",
+            ],
+        },
+        {
+            "heading": "Performance numbers do not tell the whole story",
+            "paragraphs": [
+                "Modern super sedans can be extremely quick because they often use powerful engines, all-wheel drive, and advanced launch systems. Coupes may be lighter or more emotional, but not always faster in a straight line.",
+                "Handling feel can also differ. A coupe may feel more special from the driver's seat, while a sedan may offer more stability and confidence in poor weather. The spec table starts the comparison, but the driving environment finishes it.",
+            ],
+        },
+        {
+            "heading": "Ownership cost and depreciation matter",
+            "paragraphs": [
+                "Large performance sedans can bring expensive tires, brakes, suspension parts, and insurance. Coupes can be expensive too, especially if they use rare parts or exotic construction. Depreciation varies widely by brand, engine, and desirability.",
+                "A buyer should compare not only purchase price but also yearly running cost. The more powerful and heavier the car, the more attention tires and brakes deserve.",
+            ],
+        },
+        {
+            "heading": "Which one makes more sense",
+            "paragraphs": [
+                "A super sedan makes more sense when one car must do everything. A coupe makes more sense when the purchase is mainly about emotion, design, or focused driving. Neither answer is automatically better.",
+                "Use CarQuantix to compare speed, power, and cost data, then decide how much practicality you are willing to trade for character.",
+            ],
+        },
+    ],
+    "digital-cockpit-trend": [
+        {
+            "heading": "Dashboards became software surfaces",
+            "paragraphs": [
+                "Modern dashboards feel more digital because many vehicle functions are now controlled through software. Navigation, media, climate, driver assistance, charging, drive modes, and vehicle settings often live on central displays or digital clusters.",
+                "This gives manufacturers flexibility. They can update interfaces, add features, and simplify physical production. The downside is that basic tasks can become harder if the interface is poorly organized.",
+            ],
+        },
+        {
+            "heading": "Good digital design reduces friction",
+            "paragraphs": [
+                "A good cockpit puts frequent actions where drivers expect them. Climate controls, drive mode selection, defogging, volume, and navigation should be quick to reach. Visual design should support driving, not compete for attention.",
+                "Large screens are not automatically better. The useful question is whether the system helps the driver act quickly and confidently while moving.",
+            ],
+        },
+        {
+            "heading": "Physical controls still have value",
+            "paragraphs": [
+                "Buttons, knobs, and stalks can be easier to use without looking away from the road. Many buyers still prefer physical controls for core functions because muscle memory matters. A balanced cockpit uses digital screens where they add value and physical controls where speed matters.",
+                "The strongest interiors usually avoid turning every simple task into a menu. They use software for rich information and hardware for repeated actions.",
+            ],
+        },
+        {
+            "heading": "What buyers should check",
+            "paragraphs": [
+                "Before buying, test the interface while parked and during a short drive. Try climate changes, navigation entry, audio controls, drive modes, and phone pairing. If the basic tasks feel annoying on day one, they may feel worse after months of ownership.",
+                "Interior technology should make the car easier to live with. It should not be a spec-sheet feature that adds distraction.",
+            ],
+        },
+    ],
+    "why-weight-matters": [
+        {
+            "heading": "Weight affects every part of performance",
+            "paragraphs": [
+                "Weight matters because a vehicle must accelerate, brake, turn, and support that mass every time it moves. More horsepower can hide weight in a straight line, but it cannot erase the effect on tires, brakes, suspension, and agility.",
+                "A lighter car often feels more responsive because it needs less force to change direction. That feeling can be more important to enjoyment than a larger power number.",
+            ],
+        },
+        {
+            "heading": "Power-to-weight is more useful than power alone",
+            "paragraphs": [
+                "Power-to-weight ratio explains how much output each unit of mass has to move. Two cars with similar horsepower can perform differently if one is much heavier. A lower-power lightweight car can stay competitive against a heavier car with a stronger engine.",
+                "This is why pure horsepower comparisons can mislead buyers. The better question is how effectively the vehicle uses its power.",
+            ],
+        },
+        {
+            "heading": "Heavy cars spend more on consumables",
+            "paragraphs": [
+                "Weight increases the load on tires and brakes. Heavy performance vehicles can be very fast, but they may also use expensive tires more quickly and put more heat into the braking system. This affects both running cost and repeatable performance.",
+                "For EVs and large SUVs, battery and structure weight can make this especially important. Strong acceleration does not always mean low ownership cost.",
+            ],
+        },
+        {
+            "heading": "How to use weight in a buying decision",
+            "paragraphs": [
+                "When comparing cars, read weight together with horsepower, acceleration, tire size, brake equipment, and intended use. A heavy car may be perfect for comfort and stability. A light car may be better for feedback and lower consumable cost.",
+                "The right answer depends on what you value. Weight is not always bad, but ignoring it makes performance comparisons incomplete.",
+            ],
+        },
+    ],
+}
+
 
 def is_local_host(host):
     host_only = (host or "").split(":")[0].lower()
@@ -899,6 +1204,105 @@ def build_car_meta_description(car):
     return f"{car.get('name', 'Car')} specs and details."
 
 
+def format_consumption_text(car):
+    consumption = (car or {}).get("consumption") or {}
+    value = consumption.get("value")
+    unit = consumption.get("unit")
+    if value is None or not unit:
+        return ""
+    return f"{value} {unit}"
+
+
+def build_car_detail_content(car):
+    name = str((car or {}).get("name") or "This model").strip()
+    engine = str((car or {}).get("engine") or "").strip()
+    price = format_display_price((car or {}).get("price"))
+    consumption_text = format_consumption_text(car)
+    power = (car or {}).get("power")
+    acceleration = (car or {}).get("acc")
+    top_speed = (car or {}).get("topSpeed")
+
+    performance_bits = []
+    if power is not None:
+        performance_bits.append(f"{power} hp")
+    if acceleration is not None:
+        performance_bits.append(f"0-100 km/h in {acceleration} seconds")
+    if top_speed is not None:
+        performance_bits.append(f"a {top_speed} km/h top speed")
+
+    if performance_bits:
+        summary = f"{name} is listed with {', '.join(performance_bits)}."
+    else:
+        summary = f"{name} is listed as part of the CarQuantix vehicle database."
+
+    if engine:
+        summary += f" The recorded powertrain is {engine}."
+    if price != "-":
+        summary += f" The listed price is {price}, so it should be read beside the performance figures rather than as a separate detail."
+    if consumption_text:
+        summary += f" Recorded consumption is {consumption_text}, which helps connect performance with running-cost expectations."
+
+    if isinstance(power, (int, float)) and power >= 600:
+        role = "high-output performance car"
+    elif isinstance(power, (int, float)) and power >= 350:
+        role = "strong performance choice"
+    elif engine and re.search(r"kwh|electric|ev", engine, re.I):
+        role = "electric vehicle candidate"
+    else:
+        role = "vehicle shortlist candidate"
+
+    sections = [
+        {
+            "heading": "Performance interpretation",
+            "paragraphs": [
+                f"The headline numbers make {name} a {role}. Horsepower explains the available output, but the way that output feels depends on gearing, traction, tire setup, weight, and the shape of the power curve.",
+                "Use the figures on this page as a first filter. A stronger number is useful only when it supports the way the car will be driven, whether that means daily overtaking, long-distance cruising, occasional spirited driving, or track-focused use.",
+            ],
+        },
+        {
+            "heading": "Ownership context",
+            "paragraphs": [
+                "A complete buying decision should include more than acceleration and top speed. Fuel or charging cost, insurance, tires, maintenance, depreciation, and local taxes can change the value case quickly.",
+                f"If {name} is being compared with another model, check both the performance table and the running-cost details. A car can be quicker on paper while still being the weaker ownership fit if it costs more to fuel, insure, or maintain.",
+            ],
+        },
+        {
+            "heading": "Who should consider it",
+            "paragraphs": [
+                f"{name} makes the most sense for shoppers who want its specific balance of performance, price, engine character, and usability. It should be compared with vehicles in a similar body style and price band before drawing a final conclusion.",
+                "For final purchase research, confirm the exact market version, trim level, tire package, and model-year specification from the seller or manufacturer. Published figures can vary by market and equipment.",
+            ],
+        },
+    ]
+
+    bullets = [
+        "Compare it against models with a similar price and body style.",
+        "Read acceleration together with power, top speed, and traction layout.",
+        "Add yearly fuel or charging cost before judging value.",
+        "Confirm local trim details before making a purchase decision.",
+    ]
+
+    return {"summary": summary, "sections": sections, "bullets": bullets}
+
+
+def build_article_context(items, article_sections, slug, section_label, section_path):
+    item = next((entry for entry in items if entry.get("slug") == slug), None)
+    if not item:
+        return None
+    sections = article_sections.get(slug)
+    if not sections:
+        return None
+    return {
+        "slug": slug,
+        "section_label": section_label,
+        "section_path": section_path,
+        "title": item.get("title_en") or "CarQuantix article",
+        "summary": item.get("summary_en") or "",
+        "tag": item.get("tag_en") or section_label,
+        "sections": sections,
+    }
+
+
 def get_base_url():
     scheme = get_forwarded_value(request.headers.get("X-Forwarded-Proto"), request.scheme or "https").lower()
     host = get_forwarded_value(request.headers.get("X-Forwarded-Host"), request.host)
@@ -925,6 +1329,10 @@ def select_featured_car_links(car_links):
         if featured:
             return featured[:FEATURED_CAR_LIMIT]
     return car_links[:FEATURED_CAR_LIMIT]
+
+
+def build_indexable_car_slugs(cars):
+    return {entry["slug"] for entry in select_featured_car_links(build_car_links(cars)) if entry.get("slug")}
 
 
 def resolve_car_reference(reference, cars, slug_map):
@@ -1554,6 +1962,15 @@ def build_featured_compare_links(cars, slug_map):
     return links
 
 
+def build_indexable_compare_slugs(cars, slug_map):
+    slugs = set()
+    for entry in build_featured_compare_links(cars, slug_map):
+        href = str(entry.get("href") or "")
+        if href.startswith("/compare/"):
+            slugs.add(href.rsplit("/", 1)[-1])
+    return slugs
+
+
 @app.before_request
 def enforce_canonical_origin():
     if request.method not in ("GET", "HEAD"):
@@ -1675,49 +2092,10 @@ def _normalize_comment(comment):
     }
 
 
-def _comment_seed_key(page):
-    return re.sub(r"[^a-zA-Z0-9_-]+", "_", str(page or "home")).strip("_")[:80] or "home"
-
-
-def build_compare_seed_comments(page, existing_count=0):
-    page = get_comment_page(page)
-    if not page.startswith("compare:"):
-        return []
-
-    seed_key = _comment_seed_key(page)
-    digest = hashlib.sha256(page.encode("utf-8")).digest()
-    needed = max(0, 2 - int(existing_count or 0))
-    comments = []
-    for offset in range(needed):
-        seed_index = digest[offset % len(digest)] % len(COMPARE_COMMENT_SEEDS)
-        while any(item["username"] == COMPARE_COMMENT_SEEDS[seed_index]["username"] for item in comments):
-            seed_index = (seed_index + 1) % len(COMPARE_COMMENT_SEEDS)
-        template = COMPARE_COMMENT_SEEDS[seed_index]
-        comments.append(
-            _normalize_comment(
-                {
-                    **template,
-                    "id": f"seed_{seed_key}_{offset + 1}",
-                    "page": page,
-                    "likes": [f"seed_like_{seed_key}_{offset + 1}"] if template["rating"] >= 5 else [],
-                    "dislikes": [],
-                    "replies": [],
-                }
-            )
-        )
-    return comments
-
-
 def get_comments_for_page(page, comments=None):
     page = get_comment_page(page)
     source_comments = load_comments() if comments is None else comments
-    page_comments = [comment for comment in source_comments if comment.get("page", "home") == page]
-    existing_ids = {comment.get("id") for comment in page_comments}
-    seed_comments = [
-        comment for comment in build_compare_seed_comments(page, len(page_comments))
-        if comment.get("id") not in existing_ids
-    ]
-    return page_comments + seed_comments
+    return [comment for comment in source_comments if comment.get("page", "home") == page]
 
 
 def load_comments():
@@ -1732,8 +2110,12 @@ def load_comments():
 
     comments = []
     seen_ids = set()
+    changed = False
     defaults_by_id = {item["id"]: _normalize_comment(item) for item in DEFAULT_COMMENTS}
     for item in raw_comments:
+        if isinstance(item, dict) and str(item.get("id") or "").startswith("seed_"):
+            changed = True
+            continue
         normalized = _normalize_comment(item)
         if not normalized["text"] or normalized["id"] in seen_ids:
             continue
@@ -1748,7 +2130,7 @@ def load_comments():
         comments.append(normalized)
         seen_ids.add(normalized["id"])
 
-    changed = comments != raw_comments
+    changed = changed or comments != raw_comments
     for seed in DEFAULT_COMMENTS:
         normalized_seed = _normalize_comment(seed)
         if normalized_seed["id"] in seen_ids:
@@ -2591,6 +2973,70 @@ def blog():
     )
 
 
+@app.route("/guides/<slug>")
+def guide_article(slug):
+    article = build_article_context(GUIDE_ITEMS, GUIDE_ARTICLE_SECTIONS, slug, "Guides", "/guides")
+    if not article:
+        return "Not Found", 404
+    canonical_url = f"{get_base_url()}/guides/{article['slug']}"
+    meta_title = f"{article['title']} - CarQuantix Guides"
+    page_schema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": article["title"],
+        "description": article["summary"],
+        "url": canonical_url,
+        "publisher": {"@type": "Organization", "name": "CarQuantix"},
+    }
+    return render_template(
+        "article_detail.html",
+        article=article,
+        canonical_url=canonical_url,
+        meta_title=meta_title,
+        meta_description=article["summary"],
+        robots_directive="index,follow",
+        page_schema=page_schema,
+    )
+
+
+@app.route("/blog/<slug>")
+def blog_article(slug):
+    article = build_article_context(BLOG_ITEMS, BLOG_ARTICLE_SECTIONS, slug, "Blog", "/blog")
+    if not article:
+        return "Not Found", 404
+    canonical_url = f"{get_base_url()}/blog/{article['slug']}"
+    meta_title = f"{article['title']} - CarQuantix Blog"
+    page_schema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": article["title"],
+        "description": article["summary"],
+        "url": canonical_url,
+        "publisher": {"@type": "Organization", "name": "CarQuantix"},
+    }
+    return render_template(
+        "article_detail.html",
+        article=article,
+        canonical_url=canonical_url,
+        meta_title=meta_title,
+        meta_description=article["summary"],
+        robots_directive="index,follow",
+        page_schema=page_schema,
+    )
+
+
+@app.route("/methodology")
+def methodology():
+    canonical_url = f"{get_base_url()}{request.path}"
+    return render_template(
+        "methodology.html",
+        canonical_url=canonical_url,
+        meta_title="Methodology and Data Notes - CarQuantix",
+        meta_description="How CarQuantix compares vehicle performance, fuel consumption, pricing and ownership context.",
+        robots_directive="index,follow",
+    )
+
+
 @app.route("/privacy-policy")
 def privacy_policy():
     canonical_url = f"{get_base_url()}{request.path}"
@@ -2864,7 +3310,7 @@ def confirm_billing_transaction():
 
 @app.route("/cars/<slug>")
 def car_detail(slug):
-    _, slug_map = load_cars()
+    cars, slug_map = load_cars()
     car = slug_map.get(slug)
     if not car:
         year_swap = re.match(r"^(.+)-(\d{4})$", slug)
@@ -2882,6 +3328,7 @@ def car_detail(slug):
     meta_title = f"{car.get('name', 'Car')} | CarQuantix"
     meta_description = build_car_meta_description(car)
     canonical_url = f"{get_base_url()}{request.path}"
+    is_indexable = canonical_slug in build_indexable_car_slugs(cars)
     page_schema = {
         "@context": "https://schema.org",
         "@type": "WebPage",
@@ -2893,10 +3340,12 @@ def car_detail(slug):
         "car_detail.html",
         car=car,
         specs=specs,
+        car_content=build_car_detail_content(car),
         meta_title=meta_title,
         meta_description=meta_description,
         canonical_url=canonical_url,
-        robots_directive="index,follow",
+        robots_directive="index,follow" if is_indexable else "noindex,follow",
+        adsense_enabled=is_indexable,
         page_schema=page_schema,
     )
 
@@ -2924,6 +3373,7 @@ def compare_detail(compare_slug):
     canonical_url = f"{get_base_url()}/compare/{resolved['canonical_slug']}"
     meta_title = f"{left_car.get('name')} vs {right_car.get('name')} | CarQuantix"
     meta_description = build_compare_meta_description(left_car, right_car)
+    is_indexable = resolved["canonical_slug"] in build_indexable_compare_slugs(cars, slug_map)
     page_schema = {
         "@context": "https://schema.org",
         "@type": "WebPage",
@@ -2951,7 +3401,8 @@ def compare_detail(compare_slug):
         canonical_url=canonical_url,
         meta_title=meta_title,
         meta_description=meta_description,
-        robots_directive="index,follow",
+        robots_directive="index,follow" if is_indexable else "noindex,follow",
+        adsense_enabled=is_indexable,
         page_schema=page_schema,
     )
 
@@ -2965,6 +3416,7 @@ def sitemap():
         f"{base_url}/news",
         f"{base_url}/guides",
         f"{base_url}/blog",
+        f"{base_url}/methodology",
         f"{base_url}/about-us",
         f"{base_url}/contact",
         f"{base_url}/pricing",
@@ -2972,7 +3424,10 @@ def sitemap():
         f"{base_url}/refund-policy",
         f"{base_url}/privacy-policy",
     ]
-    urls.extend(f"{base_url}/cars/{slug}" for slug in sorted(slug_map.keys()))
+    urls.extend(f"{base_url}/guides/{item['slug']}" for item in GUIDE_ITEMS if item.get("slug"))
+    urls.extend(f"{base_url}/blog/{item['slug']}" for item in BLOG_ITEMS if item.get("slug"))
+    featured_car_links = select_featured_car_links(build_car_links(cars))
+    urls.extend(f"{base_url}/cars/{entry['slug']}" for entry in featured_car_links if entry.get("slug"))
     urls.extend(f"{base_url}{entry['href']}" for entry in build_featured_compare_links(cars, slug_map))
     entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
     xml = (
@@ -3027,6 +3482,7 @@ def seo_slug(slug):
             meta_title="CarQuantix - Compare Cars and Motorcycles",
             meta_description="Compare horsepower, acceleration and top speed with CarQuantix.",
             robots_directive="noindex,follow",
+            adsense_enabled=False,
         )
     return "Not Found", 404
 

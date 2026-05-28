@@ -2309,6 +2309,19 @@ body.dark .comment-section textarea::placeholder {
   margin: 0 0 14px;
 }
 
+.content-card-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  color: #9fd4ff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.content-card-link:hover {
+  text-decoration: underline;
+}
+
 .content-points {
   margin: 0 0 2px 18px;
   padding: 0;
@@ -2344,6 +2357,151 @@ body.dark .comment-section textarea::placeholder {
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+.article-wrap {
+  width: min(980px, calc(100% - 32px));
+  margin: 32px auto 64px;
+}
+
+.article-shell {
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10);
+  padding: clamp(24px, 4vw, 48px);
+}
+
+.article-breadcrumb {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 22px;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.article-breadcrumb a,
+.article-footer-note a {
+  color: #1d4ed8;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.article-breadcrumb a:hover,
+.article-footer-note a:hover {
+  text-decoration: underline;
+}
+
+.article-hero h1 {
+  margin: 10px 0 12px;
+  color: #0f172a;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: 1.04;
+}
+
+.article-hero p {
+  margin: 0;
+  color: #475569;
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.article-body {
+  margin-top: 34px;
+  display: grid;
+  gap: 28px;
+}
+
+.article-body section {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding-top: 24px;
+}
+
+.article-body h2 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-size: clamp(1.3rem, 1.5vw, 1.75rem);
+}
+
+.article-body p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.78;
+}
+
+.article-body p + p {
+  margin-top: 14px;
+}
+
+.article-body ul {
+  margin: 16px 0 0;
+  padding-left: 20px;
+  color: #334155;
+  line-height: 1.7;
+}
+
+.article-footer-note {
+  margin-top: 34px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.article-footer-note p {
+  margin: 0 0 12px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.car-analysis {
+  margin-top: 34px;
+  display: grid;
+  gap: 18px;
+}
+
+.car-analysis-intro,
+.car-analysis-block,
+.car-analysis-checklist {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card, rgba(255, 255, 255, 0.03));
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
+}
+
+.car-analysis h2,
+.car-analysis h3 {
+  margin: 0 0 10px;
+}
+
+.car-analysis p {
+  margin: 0;
+  color: var(--muted, #9fb0c5);
+  line-height: 1.72;
+}
+
+.car-analysis p + p {
+  margin-top: 12px;
+}
+
+.car-analysis ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted, #9fb0c5);
+  line-height: 1.72;
+}
+
+body:not(.dark) .car-analysis-intro,
+body:not(.dark) .car-analysis-block,
+body:not(.dark) .car-analysis-checklist {
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+body:not(.dark) .car-analysis p,
+body:not(.dark) .car-analysis ul {
+  color: #475569;
 }
 
 /* Image lightbox */

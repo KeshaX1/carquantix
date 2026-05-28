@@ -119,6 +119,7 @@
       <a href="/news" class="top-link">News</a>
       <a href="/guides" class="top-link">Guides</a>
       <a href="/blog" class="top-link">Blog</a>
+      <a href="/methodology" class="top-link">Methodology</a>
       <a href="/about-us" class="top-link">About Us</a>
       <a href="/pricing" class="top-link">Pricing</a>
       <a href="/terms" class="top-link">Terms</a>
@@ -162,6 +163,31 @@
       </div>
     </section>
     {% endif %}
+
+    {% if car_content %}
+    <section class="car-analysis" aria-label="Vehicle analysis">
+      <div class="car-analysis-intro">
+        <h2>Buying and performance notes</h2>
+        <p>{{ car_content.summary }}</p>
+      </div>
+      {% for section in car_content.sections %}
+      <article class="car-analysis-block">
+        <h3>{{ section.heading }}</h3>
+        {% for paragraph in section.paragraphs %}
+        <p>{{ paragraph }}</p>
+        {% endfor %}
+      </article>
+      {% endfor %}
+      <div class="car-analysis-checklist">
+        <h3>Before you compare or buy</h3>
+        <ul>
+          {% for bullet in car_content.bullets %}
+          <li>{{ bullet }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endif %}
   </main>
   <footer class="site-footer">
     <div class="footer-inner">
@@ -175,6 +201,7 @@
         <a href="/news" data-i18n="navNews">News</a>
         <a href="/guides" data-i18n="navGuides">Guides</a>
         <a href="/blog" data-i18n="navBlog">Blog</a>
+        <a href="/methodology">Methodology</a>
         <a href="/pricing" data-i18n="navPricing">Pricing</a>
         <a href="/terms" data-i18n="navTerms">Terms</a>
         <a href="/refund-policy" data-i18n="navRefund">Refund Policy</a>
