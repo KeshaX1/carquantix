@@ -3423,6 +3423,33 @@ function getCountryFlag(countryName) {
     .join('');
 }
 
+function getCountryFlagImage(countryName) {
+  const iso2 = COUNTRY_ISO2_BY_NAME[countryName];
+  if (!iso2 || iso2.length !== 2) return '';
+  const code = iso2.toLowerCase();
+  return `https://flagcdn.com/w160/${code}.png`;
+}
+
+function renderCountryFlag(countryName) {
+  const iso2 = COUNTRY_ISO2_BY_NAME[countryName] || '';
+  const src = getCountryFlagImage(countryName);
+  if (!src) {
+    return `<span class="country-card-code">${iso2 || getCountryFlag(countryName)}</span>`;
+  }
+  return `
+    <img
+      class="country-card-flag"
+      src="${src}"
+      srcset="https://flagcdn.com/w320/${iso2.toLowerCase()}.png 2x"
+      alt="${countryName} flag"
+      loading="lazy"
+      decoding="async"
+      width="160"
+      height="100"
+    />
+  `;
+}
+
 async function loadCountryData(countryName) {
   const code = COUNTRY_CODE_BY_NAME[countryName];
   if (!code) throw new Error(`Missing country code for ${countryName}`);
@@ -3566,7 +3593,7 @@ function createCountryCard(countryName) {
   button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
   button.innerHTML = `
     <span class="country-card-count">${isSelected ? selectedIndex + 1 : '&nbsp;'}</span>
-    <span class="country-card-visual">${getCountryFlag(countryName)}</span>
+    <span class="country-card-visual">${renderCountryFlag(countryName)}</span>
     <span class="country-card-name">${countryName}</span>
     <span class="country-card-meta">${iso2} · ${COUNTRY_CODE_BY_NAME[countryName] || ''}</span>
   `;
