@@ -247,6 +247,43 @@ body.dark .brand-symbol-btn{
   background:rgba(0,123,255,0.28);
   color:#fff;
 }
+body:not(.dark) .compare-builder{
+  border-color:rgba(15,23,42,0.1);
+  background:#fff;
+  box-shadow:0 18px 44px rgba(15,23,42,0.12);
+}
+body:not(.dark) .compare-slot{
+  border-color:rgba(0,119,255,0.42);
+  background:#f8fbff;
+  color:#172033;
+}
+body:not(.dark) .compare-slot:hover{
+  border-color:rgba(0,119,255,0.7);
+  background:#eef6ff;
+}
+body:not(.dark) .compare-slot-empty{
+  color:#075fb5;
+}
+body:not(.dark) .compare-slot-meta strong{
+  color:#111827;
+}
+body:not(.dark) .compare-slot-meta span{
+  color:#334155;
+}
+body:not(.dark) .compare-slot-remove{
+  border-color:rgba(15,23,42,0.16);
+  background:rgba(15,23,42,0.72);
+  color:#fff;
+}
+body:not(.dark) .compare-slot-detail{
+  border-color:rgba(0,119,255,0.52);
+  background:rgba(0,119,255,0.1);
+  color:#075fb5;
+}
+body:not(.dark) .compare-slot-detail:hover{
+  background:rgba(0,119,255,0.18);
+  color:#003d7a;
+}
 .vehicle-picker-modal.hidden{display:none}
 .vehicle-picker-modal{
   position:fixed;
