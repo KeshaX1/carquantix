@@ -293,6 +293,8 @@ body:not(.dark) .compare-slot-detail:hover{
   align-items:center;
   justify-content:center;
   padding:24px;
+  overflow:hidden;
+  overscroll-behavior:contain;
 }
 .vehicle-picker-backdrop{
   position:absolute;
@@ -304,6 +306,7 @@ body:not(.dark) .compare-slot-detail:hover{
   position:relative;
   width:min(1040px,calc(100vw - 32px));
   max-height:min(820px,calc(100vh - 48px));
+  min-height:0;
   overflow:hidden;
   border:1px solid rgba(255,255,255,0.1);
   border-radius:8px;
@@ -349,7 +352,11 @@ body:not(.dark) .compare-slot-detail:hover{
   color:#fff;
 }
 .vehicle-picker-grid{
+  flex:1 1 auto;
   overflow:auto;
+  min-height:0;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
   padding:18px 20px 22px;
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
@@ -399,6 +406,12 @@ body:not(.dark) .compare-slot-detail:hover{
 }
 body.modal-open{overflow:hidden}
 
+@supports (height: 100dvh){
+  .vehicle-picker-panel{
+    max-height:min(820px,calc(100dvh - 48px));
+  }
+}
+
 @media (max-width: 1100px){
   .compare-slot-grid{grid-template-columns:repeat(2,minmax(260px,1fr))}
   .compare-slot-filled img{width:260px;height:154px}
@@ -415,6 +428,13 @@ body.modal-open{overflow:hidden}
   .vehicle-picker-panel{width:calc(100vw - 24px);max-height:calc(100vh - 24px)}
   .vehicle-picker-grid{grid-template-columns:1fr;padding:14px}
   .vehicle-picker-tools{flex-direction:column}
+}
+@supports (height: 100dvh){
+  @media (max-width: 700px){
+    .vehicle-picker-panel{
+      max-height:calc(100dvh - 24px);
+    }
+  }
 }
 body:not(.dark) .brand-symbol-btn{
   border-color:rgba(0,0,0,0.08);

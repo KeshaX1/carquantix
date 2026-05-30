@@ -2398,6 +2398,8 @@ const brandSelectionByCatalog = {};
 let activeBrand = 'all';
 let vehiclePickerSlotIndex = 0;
 let vehiclePickerBrand = null;
+let vehiclePickerScrollY = 0;
+let vehiclePickerScrollLocked = false;
 let selectedCountries = [];
 let categoryMenuView = 'root';
 const countryDataCache = new Map();
@@ -4576,14 +4578,39 @@ function openVehiclePicker(slotIndex = selected.length) {
   vehiclePickerBrand = null;
   if (vehiclePickerSearch) vehiclePickerSearch.value = '';
   vehiclePickerModal.classList.remove('hidden');
-  document.body.classList.add('modal-open');
+  lockVehiclePickerPageScroll();
   renderVehiclePickerBrands();
 }
 
 function closeVehiclePicker() {
   if (!vehiclePickerModal) return;
   vehiclePickerModal.classList.add('hidden');
+  unlockVehiclePickerPageScroll();
+}
+
+function lockVehiclePickerPageScroll() {
+  if (vehiclePickerScrollLocked) return;
+  vehiclePickerScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.classList.add('modal-open');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${vehiclePickerScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  vehiclePickerScrollLocked = true;
+}
+
+function unlockVehiclePickerPageScroll() {
   document.body.classList.remove('modal-open');
+  if (!vehiclePickerScrollLocked) return;
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, vehiclePickerScrollY);
+  vehiclePickerScrollY = 0;
+  vehiclePickerScrollLocked = false;
 }
 
 function renderVehiclePickerBrands() {
