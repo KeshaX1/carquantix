@@ -1,0 +1,20 @@
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.68.104:5000
+Press CTRL+C to quit
+127.0.0.1 - - [31/May/2026 01:09:30] "GET /static/styles.css?v=20260531-mobile-theme-toggle HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:09:32] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:10:30] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:10:30] "GET /static/styles.css?v=20260531-mobile-theme-toggle HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:10:30] "GET /static/script.js?v=20260522-mobile-categories2 HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:10:31] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:12:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:12:08] "GET /static/styles.css?v=20260531-mobile-theme-toggle HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:12:08] "GET /static/script.js?v=20260522-mobile-categories2 HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:12:09] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:13:50] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:13:50] "GET /static/styles.css?v=20260531-mobile-theme-toggle HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:13:50] "GET /static/script.js?v=20260522-mobile-categories2 HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:13:50] "GET /favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [31/May/2026 01:14:16] "GET / HTTP/1.1" 200 -

@@ -5630,6 +5630,7 @@ imgLightbox.addEventListener('click', (e) => {
 });
 
 const themeToggle = document.getElementById('themeToggle');
+const mobileThemeToggle = document.getElementById('mobileThemeToggle');
 const storedTheme = localStorage.getItem('theme');
 const isLocalHost = ['127.0.0.1', 'localhost'].includes(window.location.hostname);
 const defaultDark = isLocalHost ? true : (storedTheme ? storedTheme === 'dark' : true);
@@ -5638,6 +5639,10 @@ const syncTheme = (forceDark) => {
   const next = typeof forceDark === 'boolean' ? forceDark : document.body.classList.contains('dark');
   document.body.classList.toggle('dark', next);
   if (themeToggle) themeToggle.checked = next;
+  if (mobileThemeToggle) {
+    mobileThemeToggle.classList.toggle('is-dark', next);
+    mobileThemeToggle.setAttribute('aria-pressed', String(next));
+  }
   localStorage.setItem('theme', next ? 'dark' : 'light');
 };
 
@@ -5650,6 +5655,12 @@ if (themeToggle) {
   });
 } else {
   syncTheme(defaultDark);
+}
+
+if (mobileThemeToggle) {
+  mobileThemeToggle.addEventListener('click', () => {
+    syncTheme(!document.body.classList.contains('dark'));
+  });
 }
 
 // Language dropdown + translations

@@ -1,0 +1,5 @@
+[init] .env path=C:\Users\kesha\Desktop\Car Quantix 1\.env exists=False
+[init] GOOGLE_CLIENT_ID full=327843133256-1r3gvdz58fbqbag9hi5v09usnbrdk2s.apps.googleusercontent.com
+[init] Facebook client_id/secret not set; Facebook login disabled
+ * Serving Flask app 'main'
+ * Debug mode: off
