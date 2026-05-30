@@ -690,6 +690,13 @@ body:not(.dark) .country-table td{
   font-size:0.96rem;
   font-weight:600;
 }
+.fuel-premium-lock .premium-lock-detail{
+  max-width:520px;
+  color:rgba(247,249,255,0.78);
+  font-size:0.8rem;
+  font-weight:500;
+  line-height:1.4;
+}
 .fuel-premium-lock.hidden{
   display:none;
 }
@@ -939,6 +946,14 @@ body:not(.dark) .country-table td{
 }
 .compare-card .meta .resale-panel.hidden{
   display:none;
+}
+.compare-card .meta .premium-feature-note{
+  width:100%;
+  color:rgba(255,255,255,0.72);
+  font-size:0.72rem;
+  line-height:1.35;
+  text-align:center;
+  margin-top:-2px;
 }
 .compare-card .meta .resale-title{
   font-weight:700;

@@ -1340,6 +1340,7 @@ const fuelCalcResult = document.getElementById('fuelCalcResult');
 const fuelCard = fuelCalcSection ? fuelCalcSection.querySelector('.fuel-card') : null;
 const fuelPremiumLock = document.getElementById('fuelPremiumLock');
 const fuelPremiumLockText = document.getElementById('fuelPremiumLockText');
+const fuelPremiumLockDetail = document.getElementById('fuelPremiumLockDetail');
 const fuelPremiumUnlockBtn = document.getElementById('fuelPremiumUnlockBtn');
 const fuelPremiumBadge = document.getElementById('fuelPremiumBadge');
 const catalogToggle = document.getElementById('catalogToggle');
@@ -1432,7 +1433,7 @@ const TRANSLATIONS = {
     originLabel: 'Origin:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Select at least one vehicle to compare',
-    maxCompare: 'Maximum 5 vehicles for comparison. Premium: 8.',
+    maxCompare: 'Maximum 5 vehicles for comparison. Premium unlocks up to 8 vehicles plus ownership and resale calculations.',
     maxComparePremium: 'Maximum 8 vehicles for comparison',
     commentsTitle: 'Comments',
     showComments: 'Show comments',
@@ -1455,12 +1456,14 @@ const TRANSLATIONS = {
     costEstimate: 'Estimated cost',
     premiumBadge: 'Premium',
     premiumCostLocked: 'Cost of Ownership is a premium feature.',
+    premiumCostDescription: 'Premium calculates fuel or charging cost from distance, local price, and consumption, so you can compare real running cost before choosing.',
     premiumUnlock: 'Upgrade to Unlock',
     premiumCheckoutLoading: 'Redirecting...',
     premiumCheckoutResume: 'Continue to Payment',
     premiumCheckoutError: 'Checkout could not be started. Please try again.',
     resaleButton: 'Resale',
     resaleTitle: 'Resale Value (5-10-15y)',
+    resalePremiumDescription: 'Premium estimates 5, 10, and 15-year resale value or depreciation, so you can compare total value, not only speed.',
     resaleDepreciation: 'Depreciation',
     resaleAppreciation: 'Appreciation',
     resaleCollector: 'Collector',
@@ -1537,7 +1540,7 @@ const TRANSLATIONS = {
     originLabel: 'Ulkesi:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Karşılaştırmak için en az bir araç seçin',
-    maxCompare: 'En fazla 5 araç seçebilirsiniz. Premium: 8.',
+    maxCompare: 'En fazla 5 arac secebilirsiniz. Premium 8 araca kadar karsilastirma, sahip olma maliyeti ve yeniden satis hesaplari acar.',
     maxComparePremium: 'En fazla 8 araç seçebilirsiniz',
     commentsTitle: 'Yorumlar',
     showComments: 'Yorumları göster',
@@ -1560,12 +1563,14 @@ const TRANSLATIONS = {
     costEstimate: 'Tahmini maliyet',
     premiumBadge: 'Premium',
     premiumCostLocked: 'Sahip olma maliyeti premium özelliktir.',
+    premiumCostDescription: 'Premium, mesafe, yerel yakit veya sarj fiyati ve tuketim degerinden gercek kullanim maliyetini hesaplar.',
     premiumUnlock: 'Yükselt ve Kilidi Aç',
     premiumCheckoutLoading: 'Yönlendiriliyor...',
     premiumCheckoutResume: 'Ödemeye Devam Et',
     premiumCheckoutError: 'Ödeme ekranı başlatılamadı. Lütfen tekrar deneyin.',
     resaleButton: 'Yeniden Satış',
     resaleTitle: 'Yeniden Satış Tahmini (5-10-15y)',
+    resalePremiumDescription: 'Premium, 5, 10 ve 15 yillik yeniden satis degeri veya deger kaybini tahmin eder; sadece hizi degil toplam degeri de karsilastirirsiniz.',
     resaleDepreciation: 'Değer Kaybı',
     resaleAppreciation: 'Değer Artışı',
     resaleCollector: 'Koleksiyon',
@@ -3933,6 +3938,9 @@ function updateFuelPremiumUi() {
   if (fuelPremiumLockText) {
     fuelPremiumLockText.textContent = pack.premiumCostLocked || 'Cost of Ownership is a premium feature.';
   }
+  if (fuelPremiumLockDetail) {
+    fuelPremiumLockDetail.textContent = pack.premiumCostDescription || TRANSLATIONS.en.premiumCostDescription || '';
+  }
   if (fuelPremiumUnlockBtn) {
     fuelPremiumUnlockBtn.textContent = locked
       ? (sessionUserId ? (pack.premiumUnlock || 'Upgrade to Unlock') : (pack.login || 'Log In'))
@@ -4749,6 +4757,9 @@ function renderSelected() {
           : `<button class="resale-btn locked" type="button" data-locked="1">${t('premiumUnlock')}</button>`
       )
       : '';
+    const resalePremiumNote = (resale && !resaleAllowed)
+      ? `<div class="premium-feature-note">${t('resalePremiumDescription')}</div>`
+      : '';
     card.innerHTML = `
       <div class="thumb-row ${gallery.length > 1 ? 'dual' : 'single'}">
         ${thumbFrames || `
@@ -4767,6 +4778,7 @@ function renderSelected() {
           <span class="price-value">${formatPrice(v.price)}</span>
           ${resaleButton}
         </div>
+        ${resalePremiumNote}
         ${resalePanel}
         <div class="stat-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</div>
         <div class="card-actions">
