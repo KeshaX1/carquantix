@@ -3344,7 +3344,7 @@ def car_detail(slug):
         meta_title=meta_title,
         meta_description=meta_description,
         canonical_url=canonical_url,
-        robots_directive="index,follow" if is_indexable else "noindex,follow",
+        robots_directive="index,follow",
         adsense_enabled=is_indexable,
         page_schema=page_schema,
     )
@@ -3401,7 +3401,7 @@ def compare_detail(compare_slug):
         canonical_url=canonical_url,
         meta_title=meta_title,
         meta_description=meta_description,
-        robots_directive="index,follow" if is_indexable else "noindex,follow",
+        robots_directive="index,follow",
         adsense_enabled=is_indexable,
         page_schema=page_schema,
     )
@@ -3481,7 +3481,7 @@ def seo_slug(slug):
             canonical_url=f"{get_base_url()}/",
             meta_title="CarQuantix - Compare Cars and Motorcycles",
             meta_description="Compare horsepower, acceleration and top speed with CarQuantix.",
-            robots_directive="noindex,follow",
+            robots_directive="index,follow",
             adsense_enabled=False,
         )
     return "Not Found", 404
