@@ -1962,6 +1962,208 @@ def build_featured_compare_links(cars, slug_map, limit=FEATURED_COMPARE_LIMIT):
     return links
 
 
+MULTI_BRAND_PREFIXES = (
+    "alfa romeo",
+    "aston martin",
+    "land rover",
+    "range rover",
+    "rolls royce",
+    "mercedes-benz",
+    "mercedes benz",
+)
+
+
+def get_vehicle_slug(car):
+    return str((car or {}).get("slug") or "").strip()
+
+
+def get_vehicle_name(car):
+    return str((car or {}).get("name") or (car or {}).get("id") or "Vehicle").strip()
+
+
+def get_vehicle_brand(car):
+    name = re.sub(r"^\d{4}\s+", "", get_vehicle_name(car)).strip()
+    if not name:
+        return "Other"
+    lower = name.lower()
+    for prefix in MULTI_BRAND_PREFIXES:
+        if lower.startswith(prefix):
+            return name[:len(prefix)]
+    return name.split()[0]
+
+
+def get_vehicle_year(car):
+    match = re.match(r"^(\d{4})\s+", get_vehicle_name(car))
+    return int(match.group(1)) if match else None
+
+
+def numeric_or_none(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def build_car_link_entry(car):
+    slug = get_vehicle_slug(car)
+    if not slug:
+        return None
+    return {"href": f"/cars/{slug}", "title": get_vehicle_name(car)}
+
+
+def unique_link_entries(entries, limit=None):
+    result = []
+    seen = set()
+    for entry in entries:
+        if not entry:
+            continue
+        href = str(entry.get("href") or "").strip()
+        title = str(entry.get("title") or "").strip()
+        if not href or not title or href in seen:
+            continue
+        seen.add(href)
+        result.append({"href": href, "title": title})
+        if limit and len(result) >= limit:
+            break
+    return result
+
+
+def related_car_score(target_car, candidate):
+    target_brand = get_vehicle_brand(target_car).lower()
+    candidate_brand = get_vehicle_brand(candidate).lower()
+    score = 0.0
+    if target_brand and target_brand == candidate_brand:
+        score += 1000
+
+    target_power = numeric_or_none((target_car or {}).get("power"))
+    candidate_power = numeric_or_none((candidate or {}).get("power"))
+    if target_power is not None and candidate_power is not None:
+        score -= abs(target_power - candidate_power) / 4
+
+    target_acc = numeric_or_none((target_car or {}).get("acc"))
+    candidate_acc = numeric_or_none((candidate or {}).get("acc"))
+    if target_acc is not None and candidate_acc is not None:
+        score -= abs(target_acc - candidate_acc) * 18
+
+    target_speed = numeric_or_none((target_car or {}).get("topSpeed"))
+    candidate_speed = numeric_or_none((candidate or {}).get("topSpeed"))
+    if target_speed is not None and candidate_speed is not None:
+        score -= abs(target_speed - candidate_speed) / 6
+
+    target_year = get_vehicle_year(target_car)
+    candidate_year = get_vehicle_year(candidate)
+    if target_year and candidate_year:
+        score -= abs(target_year - candidate_year) * 2
+
+    return score
+
+
+def build_related_car_links(car, cars, limit=8):
+    current_slug = get_vehicle_slug(car)
+    candidates = [entry for entry in cars if get_vehicle_slug(entry) and get_vehicle_slug(entry) != current_slug]
+    ordered = sorted(
+        candidates,
+        key=lambda entry: (related_car_score(car, entry), get_vehicle_name(entry)),
+        reverse=True,
+    )
+    return unique_link_entries((build_car_link_entry(entry) for entry in ordered), limit=limit)
+
+
+def build_related_article_links(current_slug=None, limit=8):
+    articles = [
+        {"href": f"/guides/{item['slug']}", "title": item.get("title_en") or item["slug"]}
+        for item in GUIDE_ITEMS
+        if item.get("slug")
+    ] + [
+        {"href": f"/blog/{item['slug']}", "title": item.get("title_en") or item["slug"]}
+        for item in BLOG_ITEMS
+        if item.get("slug")
+    ]
+    if current_slug:
+        current_index = next((index for index, item in enumerate(articles) if item["href"].endswith(f"/{current_slug}")), -1)
+        articles = articles[current_index + 1:] + articles[:current_index] if current_index >= 0 else articles
+    return unique_link_entries(articles, limit=limit)
+
+
+def build_editorial_car_links(cars, limit=8):
+    return unique_link_entries(
+        (
+            {"href": f"/cars/{entry['slug']}", "title": entry["name"]}
+            for entry in select_featured_car_links(build_car_links(cars))
+            if entry.get("slug")
+        ),
+        limit=limit,
+    )
+
+
+def build_editorial_compare_links(cars, slug_map, limit=8):
+    return unique_link_entries(
+        (
+            {"href": entry.get("href"), "title": entry.get("title")}
+            for entry in build_featured_compare_links(cars, slug_map, limit=None)
+        ),
+        limit=limit,
+    )
+
+
+def compare_entry_car_slugs(entry):
+    return {
+        get_vehicle_slug(entry.get("left_car")),
+        get_vehicle_slug(entry.get("right_car")),
+    } - {""}
+
+
+def compare_entry_brands(entry):
+    return {
+        get_vehicle_brand(entry.get("left_car")).lower(),
+        get_vehicle_brand(entry.get("right_car")).lower(),
+    } - {""}
+
+
+def build_related_compare_links_for_car(car, cars, slug_map, limit=8, exclude_href=None):
+    target_slug = get_vehicle_slug(car)
+    target_brand = get_vehicle_brand(car).lower()
+    scored = []
+    popular = []
+    for entry in build_featured_compare_links(cars, slug_map, limit=None):
+        href = str(entry.get("href") or "")
+        if not href or href == exclude_href:
+            continue
+        link = {"href": href, "title": entry.get("title")}
+        popular.append(link)
+        slugs = compare_entry_car_slugs(entry)
+        brands = compare_entry_brands(entry)
+        score = 0
+        if target_slug and target_slug in slugs:
+            score += 1000
+        if target_brand and target_brand in brands:
+            score += 150
+        if score:
+            scored.append((score, link))
+    ordered = [link for _, link in sorted(scored, key=lambda item: item[0], reverse=True)]
+    return unique_link_entries(ordered + popular, limit=limit)
+
+
+def build_related_compare_links_for_pair(left_car, right_car, cars, slug_map, limit=8, exclude_href=None):
+    target_slugs = {get_vehicle_slug(left_car), get_vehicle_slug(right_car)} - {""}
+    target_brands = {get_vehicle_brand(left_car).lower(), get_vehicle_brand(right_car).lower()} - {""}
+    scored = []
+    popular = []
+    for entry in build_featured_compare_links(cars, slug_map, limit=None):
+        href = str(entry.get("href") or "")
+        if not href or href == exclude_href:
+            continue
+        link = {"href": href, "title": entry.get("title")}
+        popular.append(link)
+        score = 0
+        score += 1000 * len(target_slugs & compare_entry_car_slugs(entry))
+        score += 150 * len(target_brands & compare_entry_brands(entry))
+        if score:
+            scored.append((score, link))
+    ordered = [link for _, link in sorted(scored, key=lambda item: item[0], reverse=True)]
+    return unique_link_entries(ordered + popular, limit=limit)
+
+
 def build_indexable_compare_slugs(cars, slug_map):
     slugs = set()
     for entry in build_featured_compare_links(cars, slug_map):
@@ -2978,6 +3180,7 @@ def guide_article(slug):
     article = build_article_context(GUIDE_ITEMS, GUIDE_ARTICLE_SECTIONS, slug, "Guides", "/guides")
     if not article:
         return "Not Found", 404
+    cars, slug_map = load_cars()
     canonical_url = f"{get_base_url()}/guides/{article['slug']}"
     meta_title = f"{article['title']} - CarQuantix Guides"
     page_schema = {
@@ -2996,6 +3199,9 @@ def guide_article(slug):
         meta_description=article["summary"],
         robots_directive="index,follow",
         page_schema=page_schema,
+        related_article_links=build_related_article_links(article["slug"], limit=8),
+        related_car_links=build_editorial_car_links(cars, limit=8),
+        related_compare_links=build_editorial_compare_links(cars, slug_map, limit=8),
     )
 
 
@@ -3004,6 +3210,7 @@ def blog_article(slug):
     article = build_article_context(BLOG_ITEMS, BLOG_ARTICLE_SECTIONS, slug, "Blog", "/blog")
     if not article:
         return "Not Found", 404
+    cars, slug_map = load_cars()
     canonical_url = f"{get_base_url()}/blog/{article['slug']}"
     meta_title = f"{article['title']} - CarQuantix Blog"
     page_schema = {
@@ -3022,6 +3229,9 @@ def blog_article(slug):
         meta_description=article["summary"],
         robots_directive="index,follow",
         page_schema=page_schema,
+        related_article_links=build_related_article_links(article["slug"], limit=8),
+        related_car_links=build_editorial_car_links(cars, limit=8),
+        related_compare_links=build_editorial_compare_links(cars, slug_map, limit=8),
     )
 
 
@@ -3347,6 +3557,9 @@ def car_detail(slug):
         robots_directive="index,follow",
         adsense_enabled=is_indexable,
         page_schema=page_schema,
+        related_car_links=build_related_car_links(car, cars, limit=8),
+        related_compare_links=build_related_compare_links_for_car(car, cars, slug_map, limit=8),
+        related_article_links=build_related_article_links(limit=6),
     )
 
 @app.route("/car/<slug>")
@@ -3374,6 +3587,7 @@ def compare_detail(compare_slug):
     meta_title = f"{left_car.get('name')} vs {right_car.get('name')} | CarQuantix"
     meta_description = build_compare_meta_description(left_car, right_car)
     is_indexable = resolved["canonical_slug"] in build_indexable_compare_slugs(cars, slug_map)
+    current_compare_href = f"/compare/{resolved['canonical_slug']}"
     page_schema = {
         "@context": "https://schema.org",
         "@type": "WebPage",
@@ -3404,6 +3618,19 @@ def compare_detail(compare_slug):
         robots_directive="index,follow",
         adsense_enabled=is_indexable,
         page_schema=page_schema,
+        related_car_links=unique_link_entries(
+            build_related_car_links(left_car, cars, limit=5) + build_related_car_links(right_car, cars, limit=5),
+            limit=8,
+        ),
+        related_compare_links=build_related_compare_links_for_pair(
+            left_car,
+            right_car,
+            cars,
+            slug_map,
+            limit=8,
+            exclude_href=current_compare_href,
+        ),
+        related_article_links=build_related_article_links(limit=6),
     )
 
 
