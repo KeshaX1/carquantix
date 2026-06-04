@@ -1937,7 +1937,7 @@ def build_compare_decision_data(car_a, car_b):
     }
 
 
-def build_featured_compare_links(cars, slug_map):
+def build_featured_compare_links(cars, slug_map, limit=FEATURED_COMPARE_LIMIT):
     links = []
     seen = set()
     for left_ref, right_ref in FEATURED_COMPARE_REFERENCES:
@@ -1957,7 +1957,7 @@ def build_featured_compare_links(cars, slug_map):
                 "right_car": right_car,
             }
         )
-        if len(links) >= FEATURED_COMPARE_LIMIT:
+        if limit and len(links) >= limit:
             break
     return links
 
@@ -3426,9 +3426,9 @@ def sitemap():
     ]
     urls.extend(f"{base_url}/guides/{item['slug']}" for item in GUIDE_ITEMS if item.get("slug"))
     urls.extend(f"{base_url}/blog/{item['slug']}" for item in BLOG_ITEMS if item.get("slug"))
-    featured_car_links = select_featured_car_links(build_car_links(cars))
-    urls.extend(f"{base_url}/cars/{entry['slug']}" for entry in featured_car_links if entry.get("slug"))
-    urls.extend(f"{base_url}{entry['href']}" for entry in build_featured_compare_links(cars, slug_map))
+    car_links = build_car_links(cars)
+    urls.extend(f"{base_url}/cars/{entry['slug']}" for entry in car_links if entry.get("slug"))
+    urls.extend(f"{base_url}{entry['href']}" for entry in build_featured_compare_links(cars, slug_map, limit=None))
     entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
     xml = (
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
