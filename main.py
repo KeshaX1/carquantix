@@ -1189,19 +1189,33 @@ def build_car_specs(car):
 
 
 def build_car_meta_description(car):
+    car_data = car or {}
+    name = str(car_data.get("name") or "this car").strip()
     bits = []
-    if car.get("power") is not None:
-        bits.append(f"{car['power']} hp")
-    if car.get("acc") is not None:
-        bits.append(f"0-100 km/h {car['acc']} s")
-    if car.get("topSpeed") is not None:
-        bits.append(f"Top speed {car['topSpeed']} km/h")
-    if car.get("engine"):
-        bits.append(car["engine"])
-    summary = ", ".join(bits[:4])
-    if summary:
-        return f"{car.get('name', 'Car')} specs and details: {summary}."
-    return f"{car.get('name', 'Car')} specs and details."
+    if car_data.get("power") is not None:
+        bits.append(f"{car_data['power']} hp")
+    if car_data.get("acc") is not None:
+        bits.append(f"0-100 km/h in {car_data['acc']} s")
+    if car_data.get("topSpeed") is not None:
+        bits.append(f"{car_data['topSpeed']} km/h top speed")
+
+    if bits:
+        stats = ", ".join(bits[:3])
+        description = (
+            f"Explore the {name} with {stats}, engine details, price insights "
+            "and comparisons against similar performance cars."
+        )
+        if len(description) <= 160:
+            return description
+        return (
+            f"Explore the {name}: {stats}, engine details and similar "
+            "performance car comparisons."
+        )
+
+    return (
+        f"Explore the {name} with engine details, performance specs, price insights "
+        "and comparisons against similar cars on CarQuantix."
+    )
 
 
 def format_consumption_text(car):
@@ -3170,7 +3184,7 @@ def blog():
         blog_items=BLOG_ITEMS,
         canonical_url=canonical_url,
         meta_title="CarQuantix Blog - Car Writing and Editorials",
-        meta_description="General car writing, editorial overviews and readable automotive topics from CarQuantix.",
+        meta_description="Read CarQuantix automotive editorials, car buying context, performance explainers and practical notes for comparing vehicles more clearly.",
         robots_directive="index,follow",
     )
 
@@ -3242,7 +3256,7 @@ def methodology():
         "methodology.html",
         canonical_url=canonical_url,
         meta_title="Methodology and Data Notes - CarQuantix",
-        meta_description="How CarQuantix compares vehicle performance, fuel consumption, pricing and ownership context.",
+        meta_description="See how CarQuantix compares vehicle performance, fuel consumption, pricing and ownership context with clear methods and practical data notes.",
         robots_directive="index,follow",
     )
 
@@ -3254,7 +3268,7 @@ def privacy_policy():
         "privacy_policy.html",
         canonical_url=canonical_url,
         meta_title="CarQuantix Privacy Policy",
-        meta_description="Read how CarQuantix collects, uses and protects your data.",
+        meta_description="Read how CarQuantix collects, uses and protects your data, including privacy practices for accounts, analytics, subscriptions and site features.",
         robots_directive="index,follow",
     )
 
@@ -3266,7 +3280,7 @@ def about_us():
         "about_us.html",
         canonical_url=canonical_url,
         meta_title="About Us - CarQuantix",
-        meta_description="Learn what CarQuantix does and how we help users compare vehicles with clear performance data.",
+        meta_description="Learn how CarQuantix helps drivers compare cars with horsepower, acceleration, top speed, pricing, fuel use and practical ownership context.",
         robots_directive="index,follow",
     )
 
@@ -3278,7 +3292,7 @@ def contact():
         "contact.html",
         canonical_url=canonical_url,
         meta_title="Contact - CarQuantix",
-        meta_description="Contact the CarQuantix team for support, business or partnership requests.",
+        meta_description="Contact the CarQuantix team for product support, data questions, business inquiries, partnerships, media requests or account assistance.",
         robots_directive="index,follow",
     )
 
@@ -3289,7 +3303,7 @@ def pricing():
         "pricing.html",
         canonical_url=canonical_url,
         meta_title="Pricing - CarQuantix",
-        meta_description="CarQuantix pricing and plan information.",
+        meta_description="Review CarQuantix pricing, subscription plans, account features and comparison tools for researching vehicle performance and ownership costs.",
         robots_directive="index,follow",
     )
 
@@ -3301,7 +3315,7 @@ def terms():
         "terms.html",
         canonical_url=canonical_url,
         meta_title="Terms and Conditions - CarQuantix",
-        meta_description="Read the terms and conditions for using CarQuantix.",
+        meta_description="Read the CarQuantix terms and conditions covering website use, accounts, subscriptions, vehicle data, content rights and service limitations.",
         robots_directive="index,follow",
     )
 
@@ -3313,7 +3327,7 @@ def refund_policy():
         "refund_policy.html",
         canonical_url=canonical_url,
         meta_title="Refund Policy - CarQuantix",
-        meta_description="Review the CarQuantix refund policy for subscriptions and digital services.",
+        meta_description="Review the CarQuantix refund policy for subscriptions and digital services, including eligibility, timing, billing issues and support steps.",
         robots_directive="index,follow",
     )
 
@@ -3707,7 +3721,7 @@ def seo_slug(slug):
             featured_compare_links=featured_compare_links,
             canonical_url=f"{get_base_url()}/",
             meta_title="CarQuantix - Compare Cars and Motorcycles",
-            meta_description="Compare horsepower, acceleration and top speed with CarQuantix.",
+            meta_description="Compare horsepower, acceleration, top speed, engine details and vehicle performance data with CarQuantix before building your shortlist.",
             robots_directive="index,follow",
             adsense_enabled=False,
         )
