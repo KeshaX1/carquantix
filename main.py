@@ -1938,8 +1938,56 @@ def build_compare_decision_data(car_a, car_b):
     if not right_cons:
         append_unique(right_cons, "Few clear weaknesses in the recorded specs")
 
+    buyer_recommendations = []
+    for side, name, car, pros in (
+        ("left", left_name, car_a, left_pros),
+        ("right", right_name, car_b, right_pros),
+    ):
+        reasons = []
+        if price_winner == side:
+            reasons.append("a lower listed price")
+        if power_winner == side:
+            reasons.append("stronger horsepower")
+        if acc_winner == side:
+            reasons.append("quicker 0-100 km/h acceleration")
+        if top_speed_winner == side:
+            reasons.append("a higher top speed")
+        if consumption_winner == side:
+            reasons.append("better recorded efficiency")
+        if year_winner == side:
+            reasons.append("a newer model year")
+
+        engine_text = str(car.get("engine") or "").strip()
+        if engine_text:
+            lower_engine = engine_text.lower()
+            if re.search(r"\bv8\b|shelby|hemi|mustang|camaro|challenger", lower_engine):
+                reasons.append("classic muscle-car character")
+            elif re.search(r"electric|ev|kwh", lower_engine):
+                reasons.append("electric powertrain response")
+            elif re.search(r"hybrid", lower_engine):
+                reasons.append("hybrid powertrain flexibility")
+            elif re.search(r"xdrive|quattro|4matic|awd|4wd", lower_engine):
+                reasons.append("all-wheel-drive traction")
+            elif engine_text:
+                reasons.append(f"its {engine_text} powertrain")
+
+        if not reasons:
+            reasons = pros[:2] or ["its overall spec balance"]
+
+        buyer_recommendations.append(
+            {
+                "name": name,
+                "lead": f"Choose the {name} if:",
+                "reason": (
+                    "You prioritize "
+                    f"{join_compare_labels(reasons[:3])}."
+                ),
+            }
+        )
+
     return {
         "verdict_items": verdict_items,
+        "buyer_recommendations": buyer_recommendations,
         "left": {
             "pros": left_pros[:3],
             "cons": left_cons[:3],

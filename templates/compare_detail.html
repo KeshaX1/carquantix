@@ -230,6 +230,40 @@
       background: rgba(255, 92, 92, 0.14);
       color: #ff8b8b;
     }
+    .compare-buyer-guide {
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+    }
+    .compare-buyer-guide h2 {
+      margin: 6px 0 16px;
+      font-size: clamp(1.15rem, 1vw + 1rem, 1.55rem);
+    }
+    .buyer-guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .buyer-guide-item {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(10, 16, 28, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .buyer-guide-item strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #f4f8ff;
+      font-size: 1.02rem;
+    }
+    .buyer-guide-item p {
+      margin: 0;
+      color: rgba(232, 241, 255, 0.78);
+      line-height: 1.55;
+    }
     body:not(.dark) .compare-copy {
       background:
         radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 38%),
@@ -242,12 +276,14 @@
       color: #1d4ed8;
     }
     body:not(.dark) .compare-verdict,
-    body:not(.dark) .tradeoff-card {
+    body:not(.dark) .tradeoff-card,
+    body:not(.dark) .compare-buyer-guide {
       background: linear-gradient(180deg, #ffffff, #f8fafc);
       border-color: rgba(15, 23, 42, 0.08);
     }
     body:not(.dark) .compare-verdict-header h2,
-    body:not(.dark) .tradeoff-card h3 {
+    body:not(.dark) .tradeoff-card h3,
+    body:not(.dark) .compare-buyer-guide h2 {
       color: #0f172a;
     }
     body:not(.dark) .summary-label,
@@ -258,8 +294,18 @@
       background: linear-gradient(135deg, #0f172a, #1e293b);
       border-color: rgba(15, 23, 42, 0.08);
     }
+    body:not(.dark) .buyer-guide-item {
+      background: #eef4ff;
+      border-color: rgba(37, 99, 235, 0.12);
+    }
     body:not(.dark) .verdict-item .summary-label {
       color: rgba(226, 232, 240, 0.76);
+    }
+    body:not(.dark) .buyer-guide-item strong {
+      color: #0f172a;
+    }
+    body:not(.dark) .buyer-guide-item p {
+      color: #334155;
     }
     body:not(.dark) .tradeoff-list li {
       color: #334155;
@@ -486,6 +532,21 @@
         </div>
       </article>
     </section>
+
+    {% if compare_decision.buyer_recommendations %}
+    <section class="compare-buyer-guide" aria-label="Who should buy which">
+      <div class="summary-label">Buyer guide</div>
+      <h2>Who should buy which?</h2>
+      <div class="buyer-guide-grid">
+        {% for item in compare_decision.buyer_recommendations %}
+        <article class="buyer-guide-item">
+          <strong>{{ item.lead }}</strong>
+          <p>{{ item.reason }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
     {% endif %}
 
     <section class="compare-summary" aria-label="Quick stats">
