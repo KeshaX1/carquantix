@@ -1155,12 +1155,47 @@ body:not(.dark) .compare-card .meta-line{
   background:rgba(255,92,92,0.14);
   color:#ff8b8b;
 }
+.compare-buyer-guide{
+  margin-top:18px;
+  padding:18px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.02);
+  box-shadow:0 12px 24px rgba(0,0,0,0.12);
+}
+.compare-buyer-guide h2{
+  margin:6px 0 16px;
+  font-size:clamp(1.15rem,1vw + 1rem,1.55rem);
+}
+.buyer-guide-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:14px;
+}
+.buyer-guide-item{
+  padding:16px;
+  border-radius:14px;
+  border:1px solid rgba(125,179,255,0.24);
+  background:rgba(18,31,50,0.74);
+}
+.buyer-guide-item strong{
+  display:block;
+  margin-bottom:8px;
+  color:#f8fbff;
+  font-size:1.02rem;
+}
+.buyer-guide-item p{
+  margin:0;
+  color:rgba(232,241,255,0.78);
+  line-height:1.55;
+}
 body:not(.dark) .compare-decision{
   border-color:rgba(15,23,42,0.08);
   background:linear-gradient(180deg,#ffffff,#f8fafc);
 }
 body:not(.dark) .compare-decision-head h2,
-body:not(.dark) .decision-tradeoff-card h3{
+body:not(.dark) .decision-tradeoff-card h3,
+body:not(.dark) .compare-buyer-guide h2{
   color:#0f172a;
 }
 body:not(.dark) .compare-decision-head p,
@@ -1171,6 +1206,20 @@ body:not(.dark) .decision-tradeoff-group h4{
 body:not(.dark) .decision-tradeoff-card{
   border-color:rgba(15,23,42,0.08);
   background:#ffffff;
+}
+body:not(.dark) .compare-buyer-guide{
+  border-color:rgba(15,23,42,0.08);
+  background:#ffffff;
+}
+body:not(.dark) .buyer-guide-item{
+  border-color:rgba(37,99,235,0.14);
+  background:#eef4ff;
+}
+body:not(.dark) .buyer-guide-item strong{
+  color:#0f172a;
+}
+body:not(.dark) .buyer-guide-item p{
+  color:#334155;
 }
 body:not(.dark) .decision-tradeoff-list li{
   color:#334155;

@@ -1322,6 +1322,7 @@ const vehiclePickerSearch = document.getElementById('vehiclePickerSearch');
 const compareDecisionArea = document.getElementById('compareDecisionArea');
 const compareDecisionVerdicts = document.getElementById('compareDecisionVerdicts');
 const compareDecisionTradeoffs = document.getElementById('compareDecisionTradeoffs');
+const compareDecisionBuyerGuide = document.getElementById('compareDecisionBuyerGuide');
 const compTable = document.querySelector('#compTable tbody');
 const tableArea = document.getElementById('tableArea');
 const raceLinksArea = document.getElementById('raceLinksArea');
@@ -4889,6 +4890,21 @@ function pushUnique(list, value) {
   if (value && !list.includes(value)) list.push(value);
 }
 
+function getBuyerGuideEngineReason(vehicle) {
+  const engineText = String(vehicle?.engine || '').trim();
+  if (!engineText) return '';
+  const lowerEngine = engineText.toLowerCase();
+  const vehicleName = String(vehicle?.name || '').toLowerCase();
+  if (/\bv8\b|shelby|hemi/.test(lowerEngine) || /mustang|camaro|challenger/.test(vehicleName)) {
+    return 'classic muscle-car character';
+  }
+  if (/electric|ev|kwh/.test(lowerEngine)) return 'electric powertrain response';
+  if (/hybrid/.test(lowerEngine)) return 'hybrid powertrain flexibility';
+  if (/xdrive|quattro|4matic|awd|4wd/.test(lowerEngine)) return 'all-wheel-drive traction';
+  if (/cc|cm3/.test(lowerEngine)) return 'its engine character';
+  return `its ${engineText} powertrain`;
+}
+
 function buildCompareDecisionData(leftVehicle, rightVehicle) {
   if (!leftVehicle || !rightVehicle) return null;
 
@@ -5299,13 +5315,41 @@ function buildGroupCompareDecisionData(vehicles) {
     };
   });
 
-  return { verdicts, tradeoffs };
+  const buyerRecommendations = items.map((vehicle) => {
+    const key = getDecisionVehicleKey(vehicle);
+    const reasons = [];
+
+    if (priceMeta.comparable && priceLeaderKeys.has(key)) pushUnique(reasons, 'a lower listed price');
+    if (powerMeta.comparable && powerLeaderKeys.has(key)) pushUnique(reasons, 'stronger horsepower');
+    if (accMeta.comparable && accLeaderKeys.has(key)) pushUnique(reasons, 'quicker 0-100 km/h acceleration');
+    if (topSpeedMeta.comparable && topSpeedLeaderKeys.has(key)) pushUnique(reasons, 'a higher top speed');
+    if (consumptionMeta.comparable && consumptionLeaderKeys.has(key)) pushUnique(reasons, 'better recorded efficiency');
+    if (yearMeta.comparable && yearLeaderKeys.has(key)) pushUnique(reasons, 'a newer model year');
+
+    const engineReason = getBuyerGuideEngineReason(vehicle);
+    if (engineReason) pushUnique(reasons, engineReason);
+    if (!reasons.length && overallLeaderKeys.has(key)) pushUnique(reasons, 'its overall spec balance');
+    if (!reasons.length) pushUnique(reasons, 'its specific balance of price, performance, and usability');
+
+    const name = getDecisionVehicleName(vehicle);
+    return {
+      lead: `Choose the ${name} if:`,
+      reason: `You prioritize ${joinDecisionLabels(reasons.slice(0, 3))}.`,
+    };
+  });
+
+  return { verdicts, tradeoffs, buyerRecommendations };
 }
 
 function renderCompareDecisionSection() {
   if (!compareDecisionArea || !compareDecisionVerdicts || !compareDecisionTradeoffs) return;
   compareDecisionVerdicts.innerHTML = '';
   compareDecisionTradeoffs.innerHTML = '';
+  if (compareDecisionBuyerGuide) {
+    compareDecisionBuyerGuide.innerHTML = '';
+  } else {
+    compareDecisionArea.querySelector('.compare-buyer-guide')?.remove();
+  }
 
   if (selected.length < 2) {
     compareDecisionArea.classList.add('hidden');
@@ -5349,6 +5393,29 @@ function renderCompareDecisionSection() {
     `;
     compareDecisionTradeoffs.appendChild(card);
   });
+
+  if (Array.isArray(data.buyerRecommendations) && data.buyerRecommendations.length) {
+    const buyerGuide = document.createElement('section');
+    buyerGuide.className = 'compare-buyer-guide';
+    buyerGuide.setAttribute('aria-label', 'Who should buy which');
+    buyerGuide.innerHTML = `
+      <div class="section-kicker">Buyer guide</div>
+      <h2>Who should buy which?</h2>
+      <div class="buyer-guide-grid">
+        ${data.buyerRecommendations.map((item) => `
+          <article class="buyer-guide-item">
+            <strong>${item.lead}</strong>
+            <p>${item.reason}</p>
+          </article>
+        `).join('')}
+      </div>
+    `;
+    if (compareDecisionBuyerGuide) {
+      compareDecisionBuyerGuide.appendChild(buyerGuide);
+    } else {
+      compareDecisionArea.appendChild(buyerGuide);
+    }
+  }
 
   compareDecisionArea.classList.remove('hidden');
 }
