@@ -4704,10 +4704,10 @@ function attachAddButtons() {
 function renderSelected() {
   syncSeoContentPosition();
   renderCompareSlots();
-  compareArea.classList.add('hidden');
   compareArea.innerHTML = '';
   compareArea.dataset.count = String(selected.length);
   if (selected.length === 0) {
+    compareArea.classList.add('hidden');
     setMobileSidebarCollapsed(false);
     compTable.innerHTML = '';
     if (tableArea) tableArea.classList.add('hidden');
@@ -4717,6 +4717,7 @@ function renderSelected() {
     updateMobileVehicleToggle();
     return;
   }
+  compareArea.classList.remove('hidden');
 
   selected.forEach(v => {
     const card = document.createElement('div');
