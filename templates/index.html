@@ -442,6 +442,13 @@
   {% if paddle_client_token %}
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   {% endif %}
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
+      });
+    }
+  </script>
   <div id="vehiclePickerModal" class="vehicle-picker-modal hidden" role="dialog" aria-modal="true" aria-labelledby="vehiclePickerTitle">
     <div class="vehicle-picker-backdrop" data-close-picker="1"></div>
     <div class="vehicle-picker-panel">
