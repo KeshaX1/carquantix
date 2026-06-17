@@ -3742,11 +3742,6 @@ def ads_txt():
     return send_from_directory(ADS_TXT_DIR, "ads.txt", mimetype="text/plain")
 
 
-@app.route("/sw.js")
-def service_worker():
-    return send_from_directory(STATIC_DIR, "sw.js", mimetype="application/javascript")
-
-
 @app.route("/<slug>")
 def seo_slug(slug):
     normalized = re.sub(r"\s+", "-", (slug or "").strip().lower())
