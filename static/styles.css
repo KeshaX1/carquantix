@@ -1025,6 +1025,22 @@ body:not(.dark) .compare-card .meta-line{
   border-color:rgba(0,195,255,0.6);
   box-shadow:0 10px 22px rgba(0,120,255,0.28);
 }
+body:not(.dark) .detail-btn{
+  color:#004a87;
+  border-color:rgba(0,111,204,0.5);
+  background:linear-gradient(135deg, rgba(0,119,255,0.16), rgba(0,195,255,0.24));
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.75) inset,
+    0 8px 18px rgba(0,111,204,0.18);
+}
+body:not(.dark) .detail-btn:hover{
+  color:#002f5f;
+  border-color:rgba(0,91,181,0.72);
+  background:linear-gradient(135deg, rgba(0,119,255,0.24), rgba(0,195,255,0.34));
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.9) inset,
+    0 10px 22px rgba(0,111,204,0.24);
+}
 
 .empty{color:var(--muted);background:rgba(255,255,255,0.01);padding:22px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03)}
 .empty-block{
