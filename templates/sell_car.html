@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="48x48" href="/static/icon/4848px.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/static/icon/6464px.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/static/icon/192192px.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/static/icon/192192px.png">
+  {% include "_adsense_head.html" %}
+  <title>{{ meta_title or "Sell Your Car Online - CarQuantix" }}</title>
+  <meta name="description" content="{{ meta_description or 'List your car for sale on CarQuantix.' }}">
+  <meta name="robots" content="{{ robots_directive or 'index,follow' }}">
+  <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/sell-car' }}">
+  <script type="application/ld+json">{{ page_schema|tojson }}</script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260328-social-icons1') }}">
+  <style>
+    .market-main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 24px 64px;
+    }
+    .market-head {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .market-head h1 {
+      margin: 0;
+      font-size: clamp(2rem, 2.2vw + 1rem, 3.4rem);
+      letter-spacing: 0;
+    }
+    .market-head p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted, #9fb0c5);
+      line-height: 1.65;
+    }
+    .market-layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 430px) 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .listing-form-panel,
+    .listing-card,
+    .empty-listings {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--card, rgba(255, 255, 255, 0.03));
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+      border-radius: 8px;
+    }
+    .listing-form-panel {
+      padding: 20px;
+      position: sticky;
+      top: 18px;
+    }
+    .listing-form-panel h2,
+    .listings-panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.35rem;
+    }
+    .listing-form {
+      display: grid;
+      gap: 12px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+    .field label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted, #9fb0c5);
+    }
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 16, 28, 0.58);
+      color: #f4f8ff;
+      border-radius: 8px;
+      padding: 11px 12px;
+      font: inherit;
+      outline: none;
+    }
+    .field textarea {
+      min-height: 118px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+    .field input:focus,
+    .field textarea:focus {
+      border-color: rgba(94, 234, 212, 0.45);
+      box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.12);
+    }
+    .hidden-field {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .submit-listing {
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #14b8a6, #2563eb);
+      color: #ffffff;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .form-note,
+    .listing-meta,
+    .listing-description,
+    .listing-contact {
+      color: var(--muted, #9fb0c5);
+      line-height: 1.55;
+    }
+    .form-note {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    .alert {
+      padding: 11px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+    .alert.success {
+      background: rgba(34, 197, 94, 0.12);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.24);
+    }
+    .alert.error {
+      background: rgba(239, 68, 68, 0.12);
+      color: #fecaca;
+      border: 1px solid rgba(239, 68, 68, 0.24);
+    }
+    .listings-panel {
+      display: grid;
+      gap: 14px;
+    }
+    .listing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .listing-card {
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+    .listing-image {
+      aspect-ratio: 16 / 10;
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(37, 99, 235, 0.2));
+      display: grid;
+      place-items: center;
+      color: #e8f1ff;
+      font-weight: 800;
+      text-align: center;
+      padding: 16px;
+    }
+    .listing-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .listing-body {
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+    }
+    .listing-title {
+      margin: 0;
+      font-size: 1.12rem;
+      line-height: 1.35;
+    }
+    .listing-price {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #5eead4;
+    }
+    .listing-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .listing-facts span {
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #e8f1ff;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .listing-contact a {
+      font-weight: 800;
+    }
+    .empty-listings {
+      padding: 24px;
+      color: var(--muted, #9fb0c5);
+      line-height: 1.6;
+    }
+    body:not(.dark) .listing-form-panel,
+    body:not(.dark) .listing-card,
+    body:not(.dark) .empty-listings {
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+    body:not(.dark) .market-head h1,
+    body:not(.dark) .listing-form-panel h2,
+    body:not(.dark) .listings-panel h2,
+    body:not(.dark) .listing-title {
+      color: #0f172a;
+    }
+    body:not(.dark) .field input,
+    body:not(.dark) .field textarea {
+      background: #ffffff;
+      border-color: rgba(15, 23, 42, 0.12);
+      color: #0f172a;
+    }
+    body:not(.dark) .listing-price {
+      color: #0f766e;
+    }
+    body:not(.dark) .listing-facts span {
+      background: #eef4ff;
+      color: #1e293b;
+    }
+    body:not(.dark) .market-head p,
+    body:not(.dark) .form-note,
+    body:not(.dark) .listing-meta,
+    body:not(.dark) .listing-description,
+    body:not(.dark) .listing-contact,
+    body:not(.dark) .empty-listings,
+    body:not(.dark) .field label {
+      color: #475569;
+    }
+    @media (max-width: 860px) {
+      .market-layout {
+        grid-template-columns: 1fr;
+      }
+      .listing-form-panel {
+        position: static;
+      }
+    }
+    @media (max-width: 560px) {
+      .market-main {
+        padding: 22px 16px 48px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="car-detail-page">
+  <header class="topbar">
+    <div class="brand-block">
+      <span class="brand-name">CarQuantix</span>
+      <span class="brand-copy">&copy; 2026</span>
+    </div>
+    <nav class="top-links" aria-label="Top links">
+      <a href="/" class="top-link">Home</a>
+      <a href="/sell-car" class="top-link">Sell Your Car</a>
+      <a href="/news" class="top-link">News</a>
+      <a href="/guides" class="top-link">Guides</a>
+      <a href="/blog" class="top-link">Blog</a>
+      <a href="/pricing" class="top-link">Pricing</a>
+    </nav>
+    <div class="auth-area"></div>
+  </header>
+
+  <main class="market-main">
+    <section class="market-head">
+      <div class="car-eyebrow">Public Car Listings</div>
+      <h1>Sell Your Car on CarQuantix</h1>
+      <p>Add a public listing with price, mileage, city and contact details. Buyers can browse active listings directly on this page.</p>
+    </section>
+
+    <div class="market-layout">
+      <section class="listing-form-panel" aria-label="Create a car listing">
+        <h2>Create Listing</h2>
+        {% if message %}
+        <div class="alert success">{{ message }}</div>
+        {% endif %}
+        {% if error %}
+        <div class="alert error">{{ error }}</div>
+        {% endif %}
+        <form class="listing-form" method="post" action="/sell-car">
+          <div class="hidden-field">
+            <label for="website">Website</label>
+            <input id="website" name="website" type="text" value="">
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="seller_name">Seller name *</label>
+              <input id="seller_name" name="seller_name" type="text" maxlength="80" required value="{{ form_values.get('seller_name', '') }}">
+            </div>
+            <div class="field">
+              <label for="city">City *</label>
+              <input id="city" name="city" type="text" maxlength="80" required value="{{ form_values.get('city', '') }}">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" maxlength="120" value="{{ form_values.get('email', '') }}">
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="text" maxlength="40" value="{{ form_values.get('phone', '') }}">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="make">Make *</label>
+              <input id="make" name="make" type="text" maxlength="60" required value="{{ form_values.get('make', '') }}">
+            </div>
+            <div class="field">
+              <label for="model">Model *</label>
+              <input id="model" name="model" type="text" maxlength="80" required value="{{ form_values.get('model', '') }}">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="year">Year *</label>
+              <input id="year" name="year" type="text" inputmode="numeric" maxlength="4" required value="{{ form_values.get('year', '') }}">
+            </div>
+            <div class="field">
+              <label for="mileage">Mileage *</label>
+              <input id="mileage" name="mileage" type="text" maxlength="40" required value="{{ form_values.get('mileage', '') }}">
+            </div>
+          </div>
+          <div class="field">
+            <label for="price">Price *</label>
+            <input id="price" name="price" type="text" maxlength="40" required value="{{ form_values.get('price', '') }}">
+          </div>
+          <div class="field">
+            <label for="image_url">Image URL</label>
+            <input id="image_url" name="image_url" type="url" maxlength="300" value="{{ form_values.get('image_url', '') }}">
+          </div>
+          <div class="field">
+            <label for="description">Description *</label>
+            <textarea id="description" name="description" maxlength="800" required>{{ form_values.get('description', '') }}</textarea>
+          </div>
+          <button class="submit-listing" type="submit">Publish Listing</button>
+          <p class="form-note">Email or phone is required because listings are public. Do not publish sensitive personal information.</p>
+        </form>
+      </section>
+
+      <section class="listings-panel" aria-label="Public car listings">
+        <h2>Active Listings</h2>
+        {% if listings %}
+        <div class="listing-grid">
+          {% for listing in listings %}
+          <article class="listing-card">
+            <div class="listing-image">
+              {% if listing.image_url %}
+              <img src="{{ listing.image_url }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" loading="lazy">
+              {% else %}
+              <span>{{ listing.make }} {{ listing.model }}</span>
+              {% endif %}
+            </div>
+            <div class="listing-body">
+              <div>
+                <h3 class="listing-title">{{ listing.year }} {{ listing.make }} {{ listing.model }}</h3>
+                <div class="listing-meta">{{ listing.city }} &middot; Listed {{ listing.created_at }}</div>
+              </div>
+              <div class="listing-price">{{ listing.price }}</div>
+              <div class="listing-facts">
+                <span>{{ listing.mileage }}</span>
+                <span>{{ listing.seller_name }}</span>
+              </div>
+              <p class="listing-description">{{ listing.description }}</p>
+              <div class="listing-contact">
+                {% if listing.email %}
+                <div>Email: <a href="mailto:{{ listing.email }}">{{ listing.email }}</a></div>
+                {% endif %}
+                {% if listing.phone %}
+                <div>Phone: <a href="tel:{{ listing.phone }}">{{ listing.phone }}</a></div>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-listings">No public listings yet. The first submitted listing will appear here.</div>
+        {% endif %}
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">CarQuantix</span>
+        <span class="footer-copy">&copy; 2026 CarQuantix. All rights reserved.</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="/about-us">About Us</a>
+        <a href="/contact">Contact</a>
+        <a href="/sell-car">Sell Your Car</a>
+        <a href="/news">News</a>
+        <a href="/guides">Guides</a>
+        <a href="/blog">Blog</a>
+        <a href="/methodology">Methodology</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/terms">Terms</a>
+        <a href="/refund-policy">Refund Policy</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

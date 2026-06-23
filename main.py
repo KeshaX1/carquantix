@@ -120,6 +120,7 @@ USERS_PATH = resolve_data_path("USERS_PATH", "users.json")
 PENDING_PATH = resolve_data_path("PENDING_PATH", "pending_verifications.json")
 PENDING_RESET_PATH = resolve_data_path("PENDING_RESET_PATH", "pending_resets.json")
 COMMENTS_PATH = resolve_data_path("COMMENTS_PATH", "comments.json")
+CAR_LISTINGS_PATH = resolve_data_path("CAR_LISTINGS_PATH", "car_listings.json")
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 STATIC_DIR = Path(__file__).with_name("static")
@@ -2652,6 +2653,125 @@ def save_comments(comments):
     COMMENTS_PATH.write_text(json.dumps(comments, indent=2), encoding="utf-8")
 
 
+def clean_listing_text(value, max_length=120):
+    value = re.sub(r"\s+", " ", str(value or "")).strip()
+    return value[:max_length]
+
+
+def clean_listing_multiline(value, max_length=800):
+    value = str(value or "").replace("\r\n", "\n").replace("\r", "\n").strip()
+    value = re.sub(r"\n{3,}", "\n\n", value)
+    return value[:max_length]
+
+
+def normalize_listing(item):
+    if not isinstance(item, dict):
+        item = {}
+    created_at = clean_listing_text(item.get("created_at"), 40)
+    if not created_at:
+        created_at = datetime.utcnow().strftime("%Y-%m-%d")
+    price = clean_listing_text(item.get("price"), 40)
+    mileage = clean_listing_text(item.get("mileage"), 40)
+    image_url = clean_listing_text(item.get("image_url"), 300)
+    if image_url and not re.match(r"^https?://", image_url, re.IGNORECASE):
+        image_url = ""
+
+    return {
+        "id": clean_listing_text(item.get("id"), 40) or secrets.token_hex(8),
+        "created_at": created_at,
+        "seller_name": clean_listing_text(item.get("seller_name"), 80),
+        "email": clean_listing_text(item.get("email"), 120),
+        "phone": clean_listing_text(item.get("phone"), 40),
+        "city": clean_listing_text(item.get("city"), 80),
+        "make": clean_listing_text(item.get("make"), 60),
+        "model": clean_listing_text(item.get("model"), 80),
+        "year": clean_listing_text(item.get("year"), 10),
+        "mileage": mileage,
+        "price": price,
+        "image_url": image_url,
+        "description": clean_listing_multiline(item.get("description"), 800),
+        "status": clean_listing_text(item.get("status"), 20) or "active",
+    }
+
+
+def load_car_listings(include_inactive=False):
+    raw_listings = []
+    if CAR_LISTINGS_PATH.exists():
+        try:
+            parsed = json.loads(CAR_LISTINGS_PATH.read_text(encoding="utf-8"))
+            if isinstance(parsed, list):
+                raw_listings = parsed
+        except json.JSONDecodeError:
+            raw_listings = []
+
+    listings = []
+    seen_ids = set()
+    changed = False
+    for item in raw_listings:
+        normalized = normalize_listing(item)
+        if normalized["id"] in seen_ids:
+            changed = True
+            continue
+        if not normalized["make"] or not normalized["model"] or not normalized["year"]:
+            changed = True
+            continue
+        if include_inactive or normalized["status"] == "active":
+            listings.append(normalized)
+        seen_ids.add(normalized["id"])
+
+    listings.sort(key=lambda item: item.get("created_at", ""), reverse=True)
+    if changed:
+        save_car_listings(listings)
+    return listings
+
+
+def save_car_listings(listings):
+    ensure_parent_dir(CAR_LISTINGS_PATH)
+    CAR_LISTINGS_PATH.write_text(json.dumps(listings, indent=2), encoding="utf-8")
+
+
+def validate_listing_form(form):
+    honeypot = clean_listing_text(form.get("website"), 80)
+    if honeypot:
+        return None, "Listing could not be submitted."
+
+    listing = normalize_listing(
+        {
+            "id": f"listing_{int(time.time())}_{secrets.token_hex(4)}",
+            "created_at": datetime.utcnow().strftime("%Y-%m-%d"),
+            "seller_name": form.get("seller_name"),
+            "email": form.get("email"),
+            "phone": form.get("phone"),
+            "city": form.get("city"),
+            "make": form.get("make"),
+            "model": form.get("model"),
+            "year": form.get("year"),
+            "mileage": form.get("mileage"),
+            "price": form.get("price"),
+            "image_url": form.get("image_url"),
+            "description": form.get("description"),
+            "status": "active",
+        }
+    )
+
+    required_fields = ("seller_name", "city", "make", "model", "year", "mileage", "price", "description")
+    if any(not listing.get(field) for field in required_fields):
+        return None, "Please fill in all required fields."
+    if not listing["email"] and not listing["phone"]:
+        return None, "Please add at least one contact option: email or phone."
+    if listing["email"] and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", listing["email"]):
+        return None, "Please enter a valid email address."
+    if not re.match(r"^(19|20)\d{2}$", listing["year"]):
+        return None, "Please enter a valid model year."
+    current_year = datetime.utcnow().year + 1
+    if int(listing["year"]) < 1950 or int(listing["year"]) > current_year:
+        return None, "Please enter a realistic model year."
+    if listing["image_url"] and not re.match(r"^https?://", listing["image_url"], re.IGNORECASE):
+        return None, "Image URL must start with http:// or https://."
+
+    return listing, ""
+
+
 def get_comment_identity():
     user = session.get("user") or {}
     email = (user.get("email") or "").strip().lower()
@@ -3583,6 +3703,45 @@ def contact():
         robots_directive="index,follow",
     )
 
+
+@app.route("/sell-car", methods=["GET", "POST"])
+def sell_car():
+    message = ""
+    error = ""
+    form_values = {}
+    if request.method == "POST":
+        form_values = request.form.to_dict()
+        listing, error = validate_listing_form(request.form)
+        if listing and not error:
+            listings = load_car_listings(include_inactive=True)
+            listings.insert(0, listing)
+            save_car_listings(listings)
+            message = "Your car listing is now live."
+            form_values = {}
+
+    listings = load_car_listings()
+    canonical_url = f"{get_base_url()}{request.path}"
+    page_schema = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Sell Your Car - CarQuantix",
+        "description": "List your car for sale and browse public vehicle listings on CarQuantix.",
+        "url": canonical_url,
+    }
+    return render_template(
+        "sell_car.html",
+        listings=listings,
+        message=message,
+        error=error,
+        form_values=form_values,
+        canonical_url=canonical_url,
+        meta_title="Sell Your Car Online - CarQuantix",
+        meta_description="List your car for sale on CarQuantix and browse public vehicle listings with price, mileage, city and seller contact details.",
+        robots_directive="index,follow",
+        page_schema=page_schema,
+    )
+
+
 @app.route("/pricing")
 def pricing():
     canonical_url = f"{get_base_url()}{request.path}"
@@ -3969,6 +4128,7 @@ def sitemap():
         f"{base_url}/methodology",
         f"{base_url}/about-us",
         f"{base_url}/contact",
+        f"{base_url}/sell-car",
         f"{base_url}/pricing",
         f"{base_url}/terms",
         f"{base_url}/refund-policy",
