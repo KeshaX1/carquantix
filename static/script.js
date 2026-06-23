@@ -5819,6 +5819,45 @@ if (mobileThemeToggle) {
   });
 }
 
+const topSellCarLink = document.getElementById('topSellCarLink');
+const startSellModeTransition = (href) => {
+  if (!href) return;
+  const overlay = document.createElement('div');
+  overlay.className = 'sell-mode-transition';
+  overlay.setAttribute('aria-hidden', 'true');
+  overlay.innerHTML = `
+    <span class="sell-transition-card">
+      <span class="sell-transition-kicker">Marketplace mode</span>
+      <span class="sell-transition-title">Preparing seller tools</span>
+      <span class="sell-transition-bar"></span>
+    </span>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('is-active'));
+  window.setTimeout(() => {
+    window.location.href = href;
+  }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 120 : 720);
+};
+
+if (topSellCarLink) {
+  topSellCarLink.addEventListener('click', (event) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      topSellCarLink.target === '_blank'
+    ) {
+      return;
+    }
+    event.preventDefault();
+    topSellCarLink.classList.add('is-transitioning');
+    startSellModeTransition(topSellCarLink.href);
+  });
+}
+
 // Language dropdown + translations
 let langToggleBtn = null;
 

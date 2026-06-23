@@ -3142,6 +3142,147 @@ body:not(.dark) .category-entry-card:hover {
   box-shadow: 0 14px 30px rgba(56,189,248,0.34);
 }
 
+.sell-car-cta.is-transitioning {
+  transform: translateY(0) scale(0.98);
+  filter: brightness(1.12);
+  box-shadow: 0 0 0 4px rgba(94,234,212,0.18), 0 18px 42px rgba(56,189,248,0.42);
+}
+
+.sell-mode-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 76% 18%, rgba(94,234,212,0.28), transparent 26%),
+    radial-gradient(circle at 30% 78%, rgba(59,130,246,0.28), transparent 30%),
+    rgba(6, 17, 31, 0.36);
+  backdrop-filter: blur(0);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.18s ease, transform 0.18s ease, backdrop-filter 0.18s ease;
+}
+
+.sell-mode-transition.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  backdrop-filter: blur(8px);
+}
+
+.sell-mode-transition::before {
+  content: "";
+  position: absolute;
+  width: min(52vw, 640px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(94,234,212,0.48);
+  box-shadow: 0 0 80px rgba(56,189,248,0.28);
+  transform: scale(0.2);
+  animation: sellTransitionRing 0.72s cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+.sell-mode-transition::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    linear-gradient(90deg, transparent 0 12%, rgba(94,234,212,0.16) 12% 13%, transparent 13% 26%, rgba(56,189,248,0.12) 26% 27%, transparent 27% 100%),
+    linear-gradient(0deg, transparent 0 16%, rgba(255,255,255,0.08) 16% 17%, transparent 17% 100%);
+  background-size: 88px 88px;
+  transform: translate3d(-24px, 18px, 0) scale(1.04);
+  animation: sellTransitionGrid 0.72s ease forwards;
+}
+
+.sell-transition-card {
+  position: relative;
+  z-index: 1;
+  min-width: min(360px, calc(100vw - 48px));
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.84);
+  color: #eaf0ff;
+  padding: 18px 20px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.34);
+  transform: translateY(10px) scale(0.96);
+  animation: sellTransitionCard 0.55s cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+.sell-transition-kicker {
+  display: block;
+  color: #67e8f9;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.sell-transition-title {
+  display: block;
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.sell-transition-bar {
+  display: block;
+  height: 5px;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+  overflow: hidden;
+}
+
+.sell-transition-bar::before {
+  content: "";
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #5eead4, #38bdf8);
+  animation: sellTransitionLoad 0.72s ease forwards;
+}
+
+@keyframes sellTransitionRing {
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes sellTransitionGrid {
+  to {
+    transform: translate3d(34px, -28px, 0) scale(1.1);
+    opacity: 0.28;
+  }
+}
+
+@keyframes sellTransitionCard {
+  to {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sellTransitionLoad {
+  to {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sell-mode-transition,
+  .sell-mode-transition::before,
+  .sell-mode-transition::after,
+  .sell-transition-card,
+  .sell-transition-bar::before {
+    animation: none;
+    transition: none;
+  }
+}
+
 .notifications-wrap {
   position: relative;
 }
