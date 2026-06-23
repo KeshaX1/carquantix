@@ -25,6 +25,197 @@
       margin: 0 auto;
       padding: 22px 20px 64px;
     }
+    .market-search-panel {
+      margin: -6px auto 64px;
+      padding: 28px 32px 26px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 12px 34px rgba(15, 23, 42, 0.12);
+    }
+    .market-tabs {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .market-tab {
+      position: relative;
+      color: #111827;
+      text-decoration: none;
+      font-weight: 500;
+      white-space: nowrap;
+      padding-bottom: 8px;
+    }
+    .market-tab.active {
+      font-size: 1.22rem;
+      font-weight: 900;
+    }
+    .market-tab.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: #333333;
+    }
+    .market-search-row {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) minmax(220px, 386px);
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .market-search-control {
+      width: 100%;
+      min-height: 41px;
+      border: 1px solid #9ca3af;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #1f2937;
+      font: inherit;
+      padding: 9px 12px;
+    }
+    .market-select-like {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .search-count-btn {
+      min-height: 41px;
+      border: 0;
+      border-radius: 6px;
+      background: #1473e6;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .advanced-link {
+      display: block;
+      width: max-content;
+      margin: 0 148px 4px auto;
+      color: #0756d8;
+      text-decoration: none;
+      font-weight: 800;
+    }
+    .vehicle-type-title {
+      margin: 0 0 22px;
+      color: #111827;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .vehicle-type-grid {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(90px, 1fr));
+      gap: 18px;
+      align-items: end;
+    }
+    .vehicle-type {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #111827;
+      font-weight: 800;
+      text-align: center;
+      min-width: 0;
+    }
+    .vehicle-silhouette {
+      width: 100%;
+      max-width: 118px;
+      height: 50px;
+      position: relative;
+    }
+    .vehicle-silhouette::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: 12px;
+      height: 22px;
+      border-radius: 20px 28px 8px 8px;
+      background: linear-gradient(180deg, #f8fafc, #d1d5db);
+      border: 1px solid #9ca3af;
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+    }
+    .vehicle-silhouette::after {
+      content: "";
+      position: absolute;
+      left: 24px;
+      right: 22px;
+      bottom: 28px;
+      height: 15px;
+      border-radius: 24px 28px 4px 4px;
+      background: #eef2f7;
+      border: 1px solid #9ca3af;
+    }
+    .vehicle-type .wheels {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      bottom: 7px;
+      height: 14px;
+    }
+    .vehicle-type .wheels::before,
+    .vehicle-type .wheels::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #111827;
+      box-shadow: inset 0 0 0 4px #e5e7eb;
+    }
+    .vehicle-type .wheels::before {
+      left: 0;
+    }
+    .vehicle-type .wheels::after {
+      right: 0;
+    }
+    .vehicle-silhouette.suv::before { height: 28px; border-radius: 16px 22px 8px 8px; }
+    .vehicle-silhouette.sedan::before { height: 19px; border-radius: 28px 34px 8px 8px; }
+    .vehicle-silhouette.wagon::before { height: 22px; border-radius: 18px 12px 8px 8px; }
+    .vehicle-silhouette.compact::before { left: 18px; right: 18px; height: 23px; border-radius: 24px 18px 8px 8px; }
+    .vehicle-silhouette.van::before { height: 29px; border-radius: 10px 12px 8px 8px; }
+    .vehicle-silhouette.coupe::before { height: 18px; border-radius: 36px 36px 8px 8px; }
+    .vehicle-silhouette.cabrio::after { display: none; }
+    .vehicle-silhouette.transporter::before { height: 30px; border-radius: 8px; }
+    .popular-brands {
+      margin: 66px 0 28px;
+    }
+    .popular-brands h2 {
+      margin: 0 0 22px;
+      color: #1f2937;
+      font-size: clamp(1.7rem, 1.2vw + 1rem, 2.1rem);
+      letter-spacing: 0;
+    }
+    .brand-strip {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(88px, 1fr));
+      gap: 22px;
+      align-items: end;
+    }
+    .brand-item {
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #111827;
+      font-weight: 700;
+      text-align: center;
+    }
+    .brand-item img {
+      width: 72px;
+      height: 54px;
+      object-fit: contain;
+      display: block;
+      mix-blend-mode: multiply;
+    }
     .market-heading {
       display: flex;
       align-items: end;
@@ -296,6 +487,16 @@
       line-height: 1.45;
     }
     @media (max-width: 1100px) {
+      .market-search-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .search-count-btn {
+        grid-column: 1 / -1;
+      }
+      .vehicle-type-grid,
+      .brand-strip {
+        grid-template-columns: repeat(4, minmax(100px, 1fr));
+      }
       .market-layout {
         grid-template-columns: 1fr;
       }
@@ -307,6 +508,20 @@
       }
     }
     @media (max-width: 760px) {
+      .market-search-panel {
+        margin-bottom: 34px;
+        padding: 22px 18px;
+      }
+      .market-search-row {
+        grid-template-columns: 1fr;
+      }
+      .advanced-link {
+        margin-left: 0;
+      }
+      .vehicle-type-grid,
+      .brand-strip {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
       .market-heading {
         align-items: start;
         flex-direction: column;
@@ -345,6 +560,52 @@
   </header>
 
   <main class="market-shell">
+    <section class="market-search-panel" aria-label="Vehicle search">
+      <nav class="market-tabs" aria-label="Vehicle categories">
+        <a class="market-tab active" href="/sell-car">Autos</a>
+        <a class="market-tab" href="/sell-car">Leasing</a>
+        <a class="market-tab" href="/sell-car">Motorcycles</a>
+        <a class="market-tab" href="/sell-car">Camper</a>
+        <a class="market-tab" href="/sell-car">Trucks</a>
+        <a class="market-tab" href="/sell-car">Trailers</a>
+        <a class="market-tab" href="/sell-car">Smyle</a>
+      </nav>
+      <div class="market-search-row">
+        <button class="market-search-control market-select-like" type="button">
+          <span>Make and model</span>
+          <span aria-hidden="true">&#8964;</span>
+        </button>
+        <input class="market-search-control" type="text" placeholder="City/ZIP">
+        <button class="search-count-btn" type="button">2,160,611 Results</button>
+      </div>
+      <a class="advanced-link" href="#create-listing">More search options</a>
+      <p class="vehicle-type-title">Find used and new vehicles</p>
+      <div class="vehicle-type-grid">
+        <a class="vehicle-type" href="/sell-car"><span class="vehicle-silhouette suv"><span class="wheels"></span></span><span>SUV &amp; Pick-up</span></a>
+        <a class="vehicle-type" href="/sell-car"><span class="vehicle-silhouette sedan"><span class="wheels"></span></span><span>Sedan</span></a>
+        <a class="vehicle-type" href="/sell-car"><span class="vehicle-silhouette wagon"><span class="wheels"></span></span><span>Wagon</span></a>
+        <a class="vehicle-type" href="/sell-car"><span class="vehicle-silhouette compact"><span class="wheels"></span></span><span>Small car</span></a>
+        <a class="vehicle-type" href="/sell-car"><span class="vehicle-silhouette van"><span class="wheels"></span></span><span>Van &amp; Minibus</span></a>
+        <a class="vehicle-type" href="/sell-car"><span class="vehicle-silhouette coupe"><span class="wheels"></span></span><span>Coupe</span></a>
+        <a class="vehicle-type" href="/sell-car"><span class="vehicle-silhouette cabrio"><span class="wheels"></span></span><span>Convertible</span></a>
+        <a class="vehicle-type" href="/sell-car"><span class="vehicle-silhouette transporter"><span class="wheels"></span></span><span>Transporter</span></a>
+      </div>
+    </section>
+
+    <section class="popular-brands" aria-label="Popular brands">
+      <h2>Popular Brands</h2>
+      <div class="brand-strip">
+        <a class="brand-item" href="/sell-car"><img src="/static/brand-logos/mercedes.webp" alt="Mercedes"><span>Mercedes</span></a>
+        <a class="brand-item" href="/sell-car"><img src="/static/brand-logos/volkswagen.webp" alt="Volkswagen"><span>Volkswagen</span></a>
+        <a class="brand-item" href="/sell-car"><img src="/static/brand-logos/bmw.webp" alt="BMW"><span>BMW</span></a>
+        <a class="brand-item" href="/sell-car"><img src="/static/brand-logos/audi.webp" alt="Audi"><span>Audi</span></a>
+        <a class="brand-item" href="/sell-car"><img src="/static/brand-logos/ford.webp" alt="Ford"><span>Ford</span></a>
+        <a class="brand-item" href="/sell-car"><img src="/static/brand-logos/skoda.webp" alt="Skoda"><span>Skoda</span></a>
+        <a class="brand-item" href="/sell-car"><img src="/static/brand-logos/opel.webp" alt="Opel"><span>Opel</span></a>
+        <a class="brand-item" href="/sell-car"><img src="/static/brand-logos/porsche.webp" alt="Porsche"><span>Porsche</span></a>
+      </div>
+    </section>
+
     <section class="market-heading">
       <div>
         <h1>Reduced Car Offers</h1>
