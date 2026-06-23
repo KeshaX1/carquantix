@@ -176,6 +176,11 @@ CURATED_COMPARE_REFERENCES = [
     ("GT-R", "720S"),
 ]
 NEW_SEO_COMPARE_REFERENCES = [
+    ("M5", "Panamera"),
+    ("F8", "720S"),
+    ("X5", "Q8"),
+    ("NX", "GLC"),
+    ("F-Type", "911"),
     ("Aventador", "LaFerrari"),
     ("Aventador", "SF90 Spider"),
     ("Revuelto", "Chiron"),
@@ -938,6 +943,51 @@ GUIDE_ARTICLE_SECTIONS = {
         },
     ],
 }
+COMPARE_SEO_OVERRIDES = {
+    "2018-porsche-panamera-vs-2024-bmw-m5": {
+        "title": "BMW M5 vs Porsche Panamera: Performance, Price, Reliability and Daily Driving",
+        "meta_description": "Compare the BMW M5 and Porsche Panamera by performance, price, reliability, comfort, maintenance cost and daily driving to decide which one fits you better.",
+        "quick_verdict": "The BMW M5 is better if you want stronger performance, a sportier driving feel and more direct pace, while the Porsche Panamera makes more sense if luxury comfort and grand-touring polish matter more.",
+        "reverse_keyword": "Porsche Panamera vs BMW M5",
+        "related_compare_links": [
+            ("BMW M5 vs Audi RS7", "M5", "RS7"),
+            ("BMW M5 vs Mercedes E63 AMG", "M5", "E 63 AMG"),
+            ("Porsche Panamera vs Audi RS7", "Panamera", "RS7"),
+        ],
+        "extra_links": [
+            {"href": "/blog/super-sedan-vs-coupe", "title": "Best Luxury Performance Sedans"},
+        ],
+    },
+    "2018-mclaren-720s-vs-2023-ferrari-f8": {
+        "title": "Ferrari F8 vs McLaren 720S: Speed, Price, Reliability and Driving Experience",
+        "meta_description": "Compare the Ferrari F8 and McLaren 720S by speed, price, reliability, maintenance cost and driving experience before choosing the better supercar.",
+        "quick_verdict": "The McLaren 720S is the sharper pick for outright speed and acceleration, while the Ferrari F8 is better if brand character, engine drama and emotional appeal matter most.",
+    },
+    "2024-audi-q8-vs-2024-bmw-x5": {
+        "title": "BMW X5 vs Audi Q8: Luxury SUV Comparison, Price, Comfort and Reliability",
+        "meta_description": "Compare the BMW X5 and Audi Q8 by price, comfort, reliability, performance, maintenance cost and daily driving to choose the better luxury SUV.",
+        "quick_verdict": "The BMW X5 is the better all-round luxury SUV for balanced performance and practicality, while the Audi Q8 is the stronger choice if design, cabin style and relaxed cruising are your priorities.",
+        "reverse_keyword": "Audi Q8 vs BMW X5",
+        "related_compare_links": [
+            ("BMW X5 vs Mercedes GLE", "X5", "GLE"),
+            ("Audi Q8 vs Mercedes GLE", "Q8", "GLE"),
+            ("Lexus LX vs BMW X5", "LX", "X5"),
+        ],
+        "extra_links": [
+            {"href": "/blog/super-sedan-vs-coupe", "title": "Best Luxury SUVs"},
+        ],
+    },
+    "2024-lexus-nx-vs-2024-mercedes-benz-glc": {
+        "title": "Lexus NX vs Mercedes GLC: Reliability, Comfort, Price and Daily Driving",
+        "meta_description": "Compare the Lexus NX and Mercedes GLC by reliability, comfort, price, maintenance cost, performance and daily driving to choose the better luxury SUV.",
+        "quick_verdict": "The Lexus NX is better if reliability, running costs and ownership peace of mind are your priorities, while the Mercedes GLC is stronger if cabin prestige and refinement matter more.",
+    },
+    "2022-porsche-911-vs-2024-jaguar-f-type": {
+        "title": "Jaguar F-Type vs Porsche 911: Sports Car Comparison, Price and Driving Feel",
+        "meta_description": "Compare the Jaguar F-Type and Porsche 911 by performance, price, reliability, maintenance cost and driving feel before choosing the better sports car.",
+        "quick_verdict": "The Porsche 911 is the stronger all-round sports car for performance, precision and resale strength, while the Jaguar F-Type is best for buyers who want style, sound and grand-touring character.",
+    },
+}
 
 BLOG_ARTICLE_SECTIONS = {
     "fastest-cars-in-2026": [
@@ -1601,6 +1651,180 @@ def build_compare_meta_description(car_a, car_b):
     return f"Compare {car_a.get('name', 'Car A')} vs {car_b.get('name', 'Car B')} on CarQuantix."
 
 
+def strip_vehicle_year(name):
+    return re.sub(r"^\s*(?:19|20)\d{2}\s+", "", str(name or "")).strip()
+
+
+def get_compare_seo_override(car_a, car_b):
+    compare_slug = build_compare_slug(car_a, car_b)
+    return COMPARE_SEO_OVERRIDES.get(compare_slug) or {}
+
+
+def get_compare_display_names(car_a, car_b):
+    return (
+        strip_vehicle_year(car_a.get("name")) or str(car_a.get("name") or "Car A").strip(),
+        strip_vehicle_year(car_b.get("name")) or str(car_b.get("name") or "Car B").strip(),
+    )
+
+
+def build_compare_page_title(car_a, car_b):
+    override = get_compare_seo_override(car_a, car_b)
+    if override.get("title"):
+        return override["title"]
+
+    left_name, right_name = get_compare_display_names(car_a, car_b)
+    body_style = f"{left_name} vs {right_name}"
+    name_text = f"{left_name} {right_name}".lower()
+    if re.search(r"\bx[1-7]\b|q[2-8]\b|gl[acse]|gle|glc|lx|nx|rx|suv|cayenne|macan|range rover", name_text):
+        return f"{body_style}: Luxury SUV Comparison, Price, Comfort and Reliability"
+    if re.search(r"ferrari|mclaren|lamborghini|porsche 911|jaguar f-type|corvette|r8|amg gt", name_text):
+        return f"{body_style}: Speed, Price, Reliability and Driving Experience"
+    return f"{body_style}: Performance, Price, Reliability and Daily Driving"
+
+
+def build_compare_quick_verdict(car_a, car_b, compare_decision):
+    override = get_compare_seo_override(car_a, car_b)
+    if override.get("quick_verdict"):
+        return override["quick_verdict"]
+
+    left_name, right_name = get_compare_display_names(car_a, car_b)
+    overall = next(
+        (
+            item
+            for item in (compare_decision or {}).get("verdict_items", [])
+            if item.get("label") == "Overall winner"
+        ),
+        None,
+    )
+    winner = str((overall or {}).get("winner") or "").strip()
+    if winner and winner not in {"Too close to call", left_name, right_name}:
+        winner = strip_vehicle_year(winner)
+    if winner and winner not in {"Too close to call", ""}:
+        other = right_name if winner == left_name else left_name
+        return (
+            f"The {winner} is the better pick if you want the strongest overall spec balance in this matchup, "
+            f"while the {other} can still make more sense if its price, comfort or daily-use character fits your priorities better."
+        )
+    return (
+        f"The {left_name} vs {right_name} decision is close, so the better choice depends on whether you value performance, "
+        "price, comfort, reliability or daily driving more."
+    )
+
+
+def build_compare_content_sections(car_a, car_b, compare_decision):
+    left_name, right_name = get_compare_display_names(car_a, car_b)
+    left_price = format_display_price(car_a.get("price"))
+    right_price = format_display_price(car_b.get("price"))
+    left_consumption = car_a.get("consumption") or {}
+    right_consumption = car_b.get("consumption") or {}
+    quick_verdict = build_compare_quick_verdict(car_a, car_b, compare_decision)
+
+    sections = [
+        {
+            "heading": "Quick Verdict",
+            "body": quick_verdict,
+        },
+        {
+            "heading": "Performance Comparison",
+            "body": (
+                f"For performance, compare power, 0-100 km/h acceleration and top speed together. "
+                f"{left_name} records {car_a.get('power', '-')} hp, {car_a.get('acc', '-')} seconds to 100 km/h and {car_a.get('topSpeed', '-')} km/h, "
+                f"while {right_name} records {car_b.get('power', '-')} hp, {car_b.get('acc', '-')} seconds and {car_b.get('topSpeed', '-')} km/h."
+            ),
+        },
+        {
+            "heading": "Price and Value",
+            "body": (
+                f"Price changes the answer because a quicker car is not always the better buy. "
+                f"{left_name} is listed at {left_price}, while {right_name} is listed at {right_price}. "
+                "Use the price gap together with performance and equipment to judge real value."
+            ),
+        },
+        {
+            "heading": "Interior and Comfort",
+            "body": (
+                f"Interior and comfort matter most if this will be a daily car. "
+                f"{left_name} and {right_name} should be judged by seating position, cabin space, ride quality, visibility, infotainment and long-distance refinement, not only by acceleration numbers."
+            ),
+        },
+        {
+            "heading": "Reliability",
+            "body": (
+                "Reliability is best judged by ownership history, service records and common repair patterns for each model. "
+                f"Before choosing between {left_name} and {right_name}, check known issues, warranty coverage and how easily each car can be serviced where you live."
+            ),
+        },
+        {
+            "heading": "Maintenance Cost",
+            "body": (
+                "Maintenance cost can outweigh a small purchase-price difference. "
+                f"For {left_name} vs {right_name}, compare scheduled servicing, tires, brakes, insurance, parts availability and depreciation before deciding which one is cheaper to own."
+            ),
+        },
+        {
+            "heading": "Fuel Economy",
+            "body": (
+                f"Fuel economy is part of the long-term cost picture. "
+                f"{left_name} is rated at {left_consumption.get('value', '-')} {left_consumption.get('unit', '')}, "
+                f"while {right_name} is rated at {right_consumption.get('value', '-')} {right_consumption.get('unit', '')}. "
+                "For high-mileage drivers, even a small efficiency difference can matter."
+            ),
+        },
+        {
+            "heading": "Daily Driving",
+            "body": (
+                f"For daily driving, the better choice is the one that feels easier to live with. "
+                f"Compare {left_name} and {right_name} by ride comfort, parking ease, cargo space, fuel use, road noise and how relaxed each car feels in traffic."
+            ),
+        },
+        {
+            "heading": "Which One Should You Buy?",
+            "body": quick_verdict,
+        },
+    ]
+
+    reverse_keyword = get_compare_seo_override(car_a, car_b).get("reverse_keyword")
+    if reverse_keyword:
+        sections.insert(
+            1,
+            {
+                "heading": reverse_keyword,
+                "body": (
+                    f"People also search for {reverse_keyword}. This is the same comparison as {left_name} vs {right_name}, "
+                    "so this canonical page keeps both search directions in one stronger result."
+                ),
+            },
+        )
+
+    return sections
+
+
+def build_compare_faq(car_a, car_b, compare_decision):
+    left_name, right_name = get_compare_display_names(car_a, car_b)
+    quick_verdict = build_compare_quick_verdict(car_a, car_b, compare_decision)
+    return [
+        {
+            "question": f"Which is better, {left_name} or {right_name}?",
+            "answer": quick_verdict,
+        },
+        {
+            "question": f"Which is faster, {left_name} or {right_name}?",
+            "answer": (
+                f"Compare horsepower, 0-100 km/h and top speed together. "
+                f"{left_name} has {car_a.get('power', '-')} hp and a {car_a.get('topSpeed', '-')} km/h top speed, "
+                f"while {right_name} has {car_b.get('power', '-')} hp and a {car_b.get('topSpeed', '-')} km/h top speed."
+            ),
+        },
+        {
+            "question": f"Which is better for daily driving?",
+            "answer": (
+                f"For daily driving, compare comfort, running cost, visibility, cabin space and reliability. "
+                f"The better daily choice between {left_name} and {right_name} depends on those ownership priorities more than headline speed alone."
+            ),
+        },
+    ]
+
+
 def build_compare_intro_content(car_a, car_b):
     if not car_a or not car_b:
         return None
@@ -2014,7 +2238,7 @@ def build_featured_compare_links(cars, slug_map, limit=FEATURED_COMPARE_LIMIT):
         links.append(
             {
                 "href": href,
-                "title": f"{left_car.get('name')} vs {right_car.get('name')}",
+                "title": build_compare_page_title(left_car, right_car),
                 "left_car": left_car,
                 "right_car": right_car,
             }
@@ -2207,6 +2431,21 @@ def build_related_compare_links_for_car(car, cars, slug_map, limit=8, exclude_hr
 
 
 def build_related_compare_links_for_pair(left_car, right_car, cars, slug_map, limit=8, exclude_href=None):
+    override = get_compare_seo_override(left_car, right_car)
+    override_links = []
+    for entry in override.get("related_compare_links") or []:
+        if len(entry) != 3:
+            continue
+        title, left_ref, right_ref = entry
+        override_left = resolve_car_reference(left_ref, cars, slug_map)
+        override_right = resolve_car_reference(right_ref, cars, slug_map)
+        if not override_left or not override_right:
+            continue
+        href = build_compare_href(override_left, override_right)
+        if href and href != exclude_href:
+            override_links.append({"href": href, "title": title})
+    override_links.extend(override.get("extra_links") or [])
+
     target_slugs = {get_vehicle_slug(left_car), get_vehicle_slug(right_car)} - {""}
     target_brands = {get_vehicle_brand(left_car).lower(), get_vehicle_brand(right_car).lower()} - {""}
     scored = []
@@ -2223,7 +2462,7 @@ def build_related_compare_links_for_pair(left_car, right_car, cars, slug_map, li
         if score:
             scored.append((score, link))
     ordered = [link for _, link in sorted(scored, key=lambda item: item[0], reverse=True)]
-    return unique_link_entries(ordered + popular, limit=limit)
+    return unique_link_entries(override_links + ordered + popular, limit=limit)
 
 
 def build_indexable_compare_slugs(cars, slug_map):
@@ -3644,10 +3883,15 @@ def compare_detail(compare_slug):
     compare_rows = build_compare_spec_rows(left_car, right_car)
     compare_intro = build_compare_intro_content(left_car, right_car)
     compare_decision = build_compare_decision_data(left_car, right_car)
+    compare_page_title = build_compare_page_title(left_car, right_car)
+    compare_quick_verdict = build_compare_quick_verdict(left_car, right_car, compare_decision)
+    compare_sections = build_compare_content_sections(left_car, right_car, compare_decision)
+    compare_faq = build_compare_faq(left_car, right_car, compare_decision)
     race_video = build_compare_race_link(left_car, right_car)
     canonical_url = f"{get_base_url()}/compare/{resolved['canonical_slug']}"
-    meta_title = f"{left_car.get('name')} vs {right_car.get('name')} | CarQuantix"
-    meta_description = build_compare_meta_description(left_car, right_car)
+    seo_override = get_compare_seo_override(left_car, right_car)
+    meta_title = f"{compare_page_title} | CarQuantix"
+    meta_description = seo_override.get("meta_description") or build_compare_meta_description(left_car, right_car)
     is_indexable = resolved["canonical_slug"] in build_indexable_compare_slugs(cars, slug_map)
     current_compare_href = f"/compare/{resolved['canonical_slug']}"
     page_schema = {
@@ -3664,6 +3908,19 @@ def compare_detail(compare_slug):
             ],
         },
     }
+    if compare_faq:
+        page_schema["mainEntity"].setdefault("itemListElement", page_schema["mainEntity"].get("itemListElement", []))
+        page_schema["hasPart"] = {
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": item["question"],
+                    "acceptedAnswer": {"@type": "Answer", "text": item["answer"]},
+                }
+                for item in compare_faq
+            ],
+        }
     return render_template(
         "compare_detail.html",
         user=user,
@@ -3672,6 +3929,10 @@ def compare_detail(compare_slug):
         compare_rows=compare_rows,
         compare_intro=compare_intro,
         compare_decision=compare_decision,
+        compare_page_title=compare_page_title,
+        compare_quick_verdict=compare_quick_verdict,
+        compare_sections=compare_sections,
+        compare_faq=compare_faq,
         race_video=race_video,
         comments_page=f"compare:{resolved['canonical_slug']}",
         canonical_url=canonical_url,

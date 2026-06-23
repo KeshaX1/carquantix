@@ -48,6 +48,25 @@
       color: var(--muted, #9fb0c5);
       line-height: 1.6;
     }
+    .quick-answer {
+      margin-top: 18px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(94, 234, 212, 0.22);
+      background: rgba(20, 184, 166, 0.1);
+    }
+    .quick-answer strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #f4f8ff;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .quick-answer p {
+      color: #e8f1ff;
+      font-weight: 600;
+    }
     .compare-copy {
       margin-top: 20px;
       padding: 22px;
@@ -242,6 +261,27 @@
       margin: 6px 0 16px;
       font-size: clamp(1.15rem, 1vw + 1rem, 1.55rem);
     }
+    .compare-sections {
+      margin-top: 28px;
+      display: grid;
+      gap: 16px;
+    }
+    .compare-section {
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
+    }
+    .compare-section h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.08rem, 0.8vw + 1rem, 1.45rem);
+    }
+    .compare-section p {
+      margin: 0;
+      color: var(--muted, #9fb0c5);
+      line-height: 1.65;
+    }
     .buyer-guide-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -297,6 +337,24 @@
     body:not(.dark) .buyer-guide-item {
       background: #eef4ff;
       border-color: rgba(37, 99, 235, 0.12);
+    }
+    body:not(.dark) .quick-answer {
+      background: #ecfeff;
+      border-color: rgba(14, 116, 144, 0.18);
+    }
+    body:not(.dark) .quick-answer strong,
+    body:not(.dark) .quick-answer p {
+      color: #0f172a;
+    }
+    body:not(.dark) .compare-section {
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+    body:not(.dark) .compare-section h2 {
+      color: #0f172a;
+    }
+    body:not(.dark) .compare-section p {
+      color: #475569;
     }
     body:not(.dark) .verdict-item .summary-label {
       color: rgba(226, 232, 240, 0.76);
@@ -408,6 +466,67 @@
       background: linear-gradient(135deg, #ff1f57, #ff5b37);
       box-shadow: 0 12px 28px rgba(255, 63, 63, 0.24);
     }
+    .compare-faq,
+    .related-links-panel {
+      margin-top: 28px;
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--card, rgba(255, 255, 255, 0.03));
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+    }
+    .compare-faq h2,
+    .related-links-panel h2 {
+      margin: 0 0 16px;
+      font-size: clamp(1.15rem, 1vw + 1rem, 1.55rem);
+    }
+    .faq-list {
+      display: grid;
+      gap: 14px;
+    }
+    .faq-item h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+    }
+    .faq-item p {
+      margin: 0;
+      color: var(--muted, #9fb0c5);
+      line-height: 1.6;
+    }
+    .related-link-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .related-link-grid a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    body:not(.dark) .compare-faq,
+    body:not(.dark) .related-links-panel {
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+    body:not(.dark) .compare-faq h2,
+    body:not(.dark) .related-links-panel h2,
+    body:not(.dark) .faq-item h3 {
+      color: #0f172a;
+    }
+    body:not(.dark) .faq-item p {
+      color: #475569;
+    }
+    body:not(.dark) .related-link-grid a {
+      background: #eef4ff;
+      border-color: rgba(37, 99, 235, 0.12);
+      color: #1d4ed8;
+    }
   </style>
 </head>
 <body class="car-detail-page">
@@ -429,8 +548,14 @@
   <main class="compare-detail-main">
     <section class="compare-intro">
       <div class="car-eyebrow">Car Comparison</div>
-      <h1>{{ left_car.name }} vs {{ right_car.name }}</h1>
-      <p>Compare horsepower, acceleration, top speed, engine details, price, and consumption on one dedicated page.</p>
+      <h1>{{ compare_page_title or (left_car.name ~ ' vs ' ~ right_car.name) }}</h1>
+      <p>Compare price, reliability, performance, daily driving, maintenance cost, comfort and fuel economy on one dedicated page.</p>
+      {% if compare_quick_verdict %}
+      <div class="quick-answer" aria-label="Direct answer">
+        <strong>Quick Verdict</strong>
+        <p>{{ compare_quick_verdict }}</p>
+      </div>
+      {% endif %}
       {% if compare_intro %}
       <div class="compare-copy" aria-label="Comparison overview">
         <h2>{{ compare_intro.heading }}</h2>
@@ -473,6 +598,19 @@
         </div>
       </article>
     </section>
+
+    {% if compare_sections %}
+    <section class="compare-sections" aria-label="Detailed comparison sections">
+      {% for section in compare_sections %}
+        {% if section.heading not in ["Quick Verdict", "Which One Should You Buy?"] %}
+        <article class="compare-section">
+          <h2>{{ section.heading }}</h2>
+          <p>{{ section.body }}</p>
+        </article>
+        {% endif %}
+      {% endfor %}
+    </section>
+    {% endif %}
 
     {% if compare_decision %}
     <section class="compare-verdict" aria-label="Quick verdict">
@@ -536,7 +674,7 @@
     {% if compare_decision.buyer_recommendations %}
     <section class="compare-buyer-guide" aria-label="Who should buy which">
       <div class="summary-label">Buyer guide</div>
-      <h2>Who should buy which?</h2>
+      <h2>Which One Should You Buy?</h2>
       <div class="buyer-guide-grid">
         {% for item in compare_decision.buyer_recommendations %}
         <article class="buyer-guide-item">
@@ -595,6 +733,42 @@
         </tbody>
       </table>
     </section>
+
+    {% if compare_faq %}
+    <section class="compare-faq" aria-label="FAQ">
+      <h2>FAQ</h2>
+      <div class="faq-list">
+        {% for item in compare_faq %}
+        <article class="faq-item">
+          <h3>{{ item.question }}</h3>
+          <p>{{ item.answer }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if related_compare_links %}
+    <section class="related-links-panel" aria-label="Related comparisons">
+      <h2>Related Comparisons</h2>
+      <div class="related-link-grid">
+        {% for entry in related_compare_links %}
+        <a href="{{ entry.href }}">{{ entry.title }}</a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if related_car_links %}
+    <section class="related-links-panel" aria-label="Related cars">
+      <h2>Related Cars</h2>
+      <div class="related-link-grid">
+        {% for entry in related_car_links %}
+        <a href="{{ entry.href }}">{{ entry.title }}</a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
 
     <section class="comment-section compare-comments" id="compareCommentSection" data-comments-page="{{ comments_page }}">
       <div class="comment-section-header">
