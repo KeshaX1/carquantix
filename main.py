@@ -135,6 +135,30 @@ LISTING_UPLOAD_DIR = Path(
 ).expanduser()
 LISTING_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "gif"}
 LISTING_FUEL_TYPES = {"Gasoline", "Diesel", "Electric", "Hybrid", "Plug-in hybrid", "LPG"}
+LISTING_COUNTRIES = [
+    "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia",
+    "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin",
+    "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+    "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia",
+    "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo",
+    "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea",
+    "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany",
+    "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary",
+    "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Ivory Coast", "Jamaica", "Japan",
+    "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho",
+    "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali",
+    "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+    "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand",
+    "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine",
+    "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia",
+    "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+    "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia",
+    "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan",
+    "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo",
+    "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine",
+    "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
+    "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe",
+]
 BASE_URL = os.environ.get("BASE_URL", "https://carquantix.com").rstrip("/")
 if not re.match(r"^https?://", BASE_URL):
     BASE_URL = f"https://{BASE_URL.lstrip('/')}"
@@ -2673,6 +2697,16 @@ def clean_listing_multiline(value, max_length=800):
     return value[:max_length]
 
 
+def format_listing_location(city="", country="", street="", postal_code=""):
+    city = clean_listing_text(city, 80)
+    country = clean_listing_text(country, 80)
+    street = clean_listing_text(street, 120)
+    postal_code = clean_listing_text(postal_code, 30)
+    city_line = ", ".join(part for part in (postal_code, city) if part)
+    location_parts = [part for part in (street, city_line, country) if part]
+    return ", ".join(location_parts)[:160]
+
+
 def normalize_listing(item):
     if not isinstance(item, dict):
         item = {}
@@ -2701,7 +2735,10 @@ def normalize_listing(item):
         "seller_name": clean_listing_text(item.get("seller_name"), 80),
         "email": clean_listing_text(item.get("email"), 120),
         "phone": clean_listing_text(item.get("phone"), 40),
-        "city": clean_listing_text(item.get("city"), 80),
+        "country": clean_listing_text(item.get("country"), 80),
+        "street": clean_listing_text(item.get("street"), 120),
+        "postal_code": clean_listing_text(item.get("postal_code"), 30),
+        "city": clean_listing_text(item.get("city"), 160),
         "make": clean_listing_text(item.get("make"), 60),
         "model": clean_listing_text(item.get("model"), 80),
         "year": clean_listing_text(item.get("year"), 10),
@@ -2778,6 +2815,12 @@ def validate_listing_form(form, files=None):
     if honeypot:
         return None, "Listing could not be submitted."
 
+    country = clean_listing_text(form.get("country"), 80)
+    city = clean_listing_text(form.get("city"), 80)
+    street = clean_listing_text(form.get("street"), 120)
+    postal_code = clean_listing_text(form.get("postal_code"), 30)
+    location = format_listing_location(city=city, country=country, street=street, postal_code=postal_code)
+
     listing = normalize_listing(
         {
             "id": f"listing_{int(time.time())}_{secrets.token_hex(4)}",
@@ -2785,7 +2828,10 @@ def validate_listing_form(form, files=None):
             "seller_name": form.get("seller_name"),
             "email": form.get("email"),
             "phone": form.get("phone"),
-            "city": form.get("city"),
+            "country": country,
+            "street": street,
+            "postal_code": postal_code,
+            "city": location,
             "make": form.get("make"),
             "model": form.get("model"),
             "year": form.get("year"),
@@ -2800,6 +2846,10 @@ def validate_listing_form(form, files=None):
     required_fields = ("seller_name", "city", "make", "model", "year", "mileage", "price", "description")
     if any(not listing.get(field) for field in required_fields):
         return None, "Please fill in all required fields."
+    if not listing["country"] or listing["country"] not in LISTING_COUNTRIES:
+        return None, "Please select a valid country."
+    if not city:
+        return None, "Please add the city or region."
     if not listing["email"] and not listing["phone"]:
         return None, "Please add at least one contact option: email or phone."
     if listing["email"] and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", listing["email"]):
@@ -3786,6 +3836,7 @@ def sell_car():
     return render_template(
         "sell_car.html",
         listings=listings,
+        countries=LISTING_COUNTRIES,
         message=message,
         error=error,
         form_values=form_values,

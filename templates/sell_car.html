@@ -425,6 +425,13 @@
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
     }
+    .address-fields {
+      display: none;
+      gap: 10px;
+    }
+    .address-fields.is-visible {
+      display: grid;
+    }
     .hidden-field {
       position: absolute;
       left: -10000px;
@@ -713,8 +720,30 @@
               <input id="seller_name" name="seller_name" type="text" maxlength="80" required value="{{ form_values.get('seller_name', '') }}">
             </div>
             <div class="field">
-              <label for="city">Location *</label>
-              <input id="city" name="city" type="text" maxlength="80" required value="{{ form_values.get('city', '') }}">
+              <label for="country">Location *</label>
+              <select id="country" name="country" required data-country-select>
+                {% set selected_country = form_values.get('country', '') %}
+                <option value="" {{ 'selected' if not selected_country else '' }}>Select country</option>
+                {% for country in countries %}
+                <option value="{{ country }}" {{ 'selected' if selected_country == country else '' }}>{{ country }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="address-fields {{ 'is-visible' if form_values.get('country') else '' }}" data-address-fields>
+            <div class="form-row">
+              <div class="field">
+                <label for="city">City / region *</label>
+                <input id="city" name="city" type="text" maxlength="80" value="{{ form_values.get('city', '') }}" data-address-required>
+              </div>
+              <div class="field">
+                <label for="postal_code">Postal code</label>
+                <input id="postal_code" name="postal_code" type="text" maxlength="30" value="{{ form_values.get('postal_code', '') }}">
+              </div>
+            </div>
+            <div class="field">
+              <label for="street">Street address</label>
+              <input id="street" name="street" type="text" maxlength="120" value="{{ form_values.get('street', '') }}">
             </div>
           </div>
           <div class="form-row">
@@ -807,5 +836,22 @@
       </nav>
     </div>
   </footer>
+  <script>
+    (() => {
+      const countrySelect = document.querySelector("[data-country-select]");
+      const addressFields = document.querySelector("[data-address-fields]");
+      const addressRequired = document.querySelector("[data-address-required]");
+      if (!countrySelect || !addressFields || !addressRequired) {
+        return;
+      }
+      const syncAddressFields = () => {
+        const hasCountry = Boolean(countrySelect.value);
+        addressFields.classList.toggle("is-visible", hasCountry);
+        addressRequired.required = hasCountry;
+      };
+      countrySelect.addEventListener("change", syncAddressFields);
+      syncAddressFields();
+    })();
+  </script>
 </body>
 </html>
