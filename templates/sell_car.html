@@ -402,6 +402,7 @@
       font-weight: 800;
     }
     .field input,
+    .field select,
     .field textarea {
       width: 100%;
       min-width: 0;
@@ -419,6 +420,7 @@
       line-height: 1.5;
     }
     .field input:focus,
+    .field select:focus,
     .field textarea:focus {
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
@@ -748,7 +750,16 @@
           <div class="form-row">
             <div class="field">
               <label for="fuel">Fuel</label>
-              <input id="fuel" name="fuel" type="text" maxlength="40" value="{{ form_values.get('fuel', '') }}">
+              <select id="fuel" name="fuel">
+                {% set selected_fuel = form_values.get('fuel', '') %}
+                <option value="" {{ 'selected' if not selected_fuel else '' }}>Select fuel type</option>
+                <option value="Gasoline" {{ 'selected' if selected_fuel == 'Gasoline' else '' }}>Gasoline</option>
+                <option value="Diesel" {{ 'selected' if selected_fuel == 'Diesel' else '' }}>Diesel</option>
+                <option value="Electric" {{ 'selected' if selected_fuel == 'Electric' else '' }}>Electric</option>
+                <option value="Hybrid" {{ 'selected' if selected_fuel == 'Hybrid' else '' }}>Hybrid</option>
+                <option value="Plug-in hybrid" {{ 'selected' if selected_fuel == 'Plug-in hybrid' else '' }}>Plug-in hybrid</option>
+                <option value="LPG" {{ 'selected' if selected_fuel == 'LPG' else '' }}>LPG</option>
+              </select>
             </div>
             <div class="field">
               <label for="price">Price *</label>

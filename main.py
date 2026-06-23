@@ -134,6 +134,7 @@ LISTING_UPLOAD_DIR = Path(
     )
 ).expanduser()
 LISTING_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "gif"}
+LISTING_FUEL_TYPES = {"Gasoline", "Diesel", "Electric", "Hybrid", "Plug-in hybrid", "LPG"}
 BASE_URL = os.environ.get("BASE_URL", "https://carquantix.com").rstrip("/")
 if not re.match(r"^https?://", BASE_URL):
     BASE_URL = f"https://{BASE_URL.lstrip('/')}"
@@ -2803,6 +2804,8 @@ def validate_listing_form(form, files=None):
         return None, "Please add at least one contact option: email or phone."
     if listing["email"] and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", listing["email"]):
         return None, "Please enter a valid email address."
+    if listing["fuel"] and listing["fuel"] not in LISTING_FUEL_TYPES:
+        return None, "Please select a valid fuel type."
     if not re.match(r"^(19|20)\d{2}$", listing["year"]):
         return None, "Please enter a valid model year."
     current_year = datetime.utcnow().year + 1
