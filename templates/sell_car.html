@@ -232,10 +232,7 @@
       border: 1px solid #fca5a5;
     }
     .market-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
-      gap: 20px;
-      align-items: start;
+      display: block;
     }
     .offer-grid {
       display: grid;
@@ -371,13 +368,15 @@
       line-height: 1.6;
     }
     .listing-form-panel {
+      width: min(720px, calc(100vw - 32px));
+      max-height: calc(100vh - 60px);
+      overflow: auto;
       border-radius: 8px;
       border: 1px solid #e5e7eb;
       background: #ffffff;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
-      padding: 16px;
-      position: sticky;
-      top: 16px;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.28);
+      padding: 20px;
+      position: relative;
     }
     .listing-form-panel h2 {
       margin: 0 0 6px;
@@ -452,15 +451,44 @@
       font-size: 0.82rem;
       line-height: 1.45;
     }
+    .listing-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .listing-modal:target {
+      display: flex;
+    }
+    .listing-modal.is-open {
+      display: flex;
+    }
+    .listing-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.62);
+    }
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #111827;
+      text-decoration: none;
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
     @media (max-width: 1100px) {
       .market-hero {
         grid-template-columns: 1fr;
-      }
-      .market-layout {
-        grid-template-columns: 1fr;
-      }
-      .listing-form-panel {
-        position: static;
       }
       .offer-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -540,7 +568,7 @@
         </div>
         <div class="market-action-row">
           <button class="search-count-btn" type="submit">Search</button>
-          <a class="sell-panel-btn" href="#create-listing">Sell Your Car</a>
+          <a class="sell-panel-btn" href="#sell-car-form">Sell Your Car</a>
         </div>
       </form>
     </section>
@@ -575,7 +603,7 @@
         <h1>Reduced Car Offers</h1>
         <p>Discover public car listings with clear prices, mileage, location and seller contact details.</p>
       </div>
-      <a class="sell-toggle" href="#create-listing">Sell Your Car</a>
+      <a class="sell-toggle" href="#sell-car-form">Sell Your Car</a>
     </section>
 
     {% if message %}
@@ -629,7 +657,13 @@
         {% endif %}
       </section>
 
-      <aside id="create-listing" class="listing-form-panel" aria-label="Create a car listing">
+    </div>
+  </main>
+
+  <div id="sell-car-form" class="listing-modal {{ 'is-open' if error else '' }}" aria-label="Sell your car form">
+    <a class="listing-modal-backdrop" href="#" aria-label="Close form"></a>
+    <aside class="listing-form-panel" aria-label="Create a car listing">
+      <a class="modal-close" href="#" aria-label="Close form">&times;</a>
         <h2>Create Listing</h2>
         <p>Add your car with the same card format buyers see in the offers grid.</p>
         <form class="listing-form" method="post" action="/sell-car">
@@ -708,9 +742,8 @@
           <button class="submit-listing" type="submit">Publish Listing</button>
           <p class="form-note">Email or phone is required because listings are public.</p>
         </form>
-      </aside>
-    </div>
-  </main>
+    </aside>
+  </div>
 
   <footer class="site-footer">
     <div class="footer-inner">
