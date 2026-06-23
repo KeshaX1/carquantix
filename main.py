@@ -2671,6 +2671,7 @@ def normalize_listing(item):
     if not created_at:
         created_at = datetime.utcnow().strftime("%Y-%m-%d")
     price = clean_listing_text(item.get("price"), 40)
+    old_price = clean_listing_text(item.get("old_price"), 40)
     mileage = clean_listing_text(item.get("mileage"), 40)
     image_url = clean_listing_text(item.get("image_url"), 300)
     if image_url and not re.match(r"^https?://", image_url, re.IGNORECASE):
@@ -2688,6 +2689,9 @@ def normalize_listing(item):
         "year": clean_listing_text(item.get("year"), 10),
         "mileage": mileage,
         "price": price,
+        "old_price": old_price,
+        "fuel": clean_listing_text(item.get("fuel"), 40),
+        "consumption": clean_listing_text(item.get("consumption"), 40),
         "image_url": image_url,
         "description": clean_listing_multiline(item.get("description"), 800),
         "status": clean_listing_text(item.get("status"), 20) or "active",
@@ -2748,6 +2752,9 @@ def validate_listing_form(form):
             "year": form.get("year"),
             "mileage": form.get("mileage"),
             "price": form.get("price"),
+            "old_price": form.get("old_price"),
+            "fuel": form.get("fuel"),
+            "consumption": form.get("consumption"),
             "image_url": form.get("image_url"),
             "description": form.get("description"),
             "status": "active",

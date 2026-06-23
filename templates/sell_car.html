@@ -16,54 +16,226 @@
   <script type="application/ld+json">{{ page_schema|tojson }}</script>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260328-social-icons1') }}">
   <style>
-    .market-main {
-      max-width: 1180px;
+    body.car-market-page {
+      background: #f4f4f5;
+      color: #111827;
+    }
+    .market-shell {
+      max-width: 1196px;
       margin: 0 auto;
-      padding: 28px 24px 64px;
+      padding: 22px 20px 64px;
     }
-    .market-head {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 22px;
+    .market-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 0 18px;
     }
-    .market-head h1 {
-      margin: 0;
-      font-size: clamp(2rem, 2.2vw + 1rem, 3.4rem);
+    .market-heading h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 1.4vw + 1.25rem, 2.35rem);
+      line-height: 1.12;
+      color: #1f2937;
       letter-spacing: 0;
     }
-    .market-head p {
-      max-width: 760px;
+    .market-heading p {
       margin: 0;
-      color: var(--muted, #9fb0c5);
-      line-height: 1.65;
+      color: #111827;
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+    .sell-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #111827;
+      color: #ffffff;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .market-alert {
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-weight: 800;
+    }
+    .market-alert.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+    .market-alert.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
     }
     .market-layout {
       display: grid;
-      grid-template-columns: minmax(300px, 430px) 1fr;
-      gap: 22px;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 20px;
       align-items: start;
     }
-    .listing-form-panel,
-    .listing-card,
-    .empty-listings {
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: var(--card, rgba(255, 255, 255, 0.03));
-      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+    .offer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px 18px;
+    }
+    .offer-card {
+      min-width: 0;
+      overflow: hidden;
       border-radius: 8px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+    .offer-photo {
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(135deg, #dbeafe, #e5e7eb);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .offer-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-placeholder {
+      padding: 18px;
+      color: #1f2937;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.25;
+    }
+    .offer-body {
+      padding: 14px 16px 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .offer-title {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.35;
+      min-height: 2.7em;
+      color: #000000;
+      font-weight: 500;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .offer-title strong {
+      font-weight: 900;
+    }
+    .offer-price-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 5px;
+      min-height: 29px;
+    }
+    .offer-price {
+      font-size: 1.35rem;
+      font-weight: 950;
+      color: #000000;
+      line-height: 1;
+    }
+    .offer-old-price {
+      color: #dc2626;
+      font-size: 0.78rem;
+      text-decoration: line-through;
+      font-weight: 800;
+    }
+    .offer-details {
+      min-height: 45px;
+      color: #111827;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .deal-badge {
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f3f000;
+      color: #000000;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .seller-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #e5e7eb;
+    }
+    .seller-info {
+      min-width: 0;
+      color: #111827;
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+    .seller-info strong {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+    .favorite-btn {
+      width: 34px;
+      height: 34px;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 34px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #111827;
+      cursor: pointer;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+    .empty-listings {
+      padding: 26px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      color: #475569;
+      line-height: 1.6;
     }
     .listing-form-panel {
-      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+      padding: 16px;
       position: sticky;
-      top: 18px;
+      top: 16px;
     }
-    .listing-form-panel h2,
-    .listings-panel h2 {
+    .listing-form-panel h2 {
+      margin: 0 0 6px;
+      color: #111827;
+      font-size: 1.15rem;
+    }
+    .listing-form-panel p {
       margin: 0 0 14px;
-      font-size: 1.35rem;
+      color: #475569;
+      line-height: 1.45;
+      font-size: 0.9rem;
     }
     .listing-form {
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
     .form-row {
       display: grid;
@@ -72,33 +244,34 @@
     }
     .field {
       display: grid;
-      gap: 6px;
+      gap: 5px;
     }
     .field label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--muted, #9fb0c5);
+      color: #334155;
+      font-size: 0.78rem;
+      font-weight: 800;
     }
     .field input,
     .field textarea {
       width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(10, 16, 28, 0.58);
-      color: #f4f8ff;
+      min-width: 0;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #111827;
       border-radius: 8px;
-      padding: 11px 12px;
+      padding: 10px 11px;
       font: inherit;
       outline: none;
     }
     .field textarea {
-      min-height: 118px;
+      min-height: 96px;
       resize: vertical;
-      line-height: 1.55;
+      line-height: 1.5;
     }
     .field input:focus,
     .field textarea:focus {
-      border-color: rgba(94, 234, 212, 0.45);
-      box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.12);
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
     }
     .hidden-field {
       position: absolute;
@@ -108,159 +281,53 @@
       overflow: hidden;
     }
     .submit-listing {
-      min-height: 44px;
+      min-height: 42px;
       border: 0;
       border-radius: 8px;
-      background: linear-gradient(135deg, #14b8a6, #2563eb);
+      background: #111827;
       color: #ffffff;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
-    }
-    .form-note,
-    .listing-meta,
-    .listing-description,
-    .listing-contact {
-      color: var(--muted, #9fb0c5);
-      line-height: 1.55;
     }
     .form-note {
       margin: 0;
-      font-size: 0.9rem;
+      color: #64748b;
+      font-size: 0.82rem;
+      line-height: 1.45;
     }
-    .alert {
-      padding: 11px 12px;
-      border-radius: 8px;
-      font-weight: 700;
-    }
-    .alert.success {
-      background: rgba(34, 197, 94, 0.12);
-      color: #86efac;
-      border: 1px solid rgba(34, 197, 94, 0.24);
-    }
-    .alert.error {
-      background: rgba(239, 68, 68, 0.12);
-      color: #fecaca;
-      border: 1px solid rgba(239, 68, 68, 0.24);
-    }
-    .listings-panel {
-      display: grid;
-      gap: 14px;
-    }
-    .listing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 14px;
-    }
-    .listing-card {
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: auto 1fr;
-    }
-    .listing-image {
-      aspect-ratio: 16 / 10;
-      background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(37, 99, 235, 0.2));
-      display: grid;
-      place-items: center;
-      color: #e8f1ff;
-      font-weight: 800;
-      text-align: center;
-      padding: 16px;
-    }
-    .listing-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .listing-body {
-      padding: 16px;
-      display: grid;
-      gap: 10px;
-    }
-    .listing-title {
-      margin: 0;
-      font-size: 1.12rem;
-      line-height: 1.35;
-    }
-    .listing-price {
-      font-size: 1.25rem;
-      font-weight: 900;
-      color: #5eead4;
-    }
-    .listing-facts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .listing-facts span {
-      padding: 6px 8px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      color: #e8f1ff;
-      font-size: 0.86rem;
-      font-weight: 700;
-    }
-    .listing-contact a {
-      font-weight: 800;
-    }
-    .empty-listings {
-      padding: 24px;
-      color: var(--muted, #9fb0c5);
-      line-height: 1.6;
-    }
-    body:not(.dark) .listing-form-panel,
-    body:not(.dark) .listing-card,
-    body:not(.dark) .empty-listings {
-      background: linear-gradient(180deg, #ffffff, #f8fafc);
-      border-color: rgba(15, 23, 42, 0.08);
-    }
-    body:not(.dark) .market-head h1,
-    body:not(.dark) .listing-form-panel h2,
-    body:not(.dark) .listings-panel h2,
-    body:not(.dark) .listing-title {
-      color: #0f172a;
-    }
-    body:not(.dark) .field input,
-    body:not(.dark) .field textarea {
-      background: #ffffff;
-      border-color: rgba(15, 23, 42, 0.12);
-      color: #0f172a;
-    }
-    body:not(.dark) .listing-price {
-      color: #0f766e;
-    }
-    body:not(.dark) .listing-facts span {
-      background: #eef4ff;
-      color: #1e293b;
-    }
-    body:not(.dark) .market-head p,
-    body:not(.dark) .form-note,
-    body:not(.dark) .listing-meta,
-    body:not(.dark) .listing-description,
-    body:not(.dark) .listing-contact,
-    body:not(.dark) .empty-listings,
-    body:not(.dark) .field label {
-      color: #475569;
-    }
-    @media (max-width: 860px) {
+    @media (max-width: 1100px) {
       .market-layout {
         grid-template-columns: 1fr;
       }
       .listing-form-panel {
         position: static;
       }
-    }
-    @media (max-width: 560px) {
-      .market-main {
-        padding: 22px 16px 48px;
+      .offer-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
+    }
+    @media (max-width: 760px) {
+      .market-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+      .offer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+    }
+    @media (max-width: 520px) {
+      .market-shell {
+        padding: 18px 12px 48px;
+      }
+      .offer-grid,
       .form-row {
         grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
-<body class="car-detail-page">
+<body class="car-market-page">
   <header class="topbar">
     <div class="brand-block">
       <span class="brand-name">CarQuantix</span>
@@ -277,22 +344,69 @@
     <div class="auth-area"></div>
   </header>
 
-  <main class="market-main">
-    <section class="market-head">
-      <div class="car-eyebrow">Public Car Listings</div>
-      <h1>Sell Your Car on CarQuantix</h1>
-      <p>Add a public listing with price, mileage, city and contact details. Buyers can browse active listings directly on this page.</p>
+  <main class="market-shell">
+    <section class="market-heading">
+      <div>
+        <h1>Reduced Car Offers</h1>
+        <p>Discover public car listings with clear prices, mileage, location and seller contact details.</p>
+      </div>
+      <a class="sell-toggle" href="#create-listing">List Your Car</a>
     </section>
 
+    {% if message %}
+    <div class="market-alert success">{{ message }}</div>
+    {% endif %}
+    {% if error %}
+    <div class="market-alert error">{{ error }}</div>
+    {% endif %}
+
     <div class="market-layout">
-      <section class="listing-form-panel" aria-label="Create a car listing">
+      <section aria-label="Public car listings">
+        {% if listings %}
+        <div class="offer-grid">
+          {% for listing in listings %}
+          <article class="offer-card">
+            <div class="offer-photo">
+              {% if listing.image_url %}
+              <img src="{{ listing.image_url }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" loading="lazy">
+              {% else %}
+              <span class="photo-placeholder">{{ listing.make }} {{ listing.model }}</span>
+              {% endif %}
+            </div>
+            <div class="offer-body">
+              <h2 class="offer-title"><strong>{{ listing.make }} {{ listing.model }}</strong> {{ listing.description }}</h2>
+              <div class="offer-price-row">
+                <span class="offer-price">{{ listing.price }}</span>
+                {% if listing.old_price %}
+                <span class="offer-old-price">{{ listing.old_price }}</span>
+                {% endif %}
+              </div>
+              <div class="offer-details">
+                {{ listing.created_at[5:] }}/{{ listing.created_at[:4] }} | {{ listing.mileage }} | {{ listing.fuel or 'Fuel data n/a' }} | {{ listing.consumption or '- (l/100 km)' }}<br>
+                {{ listing.city }}
+              </div>
+              <span class="deal-badge">SuperDEAL</span>
+              <div class="seller-row">
+                <div class="seller-info">
+                  <strong>Seller</strong>
+                  {{ listing.seller_name }}<br>
+                  {% if listing.email %}<a href="mailto:{{ listing.email }}">{{ listing.email }}</a>{% endif %}
+                  {% if listing.phone %}{% if listing.email %}<br>{% endif %}<a href="tel:{{ listing.phone }}">{{ listing.phone }}</a>{% endif %}
+                </div>
+                <button class="favorite-btn" type="button" aria-label="Save listing" title="Save listing">&#9734;</button>
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-listings">No public listings yet. The first submitted car will appear here as a marketplace card.</div>
+        {% endif %}
+      </section>
+
+      <aside id="create-listing" class="listing-form-panel" aria-label="Create a car listing">
         <h2>Create Listing</h2>
-        {% if message %}
-        <div class="alert success">{{ message }}</div>
-        {% endif %}
-        {% if error %}
-        <div class="alert error">{{ error }}</div>
-        {% endif %}
+        <p>Add your car with the same card format buyers see in the offers grid.</p>
         <form class="listing-form" method="post" action="/sell-car">
           <div class="hidden-field">
             <label for="website">Website</label>
@@ -300,11 +414,11 @@
           </div>
           <div class="form-row">
             <div class="field">
-              <label for="seller_name">Seller name *</label>
+              <label for="seller_name">Seller *</label>
               <input id="seller_name" name="seller_name" type="text" maxlength="80" required value="{{ form_values.get('seller_name', '') }}">
             </div>
             <div class="field">
-              <label for="city">City *</label>
+              <label for="city">Location *</label>
               <input id="city" name="city" type="text" maxlength="80" required value="{{ form_values.get('city', '') }}">
             </div>
           </div>
@@ -338,63 +452,38 @@
               <input id="mileage" name="mileage" type="text" maxlength="40" required value="{{ form_values.get('mileage', '') }}">
             </div>
           </div>
-          <div class="field">
-            <label for="price">Price *</label>
-            <input id="price" name="price" type="text" maxlength="40" required value="{{ form_values.get('price', '') }}">
+          <div class="form-row">
+            <div class="field">
+              <label for="fuel">Fuel</label>
+              <input id="fuel" name="fuel" type="text" maxlength="40" value="{{ form_values.get('fuel', '') }}">
+            </div>
+            <div class="field">
+              <label for="consumption">Consumption</label>
+              <input id="consumption" name="consumption" type="text" maxlength="40" value="{{ form_values.get('consumption', '') }}">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="price">Price *</label>
+              <input id="price" name="price" type="text" maxlength="40" required value="{{ form_values.get('price', '') }}">
+            </div>
+            <div class="field">
+              <label for="old_price">Old price</label>
+              <input id="old_price" name="old_price" type="text" maxlength="40" value="{{ form_values.get('old_price', '') }}">
+            </div>
           </div>
           <div class="field">
             <label for="image_url">Image URL</label>
             <input id="image_url" name="image_url" type="url" maxlength="300" value="{{ form_values.get('image_url', '') }}">
           </div>
           <div class="field">
-            <label for="description">Description *</label>
+            <label for="description">Short trim / description *</label>
             <textarea id="description" name="description" maxlength="800" required>{{ form_values.get('description', '') }}</textarea>
           </div>
           <button class="submit-listing" type="submit">Publish Listing</button>
-          <p class="form-note">Email or phone is required because listings are public. Do not publish sensitive personal information.</p>
+          <p class="form-note">Email or phone is required because listings are public.</p>
         </form>
-      </section>
-
-      <section class="listings-panel" aria-label="Public car listings">
-        <h2>Active Listings</h2>
-        {% if listings %}
-        <div class="listing-grid">
-          {% for listing in listings %}
-          <article class="listing-card">
-            <div class="listing-image">
-              {% if listing.image_url %}
-              <img src="{{ listing.image_url }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" loading="lazy">
-              {% else %}
-              <span>{{ listing.make }} {{ listing.model }}</span>
-              {% endif %}
-            </div>
-            <div class="listing-body">
-              <div>
-                <h3 class="listing-title">{{ listing.year }} {{ listing.make }} {{ listing.model }}</h3>
-                <div class="listing-meta">{{ listing.city }} &middot; Listed {{ listing.created_at }}</div>
-              </div>
-              <div class="listing-price">{{ listing.price }}</div>
-              <div class="listing-facts">
-                <span>{{ listing.mileage }}</span>
-                <span>{{ listing.seller_name }}</span>
-              </div>
-              <p class="listing-description">{{ listing.description }}</p>
-              <div class="listing-contact">
-                {% if listing.email %}
-                <div>Email: <a href="mailto:{{ listing.email }}">{{ listing.email }}</a></div>
-                {% endif %}
-                {% if listing.phone %}
-                <div>Phone: <a href="tel:{{ listing.phone }}">{{ listing.phone }}</a></div>
-                {% endif %}
-              </div>
-            </div>
-          </article>
-          {% endfor %}
-        </div>
-        {% else %}
-        <div class="empty-listings">No public listings yet. The first submitted listing will appear here.</div>
-        {% endif %}
-      </section>
+      </aside>
     </div>
   </main>
 
