@@ -451,6 +451,48 @@
       font-size: 0.82rem;
       line-height: 1.45;
     }
+    .image-upload-field {
+      display: grid;
+      gap: 8px;
+    }
+    .image-upload-field > span {
+      color: #334155;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .image-upload-input {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .image-upload-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .image-upload-tile {
+      min-height: 82px;
+      border: 1px dashed #94a3b8;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #334155;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .image-upload-tile strong {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #111827;
+      color: #ffffff;
+      font-size: 1.45rem;
+      line-height: 1;
+    }
     .listing-modal {
       position: fixed;
       inset: 0;
@@ -515,7 +557,8 @@
         padding: 18px 12px 48px;
       }
       .offer-grid,
-      .form-row {
+      .form-row,
+      .image-upload-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -666,7 +709,7 @@
       <a class="modal-close" href="#" aria-label="Close form">&times;</a>
         <h2>Create Listing</h2>
         <p>Add your car with the same card format buyers see in the offers grid.</p>
-        <form class="listing-form" method="post" action="/sell-car">
+        <form class="listing-form" method="post" action="/sell-car" enctype="multipart/form-data">
           <div class="hidden-field">
             <label for="website">Website</label>
             <input id="website" name="website" type="text" value="">
@@ -732,12 +775,18 @@
             </div>
           </div>
           <div class="field">
-            <label for="image_url">Image URL</label>
-            <input id="image_url" name="image_url" type="url" maxlength="300" value="{{ form_values.get('image_url', '') }}">
-          </div>
-          <div class="field">
             <label for="description">Short trim / description *</label>
             <textarea id="description" name="description" maxlength="800" required>{{ form_values.get('description', '') }}</textarea>
+          </div>
+          <div class="image-upload-field">
+            <span>Vehicle images</span>
+            <input class="image-upload-input" id="listing_images" name="images" type="file" accept="image/*" multiple>
+            <div class="image-upload-grid" aria-label="Upload vehicle images">
+              <label class="image-upload-tile" for="listing_images"><strong>+</strong></label>
+              <label class="image-upload-tile" for="listing_images"><strong>+</strong></label>
+              <label class="image-upload-tile" for="listing_images"><strong>+</strong></label>
+              <label class="image-upload-tile" for="listing_images"><strong>+</strong></label>
+            </div>
           </div>
           <button class="submit-listing" type="submit">Publish Listing</button>
           <p class="form-note">Email or phone is required because listings are public.</p>

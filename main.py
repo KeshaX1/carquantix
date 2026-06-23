@@ -17,6 +17,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from car_data import load_cars
 
 try:
@@ -126,6 +127,13 @@ LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 STATIC_DIR = Path(__file__).with_name("static")
 ADS_TXT_DIR = Path(__file__).with_name("ads.txt")
 ICON_DIR = STATIC_DIR / "icon"
+LISTING_UPLOAD_DIR = Path(
+    os.environ.get(
+        "LISTING_UPLOAD_DIR",
+        str((Path(os.environ["APP_DATA_DIR"]).expanduser() / "listing-uploads") if os.environ.get("APP_DATA_DIR") else (STATIC_DIR / "listing-uploads")),
+    )
+).expanduser()
+LISTING_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "gif"}
 BASE_URL = os.environ.get("BASE_URL", "https://carquantix.com").rstrip("/")
 if not re.match(r"^https?://", BASE_URL):
     BASE_URL = f"https://{BASE_URL.lstrip('/')}"
@@ -2674,8 +2682,17 @@ def normalize_listing(item):
     old_price = clean_listing_text(item.get("old_price"), 40)
     mileage = clean_listing_text(item.get("mileage"), 40)
     image_url = clean_listing_text(item.get("image_url"), 300)
-    if image_url and not re.match(r"^https?://", image_url, re.IGNORECASE):
+    if image_url and not (re.match(r"^https?://", image_url, re.IGNORECASE) or image_url.startswith("/listing-uploads/")):
         image_url = ""
+    images = item.get("images") if isinstance(item.get("images"), list) else []
+    images = [
+        clean_listing_text(image, 300)
+        for image in images
+        if clean_listing_text(image, 300).startswith("/listing-uploads/")
+        or re.match(r"^https?://", clean_listing_text(image, 300), re.IGNORECASE)
+    ]
+    if image_url and image_url not in images:
+        images.insert(0, image_url)
 
     return {
         "id": clean_listing_text(item.get("id"), 40) or secrets.token_hex(8),
@@ -2692,7 +2709,8 @@ def normalize_listing(item):
         "old_price": old_price,
         "fuel": clean_listing_text(item.get("fuel"), 40),
         "consumption": clean_listing_text(item.get("consumption"), 40),
-        "image_url": image_url,
+        "image_url": image_url or (images[0] if images else ""),
+        "images": images[:6],
         "description": clean_listing_multiline(item.get("description"), 800),
         "status": clean_listing_text(item.get("status"), 20) or "active",
     }
@@ -2734,7 +2752,27 @@ def save_car_listings(listings):
     CAR_LISTINGS_PATH.write_text(json.dumps(listings, indent=2), encoding="utf-8")
 
 
-def validate_listing_form(form):
+def save_listing_images(files):
+    uploaded = []
+    if not files:
+        return uploaded, ""
+    image_files = [file for file in files.getlist("images") if file and file.filename]
+    if len(image_files) > 6:
+        return [], "Please upload no more than 6 images."
+
+    LISTING_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    for image_file in image_files:
+        original_name = secure_filename(image_file.filename or "")
+        extension = original_name.rsplit(".", 1)[-1].lower() if "." in original_name else ""
+        if extension not in LISTING_IMAGE_EXTENSIONS:
+            return [], "Images must be JPG, PNG, WebP or GIF files."
+        filename = f"{int(time.time())}_{secrets.token_hex(5)}.{extension}"
+        image_file.save(LISTING_UPLOAD_DIR / filename)
+        uploaded.append(f"/listing-uploads/{filename}")
+    return uploaded, ""
+
+
+def validate_listing_form(form, files=None):
     honeypot = clean_listing_text(form.get("website"), 80)
     if honeypot:
         return None, "Listing could not be submitted."
@@ -2755,7 +2793,6 @@ def validate_listing_form(form):
             "old_price": form.get("old_price"),
             "fuel": form.get("fuel"),
             "consumption": form.get("consumption"),
-            "image_url": form.get("image_url"),
             "description": form.get("description"),
             "status": "active",
         }
@@ -2773,8 +2810,12 @@ def validate_listing_form(form):
     current_year = datetime.utcnow().year + 1
     if int(listing["year"]) < 1950 or int(listing["year"]) > current_year:
         return None, "Please enter a realistic model year."
-    if listing["image_url"] and not re.match(r"^https?://", listing["image_url"], re.IGNORECASE):
-        return None, "Image URL must start with http:// or https://."
+
+    uploaded_images, upload_error = save_listing_images(files)
+    if upload_error:
+        return None, upload_error
+    listing["images"] = uploaded_images
+    listing["image_url"] = uploaded_images[0] if uploaded_images else ""
 
     return listing, ""
 
@@ -3468,6 +3509,12 @@ def refresh_session_user_from_store():
 def login_media(filename):
     return send_from_directory(LOGIN_MEDIA_DIR, filename)
 
+
+@app.route("/listing-uploads/<path:filename>")
+def listing_upload(filename):
+    return send_from_directory(LISTING_UPLOAD_DIR, filename)
+
+
 @app.route("/health")
 def health():
     return jsonify({"ok": True}), 200
@@ -3718,7 +3765,7 @@ def sell_car():
     form_values = {}
     if request.method == "POST":
         form_values = request.form.to_dict()
-        listing, error = validate_listing_form(request.form)
+        listing, error = validate_listing_form(request.form, request.files)
         if listing and not error:
             listings = load_car_listings(include_inactive=True)
             listings.insert(0, listing)
