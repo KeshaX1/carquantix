@@ -3723,7 +3723,7 @@ def sell_car():
             listings = load_car_listings(include_inactive=True)
             listings.insert(0, listing)
             save_car_listings(listings)
-            message = "Your car listing is now live."
+            message = "Your car is now live for sale."
             form_values = {}
 
     listings = load_car_listings()
@@ -3732,7 +3732,7 @@ def sell_car():
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": "Sell Your Car - CarQuantix",
-        "description": "List your car for sale and browse public vehicle listings on CarQuantix.",
+        "description": "Sell your car and browse public vehicle listings on CarQuantix.",
         "url": canonical_url,
     }
     return render_template(
@@ -3743,7 +3743,7 @@ def sell_car():
         form_values=form_values,
         canonical_url=canonical_url,
         meta_title="Sell Your Car Online - CarQuantix",
-        meta_description="List your car for sale on CarQuantix and browse public vehicle listings with price, mileage, city and seller contact details.",
+        meta_description="Sell your car on CarQuantix and browse public vehicle listings with price, mileage, city and seller contact details.",
         robots_directive="index,follow",
         page_schema=page_schema,
     )
