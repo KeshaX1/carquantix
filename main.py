@@ -2790,9 +2790,7 @@ def validate_listing_form(form, files=None):
             "year": form.get("year"),
             "mileage": form.get("mileage"),
             "price": form.get("price"),
-            "old_price": form.get("old_price"),
             "fuel": form.get("fuel"),
-            "consumption": form.get("consumption"),
             "description": form.get("description"),
             "status": "active",
         }

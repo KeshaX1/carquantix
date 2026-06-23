@@ -302,12 +302,6 @@
       color: #000000;
       line-height: 1;
     }
-    .offer-old-price {
-      color: #dc2626;
-      font-size: 0.78rem;
-      text-decoration: line-through;
-      font-weight: 800;
-    }
     .offer-details {
       min-height: 45px;
       color: #111827;
@@ -673,12 +667,9 @@
               <h2 class="offer-title"><strong>{{ listing.make }} {{ listing.model }}</strong> {{ listing.description }}</h2>
               <div class="offer-price-row">
                 <span class="offer-price">{{ listing.price }}</span>
-                {% if listing.old_price %}
-                <span class="offer-old-price">{{ listing.old_price }}</span>
-                {% endif %}
               </div>
               <div class="offer-details">
-                {{ listing.created_at[5:] }}/{{ listing.created_at[:4] }} | {{ listing.mileage }} | {{ listing.fuel or 'Fuel data n/a' }} | {{ listing.consumption or '- (l/100 km)' }}<br>
+                {{ listing.created_at[5:] }}/{{ listing.created_at[:4] }} | {{ listing.mileage }} | {{ listing.fuel or 'Fuel data n/a' }}<br>
                 {{ listing.city }}
               </div>
               <span class="deal-badge">SuperDEAL</span>
@@ -760,18 +751,8 @@
               <input id="fuel" name="fuel" type="text" maxlength="40" value="{{ form_values.get('fuel', '') }}">
             </div>
             <div class="field">
-              <label for="consumption">Consumption</label>
-              <input id="consumption" name="consumption" type="text" maxlength="40" value="{{ form_values.get('consumption', '') }}">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field">
               <label for="price">Price *</label>
               <input id="price" name="price" type="text" maxlength="40" required value="{{ form_values.get('price', '') }}">
-            </div>
-            <div class="field">
-              <label for="old_price">Old price</label>
-              <input id="old_price" name="old_price" type="text" maxlength="40" value="{{ form_values.get('old_price', '') }}">
             </div>
           </div>
           <div class="field">
