@@ -483,7 +483,11 @@
       color: #334155;
       display: grid;
       place-items: center;
+      align-content: center;
+      gap: 6px;
+      padding: 8px;
       cursor: pointer;
+      overflow: hidden;
     }
     .image-upload-tile strong {
       width: 34px;
@@ -495,6 +499,28 @@
       color: #ffffff;
       font-size: 1.45rem;
       line-height: 1;
+    }
+    .image-upload-tile img {
+      width: 100%;
+      height: 54px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .image-upload-tile span {
+      width: 100%;
+      color: #475569;
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1.2;
+      overflow: hidden;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .image-upload-tile.has-image {
+      border-style: solid;
+      border-color: #2563eb;
+      background: #eff6ff;
     }
     .listing-modal {
       position: fixed;
@@ -803,10 +829,10 @@
             <span>Vehicle images</span>
             <input class="image-upload-input" id="listing_images" name="images" type="file" accept="image/*" multiple>
             <div class="image-upload-grid" aria-label="Upload vehicle images">
-              <label class="image-upload-tile" for="listing_images"><strong>+</strong></label>
-              <label class="image-upload-tile" for="listing_images"><strong>+</strong></label>
-              <label class="image-upload-tile" for="listing_images"><strong>+</strong></label>
-              <label class="image-upload-tile" for="listing_images"><strong>+</strong></label>
+              <label class="image-upload-tile" for="listing_images" data-upload-tile><strong>+</strong></label>
+              <label class="image-upload-tile" for="listing_images" data-upload-tile><strong>+</strong></label>
+              <label class="image-upload-tile" for="listing_images" data-upload-tile><strong>+</strong></label>
+              <label class="image-upload-tile" for="listing_images" data-upload-tile><strong>+</strong></label>
             </div>
           </div>
           <button class="submit-listing" type="submit">Publish Listing</button>
@@ -851,6 +877,56 @@
       };
       countrySelect.addEventListener("change", syncAddressFields);
       syncAddressFields();
+    })();
+
+    (() => {
+      const imageInput = document.querySelector("#listing_images");
+      const tiles = Array.from(document.querySelectorAll("[data-upload-tile]"));
+      if (!imageInput || !tiles.length) {
+        return;
+      }
+
+      let objectUrls = [];
+      const resetObjectUrls = () => {
+        objectUrls.forEach((url) => URL.revokeObjectURL(url));
+        objectUrls = [];
+      };
+      const renderEmptyTile = (tile) => {
+        tile.classList.remove("has-image");
+        tile.innerHTML = "<strong>+</strong>";
+      };
+      const renderSelectedImages = () => {
+        resetObjectUrls();
+        const files = Array.from(imageInput.files || []).filter((file) => file.type.startsWith("image/"));
+
+        if (files.length > tiles.length && window.DataTransfer) {
+          const transfer = new DataTransfer();
+          files.slice(0, tiles.length).forEach((file) => transfer.items.add(file));
+          imageInput.files = transfer.files;
+        }
+
+        const visibleFiles = Array.from(imageInput.files || []).slice(0, tiles.length);
+        tiles.forEach((tile, index) => {
+          const file = visibleFiles[index];
+          if (!file) {
+            renderEmptyTile(tile);
+            return;
+          }
+          const objectUrl = URL.createObjectURL(file);
+          objectUrls.push(objectUrl);
+          tile.classList.add("has-image");
+          tile.replaceChildren();
+          const image = document.createElement("img");
+          image.src = objectUrl;
+          image.alt = "";
+          const name = document.createElement("span");
+          name.textContent = file.name;
+          tile.append(image, name);
+        });
+      };
+
+      imageInput.addEventListener("change", renderSelectedImages);
+      window.addEventListener("pagehide", resetObjectUrls);
     })();
   </script>
 </body>

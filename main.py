@@ -134,6 +134,7 @@ LISTING_UPLOAD_DIR = Path(
     )
 ).expanduser()
 LISTING_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "gif"}
+LISTING_IMAGE_MIME_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 LISTING_FUEL_TYPES = {"Gasoline", "Diesel", "Electric", "Hybrid", "Plug-in hybrid", "LPG"}
 LISTING_COUNTRIES = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia",
@@ -2803,6 +2804,8 @@ def save_listing_images(files):
         original_name = secure_filename(image_file.filename or "")
         extension = original_name.rsplit(".", 1)[-1].lower() if "." in original_name else ""
         if extension not in LISTING_IMAGE_EXTENSIONS:
+            return [], "Images must be JPG, PNG, WebP or GIF files."
+        if image_file.mimetype and image_file.mimetype not in LISTING_IMAGE_MIME_TYPES:
             return [], "Images must be JPG, PNG, WebP or GIF files."
         filename = f"{int(time.time())}_{secrets.token_hex(5)}.{extension}"
         image_file.save(LISTING_UPLOAD_DIR / filename)
