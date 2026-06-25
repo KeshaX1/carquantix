@@ -248,6 +248,16 @@
       box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
       display: grid;
       grid-template-rows: auto 1fr;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+    }
+    .offer-card:hover,
+    .offer-card:focus-visible {
+      border-color: #2563eb;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+      outline: none;
+      transform: translateY(-1px);
     }
     .offer-photo {
       aspect-ratio: 4 / 3;
@@ -596,7 +606,9 @@
     .listing-modal-backdrop {
       position: absolute;
       inset: 0;
+      border: 0;
       background: rgba(15, 23, 42, 0.62);
+      cursor: pointer;
     }
     .modal-close {
       position: absolute;
@@ -612,6 +624,142 @@
       text-decoration: none;
       font-size: 1.25rem;
       font-weight: 900;
+    }
+    .listing-detail-panel {
+      width: min(980px, calc(100vw - 32px));
+      max-height: calc(100vh - 48px);
+      overflow: auto;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.28);
+      position: relative;
+    }
+    .detail-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+      gap: 0;
+    }
+    .detail-media {
+      background: #f1f5f9;
+      padding: 18px;
+    }
+    .detail-main-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 8px;
+      background: #e5e7eb;
+      object-fit: cover;
+      display: block;
+    }
+    .detail-photo-placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 8px;
+      background: #e5e7eb;
+      color: #334155;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      font-weight: 900;
+    }
+    .detail-thumbs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .detail-thumb {
+      aspect-ratio: 4 / 3;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #ffffff;
+      padding: 0;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .detail-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .detail-content {
+      padding: 24px;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+    }
+    .detail-title {
+      margin: 0;
+      padding-right: 42px;
+      color: #0f172a;
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      line-height: 1.15;
+      font-weight: 950;
+    }
+    .detail-description {
+      margin: 0;
+      color: #334155;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+    .detail-price {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      color: #000000;
+      font-size: 2rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+    .detail-price span {
+      color: #475569;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+    .detail-spec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .detail-spec {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #f8fafc;
+    }
+    .detail-spec span {
+      display: block;
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .detail-spec strong {
+      display: block;
+      margin-top: 4px;
+      color: #111827;
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+    .detail-contact {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 16px;
+      color: #111827;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .detail-contact strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+    .detail-contact a {
+      color: #2563eb;
+      overflow-wrap: anywhere;
     }
     @media (max-width: 1100px) {
       .market-hero {
@@ -635,6 +783,12 @@
       .offer-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
+      }
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+      .detail-content {
+        padding: 20px;
       }
     }
     @media (max-width: 520px) {
@@ -747,7 +901,7 @@
         {% if listings %}
         <div class="offer-grid">
           {% for listing in listings %}
-          <article class="offer-card">
+          <article class="offer-card" role="button" tabindex="0" data-listing-card data-listing-index="{{ loop.index0 }}" aria-label="Open {{ listing.year }} {{ listing.make }} {{ listing.model }} listing">
             <div class="offer-photo">
               {% if listing.image_url %}
               <img src="{{ listing.image_url }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" loading="lazy">
@@ -788,6 +942,45 @@
 
     </div>
   </main>
+
+  <div class="listing-modal" data-listing-detail-modal aria-hidden="true">
+    <button class="listing-modal-backdrop" type="button" data-listing-detail-close aria-label="Close listing detail"></button>
+    <section class="listing-detail-panel" role="dialog" aria-modal="true" aria-labelledby="listingDetailTitle">
+      <button class="modal-close" type="button" data-listing-detail-close aria-label="Close listing detail">&times;</button>
+      <div class="detail-layout">
+        <div class="detail-media">
+          <img class="detail-main-image" src="" alt="" data-detail-main-image>
+          <div class="detail-photo-placeholder" data-detail-photo-placeholder></div>
+          <div class="detail-thumbs" data-detail-thumbs></div>
+        </div>
+        <div class="detail-content">
+          <div>
+            <h2 class="detail-title" id="listingDetailTitle" data-detail-title></h2>
+            <p class="detail-description" data-detail-description></p>
+          </div>
+          <div class="detail-price">
+            <strong data-detail-price></strong>
+            <span data-detail-currency></span>
+          </div>
+          <div class="detail-spec-grid">
+            <div class="detail-spec"><span>Year</span><strong data-detail-year></strong></div>
+            <div class="detail-spec"><span>Mileage</span><strong data-detail-mileage></strong></div>
+            <div class="detail-spec"><span>Fuel</span><strong data-detail-fuel></strong></div>
+            <div class="detail-spec"><span>Listed</span><strong data-detail-created></strong></div>
+            <div class="detail-spec"><span>Location</span><strong data-detail-location></strong></div>
+            <div class="detail-spec"><span>Status</span><strong data-detail-status></strong></div>
+          </div>
+          <div class="detail-contact">
+            <strong>Seller</strong>
+            <span data-detail-seller></span><br>
+            <a data-detail-email></a>
+            <br data-detail-email-break>
+            <a data-detail-phone></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <div id="sell-car-form" class="listing-modal {{ 'is-open' if error else '' }}" aria-label="Sell your car form">
     <a class="listing-modal-backdrop" href="#" aria-label="Close form"></a>
@@ -953,6 +1146,153 @@
       };
       countrySelect.addEventListener("change", syncAddressFields);
       syncAddressFields();
+    })();
+
+    (() => {
+      const listings = {{ listings|tojson }};
+      const cards = Array.from(document.querySelectorAll("[data-listing-card]"));
+      const modal = document.querySelector("[data-listing-detail-modal]");
+      if (!cards.length || !modal) {
+        return;
+      }
+
+      const mainImage = modal.querySelector("[data-detail-main-image]");
+      const photoPlaceholder = modal.querySelector("[data-detail-photo-placeholder]");
+      const thumbs = modal.querySelector("[data-detail-thumbs]");
+      const title = modal.querySelector("[data-detail-title]");
+      const description = modal.querySelector("[data-detail-description]");
+      const price = modal.querySelector("[data-detail-price]");
+      const currency = modal.querySelector("[data-detail-currency]");
+      const year = modal.querySelector("[data-detail-year]");
+      const mileage = modal.querySelector("[data-detail-mileage]");
+      const fuel = modal.querySelector("[data-detail-fuel]");
+      const created = modal.querySelector("[data-detail-created]");
+      const location = modal.querySelector("[data-detail-location]");
+      const status = modal.querySelector("[data-detail-status]");
+      const seller = modal.querySelector("[data-detail-seller]");
+      const email = modal.querySelector("[data-detail-email]");
+      const emailBreak = modal.querySelector("[data-detail-email-break]");
+      const phone = modal.querySelector("[data-detail-phone]");
+      let previousFocus = null;
+
+      const setContactLink = (element, value, hrefPrefix = "") => {
+        if (!element) {
+          return;
+        }
+        if (!value) {
+          element.hidden = true;
+          element.removeAttribute("href");
+          element.textContent = "";
+          return;
+        }
+        element.hidden = false;
+        element.href = `${hrefPrefix}${value}`;
+        element.textContent = value;
+      };
+      const setMainImage = (src, label) => {
+        if (!mainImage) {
+          return;
+        }
+        if (!src) {
+          mainImage.hidden = true;
+          mainImage.removeAttribute("src");
+          if (photoPlaceholder) {
+            photoPlaceholder.style.display = "grid";
+            photoPlaceholder.textContent = label || "Vehicle listing";
+          }
+          return;
+        }
+        mainImage.hidden = false;
+        mainImage.src = src;
+        mainImage.alt = label;
+        if (photoPlaceholder) {
+          photoPlaceholder.style.display = "none";
+          photoPlaceholder.textContent = "";
+        }
+      };
+      const getImages = (listing) => {
+        const images = Array.isArray(listing.images) ? listing.images.filter(Boolean) : [];
+        if (listing.image_url && !images.includes(listing.image_url)) {
+          images.unshift(listing.image_url);
+        }
+        return images;
+      };
+      const openDetail = (listing) => {
+        if (!listing) {
+          return;
+        }
+        previousFocus = document.activeElement;
+        const label = [listing.year, listing.make, listing.model].filter(Boolean).join(" ");
+        const images = getImages(listing);
+
+        title.textContent = label || "Vehicle listing";
+        description.textContent = listing.description || "";
+        price.textContent = listing.price || "-";
+        currency.textContent = listing.price_currency_display || listing.price_currency || "";
+        year.textContent = listing.year || "-";
+        mileage.textContent = listing.mileage || "-";
+        fuel.textContent = listing.fuel || "Fuel data n/a";
+        created.textContent = listing.created_at || "-";
+        location.textContent = listing.city || "-";
+        status.textContent = listing.status || "active";
+        seller.textContent = listing.seller_name || "-";
+        setContactLink(email, listing.email, "mailto:");
+        if (emailBreak) {
+          emailBreak.hidden = !listing.email || !listing.phone;
+        }
+        setContactLink(phone, listing.phone, "tel:");
+
+        setMainImage(images[0], label);
+        thumbs.replaceChildren();
+        images.forEach((src, index) => {
+          const button = document.createElement("button");
+          button.className = "detail-thumb";
+          button.type = "button";
+          button.setAttribute("aria-label", `Show image ${index + 1}`);
+          const image = document.createElement("img");
+          image.src = src;
+          image.alt = "";
+          button.append(image);
+          button.addEventListener("click", () => setMainImage(src, label));
+          thumbs.append(button);
+        });
+
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        modal.querySelector("[data-listing-detail-close]")?.focus();
+      };
+      const closeDetail = () => {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        if (previousFocus && typeof previousFocus.focus === "function") {
+          previousFocus.focus();
+        }
+      };
+
+      cards.forEach((card) => {
+        const openFromCard = (event) => {
+          if (event.target.closest("a, button")) {
+            return;
+          }
+          openDetail(listings[Number(card.dataset.listingIndex)]);
+        };
+        card.addEventListener("click", openFromCard);
+        card.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") {
+            return;
+          }
+          event.preventDefault();
+          openDetail(listings[Number(card.dataset.listingIndex)]);
+        });
+      });
+      modal.querySelectorAll("[data-listing-detail-close]").forEach((button) => {
+        button.addEventListener("click", closeDetail);
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) {
+          closeDetail();
+        }
+      });
     })();
 
     (() => {
