@@ -236,8 +236,9 @@
     }
     .offer-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px 18px;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 460px));
+      justify-content: start;
+      gap: 22px;
     }
     .offer-card {
       min-width: 0;
@@ -280,13 +281,13 @@
       line-height: 1.25;
     }
     .offer-body {
-      padding: 14px 16px 14px;
+      padding: 18px 20px 18px;
       display: grid;
-      gap: 10px;
+      gap: 13px;
     }
     .offer-title {
       margin: 0;
-      font-size: 1rem;
+      font-size: 1.16rem;
       line-height: 1.35;
       min-height: 2.7em;
       color: #000000;
@@ -303,25 +304,25 @@
       display: flex;
       align-items: baseline;
       flex-wrap: wrap;
-      gap: 5px;
-      min-height: 29px;
+      gap: 7px;
+      min-height: 36px;
     }
     .offer-price {
-      font-size: 1.35rem;
+      font-size: 1.7rem;
       font-weight: 950;
       color: #000000;
       line-height: 1;
     }
     .offer-currency {
       color: #475569;
-      font-size: 0.86rem;
+      font-size: 0.96rem;
       font-weight: 900;
       line-height: 1;
     }
     .offer-details {
-      min-height: 45px;
+      min-height: 54px;
       color: #111827;
-      font-size: 0.82rem;
+      font-size: 0.92rem;
       line-height: 1.35;
     }
     .deal-badge {
@@ -766,7 +767,7 @@
         grid-template-columns: 1fr;
       }
       .offer-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       }
     }
     @media (max-width: 760px) {
@@ -781,8 +782,8 @@
         flex-direction: column;
       }
       .offer-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+        grid-template-columns: 1fr;
+        gap: 16px;
       }
       .detail-layout {
         grid-template-columns: 1fr;
