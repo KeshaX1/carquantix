@@ -904,7 +904,7 @@
           <article class="offer-card" role="button" tabindex="0" data-listing-card data-listing-index="{{ loop.index0 }}" aria-label="Open {{ listing.year }} {{ listing.make }} {{ listing.model }} listing">
             <div class="offer-photo">
               {% if listing.image_url %}
-              <img src="{{ listing.image_url }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" loading="lazy">
+              <img src="{{ listing.image_url }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" loading="lazy" data-listing-photo>
               {% else %}
               <span class="photo-placeholder">{{ listing.make }} {{ listing.model }}</span>
               {% endif %}
@@ -913,6 +913,9 @@
               <h2 class="offer-title"><strong>{{ listing.make }} {{ listing.model }}</strong> {{ listing.description }}</h2>
               <div class="offer-price-row">
                 <span class="offer-price">{{ listing.price }}</span>
+                {% if listing.price_currency_symbol %}
+                <span class="offer-currency">{{ listing.price_currency_symbol }}</span>
+                {% endif %}
                 {% if listing.price_currency_display %}
                 <span class="offer-currency">{{ listing.price_currency_display }}</span>
                 {% endif %}
@@ -960,6 +963,7 @@
           </div>
           <div class="detail-price">
             <strong data-detail-price></strong>
+            <span data-detail-currency-symbol></span>
             <span data-detail-currency></span>
           </div>
           <div class="detail-spec-grid">
@@ -1162,6 +1166,7 @@
       const title = modal.querySelector("[data-detail-title]");
       const description = modal.querySelector("[data-detail-description]");
       const price = modal.querySelector("[data-detail-price]");
+      const currencySymbol = modal.querySelector("[data-detail-currency-symbol]");
       const currency = modal.querySelector("[data-detail-currency]");
       const year = modal.querySelector("[data-detail-year]");
       const mileage = modal.querySelector("[data-detail-mileage]");
@@ -1228,6 +1233,7 @@
         title.textContent = label || "Vehicle listing";
         description.textContent = listing.description || "";
         price.textContent = listing.price || "-";
+        currencySymbol.textContent = listing.price_currency_symbol || "";
         currency.textContent = listing.price_currency_display || listing.price_currency || "";
         year.textContent = listing.year || "-";
         mileage.textContent = listing.mileage || "-";
@@ -1285,6 +1291,22 @@
           openDetail(listings[Number(card.dataset.listingIndex)]);
         });
       });
+      const slideTimers = [];
+      cards.forEach((card) => {
+        const photo = card.querySelector("[data-listing-photo]");
+        const listing = listings[Number(card.dataset.listingIndex)];
+        const images = getImages(listing);
+        if (!photo || images.length < 2) {
+          return;
+        }
+
+        let imageIndex = 0;
+        const timer = window.setInterval(() => {
+          imageIndex = (imageIndex + 1) % images.length;
+          photo.src = images[imageIndex];
+        }, 3200);
+        slideTimers.push(timer);
+      });
       modal.querySelectorAll("[data-listing-detail-close]").forEach((button) => {
         button.addEventListener("click", closeDetail);
       });
@@ -1292,6 +1314,9 @@
         if (event.key === "Escape" && modal.classList.contains("is-open")) {
           closeDetail();
         }
+      });
+      window.addEventListener("pagehide", () => {
+        slideTimers.forEach((timer) => window.clearInterval(timer));
       });
     })();
 

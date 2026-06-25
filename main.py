@@ -172,6 +172,40 @@ LISTING_CURRENCIES = [
     ("ZAR", "ZAR", "South African Rand"),
 ]
 LISTING_CURRENCY_BY_CODE = {code: {"code": code, "display": display, "name": name} for code, display, name in LISTING_CURRENCIES}
+LISTING_CURRENCY_SYMBOLS = {
+    "TRY": "₺",
+    "USD": "$",
+    "EUR": "€",
+    "GBP": "£",
+    "CHF": "CHF",
+    "CAD": "C$",
+    "AUD": "A$",
+    "JPY": "¥",
+    "CNY": "¥",
+    "AED": "AED",
+    "SAR": "SAR",
+    "QAR": "QAR",
+    "KWD": "KWD",
+    "NOK": "NOK",
+    "SEK": "SEK",
+    "DKK": "DKK",
+    "PLN": "PLN",
+    "CZK": "CZK",
+    "HUF": "HUF",
+    "RON": "RON",
+    "BGN": "BGN",
+    "RUB": "₽",
+    "UAH": "₴",
+    "GEL": "₾",
+    "AZN": "₼",
+    "INR": "₹",
+    "KRW": "₩",
+    "SGD": "S$",
+    "HKD": "HK$",
+    "BRL": "R$",
+    "MXN": "MX$",
+    "ZAR": "ZAR",
+}
 LISTING_CURRENCY_ALIASES = {
     "TL": "TRY",
     "LIRA": "TRY",
@@ -2771,6 +2805,7 @@ def normalize_listing(item):
     price = clean_listing_text(item.get("price"), 40)
     price_currency = normalize_listing_currency(item.get("price_currency") or item.get("currency"))
     price_currency_display = LISTING_CURRENCY_BY_CODE.get(price_currency, {}).get("display", "")
+    price_currency_symbol = LISTING_CURRENCY_SYMBOLS.get(price_currency, price_currency_display)
     old_price = clean_listing_text(item.get("old_price"), 40)
     mileage = clean_listing_text(item.get("mileage"), 40)
     image_url = clean_listing_text(item.get("image_url"), 300)
@@ -2803,6 +2838,7 @@ def normalize_listing(item):
         "price": price,
         "price_currency": price_currency,
         "price_currency_display": price_currency_display,
+        "price_currency_symbol": price_currency_symbol,
         "old_price": old_price,
         "fuel": clean_listing_text(item.get("fuel"), 40),
         "consumption": clean_listing_text(item.get("consumption"), 40),
