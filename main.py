@@ -3925,6 +3925,15 @@ def sell_car():
             form_values = {}
 
     listings = load_car_listings()
+    for index, listing in enumerate(listings):
+        listing["_list_index"] = index
+    user = session.get("user") or {}
+    current_user_email = (user.get("email") or "").strip().lower()
+    my_listings = [
+        listing
+        for listing in listings
+        if current_user_email and (listing.get("email") or "").strip().lower() == current_user_email
+    ]
     canonical_url = f"{get_base_url()}{request.path}"
     page_schema = {
         "@context": "https://schema.org",
@@ -3936,6 +3945,8 @@ def sell_car():
     return render_template(
         "sell_car.html",
         listings=listings,
+        my_listings=my_listings,
+        current_user_email=current_user_email,
         countries=LISTING_COUNTRIES,
         currencies=[
             {"code": code, "display": display, "name": name}

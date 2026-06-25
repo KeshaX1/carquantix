@@ -215,6 +215,31 @@
       text-decoration: none;
       white-space: nowrap;
     }
+    .listing-view-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+    .listing-view-tab {
+      min-height: 38px;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #334155;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+    .listing-view-tab.is-active {
+      border-color: #111827;
+      background: #111827;
+      color: #ffffff;
+    }
+    .listing-view-panel[hidden] {
+      display: none;
+    }
     .market-alert {
       margin: 0 0 16px;
       padding: 12px 14px;
@@ -377,6 +402,12 @@
       background: #ffffff;
       color: #475569;
       line-height: 1.6;
+    }
+    .empty-listings strong {
+      display: block;
+      color: #111827;
+      font-size: 1rem;
+      margin-bottom: 4px;
     }
     .listing-form-panel {
       width: min(720px, calc(100vw - 32px));
@@ -806,6 +837,44 @@
   </style>
 </head>
 <body class="car-market-page">
+  {% macro listing_card(listing, listing_index) -%}
+  <article class="offer-card" role="button" tabindex="0" data-listing-card data-listing-index="{{ listing_index }}" aria-label="Open {{ listing.year }} {{ listing.make }} {{ listing.model }} listing">
+    <div class="offer-photo">
+      {% if listing.image_url %}
+      <img src="{{ listing.image_url }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" loading="lazy" data-listing-photo>
+      {% else %}
+      <span class="photo-placeholder">{{ listing.make }} {{ listing.model }}</span>
+      {% endif %}
+    </div>
+    <div class="offer-body">
+      <h2 class="offer-title"><strong>{{ listing.make }} {{ listing.model }}</strong> {{ listing.description }}</h2>
+      <div class="offer-price-row">
+        <span class="offer-price">{{ listing.price }}</span>
+        {% if listing.price_currency_symbol %}
+        <span class="offer-currency">{{ listing.price_currency_symbol }}</span>
+        {% endif %}
+        {% if listing.price_currency_display %}
+        <span class="offer-currency">{{ listing.price_currency_display }}</span>
+        {% endif %}
+      </div>
+      <div class="offer-details">
+        {{ listing.created_at[5:] }}/{{ listing.created_at[:4] }} | {{ listing.mileage }} | {{ listing.fuel or 'Fuel data n/a' }}<br>
+        {{ listing.city }}
+      </div>
+      <span class="deal-badge">SuperDEAL</span>
+      <div class="seller-row">
+        <div class="seller-info">
+          <strong>Seller</strong>
+          {{ listing.seller_name }}<br>
+          {% if listing.email %}<a href="mailto:{{ listing.email }}">{{ listing.email }}</a>{% endif %}
+          {% if listing.phone %}{% if listing.email %}<br>{% endif %}<a href="tel:{{ listing.phone }}">{{ listing.phone }}</a>{% endif %}
+        </div>
+        <button class="favorite-btn" type="button" aria-label="Save listing" title="Save listing">&#9734;</button>
+      </div>
+    </div>
+  </article>
+  {%- endmacro %}
+
   <header class="topbar">
     <div class="brand-block">
       <span class="brand-name">CarQuantix</span>
@@ -890,6 +959,11 @@
       <a class="sell-toggle" href="#sell-car-form">Sell Your Car</a>
     </section>
 
+    <div class="listing-view-tabs" role="tablist" aria-label="Listing views">
+      <button class="listing-view-tab is-active" type="button" role="tab" aria-selected="true" data-listing-view-trigger="all">All Offers</button>
+      <button class="listing-view-tab" type="button" role="tab" aria-selected="false" data-listing-view-trigger="mine">My Listings</button>
+    </div>
+
     {% if message %}
     <div class="market-alert success">{{ message }}</div>
     {% endif %}
@@ -898,49 +972,35 @@
     {% endif %}
 
     <div class="market-layout">
-      <section aria-label="Public car listings">
+      <section class="listing-view-panel" aria-label="Public car listings" data-listing-view-panel="all">
         {% if listings %}
         <div class="offer-grid">
           {% for listing in listings %}
-          <article class="offer-card" role="button" tabindex="0" data-listing-card data-listing-index="{{ loop.index0 }}" aria-label="Open {{ listing.year }} {{ listing.make }} {{ listing.model }} listing">
-            <div class="offer-photo">
-              {% if listing.image_url %}
-              <img src="{{ listing.image_url }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" loading="lazy" data-listing-photo>
-              {% else %}
-              <span class="photo-placeholder">{{ listing.make }} {{ listing.model }}</span>
-              {% endif %}
-            </div>
-            <div class="offer-body">
-              <h2 class="offer-title"><strong>{{ listing.make }} {{ listing.model }}</strong> {{ listing.description }}</h2>
-              <div class="offer-price-row">
-                <span class="offer-price">{{ listing.price }}</span>
-                {% if listing.price_currency_symbol %}
-                <span class="offer-currency">{{ listing.price_currency_symbol }}</span>
-                {% endif %}
-                {% if listing.price_currency_display %}
-                <span class="offer-currency">{{ listing.price_currency_display }}</span>
-                {% endif %}
-              </div>
-              <div class="offer-details">
-                {{ listing.created_at[5:] }}/{{ listing.created_at[:4] }} | {{ listing.mileage }} | {{ listing.fuel or 'Fuel data n/a' }}<br>
-                {{ listing.city }}
-              </div>
-              <span class="deal-badge">SuperDEAL</span>
-              <div class="seller-row">
-                <div class="seller-info">
-                  <strong>Seller</strong>
-                  {{ listing.seller_name }}<br>
-                  {% if listing.email %}<a href="mailto:{{ listing.email }}">{{ listing.email }}</a>{% endif %}
-                  {% if listing.phone %}{% if listing.email %}<br>{% endif %}<a href="tel:{{ listing.phone }}">{{ listing.phone }}</a>{% endif %}
-                </div>
-                <button class="favorite-btn" type="button" aria-label="Save listing" title="Save listing">&#9734;</button>
-              </div>
-            </div>
-          </article>
+          {{ listing_card(listing, loop.index0) }}
           {% endfor %}
         </div>
         {% else %}
         <div class="empty-listings">No public listings yet. The first submitted car will appear here as a marketplace card.</div>
+        {% endif %}
+      </section>
+
+      <section class="listing-view-panel" aria-label="My listings" data-listing-view-panel="mine" hidden>
+        {% if current_user_email and my_listings %}
+        <div class="offer-grid">
+          {% for listing in my_listings %}
+          {{ listing_card(listing, listing._list_index) }}
+          {% endfor %}
+        </div>
+        {% elif current_user_email %}
+        <div class="empty-listings">
+          <strong>No listings yet.</strong>
+          Cars you publish with {{ current_user_email }} will appear here.
+        </div>
+        {% else %}
+        <div class="empty-listings">
+          <strong>Sign in to see My Listings.</strong>
+          Use the same email as your seller contact to view cars you published.
+        </div>
         {% endif %}
       </section>
 
@@ -1151,6 +1211,29 @@
       };
       countrySelect.addEventListener("change", syncAddressFields);
       syncAddressFields();
+    })();
+
+    (() => {
+      const triggers = Array.from(document.querySelectorAll("[data-listing-view-trigger]"));
+      const panels = Array.from(document.querySelectorAll("[data-listing-view-panel]"));
+      if (!triggers.length || !panels.length) {
+        return;
+      }
+
+      const showView = (view) => {
+        triggers.forEach((trigger) => {
+          const isActive = trigger.dataset.listingViewTrigger === view;
+          trigger.classList.toggle("is-active", isActive);
+          trigger.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.listingViewPanel !== view;
+        });
+      };
+
+      triggers.forEach((trigger) => {
+        trigger.addEventListener("click", () => showView(trigger.dataset.listingViewTrigger));
+      });
     })();
 
     (() => {
