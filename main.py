@@ -133,9 +133,56 @@ LISTING_UPLOAD_DIR = Path(
         str((Path(os.environ["APP_DATA_DIR"]).expanduser() / "listing-uploads") if os.environ.get("APP_DATA_DIR") else (STATIC_DIR / "listing-uploads")),
     )
 ).expanduser()
+LISTING_IMAGE_LIMIT = 24
 LISTING_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "gif"}
 LISTING_IMAGE_MIME_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 LISTING_FUEL_TYPES = {"Gasoline", "Diesel", "Electric", "Hybrid", "Plug-in hybrid", "LPG"}
+LISTING_CURRENCIES = [
+    ("TRY", "TL", "Turkish Lira"),
+    ("USD", "USD", "US Dollar"),
+    ("EUR", "EUR", "Euro"),
+    ("GBP", "GBP", "British Pound"),
+    ("CHF", "CHF", "Swiss Franc"),
+    ("CAD", "CAD", "Canadian Dollar"),
+    ("AUD", "AUD", "Australian Dollar"),
+    ("JPY", "JPY", "Japanese Yen"),
+    ("CNY", "CNY", "Chinese Yuan"),
+    ("AED", "AED", "UAE Dirham"),
+    ("SAR", "SAR", "Saudi Riyal"),
+    ("QAR", "QAR", "Qatari Riyal"),
+    ("KWD", "KWD", "Kuwaiti Dinar"),
+    ("NOK", "NOK", "Norwegian Krone"),
+    ("SEK", "SEK", "Swedish Krona"),
+    ("DKK", "DKK", "Danish Krone"),
+    ("PLN", "PLN", "Polish Zloty"),
+    ("CZK", "CZK", "Czech Koruna"),
+    ("HUF", "HUF", "Hungarian Forint"),
+    ("RON", "RON", "Romanian Leu"),
+    ("BGN", "BGN", "Bulgarian Lev"),
+    ("RUB", "RUB", "Russian Ruble"),
+    ("UAH", "UAH", "Ukrainian Hryvnia"),
+    ("GEL", "GEL", "Georgian Lari"),
+    ("AZN", "AZN", "Azerbaijani Manat"),
+    ("INR", "INR", "Indian Rupee"),
+    ("KRW", "KRW", "South Korean Won"),
+    ("SGD", "SGD", "Singapore Dollar"),
+    ("HKD", "HKD", "Hong Kong Dollar"),
+    ("BRL", "BRL", "Brazilian Real"),
+    ("MXN", "MXN", "Mexican Peso"),
+    ("ZAR", "ZAR", "South African Rand"),
+]
+LISTING_CURRENCY_BY_CODE = {code: {"code": code, "display": display, "name": name} for code, display, name in LISTING_CURRENCIES}
+LISTING_CURRENCY_ALIASES = {
+    "TL": "TRY",
+    "LIRA": "TRY",
+    "TURKISH LIRA": "TRY",
+    "DOLLAR": "USD",
+    "DOLAR": "USD",
+    "US DOLLAR": "USD",
+    "EURO": "EUR",
+    "POUND": "GBP",
+    "STERLING": "GBP",
+}
 LISTING_COUNTRIES = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia",
     "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin",
@@ -2698,6 +2745,13 @@ def clean_listing_multiline(value, max_length=800):
     return value[:max_length]
 
 
+def normalize_listing_currency(value):
+    raw_value = clean_listing_text(value, 40).upper()
+    raw_value = re.sub(r"[^A-Z ]", "", raw_value)
+    code = LISTING_CURRENCY_ALIASES.get(raw_value, raw_value)
+    return code if code in LISTING_CURRENCY_BY_CODE else ""
+
+
 def format_listing_location(city="", country="", street="", postal_code=""):
     city = clean_listing_text(city, 80)
     country = clean_listing_text(country, 80)
@@ -2715,6 +2769,8 @@ def normalize_listing(item):
     if not created_at:
         created_at = datetime.utcnow().strftime("%Y-%m-%d")
     price = clean_listing_text(item.get("price"), 40)
+    price_currency = normalize_listing_currency(item.get("price_currency") or item.get("currency"))
+    price_currency_display = LISTING_CURRENCY_BY_CODE.get(price_currency, {}).get("display", "")
     old_price = clean_listing_text(item.get("old_price"), 40)
     mileage = clean_listing_text(item.get("mileage"), 40)
     image_url = clean_listing_text(item.get("image_url"), 300)
@@ -2745,11 +2801,13 @@ def normalize_listing(item):
         "year": clean_listing_text(item.get("year"), 10),
         "mileage": mileage,
         "price": price,
+        "price_currency": price_currency,
+        "price_currency_display": price_currency_display,
         "old_price": old_price,
         "fuel": clean_listing_text(item.get("fuel"), 40),
         "consumption": clean_listing_text(item.get("consumption"), 40),
         "image_url": image_url or (images[0] if images else ""),
-        "images": images[:6],
+        "images": images[:LISTING_IMAGE_LIMIT],
         "description": clean_listing_multiline(item.get("description"), 800),
         "status": clean_listing_text(item.get("status"), 20) or "active",
     }
@@ -2796,8 +2854,8 @@ def save_listing_images(files):
     if not files:
         return uploaded, ""
     image_files = [file for file in files.getlist("images") if file and file.filename]
-    if len(image_files) > 6:
-        return [], "Please upload no more than 6 images."
+    if len(image_files) > LISTING_IMAGE_LIMIT:
+        return [], f"Please upload no more than {LISTING_IMAGE_LIMIT} images."
 
     LISTING_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     for image_file in image_files:
@@ -2840,6 +2898,7 @@ def validate_listing_form(form, files=None):
             "year": form.get("year"),
             "mileage": form.get("mileage"),
             "price": form.get("price"),
+            "price_currency": form.get("price_currency"),
             "fuel": form.get("fuel"),
             "description": form.get("description"),
             "status": "active",
@@ -2859,6 +2918,8 @@ def validate_listing_form(form, files=None):
         return None, "Please enter a valid email address."
     if listing["fuel"] and listing["fuel"] not in LISTING_FUEL_TYPES:
         return None, "Please select a valid fuel type."
+    if not listing["price_currency"]:
+        return None, "Please select a valid currency."
     if not re.match(r"^(19|20)\d{2}$", listing["year"]):
         return None, "Please enter a valid model year."
     current_year = datetime.utcnow().year + 1
@@ -3840,6 +3901,10 @@ def sell_car():
         "sell_car.html",
         listings=listings,
         countries=LISTING_COUNTRIES,
+        currencies=[
+            {"code": code, "display": display, "name": name}
+            for code, display, name in LISTING_CURRENCIES
+        ],
         message=message,
         error=error,
         form_values=form_values,

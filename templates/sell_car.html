@@ -302,6 +302,12 @@
       color: #000000;
       line-height: 1;
     }
+    .offer-currency {
+      color: #475569;
+      font-size: 0.86rem;
+      font-weight: 900;
+      line-height: 1;
+    }
     .offer-details {
       min-height: 45px;
       color: #111827;
@@ -454,6 +460,35 @@
       font-size: 0.82rem;
       line-height: 1.45;
     }
+    .price-currency-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(120px, 0.42fr);
+      gap: 10px;
+    }
+    .currency-input-wrap {
+      position: relative;
+    }
+    .currency-input-wrap input {
+      padding-right: 52px;
+      text-transform: uppercase;
+    }
+    .currency-code-preview {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      min-width: 34px;
+      min-height: 24px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #0f172a;
+      display: inline-grid;
+      place-items: center;
+      padding: 0 7px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      pointer-events: none;
+    }
     .image-upload-field {
       display: grid;
       gap: 8px;
@@ -476,6 +511,7 @@
       gap: 10px;
     }
     .image-upload-tile {
+      position: relative;
       min-height: 82px;
       border: 1px dashed #94a3b8;
       border-radius: 8px;
@@ -521,6 +557,26 @@
       border-style: solid;
       border-color: #2563eb;
       background: #eff6ff;
+    }
+    .image-remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 24px;
+      height: 24px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.88);
+      color: #ffffff;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      line-height: 1;
+    }
+    .image-remove-btn:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
     }
     .listing-modal {
       position: fixed;
@@ -587,6 +643,7 @@
       }
       .offer-grid,
       .form-row,
+      .price-currency-row,
       .image-upload-grid {
         grid-template-columns: 1fr;
       }
@@ -702,6 +759,9 @@
               <h2 class="offer-title"><strong>{{ listing.make }} {{ listing.model }}</strong> {{ listing.description }}</h2>
               <div class="offer-price-row">
                 <span class="offer-price">{{ listing.price }}</span>
+                {% if listing.price_currency_display %}
+                <span class="offer-currency">{{ listing.price_currency_display }}</span>
+                {% endif %}
               </div>
               <div class="offer-details">
                 {{ listing.created_at[5:] }}/{{ listing.created_at[:4] }} | {{ listing.mileage }} | {{ listing.fuel or 'Fuel data n/a' }}<br>
@@ -817,8 +877,29 @@
               </select>
             </div>
             <div class="field">
-              <label for="price">Price *</label>
-              <input id="price" name="price" type="text" maxlength="40" required value="{{ form_values.get('price', '') }}">
+              <div class="price-currency-row">
+                <div class="field">
+                  <label for="price">Price *</label>
+                  <input id="price" name="price" type="text" maxlength="40" required value="{{ form_values.get('price', '') }}">
+                </div>
+                <div class="field">
+                  <label for="price_currency_input">Currency *</label>
+                  {% set selected_currency = form_values.get('price_currency', '') %}
+                  <div class="currency-input-wrap">
+                    <input id="price_currency_input" type="text" maxlength="40" list="currency_options" autocomplete="off" required value="{{ selected_currency }}" data-currency-input>
+                    <input id="price_currency" name="price_currency" type="hidden" value="{{ selected_currency }}" data-currency-code>
+                    <span class="currency-code-preview" data-currency-preview>{{ selected_currency or '---' }}</span>
+                  </div>
+                  <datalist id="currency_options">
+                    {% for currency in currencies %}
+                    <option value="{{ currency.code }}">{{ currency.display }} - {{ currency.name }}</option>
+                    {% endfor %}
+                    <option value="TL">TRY - Turkish Lira</option>
+                    <option value="EURO">EUR - Euro</option>
+                    <option value="DOLLAR">USD - US Dollar</option>
+                  </datalist>
+                </div>
+              </div>
             </div>
           </div>
           <div class="field">
@@ -828,12 +909,7 @@
           <div class="image-upload-field">
             <span>Vehicle images</span>
             <input class="image-upload-input" id="listing_images" name="images" type="file" accept="image/*" multiple>
-            <div class="image-upload-grid" aria-label="Upload vehicle images">
-              <label class="image-upload-tile" for="listing_images" data-upload-tile><strong>+</strong></label>
-              <label class="image-upload-tile" for="listing_images" data-upload-tile><strong>+</strong></label>
-              <label class="image-upload-tile" for="listing_images" data-upload-tile><strong>+</strong></label>
-              <label class="image-upload-tile" for="listing_images" data-upload-tile><strong>+</strong></label>
-            </div>
+            <div class="image-upload-grid" aria-label="Upload vehicle images" data-upload-grid></div>
           </div>
           <button class="submit-listing" type="submit">Publish Listing</button>
           <p class="form-note">Email or phone is required because listings are public.</p>
@@ -880,14 +956,58 @@
     })();
 
     (() => {
+      const currencyInput = document.querySelector("[data-currency-input]");
+      const currencyCode = document.querySelector("[data-currency-code]");
+      const currencyPreview = document.querySelector("[data-currency-preview]");
+      if (!currencyInput || !currencyCode || !currencyPreview) {
+        return;
+      }
+
+      const currencies = {{ currencies|tojson }};
+      const currencyByCode = new Map(currencies.map((currency) => [currency.code, currency]));
+      const aliases = new Map([
+        ["TL", "TRY"],
+        ["LIRA", "TRY"],
+        ["TURKISH LIRA", "TRY"],
+        ["EURO", "EUR"],
+        ["DOLLAR", "USD"],
+        ["DOLAR", "USD"],
+        ["US DOLLAR", "USD"],
+        ["POUND", "GBP"],
+        ["STERLING", "GBP"],
+      ]);
+      const normalizeCurrency = (value) => {
+        const cleaned = String(value || "").toUpperCase().replace(/[^A-Z ]/g, "").trim();
+        return aliases.get(cleaned) || cleaned;
+      };
+      const syncCurrency = () => {
+        const code = normalizeCurrency(currencyInput.value);
+        const currency = currencyByCode.get(code);
+        currencyCode.value = currency ? currency.code : "";
+        currencyPreview.textContent = currency ? currency.display : "---";
+      };
+      currencyInput.addEventListener("input", syncCurrency);
+      currencyInput.addEventListener("change", () => {
+        syncCurrency();
+        if (currencyCode.value) {
+          currencyInput.value = currencyCode.value;
+        }
+      });
+      currencyInput.form?.addEventListener("submit", syncCurrency);
+      syncCurrency();
+    })();
+
+    (() => {
+      const MAX_IMAGE_SLOTS = 24;
+      const INITIAL_IMAGE_SLOTS = 4;
       const imageInput = document.querySelector("#listing_images");
-      const tiles = Array.from(document.querySelectorAll("[data-upload-tile]"));
-      if (!imageInput || !tiles.length) {
+      const uploadGrid = document.querySelector("[data-upload-grid]");
+      if (!imageInput || !uploadGrid) {
         return;
       }
 
       let objectUrls = [];
-      let selectedFiles = Array(tiles.length).fill(null);
+      let selectedFiles = [];
       let activeTileIndex = 0;
       const resetObjectUrls = () => {
         objectUrls.forEach((url) => URL.revokeObjectURL(url));
@@ -901,29 +1021,65 @@
         selectedFiles.filter(Boolean).forEach((file) => transfer.items.add(file));
         imageInput.files = transfer.files;
       };
-      const renderEmptyTile = (tile) => {
-        tile.classList.remove("has-image");
+      const getVisibleSlotCount = () => {
+        const lastFilledIndex = selectedFiles.reduce((lastIndex, file, index) => (file ? index : lastIndex), -1);
+        return Math.min(MAX_IMAGE_SLOTS, Math.max(INITIAL_IMAGE_SLOTS, lastFilledIndex + 2));
+      };
+      const createEmptyTile = (index) => {
+        const tile = document.createElement("label");
+        tile.className = "image-upload-tile";
+        tile.htmlFor = imageInput.id;
+        tile.dataset.uploadTile = "";
+        tile.dataset.index = String(index);
         tile.innerHTML = "<strong>+</strong>";
+        tile.addEventListener("click", () => {
+          activeTileIndex = index;
+        });
+        return tile;
+      };
+      const createImageTile = (file, index) => {
+        const tile = document.createElement("div");
+        tile.className = "image-upload-tile has-image";
+        tile.dataset.uploadTile = "";
+        tile.dataset.index = String(index);
+
+        const objectUrl = URL.createObjectURL(file);
+        objectUrls.push(objectUrl);
+
+        const image = document.createElement("img");
+        image.src = objectUrl;
+        image.alt = "";
+
+        const name = document.createElement("span");
+        name.textContent = file.name;
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "image-remove-btn";
+        removeButton.type = "button";
+        removeButton.textContent = "x";
+        removeButton.setAttribute("aria-label", "Remove image");
+        removeButton.addEventListener("click", (event) => {
+          event.stopPropagation();
+          selectedFiles.splice(index, 1);
+          syncImageInput();
+          renderSelectedImages();
+        });
+
+        tile.addEventListener("click", () => {
+          activeTileIndex = index;
+          imageInput.click();
+        });
+        tile.append(image, name, removeButton);
+        return tile;
       };
       const renderSelectedImages = () => {
         resetObjectUrls();
-        tiles.forEach((tile, index) => {
+        uploadGrid.replaceChildren();
+        const visibleSlotCount = getVisibleSlotCount();
+        for (let index = 0; index < visibleSlotCount; index += 1) {
           const file = selectedFiles[index];
-          if (!file) {
-            renderEmptyTile(tile);
-            return;
-          }
-          const objectUrl = URL.createObjectURL(file);
-          objectUrls.push(objectUrl);
-          tile.classList.add("has-image");
-          tile.replaceChildren();
-          const image = document.createElement("img");
-          image.src = objectUrl;
-          image.alt = "";
-          const name = document.createElement("span");
-          name.textContent = file.name;
-          tile.append(image, name);
-        });
+          uploadGrid.append(file ? createImageTile(file, index) : createEmptyTile(index));
+        }
       };
       const handleImageChange = () => {
         const incomingFiles = Array.from(imageInput.files || []).filter((file) => file.type.startsWith("image/"));
@@ -932,22 +1088,18 @@
           return;
         }
 
-        incomingFiles.slice(0, tiles.length - activeTileIndex).forEach((file, offset) => {
+        incomingFiles.slice(0, MAX_IMAGE_SLOTS - activeTileIndex).forEach((file, offset) => {
           selectedFiles[activeTileIndex + offset] = file;
         });
+        selectedFiles = selectedFiles.slice(0, MAX_IMAGE_SLOTS);
 
         syncImageInput();
         renderSelectedImages();
       };
 
-      tiles.forEach((tile, index) => {
-        tile.addEventListener("click", () => {
-          activeTileIndex = index;
-        });
-      });
-
       imageInput.addEventListener("change", handleImageChange);
       window.addEventListener("pagehide", resetObjectUrls);
+      renderSelectedImages();
     })();
   </script>
 </body>
