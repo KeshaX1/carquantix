@@ -2971,6 +2971,24 @@ def validate_listing_form(form, files=None):
     return listing, ""
 
 
+def get_session_listing_ids():
+    my_listing_ids = session.get("my_listing_ids")
+    if not isinstance(my_listing_ids, list):
+        return []
+    return [clean_listing_text(listing_id, 40) for listing_id in my_listing_ids if clean_listing_text(listing_id, 40)]
+
+
+def user_can_manage_listing(listing):
+    if not listing:
+        return False
+    listing_id = clean_listing_text(listing.get("id"), 40)
+    if listing_id and listing_id in set(get_session_listing_ids()):
+        return True
+    user = session.get("user") or {}
+    current_user_email = (user.get("email") or "").strip().lower()
+    return bool(current_user_email and (listing.get("email") or "").strip().lower() == current_user_email)
+
+
 def get_comment_identity():
     user = session.get("user") or {}
     email = (user.get("email") or "").strip().lower()
@@ -3914,6 +3932,9 @@ def sell_car():
     message = ""
     error = ""
     form_values = {}
+    active_listing_view = request.args.get("view") if request.args.get("view") in {"all", "mine"} else "all"
+    if request.args.get("removed") == "1":
+        message = "Your listing was removed."
     if request.method == "POST":
         form_values = request.form.to_dict()
         listing, error = validate_listing_form(request.form, request.files)
@@ -3921,6 +3942,12 @@ def sell_car():
             listings = load_car_listings(include_inactive=True)
             listings.insert(0, listing)
             save_car_listings(listings)
+            my_listing_ids = session.get("my_listing_ids")
+            if not isinstance(my_listing_ids, list):
+                my_listing_ids = []
+            if listing["id"] not in my_listing_ids:
+                my_listing_ids.insert(0, listing["id"])
+            session["my_listing_ids"] = my_listing_ids[:100]
             message = "Your car is now live for sale."
             form_values = {}
 
@@ -3929,10 +3956,15 @@ def sell_car():
         listing["_list_index"] = index
     user = session.get("user") or {}
     current_user_email = (user.get("email") or "").strip().lower()
+    my_listing_ids = session.get("my_listing_ids")
+    if not isinstance(my_listing_ids, list):
+        my_listing_ids = []
+    my_listing_id_set = {clean_listing_text(listing_id, 40) for listing_id in my_listing_ids}
     my_listings = [
         listing
         for listing in listings
-        if current_user_email and (listing.get("email") or "").strip().lower() == current_user_email
+        if listing.get("id") in my_listing_id_set
+        or (current_user_email and (listing.get("email") or "").strip().lower() == current_user_email)
     ]
     canonical_url = f"{get_base_url()}{request.path}"
     page_schema = {
@@ -3947,6 +3979,7 @@ def sell_car():
         listings=listings,
         my_listings=my_listings,
         current_user_email=current_user_email,
+        active_listing_view=active_listing_view,
         countries=LISTING_COUNTRIES,
         currencies=[
             {"code": code, "display": display, "name": name}
@@ -3961,6 +3994,22 @@ def sell_car():
         robots_directive="index,follow",
         page_schema=page_schema,
     )
+
+
+@app.route("/sell-car/delete/<listing_id>", methods=["POST"])
+def delete_car_listing(listing_id):
+    listing_id = clean_listing_text(listing_id, 40)
+    listings = load_car_listings(include_inactive=True)
+    listing = next((item for item in listings if item.get("id") == listing_id), None)
+    if not listing or not user_can_manage_listing(listing):
+        return redirect(url_for("sell_car"))
+
+    listings = [item for item in listings if item.get("id") != listing_id]
+    save_car_listings(listings)
+
+    my_listing_ids = [item_id for item_id in get_session_listing_ids() if item_id != listing_id]
+    session["my_listing_ids"] = my_listing_ids
+    return redirect(url_for("sell_car", view="mine", removed="1"))
 
 
 @app.route("/pricing")

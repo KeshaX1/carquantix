@@ -395,6 +395,26 @@
       font-size: 1.25rem;
       line-height: 1;
     }
+    .remove-listing-form {
+      margin: 0;
+    }
+    .remove-listing-btn {
+      min-height: 34px;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      background: #fef2f2;
+      color: #991b1b;
+      cursor: pointer;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .remove-listing-btn:hover,
+    .remove-listing-btn:focus-visible {
+      border-color: #dc2626;
+      outline: none;
+    }
     .empty-listings {
       padding: 26px;
       border-radius: 8px;
@@ -837,7 +857,7 @@
   </style>
 </head>
 <body class="car-market-page">
-  {% macro listing_card(listing, listing_index) -%}
+  {% macro listing_card(listing, listing_index, show_remove=False) -%}
   <article class="offer-card" role="button" tabindex="0" data-listing-card data-listing-index="{{ listing_index }}" aria-label="Open {{ listing.year }} {{ listing.make }} {{ listing.model }} listing">
     <div class="offer-photo">
       {% if listing.image_url %}
@@ -869,7 +889,13 @@
           {% if listing.email %}<a href="mailto:{{ listing.email }}">{{ listing.email }}</a>{% endif %}
           {% if listing.phone %}{% if listing.email %}<br>{% endif %}<a href="tel:{{ listing.phone }}">{{ listing.phone }}</a>{% endif %}
         </div>
+        {% if show_remove %}
+        <form class="remove-listing-form" method="post" action="/sell-car/delete/{{ listing.id }}" data-remove-listing-form>
+          <button class="remove-listing-btn" type="submit">Remove</button>
+        </form>
+        {% else %}
         <button class="favorite-btn" type="button" aria-label="Save listing" title="Save listing">&#9734;</button>
+        {% endif %}
       </div>
     </div>
   </article>
@@ -960,8 +986,8 @@
     </section>
 
     <div class="listing-view-tabs" role="tablist" aria-label="Listing views">
-      <button class="listing-view-tab is-active" type="button" role="tab" aria-selected="true" data-listing-view-trigger="all">All Offers</button>
-      <button class="listing-view-tab" type="button" role="tab" aria-selected="false" data-listing-view-trigger="mine">My Listings</button>
+      <button class="listing-view-tab {{ 'is-active' if active_listing_view == 'all' else '' }}" type="button" role="tab" aria-selected="{{ 'true' if active_listing_view == 'all' else 'false' }}" data-listing-view-trigger="all">All Offers</button>
+      <button class="listing-view-tab {{ 'is-active' if active_listing_view == 'mine' else '' }}" type="button" role="tab" aria-selected="{{ 'true' if active_listing_view == 'mine' else 'false' }}" data-listing-view-trigger="mine">My Listings</button>
     </div>
 
     {% if message %}
@@ -972,7 +998,7 @@
     {% endif %}
 
     <div class="market-layout">
-      <section class="listing-view-panel" aria-label="Public car listings" data-listing-view-panel="all">
+      <section class="listing-view-panel" aria-label="Public car listings" data-listing-view-panel="all" {{ 'hidden' if active_listing_view != 'all' else '' }}>
         {% if listings %}
         <div class="offer-grid">
           {% for listing in listings %}
@@ -984,11 +1010,11 @@
         {% endif %}
       </section>
 
-      <section class="listing-view-panel" aria-label="My listings" data-listing-view-panel="mine" hidden>
-        {% if current_user_email and my_listings %}
+      <section class="listing-view-panel" aria-label="My listings" data-listing-view-panel="mine" {{ 'hidden' if active_listing_view != 'mine' else '' }}>
+        {% if my_listings %}
         <div class="offer-grid">
           {% for listing in my_listings %}
-          {{ listing_card(listing, listing._list_index) }}
+          {{ listing_card(listing, listing._list_index, True) }}
           {% endfor %}
         </div>
         {% elif current_user_email %}
@@ -998,8 +1024,8 @@
         </div>
         {% else %}
         <div class="empty-listings">
-          <strong>Sign in to see My Listings.</strong>
-          Use the same email as your seller contact to view cars you published.
+          <strong>No listings yet.</strong>
+          Cars you publish from this browser will appear here.
         </div>
         {% endif %}
       </section>
@@ -1233,6 +1259,20 @@
 
       triggers.forEach((trigger) => {
         trigger.addEventListener("click", () => showView(trigger.dataset.listingViewTrigger));
+      });
+    })();
+
+    (() => {
+      document.querySelectorAll("[data-remove-listing-form]").forEach((form) => {
+        form.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+        form.addEventListener("submit", (event) => {
+          event.stopPropagation();
+          if (!window.confirm("Remove this listing?")) {
+            event.preventDefault();
+          }
+        });
       });
     })();
 
