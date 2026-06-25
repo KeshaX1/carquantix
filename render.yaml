@@ -22,6 +22,8 @@ services:
         sync: false
       - key: APP_DATA_DIR
         value: /var/data
+      - key: DATABASE_URL
+        sync: false
       - key: DB_CONNECT_TIMEOUT_SECONDS
         value: "5"
       - key: SMTP_HOST

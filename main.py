@@ -2614,6 +2614,7 @@ def enforce_canonical_origin():
 def sync_session_user_state():
     if request.path == "/health":
         return None
+    ensure_db_ready()
     refresh_session_user_from_store()
 
 
@@ -2850,6 +2851,10 @@ def normalize_listing(item):
 
 
 def load_car_listings(include_inactive=False):
+    db_listings = load_car_listings_from_db(include_inactive=include_inactive)
+    if db_listings is not None:
+        return db_listings
+
     raw_listings = []
     if CAR_LISTINGS_PATH.exists():
         try:
@@ -2881,8 +2886,122 @@ def load_car_listings(include_inactive=False):
 
 
 def save_car_listings(listings):
+    if save_car_listings_to_db(listings):
+        return
     ensure_parent_dir(CAR_LISTINGS_PATH)
     CAR_LISTINGS_PATH.write_text(json.dumps(listings, indent=2), encoding="utf-8")
+
+
+def init_listing_db():
+    if not db_enabled():
+        return
+    try:
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS car_listings (
+                        id TEXT PRIMARY KEY,
+                        payload TEXT NOT NULL,
+                        created_at TEXT,
+                        status TEXT NOT NULL DEFAULT 'active',
+                        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                    """
+                )
+                cur.execute("CREATE INDEX IF NOT EXISTS idx_car_listings_created_at ON car_listings (created_at DESC)")
+                cur.execute("CREATE INDEX IF NOT EXISTS idx_car_listings_status ON car_listings (status)")
+    except Exception as exc:
+        disable_db_runtime(f"listing db init failed: {exc}")
+
+
+def load_car_listings_from_db(include_inactive=False):
+    if not db_enabled():
+        return None
+    try:
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                if include_inactive:
+                    cur.execute("SELECT payload FROM car_listings ORDER BY created_at DESC, updated_at DESC")
+                else:
+                    cur.execute("SELECT payload FROM car_listings WHERE status = 'active' ORDER BY created_at DESC, updated_at DESC")
+                listings = []
+                changed = False
+                seen_ids = set()
+                for row in cur.fetchall():
+                    try:
+                        item = json.loads(row["payload"])
+                    except (TypeError, json.JSONDecodeError):
+                        changed = True
+                        continue
+                    normalized = normalize_listing(item)
+                    if not include_inactive and normalized.get("status") != "active":
+                        changed = True
+                        continue
+                    if normalized["id"] in seen_ids:
+                        changed = True
+                        continue
+                    seen_ids.add(normalized["id"])
+                    listings.append(normalized)
+                if changed:
+                    save_car_listings_to_db(listings)
+                return listings
+    except Exception as exc:
+        disable_db_runtime(f"listing db load failed: {exc}")
+        return None
+
+
+def save_car_listings_to_db(listings):
+    if not db_enabled():
+        return False
+    try:
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM car_listings")
+                for listing in listings:
+                    clean_listing = {key: value for key, value in listing.items() if not key.startswith("_")}
+                    listing_id = clean_listing_text(clean_listing.get("id"), 40)
+                    if not listing_id:
+                        continue
+                    cur.execute(
+                        """
+                        INSERT INTO car_listings (id, payload, created_at, status)
+                        VALUES (%s, %s, %s, %s)
+                        """,
+                        (
+                            listing_id,
+                            json.dumps(clean_listing),
+                            clean_listing_text(clean_listing.get("created_at"), 40),
+                            clean_listing_text(clean_listing.get("status"), 20) or "active",
+                        ),
+                    )
+        return True
+    except Exception as exc:
+        disable_db_runtime(f"listing db save failed: {exc}")
+        return False
+
+
+def migrate_json_car_listings_to_db():
+    if not db_enabled() or not CAR_LISTINGS_PATH.exists():
+        return
+    try:
+        with get_db_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT COUNT(*) AS count FROM car_listings")
+                if int(cur.fetchone()["count"] or 0) > 0:
+                    return
+    except Exception as exc:
+        disable_db_runtime(f"listing db migration count failed: {exc}")
+        return
+
+    try:
+        parsed = json.loads(CAR_LISTINGS_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    if isinstance(parsed, list):
+        listings = [normalize_listing(item) for item in parsed]
+        if listings:
+            save_car_listings_to_db(listings)
 
 
 def save_listing_images(files):
@@ -3028,7 +3147,9 @@ def ensure_db_ready():
     DB_BOOTSTRAP_IN_PROGRESS = True
     try:
         init_user_db()
+        init_listing_db()
         migrate_json_users_to_db()
+        migrate_json_car_listings_to_db()
     except Exception as exc:
         disable_db_runtime(f"bootstrap failed: {exc}")
     finally:
