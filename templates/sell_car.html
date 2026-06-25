@@ -887,9 +887,19 @@
       }
 
       let objectUrls = [];
+      let selectedFiles = Array(tiles.length).fill(null);
+      let activeTileIndex = 0;
       const resetObjectUrls = () => {
         objectUrls.forEach((url) => URL.revokeObjectURL(url));
         objectUrls = [];
+      };
+      const syncImageInput = () => {
+        if (!window.DataTransfer) {
+          return;
+        }
+        const transfer = new DataTransfer();
+        selectedFiles.filter(Boolean).forEach((file) => transfer.items.add(file));
+        imageInput.files = transfer.files;
       };
       const renderEmptyTile = (tile) => {
         tile.classList.remove("has-image");
@@ -897,17 +907,8 @@
       };
       const renderSelectedImages = () => {
         resetObjectUrls();
-        const files = Array.from(imageInput.files || []).filter((file) => file.type.startsWith("image/"));
-
-        if (files.length > tiles.length && window.DataTransfer) {
-          const transfer = new DataTransfer();
-          files.slice(0, tiles.length).forEach((file) => transfer.items.add(file));
-          imageInput.files = transfer.files;
-        }
-
-        const visibleFiles = Array.from(imageInput.files || []).slice(0, tiles.length);
         tiles.forEach((tile, index) => {
-          const file = visibleFiles[index];
+          const file = selectedFiles[index];
           if (!file) {
             renderEmptyTile(tile);
             return;
@@ -924,8 +925,28 @@
           tile.append(image, name);
         });
       };
+      const handleImageChange = () => {
+        const incomingFiles = Array.from(imageInput.files || []).filter((file) => file.type.startsWith("image/"));
+        if (!incomingFiles.length) {
+          syncImageInput();
+          return;
+        }
 
-      imageInput.addEventListener("change", renderSelectedImages);
+        incomingFiles.slice(0, tiles.length - activeTileIndex).forEach((file, offset) => {
+          selectedFiles[activeTileIndex + offset] = file;
+        });
+
+        syncImageInput();
+        renderSelectedImages();
+      };
+
+      tiles.forEach((tile, index) => {
+        tile.addEventListener("click", () => {
+          activeTileIndex = index;
+        });
+      });
+
+      imageInput.addEventListener("change", handleImageChange);
       window.addEventListener("pagehide", resetObjectUrls);
     })();
   </script>
