@@ -14,7 +14,7 @@ import secrets
 import smtplib
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime
+from datetime import datetime, timedelta
 from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -33,6 +33,7 @@ load_dotenv(DOTENV_PATH, override=False)  # do not override Render env values
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret")
+app.permanent_session_lifetime = timedelta(days=180)
 
 oauth = OAuth(app)
 # GOOGLE DISCOVERY URL (compulsory)
@@ -2825,6 +2826,7 @@ def normalize_listing(item):
     return {
         "id": clean_listing_text(item.get("id"), 40) or secrets.token_hex(8),
         "created_at": created_at,
+        "owner_email": clean_listing_text(item.get("owner_email"), 120).lower(),
         "seller_name": clean_listing_text(item.get("seller_name"), 80),
         "email": clean_listing_text(item.get("email"), 120),
         "phone": clean_listing_text(item.get("phone"), 40),
@@ -3097,15 +3099,25 @@ def get_session_listing_ids():
     return [clean_listing_text(listing_id, 40) for listing_id in my_listing_ids if clean_listing_text(listing_id, 40)]
 
 
+def get_current_user_email():
+    user = session.get("user") or {}
+    return clean_listing_text(user.get("email"), 120).lower()
+
+
+def get_listing_owner_email(listing):
+    if not listing:
+        return ""
+    return clean_listing_text(listing.get("owner_email") or listing.get("email"), 120).lower()
+
+
 def user_can_manage_listing(listing):
     if not listing:
         return False
     listing_id = clean_listing_text(listing.get("id"), 40)
     if listing_id and listing_id in set(get_session_listing_ids()):
         return True
-    user = session.get("user") or {}
-    current_user_email = (user.get("email") or "").strip().lower()
-    return bool(current_user_email and (listing.get("email") or "").strip().lower() == current_user_email)
+    current_user_email = get_current_user_email()
+    return bool(current_user_email and get_listing_owner_email(listing) == current_user_email)
 
 
 def get_comment_identity():
@@ -4050,6 +4062,7 @@ def contact():
 
 @app.route("/sell-car", methods=["GET", "POST"])
 def sell_car():
+    session.permanent = True
     message = ""
     error = ""
     form_values = {}
@@ -4060,6 +4073,9 @@ def sell_car():
         form_values = request.form.to_dict()
         listing, error = validate_listing_form(request.form, request.files)
         if listing and not error:
+            current_user_email = get_current_user_email()
+            if current_user_email:
+                listing["owner_email"] = current_user_email
             listings = load_car_listings(include_inactive=True)
             listings.insert(0, listing)
             save_car_listings(listings)
@@ -4071,12 +4087,12 @@ def sell_car():
             session["my_listing_ids"] = my_listing_ids[:100]
             message = "Your car is now live for sale."
             form_values = {}
+            active_listing_view = "mine"
 
     listings = load_car_listings()
     for index, listing in enumerate(listings):
         listing["_list_index"] = index
-    user = session.get("user") or {}
-    current_user_email = (user.get("email") or "").strip().lower()
+    current_user_email = get_current_user_email()
     my_listing_ids = session.get("my_listing_ids")
     if not isinstance(my_listing_ids, list):
         my_listing_ids = []
@@ -4085,7 +4101,7 @@ def sell_car():
         listing
         for listing in listings
         if listing.get("id") in my_listing_id_set
-        or (current_user_email and (listing.get("email") or "").strip().lower() == current_user_email)
+        or (current_user_email and get_listing_owner_email(listing) == current_user_email)
     ]
     canonical_url = f"{get_base_url()}{request.path}"
     page_schema = {
