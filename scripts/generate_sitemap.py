@@ -24,6 +24,7 @@ def generate_sitemap(base_url: str, output_path: Path) -> None:
         f"{base_url}/methodology",
         f"{base_url}/about-us",
         f"{base_url}/contact",
+        f"{base_url}/sell-car",
         f"{base_url}/pricing",
         f"{base_url}/terms",
         f"{base_url}/refund-policy",

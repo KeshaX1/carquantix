@@ -4107,8 +4107,8 @@ def sell_car():
     page_schema = {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
-        "name": "Sell Your Car - CarQuantix",
-        "description": "Sell your car and browse public vehicle listings on CarQuantix.",
+        "name": "Buy Used Cars and Sell Your Car - CarQuantix",
+        "description": "Browse public vehicle listings, compare prices and mileage, and sell your car on CarQuantix.",
         "url": canonical_url,
     }
     return render_template(
@@ -4126,8 +4126,8 @@ def sell_car():
         error=error,
         form_values=form_values,
         canonical_url=canonical_url,
-        meta_title="Sell Your Car Online - CarQuantix",
-        meta_description="Sell your car on CarQuantix and browse public vehicle listings with price, mileage, city and seller contact details.",
+        meta_title="Buy Used Cars and Sell Your Car Online - CarQuantix",
+        meta_description="Buy used cars and sell your car on CarQuantix. Browse public vehicle listings with price, mileage, city and seller contact details.",
         robots_directive="index,follow",
         page_schema=page_schema,
     )
