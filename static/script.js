@@ -4122,6 +4122,7 @@ const paddleClientToken = getMetaContent('paddle-client-token');
 const paddleEnv = (getMetaContent('paddle-env') || 'sandbox').toLowerCase();
 let paddleInitialized = false;
 let paddleEventsBound = false;
+let paddleScriptPromise = null;
 
 function getPaddleLocale() {
   const code = String(currentLang || 'en').trim();
@@ -4154,6 +4155,23 @@ function initPaddleCheckout() {
   }
 }
 
+function loadPaddleScript() {
+  if (!paddleClientToken) return Promise.resolve(false);
+  if (window.Paddle && typeof window.Paddle.Initialize === 'function') {
+    return Promise.resolve(true);
+  }
+  if (paddleScriptPromise) return paddleScriptPromise;
+  paddleScriptPromise = new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.head.appendChild(script);
+  });
+  return paddleScriptPromise;
+}
+
 function extractTransactionIdFromEvent(data) {
   if (!data || typeof data !== 'object') return '';
   return (
@@ -4184,8 +4202,10 @@ function bindPaddleEvents() {
   paddleEventsBound = true;
 }
 
-function openPaddleCheckout(transactionId) {
+async function openPaddleCheckout(transactionId) {
   if (!transactionId) return false;
+  const loaded = await loadPaddleScript();
+  if (!loaded) return false;
   if (!initPaddleCheckout()) return false;
   if (!window.Paddle || !window.Paddle.Checkout || typeof window.Paddle.Checkout.open !== 'function') {
     return false;
@@ -4385,7 +4405,7 @@ async function startFuelPremiumCheckout() {
         return;
       }
       startPendingConfirmPolling();
-      if (openPaddleCheckout(pending)) {
+      if (await openPaddleCheckout(pending)) {
         return;
       }
       throw new Error(t('premiumCheckoutError'));
@@ -4430,7 +4450,7 @@ async function startFuelPremiumCheckout() {
       setPendingPaddleTxn(String(transactionId));
       startPendingConfirmPolling();
     }
-    if (!openPaddleCheckout(transactionId)) {
+    if (!(await openPaddleCheckout(transactionId))) {
       if (transactionId) {
         setPendingPaddleTxn(transactionId);
       }

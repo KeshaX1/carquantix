@@ -23,15 +23,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="/static/icon/6464px.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/static/icon/192192px.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/static/icon/192192px.png">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8BTCF256NW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-8BTCF256NW');
-  </script>
-  {% include "_adsense_head.html" %}
+  <meta name="google-adsense-account" content="ca-pub-6413682917914910">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -57,8 +49,9 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260627-desktop-cls-fixes') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260627-desktop-100-pass') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
 <body>
   <header class="topbar">
@@ -473,9 +466,46 @@
     </div>
   </footer>
   <div id="current-user-data" hidden data-user='{{ user | tojson | safe }}'></div>
-  {% if paddle_client_token %}
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-  {% endif %}
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+    (function () {
+      var loaded = false;
+      function loadScript(src, attrs) {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = src;
+        if (attrs) {
+          Object.keys(attrs).forEach(function (key) {
+            script.setAttribute(key, attrs[key]);
+          });
+        }
+        document.head.appendChild(script);
+      }
+      function loadDeferredThirdParty() {
+        if (loaded) return;
+        loaded = true;
+        loadScript('https://www.googletagmanager.com/gtag/js?id=G-8BTCF256NW');
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-8BTCF256NW');
+        loadScript('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6413682917914910', {
+          crossorigin: 'anonymous'
+        });
+      }
+      ['pointerdown', 'keydown', 'scroll'].forEach(function (eventName) {
+        window.addEventListener(eventName, loadDeferredThirdParty, { once: true, passive: true });
+      });
+      window.addEventListener('load', function () {
+        window.setTimeout(function () {
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadDeferredThirdParty, { timeout: 3000 });
+          } else {
+            loadDeferredThirdParty();
+          }
+        }, 8000);
+      });
+    }());
+  </script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
@@ -506,6 +536,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260627-desktop-cls-fixes') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260627-desktop-100-pass') }}"></script>
 </body>
 </html>
