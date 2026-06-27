@@ -2582,6 +2582,64 @@ def build_related_compare_links_for_pair(left_car, right_car, cars, slug_map, li
     return unique_link_entries(override_links + ordered + popular, limit=limit)
 
 
+MANUFACTURER_SOURCE_DOMAINS = {
+    "abarth": "https://www.abarth.com",
+    "alfa romeo": "https://www.alfaromeo.com",
+    "aston martin": "https://www.astonmartin.com",
+    "audi": "https://www.audi.com",
+    "bentley": "https://www.bentleymotors.com",
+    "bmw": "https://www.bmw.com",
+    "bugatti": "https://www.bugatti.com",
+    "byd": "https://www.byd.com",
+    "chevrolet": "https://www.chevrolet.com",
+    "dodge": "https://www.dodge.com",
+    "ferrari": "https://www.ferrari.com",
+    "ford": "https://www.ford.com",
+    "honda": "https://www.honda.com",
+    "hyundai": "https://www.hyundai.com",
+    "jaguar": "https://www.jaguar.com",
+    "koenigsegg": "https://www.koenigsegg.com",
+    "lamborghini": "https://www.lamborghini.com",
+    "land rover": "https://www.landrover.com",
+    "lexus": "https://www.lexus.com",
+    "mclaren": "https://cars.mclaren.com",
+    "mercedes": "https://www.mercedes-benz.com",
+    "mercedes-benz": "https://www.mercedes-benz.com",
+    "nissan": "https://www.nissan-global.com",
+    "pagani": "https://www.pagani.com",
+    "porsche": "https://www.porsche.com",
+    "tesla": "https://www.tesla.com",
+    "toyota": "https://www.toyota.com",
+}
+
+
+def build_compare_source_links(car_a, car_b):
+    sources = []
+    seen = set()
+
+    for car in (car_a, car_b):
+        name = get_vehicle_name(car)
+        brand = get_vehicle_brand(car)
+        brand_key = brand.lower()
+        href = MANUFACTURER_SOURCE_DOMAINS.get(brand_key)
+        if not href:
+            href = MANUFACTURER_SOURCE_DOMAINS.get(brand_key.split(" ")[0] if brand_key else "")
+        if href and href not in seen:
+            sources.append({
+                "label": f"{name} official specifications - {brand}",
+                "href": href,
+            })
+            seen.add(href)
+
+    sources.extend([
+        {"label": "Fuel economy and energy use references - FuelEconomy.gov", "href": "https://www.fueleconomy.gov"},
+        {"label": "Safety data and recalls - NHTSA", "href": "https://www.nhtsa.gov"},
+        {"label": "European safety ratings - Euro NCAP", "href": "https://www.euroncap.com"},
+        {"label": "CarQuantix methodology and data notes", "href": "/methodology"},
+    ])
+    return sources
+
+
 def build_indexable_compare_slugs(cars, slug_map):
     slugs = set()
     for entry in build_featured_compare_links(cars, slug_map):
@@ -4499,6 +4557,7 @@ def compare_detail(compare_slug):
         compare_quick_verdict=compare_quick_verdict,
         compare_sections=compare_sections,
         compare_faq=compare_faq,
+        compare_sources=build_compare_source_links(left_car, right_car),
         race_video=race_video,
         comments_page=f"compare:{resolved['canonical_slug']}",
         canonical_url=canonical_url,
