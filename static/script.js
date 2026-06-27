@@ -4627,7 +4627,7 @@ function renderCompareSlots() {
           <span>${vehicle.power} CV - ${vehicle.topSpeed} km/h</span>
         </span>
         ${detailsLink}
-        <span class="compare-slot-remove" data-remove-slot="${index}" aria-label="Remove">x</span>
+        <span class="compare-slot-remove" data-remove-slot="${index}" title="Remove">x</span>
       `;
     } else {
       const addLabel = activeCatalog === 'motorcycles' ? 'Add a motorcycle' : 'Add a vehicle';
@@ -5999,21 +5999,32 @@ function initLanguageMenu() {
   }
   if (!host) return;
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'lang-wrapper';
+  let wrapper = host.querySelector('.lang-wrapper[data-lang-shell="1"]');
+  if (!wrapper) {
+    wrapper = document.createElement('div');
+    wrapper.className = 'lang-wrapper';
+  }
   if (host === sidebarHost) {
     wrapper.classList.add('lang-sidebar');
   }
 
-  const toggleBtn = document.createElement('button');
+  let toggleBtn = wrapper.querySelector('.lang-toggle');
+  if (!toggleBtn) {
+    toggleBtn = document.createElement('button');
+    toggleBtn.className = 'lang-toggle';
+    wrapper.appendChild(toggleBtn);
+  }
   langToggleBtn = toggleBtn;
   toggleBtn.type = 'button';
-  toggleBtn.className = 'lang-toggle';
   const initialLang = getLang(currentLang) || LANGUAGES[0];
   toggleBtn.innerHTML = `<span class="lang-label">${initialLang.label}</span><span class="lang-caret">&#9662;</span>`;
 
-  const menu = document.createElement('div');
-  menu.className = 'lang-menu';
+  let menu = wrapper.querySelector('.lang-menu');
+  if (!menu) {
+    menu = document.createElement('div');
+    menu.className = 'lang-menu';
+    wrapper.appendChild(menu);
+  }
   menu.setAttribute('role', 'menu');
 
   const closeMenu = () => {
@@ -6065,9 +6076,13 @@ function initLanguageMenu() {
     if (e.key === 'Escape') closeMenu();
   });
 
-  const vehicleToggleBtn = document.createElement('button');
+  let vehicleToggleBtn = wrapper.querySelector('.mobile-panel-toggle');
+  if (!vehicleToggleBtn) {
+    vehicleToggleBtn = document.createElement('button');
+    vehicleToggleBtn.className = 'mobile-panel-toggle';
+    wrapper.appendChild(vehicleToggleBtn);
+  }
   vehicleToggleBtn.type = 'button';
-  vehicleToggleBtn.className = 'mobile-panel-toggle';
   vehicleToggleBtn.hidden = true;
   vehicleToggleBtn.addEventListener('click', () => {
     const nextCollapsed = !document.body.classList.contains('mobile-sidebar-collapsed');
@@ -6075,10 +6090,9 @@ function initLanguageMenu() {
   });
   mobileVehicleToggleBtn = vehicleToggleBtn;
 
-  wrapper.appendChild(toggleBtn);
-  wrapper.appendChild(vehicleToggleBtn);
-  wrapper.appendChild(menu);
-  host.prepend(wrapper);
+  if (!wrapper.parentElement) {
+    host.prepend(wrapper);
+  }
   renderOptions();
   updateMobileVehicleToggle();
 }

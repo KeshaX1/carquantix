@@ -57,7 +57,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260627-mobile-lh-fixes') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260627-desktop-cls-fixes') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -188,6 +188,14 @@
     <main class="main" role="main">
       <header class="main-header">
         <div class="main-header-left">
+          <div class="lang-wrapper" data-lang-shell="1">
+            <button type="button" class="lang-toggle">
+              <span class="lang-label">English</span>
+              <span class="lang-caret">&#9662;</span>
+            </button>
+            <button type="button" class="mobile-panel-toggle" hidden></button>
+            <div class="lang-menu" role="menu"></div>
+          </div>
           <button id="mobileCategoryMenuTrigger" class="category-mobile-toggle" type="button" aria-expanded="false" aria-controls="categoryMenu">
             <span data-i18n="navCategories">Categories</span>
             <span class="top-link-caret" aria-hidden="true">&#9662;</span>
@@ -229,10 +237,102 @@
             </div>
           </div>
         </div>
-        <div id="compareSlotGrid" class="compare-slot-grid" aria-live="polite"></div>
+        <div id="compareSlotGrid" class="compare-slot-grid" aria-live="polite">
+          <button type="button" class="compare-slot compare-slot-empty" data-slot-index="0">
+            <span class="compare-slot-plus">+</span>
+            <span>Add a vehicle</span>
+          </button>
+          <button type="button" class="compare-slot compare-slot-empty" data-slot-index="1">
+            <span class="compare-slot-plus">+</span>
+            <span>Add a vehicle</span>
+          </button>
+          <button type="button" class="compare-slot compare-slot-empty" data-slot-index="2">
+            <span class="compare-slot-plus">+</span>
+            <span>Add a vehicle</span>
+          </button>
+          <button type="button" class="compare-slot compare-slot-empty" data-slot-index="3">
+            <span class="compare-slot-plus">+</span>
+            <span>Add a vehicle</span>
+          </button>
+          <button type="button" class="compare-slot compare-slot-empty" data-slot-index="4">
+            <span class="compare-slot-plus">+</span>
+            <span>Add a vehicle</span>
+          </button>
+        </div>
       </section>
 
-      <div id="seoTopSlot"></div>
+      <div id="seoTopSlot">
+        <section id="seoContent" class="seo-content">
+          <h2 data-i18n="seoHeading1">Car Performance & Cost Comparison Platform</h2>
+          <p data-i18n="seoP1">CarQuantix allows users to compare horsepower, acceleration, top speed and fuel consumption across multiple model years. Discover the best value per HP cars and performance rankings instantly.</p>
+
+          <h2 data-i18n="seoHeading2">Car Fuel Cost Calculator</h2>
+          <p data-i18n="seoP2">
+          With CarQuantix, you can easily calculate your vehicle's fuel consumption,
+          cost per kilometer, and monthly fuel expenses.
+          Compare gasoline, diesel, and electric vehicles based on real fuel prices.
+          </p>
+
+          <h3 data-i18n="seoHeading3">Cost Per Kilometer Calculation</h3>
+          <p data-i18n="seoP3">
+          Enter your vehicle's fuel consumption (per 100 km) and current fuel price
+          to instantly see your cost per kilometer, monthly, and yearly expenses.
+          </p>
+
+          <h3 data-i18n="seoHeading4">Electric Vehicle Charging Cost</h3>
+          <p data-i18n="seoP4">
+          Calculate charging costs for electric vehicles using kWh/100km consumption values.
+          Get detailed cost analysis based on current electricity prices.
+          </p>
+
+          <h3>How to read the numbers</h3>
+          <p>Use horsepower, acceleration, top speed, price, and consumption together. A faster car is not automatically the better ownership choice if it costs more to fuel, insure, maintain, or depreciates faster.</p>
+
+          <h3>Data and methodology</h3>
+          <p>CarQuantix comparisons are intended for research and shortlisting. Market, trim, tire, battery, and model-year differences can change the exact figures, so important purchase details should be confirmed before buying.</p>
+          <p class="about-home-link">
+            <a href="/methodology">Read the CarQuantix methodology and data notes</a>
+          </p>
+
+          <section id="popularComparisonsSection" class="seo-section">
+            <div class="seo-section-header">
+              <h3 data-i18n="seoHeading7">Popular Comparisons</h3>
+            </div>
+            <div id="popularComparisonsContent" class="seo-section-content">
+              <div
+                id="popularComparisonsGrid"
+                class="seo-links seo-links--comparisons"
+                aria-label="Popular comparisons"
+                data-preview-rows="2"
+              >
+                {% if featured_compare_links %}
+                  {% for entry in featured_compare_links %}
+                <a href="{{ entry.href }}">{{ entry.title }}</a>
+                  {% endfor %}
+                {% else %}
+                <a href="/audi-rs6-vs-bmw-m5-cs">Audi RS6 vs BMW M5 CS</a>
+                <a href="/bugatti-chiron-vs-koenigsegg-agera-rs">Bugatti Chiron vs Koenigsegg Agera RS</a>
+                <a href="/lamborghini-veneno-vs-ferrari-enzo-ferrari">Lamborghini Veneno vs Ferrari Enzo Ferrari</a>
+                <a href="/mercedes-benz-sls-vs-aston-martin-lagonda">Mercedes-Benz SLS vs Aston Martin Lagonda</a>
+                <a href="/pagani-huayra-vs-mclaren-720s">Pagani Huayra vs McLaren 720S</a>
+                {% endif %}
+              </div>
+              <div class="seo-section-actions">
+                <button
+                  type="button"
+                  id="popularComparisonsViewAll"
+                  class="seo-section-more"
+                  data-i18n="viewAllComparisons"
+                  aria-expanded="false"
+                  hidden
+                >
+                  View all
+                </button>
+              </div>
+            </div>
+          </section>
+        </section>
+      </div>
 
       <section id="compareArea" class="compare-area" aria-live="polite">
         <p class="empty">No vehicles selected. Start by adding vehicles from the list.</p>
@@ -337,76 +437,6 @@
       <div id="seoResultSlot"></div>
     </main>
   </div>
-  <section id="seoContent" class="seo-content">
-    <h2 data-i18n="seoHeading1">Car Performance & Cost Comparison Platform</h2>
-    <p data-i18n="seoP1">CarQuantix allows users to compare horsepower, acceleration, top speed and fuel consumption across multiple model years. Discover the best value per HP cars and performance rankings instantly.</p>
-
-    <h2 data-i18n="seoHeading2">Car Fuel Cost Calculator</h2>
-    <p data-i18n="seoP2">
-    With CarQuantix, you can easily calculate your vehicle's fuel consumption,
-    cost per kilometer, and monthly fuel expenses.
-    Compare gasoline, diesel, and electric vehicles based on real fuel prices.
-    </p>
-
-    <h3 data-i18n="seoHeading3">Cost Per Kilometer Calculation</h3>
-    <p data-i18n="seoP3">
-    Enter your vehicle’s fuel consumption (per 100 km) and current fuel price
-    to instantly see your cost per kilometer, monthly, and yearly expenses.
-    </p>
-
-    <h3 data-i18n="seoHeading4">Electric Vehicle Charging Cost</h3>
-    <p data-i18n="seoP4">
-    Calculate charging costs for electric vehicles using kWh/100km consumption values.
-    Get detailed cost analysis based on current electricity prices.
-    </p>
-
-    <h3>How to read the numbers</h3>
-    <p>Use horsepower, acceleration, top speed, price, and consumption together. A faster car is not automatically the better ownership choice if it costs more to fuel, insure, maintain, or depreciates faster.</p>
-
-    <h3>Data and methodology</h3>
-    <p>CarQuantix comparisons are intended for research and shortlisting. Market, trim, tire, battery, and model-year differences can change the exact figures, so important purchase details should be confirmed before buying.</p>
-    <p class="about-home-link">
-      <a href="/methodology">Read the CarQuantix methodology and data notes</a>
-    </p>
-
-    <section id="popularComparisonsSection" class="seo-section">
-      <div class="seo-section-header">
-        <h3 data-i18n="seoHeading7">Popular Comparisons</h3>
-      </div>
-      <div id="popularComparisonsContent" class="seo-section-content">
-        <div
-          id="popularComparisonsGrid"
-          class="seo-links seo-links--comparisons"
-          aria-label="Popular comparisons"
-          data-preview-rows="2"
-        >
-          {% if featured_compare_links %}
-            {% for entry in featured_compare_links %}
-          <a href="{{ entry.href }}">{{ entry.title }}</a>
-            {% endfor %}
-          {% else %}
-          <a href="/audi-rs6-vs-bmw-m5-cs">Audi RS6 vs BMW M5 CS</a>
-          <a href="/bugatti-chiron-vs-koenigsegg-agera-rs">Bugatti Chiron vs Koenigsegg Agera RS</a>
-          <a href="/lamborghini-veneno-vs-ferrari-enzo-ferrari">Lamborghini Veneno vs Ferrari Enzo Ferrari</a>
-          <a href="/mercedes-benz-sls-vs-aston-martin-lagonda">Mercedes-Benz SLS vs Aston Martin Lagonda</a>
-          <a href="/pagani-huayra-vs-mclaren-720s">Pagani Huayra vs McLaren 720S</a>
-          {% endif %}
-        </div>
-        <div class="seo-section-actions">
-          <button
-            type="button"
-            id="popularComparisonsViewAll"
-            class="seo-section-more"
-            data-i18n="viewAllComparisons"
-            aria-expanded="false"
-            hidden
-          >
-            View all
-          </button>
-        </div>
-      </div>
-    </section>
-  </section>
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
@@ -476,6 +506,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260627-mobile-lh-fixes') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260627-desktop-cls-fixes') }}"></script>
 </body>
 </html>
