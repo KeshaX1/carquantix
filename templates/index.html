@@ -55,7 +55,9 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260624-sell-transition') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260627-mobile-lh-fixes') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -221,9 +223,9 @@
           <div>
             <div id="compareBuilderKicker" class="section-kicker">Compare builder</div>
             <h2 id="compareBuilderTitle">Compare Cars Side-by-Side</h2>
-            <div id="catalogToggle" class="catalog-toggle compare-builder-toggle" role="tablist" aria-label="Vehicle type switcher">
-              <button type="button" data-catalog="cars" class="active" aria-selected="true" data-i18n="catalogCars">Cars</button>
-              <button type="button" data-catalog="motorcycles" aria-selected="false" data-i18n="catalogMotorcycles">Motorcycles</button>
+            <div id="catalogToggle" class="catalog-toggle compare-builder-toggle" role="group" aria-label="Vehicle type switcher">
+              <button type="button" data-catalog="cars" class="active" aria-pressed="true" data-i18n="catalogCars">Cars</button>
+              <button type="button" data-catalog="motorcycles" aria-pressed="false" data-i18n="catalogMotorcycles">Motorcycles</button>
             </div>
           </div>
         </div>
@@ -474,6 +476,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260624-sell-transition') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260627-mobile-lh-fixes') }}"></script>
 </body>
 </html>

@@ -5644,7 +5644,7 @@ function setCatalog(nextCatalog) {
   catalogButtons.forEach(btn => {
     const isActive = btn.dataset.catalog === next;
     btn.classList.toggle('active', isActive);
-    btn.setAttribute('aria-selected', isActive);
+    btn.setAttribute('aria-pressed', String(isActive));
   });
   activeBrand = brandSelectionByCatalog[activeCatalog] || 'all';
   buildBrandOptions();
