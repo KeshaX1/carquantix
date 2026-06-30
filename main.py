@@ -4480,7 +4480,7 @@ def car_detail(slug):
         meta_description=meta_description,
         canonical_url=canonical_url,
         robots_directive="index,follow",
-        adsense_enabled=is_indexable,
+        adsense_enabled=True,
         page_schema=page_schema,
         related_car_links=build_related_car_links(car, cars, limit=8),
         related_compare_links=build_related_compare_links_for_car(car, cars, slug_map, limit=8),
@@ -4564,7 +4564,7 @@ def compare_detail(compare_slug):
         meta_title=meta_title,
         meta_description=meta_description,
         robots_directive="index,follow",
-        adsense_enabled=is_indexable,
+        adsense_enabled=True,
         page_schema=page_schema,
         related_car_links=unique_link_entries(
             build_related_car_links(left_car, cars, limit=5) + build_related_car_links(right_car, cars, limit=5),
