@@ -2715,6 +2715,34 @@ function buildCarDetailUrl(vehicle) {
   return `/cars/${slugifyName(name)}`;
 }
 
+function buildCompareCarToken(vehicle) {
+  const baseSlug = slugifyName(vehicle?.slug || vehicle?.name || vehicle?.id || '');
+  const idSlug = slugifyName(vehicle?.id || '');
+  if (!baseSlug) return idSlug;
+  if (!idSlug || baseSlug.includes(idSlug)) return baseSlug;
+  return `${baseSlug}-${idSlug}`;
+}
+
+function buildCompareDetailUrl(leftVehicle, rightVehicle) {
+  if (!leftVehicle || !rightVehicle) return '';
+  const ordered = [leftVehicle, rightVehicle].sort((left, right) => {
+    const leftName = String(left?.name || '').toLowerCase();
+    const rightName = String(right?.name || '').toLowerCase();
+    if (leftName !== rightName) return leftName.localeCompare(rightName);
+    return slugifyName(left?.slug || left?.name || '').localeCompare(slugifyName(right?.slug || right?.name || ''));
+  });
+  const leftToken = buildCompareCarToken(ordered[0]);
+  const rightToken = buildCompareCarToken(ordered[1]);
+  if (!leftToken || !rightToken) return '';
+  return `/compare/${leftToken}-vs-${rightToken}`;
+}
+
+function ensureAdScriptsLoaded() {
+  if (typeof window.loadCarQuantixThirdParty === 'function') {
+    window.loadCarQuantixThirdParty();
+  }
+}
+
 function currentInventory() {
   return INVENTORY_MAP[activeCatalog] || VEHICLES;
 }
@@ -5765,6 +5793,7 @@ if (countryCompareClearBtn) {
   });
 }
 compareBtn.addEventListener('click', () => {
+  ensureAdScriptsLoaded();
   if (selectedCountries.length === 1 && selected.length === 0) {
     alert(String(t('countryCompareSingle')).replace('{country}', selectedCountries[0]));
     return;
@@ -5775,6 +5804,13 @@ compareBtn.addEventListener('click', () => {
     return;
   }
   if (selected.length === 0) { alert(t('selectPrompt')); return; }
+  if (selected.length === 2 && selected.every(vehicle => (vehicle.catalog || activeCatalog) === 'cars')) {
+    const compareUrl = buildCompareDetailUrl(selected[0], selected[1]);
+    if (compareUrl) {
+      window.location.href = compareUrl;
+      return;
+    }
+  }
   buildTable({ scroll: true });
 });
 

@@ -492,6 +492,7 @@
           crossorigin: 'anonymous'
         });
       }
+      window.loadCarQuantixThirdParty = loadDeferredThirdParty;
       ['pointerdown', 'keydown', 'scroll'].forEach(function (eventName) {
         window.addEventListener(eventName, loadDeferredThirdParty, { once: true, passive: true });
       });
@@ -536,6 +537,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260627-desktop-100-pass') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260630-compare-ad-trigger') }}"></script>
 </body>
 </html>
