@@ -49,7 +49,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260627-desktop-100-pass') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260701-home-hero') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
@@ -197,15 +197,31 @@
             <span class="mobile-theme-toggle-mark" aria-hidden="true"></span>
             <span data-i18n="darkMode">Dark Mode</span>
           </button>
-          <h1 class="main-title">
-            CarQuantix – Compare Cars by Horsepower, 0-100 Acceleration, Top Speed & Fuel Cost
-          </h1>
         </div>
         <div class="actions">
           <button id="clearBtn" class="btn muted">Clear Selected</button>
           <button id="compareBtn" class="btn primary">Compare</button>
         </div>
       </header>
+
+      <section class="home-hero" aria-label="CarQuantix introduction">
+        <div class="home-hero-copy">
+          <span class="home-hero-kicker"><span aria-hidden="true"></span>Data-driven car intelligence</span>
+          <h1 class="home-hero-title">
+            The platform that turns <span>car numbers</span> into buying decisions.
+          </h1>
+          <p class="home-hero-lead">
+            Compare performance, cost and ownership data with the same CarQuantix methodology behind every vehicle insight.
+          </p>
+          <div class="home-hero-actions" aria-label="Primary actions">
+            <a class="home-hero-btn home-hero-btn-primary" href="/sell-car">Sell your car <span aria-hidden="true">-&gt;</span></a>
+            <a class="home-hero-btn home-hero-btn-secondary" href="#compareBuilder">Compare cars <span aria-hidden="true">-&gt;</span></a>
+          </div>
+        </div>
+        <figure class="home-hero-media">
+          <img src="/static/icon/hero.jpg" alt="A dark sports car with blue illuminated gauges">
+        </figure>
+      </section>
 
       <section id="countryCompareArea" class="country-compare hidden" aria-live="polite">
         <div class="country-compare-head">
@@ -219,7 +235,7 @@
         <p id="countryCompareSource" class="country-compare-source">Economic indicators load from the World Bank open data API.</p>
       </section>
 
-      <section class="compare-builder" aria-label="compare vehicles side by side">
+      <section id="compareBuilder" class="compare-builder" aria-label="compare vehicles side by side">
         <div class="compare-builder-head">
           <div>
             <div id="compareBuilderKicker" class="section-kicker">Compare builder</div>
