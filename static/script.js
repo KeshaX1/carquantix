@@ -2319,8 +2319,14 @@ function initFavoritesUI() {
 
 function initCategoryMenu() {
   const categoryMenuTriggers = [categoryMenuTrigger, mobileCategoryMenuTrigger].filter(Boolean);
-  if (!categoryMenuTriggers.length || !categoryMenu) return;
+  if (!categoryMenu) return;
+  if (document.body.classList.contains('country-view')) {
+    categoryMenuView = 'countries';
+    categoryMenu.classList.add('open');
+    categoryMenu.setAttribute('aria-hidden', 'false');
+  }
   renderCategoryMenu();
+  if (!categoryMenuTriggers.length) return;
 
   const setCategoryExpanded = (expanded) => {
     categoryMenuTriggers.forEach((trigger) => {
@@ -5837,6 +5843,7 @@ function openCompareBuilderFromHome() {
 
 if (homeCompareLink) {
   homeCompareLink.addEventListener('click', (event) => {
+    if (event.currentTarget.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey) return;
     event.preventDefault();
     history.pushState(null, '', '/?view=compare#compareBuilder');
     openCompareBuilderFromHome();
@@ -5860,8 +5867,9 @@ function openCountryCompareFromHome() {
 
 if (homeCountryCompareLink) {
   homeCountryCompareLink.addEventListener('click', (event) => {
+    if (event.currentTarget.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey) return;
     event.preventDefault();
-    history.pushState(null, '', '/?view=country#countryCompareArea');
+    history.pushState(null, '', '/?view=country#countryPicker');
     openCountryCompareFromHome();
   });
 }
@@ -5869,8 +5877,6 @@ if (homeCountryCompareLink) {
 const viewParam = new URLSearchParams(window.location.search).get('view');
 if (window.location.hash === '#compareBuilder' || viewParam === 'compare') {
   openCompareBuilderFromHome();
-} else if (window.location.hash === '#countryCompareArea' || viewParam === 'country') {
-  openCountryCompareFromHome();
 }
 
 

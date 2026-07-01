@@ -3094,6 +3094,30 @@ input {
   display: block;
 }
 
+body.country-view .category-menu{
+  position:static;
+  transform:none;
+  width:min(980px, calc(100vw - 32px));
+  max-height:none;
+  margin:24px auto;
+  display:block;
+  z-index:auto;
+}
+
+body.country-view .category-menu-inner--countries{
+  width:100%;
+}
+
+body.country-view .country-card-grid{
+  max-height:none;
+  overflow:visible;
+}
+
+.anchor-target{
+  display:block;
+  height:0;
+}
+
 .category-menu-inner {
   display: flex;
   flex-direction: column;

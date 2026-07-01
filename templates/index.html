@@ -1,5 +1,6 @@
 ﻿<!doctype html>
-{% set home_view = request.args.get('view') not in ['compare', 'country'] %}
+{% set view_mode = request.args.get('view') or 'home' %}
+{% set home_view = view_mode not in ['compare', 'country'] %}
 <html lang="en" class="{{ 'home-root' if home_view else '' }}">
 <head>
   <meta charset="utf-8" />
@@ -50,11 +51,11 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260702-home-actions') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260702-separate-actions') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
-<body class="{{ 'home-page' if home_view else '' }}">
+<body class="{{ 'home-page' if home_view else view_mode ~ '-view' }}">
   <header class="topbar">
     <div class="brand-block">
       <span class="brand-name">CarQuantix</span>
@@ -117,6 +118,7 @@
     </div>
   </header>
   <div id="categoryMenu" class="category-menu" aria-hidden="true"></div>
+  <span id="countryPicker" class="anchor-target" aria-hidden="true"></span>
 
   <!-- Modal -->
   <div id="loginModal" class="modal">
@@ -200,9 +202,9 @@
             Compare performance, cost and ownership data with the same CarQuantix methodology behind every vehicle insight.
           </p>
           <div class="home-hero-actions" aria-label="Primary actions">
-            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/?view=compare#compareBuilder">Compare Cars <span aria-hidden="true">-&gt;</span></a>
+            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/?view=compare#compareBuilder" target="_blank" rel="noopener noreferrer">Compare Cars <span aria-hidden="true">-&gt;</span></a>
             <a class="home-hero-btn home-hero-btn-secondary" href="/sell-car">Sell Your Cars <span aria-hidden="true">-&gt;</span></a>
-            <a id="homeCountryCompareLink" class="home-hero-btn home-hero-btn-country" href="/?view=country#countryCompareArea">Country compare <span aria-hidden="true">-&gt;</span></a>
+            <a id="homeCountryCompareLink" class="home-hero-btn home-hero-btn-country" href="/?view=country#countryPicker" target="_blank" rel="noopener noreferrer">Country compare <span aria-hidden="true">-&gt;</span></a>
           </div>
         </div>
         <figure class="home-hero-media">
@@ -537,6 +539,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260702-home-actions') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260702-separate-actions') }}"></script>
 </body>
 </html>
