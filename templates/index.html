@@ -1,5 +1,6 @@
 ﻿<!doctype html>
-<html lang="en" class="home-root">
+{% set home_view = request.args.get('view') not in ['compare', 'country'] %}
+<html lang="en" class="{{ 'home-root' if home_view else '' }}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -49,11 +50,11 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260702-home-mobile-fix') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260702-home-actions') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
-<body class="home-page">
+<body class="{{ 'home-page' if home_view else '' }}">
   <header class="topbar">
     <div class="brand-block">
       <span class="brand-name">CarQuantix</span>
@@ -71,12 +72,6 @@
         </section>
       </div>
       {% endif %}
-      <div class="category-nav-wrap">
-        <button id="categoryMenuTrigger" class="top-link top-link-button" type="button" aria-expanded="false" aria-controls="categoryMenu">
-          <span data-i18n="navCategories">Categories</span>
-          <span class="top-link-caret" aria-hidden="true">&#9662;</span>
-        </button>
-      </div>
       <a href="/news" id="topNewsLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navNews">News</a>
       <a href="/guides" id="topGuidesLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navGuides">Guides</a>
       <a href="/blog" id="topBlogLink" target="_blank" rel="noopener noreferrer" class="top-link" data-i18n="navBlog">Blog</a>
@@ -188,10 +183,6 @@
             <button type="button" class="mobile-panel-toggle" hidden></button>
             <div class="lang-menu" role="menu"></div>
           </div>
-          <button id="mobileCategoryMenuTrigger" class="category-mobile-toggle" type="button" aria-expanded="false" aria-controls="categoryMenu">
-            <span data-i18n="navCategories">Categories</span>
-            <span class="top-link-caret" aria-hidden="true">&#9662;</span>
-          </button>
           <button id="mobileThemeToggle" class="mobile-theme-toggle" type="button" aria-pressed="true" aria-label="Toggle dark mode">
             <span class="mobile-theme-toggle-mark" aria-hidden="true"></span>
             <span data-i18n="darkMode">Dark Mode</span>
@@ -209,8 +200,9 @@
             Compare performance, cost and ownership data with the same CarQuantix methodology behind every vehicle insight.
           </p>
           <div class="home-hero-actions" aria-label="Primary actions">
-            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="#compareBuilder">Compare Cars <span aria-hidden="true">-&gt;</span></a>
+            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/?view=compare#compareBuilder">Compare Cars <span aria-hidden="true">-&gt;</span></a>
             <a class="home-hero-btn home-hero-btn-secondary" href="/sell-car">Sell Your Cars <span aria-hidden="true">-&gt;</span></a>
+            <a id="homeCountryCompareLink" class="home-hero-btn home-hero-btn-country" href="/?view=country#countryCompareArea">Country compare <span aria-hidden="true">-&gt;</span></a>
           </div>
         </div>
         <figure class="home-hero-media">
@@ -545,6 +537,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260702-home-compare-link') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260702-home-actions') }}"></script>
 </body>
 </html>

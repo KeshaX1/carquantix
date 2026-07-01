@@ -1333,6 +1333,7 @@ const brandSymbolBar = document.getElementById('brandSymbolBar');
 const clearBtn = document.getElementById('clearBtn');
 const compareBtn = document.getElementById('compareBtn');
 const homeCompareLink = document.getElementById('homeCompareLink');
+const homeCountryCompareLink = document.getElementById('homeCountryCompareLink');
 const fuelCalcSection = document.getElementById('fuelCalculator');
 const fuelCalcDistance = document.getElementById('fuelCalcDistance');
 const fuelCalcPrice = document.getElementById('fuelCalcPrice');
@@ -5819,10 +5820,14 @@ if (compareBtn) {
   });
 }
 
-function openCompareBuilderFromHome() {
-  const compareBuilder = document.getElementById('compareBuilder');
+function unlockHomePage() {
   document.documentElement.classList.remove('home-root');
   document.body.classList.remove('home-page');
+}
+
+function openCompareBuilderFromHome() {
+  const compareBuilder = document.getElementById('compareBuilder');
+  unlockHomePage();
   if (compareBuilder) {
     window.requestAnimationFrame(() => {
       compareBuilder.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -5833,13 +5838,39 @@ function openCompareBuilderFromHome() {
 if (homeCompareLink) {
   homeCompareLink.addEventListener('click', (event) => {
     event.preventDefault();
-    history.pushState(null, '', '#compareBuilder');
+    history.pushState(null, '', '/?view=compare#compareBuilder');
     openCompareBuilderFromHome();
   });
 }
 
-if (window.location.hash === '#compareBuilder') {
+function openCountryCompareFromHome() {
+  unlockHomePage();
+  if (categoryMenu) {
+    categoryMenuView = 'countries';
+    renderCategoryMenu();
+    categoryMenu.classList.add('open');
+    categoryMenu.setAttribute('aria-hidden', 'false');
+  }
+  if (countryCompareArea) {
+    window.requestAnimationFrame(() => {
+      countryCompareArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+}
+
+if (homeCountryCompareLink) {
+  homeCountryCompareLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    history.pushState(null, '', '/?view=country#countryCompareArea');
+    openCountryCompareFromHome();
+  });
+}
+
+const viewParam = new URLSearchParams(window.location.search).get('view');
+if (window.location.hash === '#compareBuilder' || viewParam === 'compare') {
   openCompareBuilderFromHome();
+} else if (window.location.hash === '#countryCompareArea' || viewParam === 'country') {
+  openCountryCompareFromHome();
 }
 
 
