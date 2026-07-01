@@ -500,15 +500,35 @@ body.dark .brand-divider::after{
 .btn.muted{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
 .btn.primary{background:var(--accent);color:#021}
 
+body.home-page{
+  height:100vh;
+  overflow:hidden;
+}
+body.home-page .app{
+  min-height:calc(100dvh - 68px);
+  height:calc(100dvh - 68px);
+  overflow:hidden;
+}
+body.home-page .main{
+  height:100%;
+  padding-bottom:0;
+  overflow:hidden;
+}
+body.home-page .main > :not(.main-header):not(.home-hero),
+body.home-page .site-footer{
+  display:none !important;
+}
+
 .home-hero{
   position:relative;
   display:grid;
   grid-template-columns:minmax(0,0.9fr) minmax(360px,1fr);
   align-items:center;
   gap:54px;
-  min-height:calc(100vh - 54px);
-  margin:0 -20px 22px;
-  padding:54px clamp(24px,8vw,128px);
+  height:100%;
+  min-height:0;
+  margin:0 -20px;
+  padding:clamp(34px,6vh,72px) clamp(24px,8vw,128px);
   overflow:hidden;
   border-bottom:1px solid rgba(255,255,255,0.04);
   background:
@@ -629,7 +649,6 @@ body.dark .brand-divider::after{
   .home-hero{
     grid-template-columns:1fr;
     gap:34px;
-    min-height:0;
     padding-block:58px;
   }
   .home-hero-copy{
@@ -641,8 +660,12 @@ body.dark .brand-divider::after{
 }
 
 @media (max-width:700px){
+  body.home-page .app{
+    min-height:calc(100dvh - 46px);
+    height:calc(100dvh - 46px);
+  }
   .home-hero{
-    margin:0 -6px 18px;
+    margin:0 -6px;
     padding:42px 18px;
     gap:28px;
   }

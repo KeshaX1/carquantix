@@ -49,11 +49,11 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260702-home-hero-clean') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260702-home-hero-fixed') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
-<body>
+<body class="home-page">
   <header class="topbar">
     <div class="brand-block">
       <span class="brand-name">CarQuantix</span>
@@ -210,6 +210,7 @@
           </p>
           <div class="home-hero-actions" aria-label="Primary actions">
             <a class="home-hero-btn home-hero-btn-primary" href="#compareBuilder">Compare cars <span aria-hidden="true">-&gt;</span></a>
+            <a class="home-hero-btn home-hero-btn-secondary" href="/sell-car">Sell your car <span aria-hidden="true">-&gt;</span></a>
           </div>
         </div>
         <figure class="home-hero-media">
