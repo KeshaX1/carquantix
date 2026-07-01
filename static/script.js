@@ -1332,6 +1332,7 @@ const brandSelect = document.getElementById('brandFilter');
 const brandSymbolBar = document.getElementById('brandSymbolBar');
 const clearBtn = document.getElementById('clearBtn');
 const compareBtn = document.getElementById('compareBtn');
+const homeCompareLink = document.getElementById('homeCompareLink');
 const fuelCalcSection = document.getElementById('fuelCalculator');
 const fuelCalcDistance = document.getElementById('fuelCalcDistance');
 const fuelCalcPrice = document.getElementById('fuelCalcPrice');
@@ -5816,6 +5817,29 @@ if (compareBtn) {
     }
     buildTable({ scroll: true });
   });
+}
+
+function openCompareBuilderFromHome() {
+  const compareBuilder = document.getElementById('compareBuilder');
+  document.documentElement.classList.remove('home-root');
+  document.body.classList.remove('home-page');
+  if (compareBuilder) {
+    window.requestAnimationFrame(() => {
+      compareBuilder.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+}
+
+if (homeCompareLink) {
+  homeCompareLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    history.pushState(null, '', '#compareBuilder');
+    openCompareBuilderFromHome();
+  });
+}
+
+if (window.location.hash === '#compareBuilder') {
+  openCompareBuilderFromHome();
 }
 
 
