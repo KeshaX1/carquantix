@@ -5784,7 +5784,9 @@ if (brandSelect) {
     renderList(searchInput ? searchInput.value : '');
   });
 }
-clearBtn.addEventListener('click', () => { setSelected([]); renderSelected(); });
+if (clearBtn) {
+  clearBtn.addEventListener('click', () => { setSelected([]); renderSelected(); });
+}
 if (countryCompareClearBtn) {
   countryCompareClearBtn.addEventListener('click', () => {
     selectedCountries = [];
@@ -5792,27 +5794,29 @@ if (countryCompareClearBtn) {
     renderCountryComparePlaceholder();
   });
 }
-compareBtn.addEventListener('click', () => {
-  ensureAdScriptsLoaded();
-  if (selectedCountries.length === 1 && selected.length === 0) {
-    alert(String(t('countryCompareSingle')).replace('{country}', selectedCountries[0]));
-    return;
-  }
-  if (selectedCountries.length === 2) {
-    renderCountryComparison();
-    if (countryCompareArea) countryCompareArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    return;
-  }
-  if (selected.length === 0) { alert(t('selectPrompt')); return; }
-  if (selected.length === 2 && selected.every(vehicle => (vehicle.catalog || activeCatalog) === 'cars')) {
-    const compareUrl = buildCompareDetailUrl(selected[0], selected[1]);
-    if (compareUrl) {
-      window.location.href = compareUrl;
+if (compareBtn) {
+  compareBtn.addEventListener('click', () => {
+    ensureAdScriptsLoaded();
+    if (selectedCountries.length === 1 && selected.length === 0) {
+      alert(String(t('countryCompareSingle')).replace('{country}', selectedCountries[0]));
       return;
     }
-  }
-  buildTable({ scroll: true });
-});
+    if (selectedCountries.length === 2) {
+      renderCountryComparison();
+      if (countryCompareArea) countryCompareArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    if (selected.length === 0) { alert(t('selectPrompt')); return; }
+    if (selected.length === 2 && selected.every(vehicle => (vehicle.catalog || activeCatalog) === 'cars')) {
+      const compareUrl = buildCompareDetailUrl(selected[0], selected[1]);
+      if (compareUrl) {
+        window.location.href = compareUrl;
+        return;
+      }
+    }
+    buildTable({ scroll: true });
+  });
+}
 
 
 // init

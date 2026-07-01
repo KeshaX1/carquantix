@@ -49,7 +49,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260701-home-hero') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260702-home-hero-clean') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
@@ -90,7 +90,6 @@
           <span class="slider"></span>
         </label>
       </div>
-      <a href="/sell-car" id="topSellCarLink" class="sell-car-cta">Sell Your Car</a>
       {% if user %}
       <div class="notifications-wrap">
         <button id="notificationsBtn" class="top-icon-btn" type="button" aria-label="Notifications" title="Notifications">
@@ -198,10 +197,6 @@
             <span data-i18n="darkMode">Dark Mode</span>
           </button>
         </div>
-        <div class="actions">
-          <button id="clearBtn" class="btn muted">Clear Selected</button>
-          <button id="compareBtn" class="btn primary">Compare</button>
-        </div>
       </header>
 
       <section class="home-hero" aria-label="CarQuantix introduction">
@@ -214,8 +209,7 @@
             Compare performance, cost and ownership data with the same CarQuantix methodology behind every vehicle insight.
           </p>
           <div class="home-hero-actions" aria-label="Primary actions">
-            <a class="home-hero-btn home-hero-btn-primary" href="/sell-car">Sell your car <span aria-hidden="true">-&gt;</span></a>
-            <a class="home-hero-btn home-hero-btn-secondary" href="#compareBuilder">Compare cars <span aria-hidden="true">-&gt;</span></a>
+            <a class="home-hero-btn home-hero-btn-primary" href="#compareBuilder">Compare cars <span aria-hidden="true">-&gt;</span></a>
           </div>
         </div>
         <figure class="home-hero-media">
@@ -550,6 +544,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260630-compare-ad-trigger') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260702-no-header-actions') }}"></script>
 </body>
 </html>
