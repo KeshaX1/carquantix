@@ -5843,7 +5843,6 @@ function openCompareBuilderFromHome() {
 
 if (homeCompareLink) {
   const homeHeroImage = document.getElementById('homeHeroImage');
-  const homeHeroDefaultSrc = homeHeroImage?.getAttribute('src') || '';
   const homeHeroDefaultAlt = homeHeroImage?.getAttribute('alt') || '';
   const homeHeroCompareSrc = homeHeroImage?.dataset.hoverSrc || '';
   const homeHeroCompareAlt = homeHeroImage?.dataset.hoverAlt || homeHeroDefaultAlt;
@@ -5855,15 +5854,12 @@ if (homeCompareLink) {
   };
 
   const showCompareHeroImage = () => setHomeHeroImage(homeHeroCompareSrc, homeHeroCompareAlt);
-  const restoreHomeHeroImage = () => setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
 
   if (homeHeroImage && homeHeroCompareSrc) {
     const compareHeroPreload = new Image();
     compareHeroPreload.src = homeHeroCompareSrc;
     homeCompareLink.addEventListener('mouseenter', showCompareHeroImage);
     homeCompareLink.addEventListener('focus', showCompareHeroImage);
-    homeCompareLink.addEventListener('mouseleave', restoreHomeHeroImage);
-    homeCompareLink.addEventListener('blur', restoreHomeHeroImage);
   }
 
   homeCompareLink.addEventListener('click', (event) => {
