@@ -5842,6 +5842,30 @@ function openCompareBuilderFromHome() {
 }
 
 if (homeCompareLink) {
+  const homeHeroImage = document.getElementById('homeHeroImage');
+  const homeHeroDefaultSrc = homeHeroImage?.getAttribute('src') || '';
+  const homeHeroDefaultAlt = homeHeroImage?.getAttribute('alt') || '';
+  const homeHeroCompareSrc = homeHeroImage?.dataset.hoverSrc || '';
+  const homeHeroCompareAlt = homeHeroImage?.dataset.hoverAlt || homeHeroDefaultAlt;
+
+  const setHomeHeroImage = (src, alt) => {
+    if (!homeHeroImage || !src || homeHeroImage.getAttribute('src') === src) return;
+    homeHeroImage.src = src;
+    homeHeroImage.alt = alt || homeHeroDefaultAlt;
+  };
+
+  const showCompareHeroImage = () => setHomeHeroImage(homeHeroCompareSrc, homeHeroCompareAlt);
+  const restoreHomeHeroImage = () => setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
+
+  if (homeHeroImage && homeHeroCompareSrc) {
+    const compareHeroPreload = new Image();
+    compareHeroPreload.src = homeHeroCompareSrc;
+    homeCompareLink.addEventListener('mouseenter', showCompareHeroImage);
+    homeCompareLink.addEventListener('focus', showCompareHeroImage);
+    homeCompareLink.addEventListener('mouseleave', restoreHomeHeroImage);
+    homeCompareLink.addEventListener('blur', restoreHomeHeroImage);
+  }
+
   homeCompareLink.addEventListener('click', (event) => {
     if (event.currentTarget.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey) return;
     event.preventDefault();
