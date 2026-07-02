@@ -142,6 +142,13 @@ body.dark .brand-symbol-btn{
   font-size:clamp(1.35rem,2vw,2rem);
   line-height:1.15;
 }
+.compare-builder-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
 .compare-slot-grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(280px,1fr));
@@ -421,6 +428,8 @@ body.modal-open{overflow:hidden}
 @media (max-width: 700px){
   .compare-builder{padding:14px}
   .compare-builder-head{align-items:stretch;flex-direction:column}
+  .compare-builder-actions{justify-content:stretch}
+  .compare-builder-actions .btn{flex:1 1 150px}
   .compare-slot-grid{grid-template-columns:1fr}
   .compare-slot{min-height:0}
   .compare-slot-filled img{width:100%;height:auto;aspect-ratio:16 / 10}
