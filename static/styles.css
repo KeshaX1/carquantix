@@ -3129,6 +3129,10 @@ body.country-view .country-card-grid{
   overflow:visible;
 }
 
+body.country-view #compareBuilder{
+  display:none;
+}
+
 .anchor-target{
   display:block;
   height:0;

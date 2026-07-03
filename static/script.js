@@ -3604,13 +3604,18 @@ async function loadCountryData(countryName) {
   return dataPromise;
 }
 
-function renderCountryComparePlaceholder(isLoading = false) {
+function renderCountryComparePlaceholder(isLoading = false, forceVisible = false) {
   if (!countryCompareArea || !countryCompareContent) return;
-  countryCompareArea.classList.toggle('hidden', selectedCountries.length === 0);
+  const keepVisible = forceVisible || document.body.classList.contains('country-view');
+  countryCompareArea.classList.toggle('hidden', selectedCountries.length === 0 && !keepVisible);
   if (countryCompareKicker) countryCompareKicker.textContent = t('countryCompareKicker');
   if (countryCompareClearBtn) countryCompareClearBtn.textContent = t('countryClear');
   if (countryCompareSource) countryCompareSource.textContent = t('countryCompareSource');
-  if (!selectedCountries.length) return;
+  if (!selectedCountries.length) {
+    if (countryCompareTitle) countryCompareTitle.textContent = t('countryCompareTitle');
+    countryCompareContent.innerHTML = `<div class="country-compare-loading">${t('countryCompareReady')}</div>`;
+    return;
+  }
   const first = selectedCountries[0];
   if (countryCompareTitle) {
     countryCompareTitle.textContent = selectedCountries.length === 1
@@ -5835,6 +5840,11 @@ function unlockHomePage() {
 function openCompareBuilderFromHome() {
   const compareBuilder = document.getElementById('compareBuilder');
   unlockHomePage();
+  document.body.classList.remove('country-view');
+  if (categoryMenu) {
+    categoryMenu.classList.remove('open');
+    categoryMenu.setAttribute('aria-hidden', 'true');
+  }
   if (compareBuilder) {
     window.requestAnimationFrame(() => {
       compareBuilder.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -5904,12 +5914,14 @@ if (homeCompareLink) {
 
 function openCountryCompareFromHome() {
   unlockHomePage();
+  document.body.classList.add('country-view');
   if (categoryMenu) {
     categoryMenuView = 'countries';
     renderCategoryMenu();
     categoryMenu.classList.add('open');
     categoryMenu.setAttribute('aria-hidden', 'false');
   }
+  renderCountryComparePlaceholder(false, true);
   if (countryCompareArea) {
     window.requestAnimationFrame(() => {
       countryCompareArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -5929,6 +5941,8 @@ if (homeCountryCompareLink) {
 const viewParam = new URLSearchParams(window.location.search).get('view');
 if (window.location.hash === '#compareBuilder' || viewParam === 'compare') {
   openCompareBuilderFromHome();
+} else if (window.location.hash === '#countryPicker' || viewParam === 'country') {
+  openCountryCompareFromHome();
 }
 
 
