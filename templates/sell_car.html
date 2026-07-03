@@ -34,6 +34,10 @@
         linear-gradient(135deg, #ffffff 0%, #f8fbff 52%, #eef5ff 100%);
       border: 1px solid rgba(226, 232, 240, 0.92);
       box-shadow: 0 18px 56px rgba(15, 23, 42, 0.1);
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.85fr);
+      gap: 34px;
+      align-items: center;
     }
     .market-hero-copy {
       display: grid;
@@ -92,16 +96,18 @@
     }
     .market-search-card {
       display: grid;
-      gap: 12px;
-      padding: 18px;
-      border-radius: 10px;
-      background: #111827;
-      color: #ffffff;
+      gap: 16px;
+      padding: 26px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.94);
+      color: #111827;
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      box-shadow: 0 18px 48px rgba(15, 23, 42, 0.12);
     }
     .market-search-card h2 {
       margin: 0;
-      color: #ffffff;
-      font-size: 1.15rem;
+      color: #111827;
+      font-size: 1.55rem;
     }
     .market-search-row {
       display: grid;
@@ -109,13 +115,13 @@
     }
     .market-search-control {
       width: 100%;
-      min-height: 44px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 8px;
+      min-height: 50px;
+      border: 1px solid #dbe3ef;
+      border-radius: 12px;
       background: #ffffff;
       color: #111827;
       font: inherit;
-      padding: 10px 12px;
+      padding: 12px 14px;
     }
     .market-action-row {
       display: grid;
@@ -136,12 +142,47 @@
       text-align: center;
     }
     .search-count-btn {
-      background: #14b8a6;
+      background: linear-gradient(135deg, #14b8a6, #0f9f93);
       color: #ffffff;
     }
     .sell-panel-btn {
       background: #ffffff;
       color: #111827;
+      border: 1px solid #14b8a6;
+    }
+    .market-assurance {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #475569;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .market-assurance strong {
+      display: block;
+      color: #111827;
+    }
+    .market-assurance-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #ecfeff;
+      color: #0f766e;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+    .sell-form-section {
+      margin: 0 0 32px;
+      padding: 48px 30px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 72% 28%, rgba(219, 234, 254, 0.92), transparent 33%),
+        linear-gradient(135deg, #ffffff 0%, #f8fbff 52%, #eef5ff 100%);
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      box-shadow: 0 18px 56px rgba(15, 23, 42, 0.1);
+      scroll-margin-top: 90px;
     }
     .quick-filter-panel {
       margin: 0 0 28px;
@@ -885,7 +926,8 @@
       }
     }
     @media (max-width: 760px) {
-      .market-hero {
+      .market-hero,
+      .sell-form-section {
         padding: 20px;
       }
       .market-action-row {
@@ -928,6 +970,9 @@
     @media (max-width: 520px) {
       .market-shell {
         padding: 18px 12px 48px;
+      }
+      .market-hero {
+        gap: 20px;
       }
       .offer-grid,
       .form-row,
@@ -1006,7 +1051,70 @@
   </header>
 
   <main class="market-shell">
-    <section id="sell-car-form" class="market-hero" aria-label="Sell your car form">
+    <section class="market-hero" aria-label="Car marketplace tools">
+      <div class="market-hero-copy">
+        <span class="market-kicker">CarQuantix Marketplace</span>
+        <h1>Buy smarter. Sell with confidence.</h1>
+        <p>Browse public car offers with clear prices, mileage, location and seller contact details. List your car in minutes and reach serious buyers.</p>
+        <div class="market-stats">
+          <div class="market-stat">
+            <strong>{{ listings|length }}</strong>
+            <span>active offers</span>
+          </div>
+          <div class="market-stat">
+            <strong>0</strong>
+            <span>listing fee</span>
+          </div>
+          <div class="market-stat">
+            <strong>Direct</strong>
+            <span>seller contact</span>
+          </div>
+        </div>
+      </div>
+      <form class="market-search-card" action="/sell-car" method="get">
+        <h2>Find your next car</h2>
+        <div class="market-search-row">
+          <input class="market-search-control" name="q" type="text" placeholder="Brand, model or keyword">
+          <input class="market-search-control" name="location" type="text" placeholder="City or region">
+          <input class="market-search-control" name="budget" type="text" placeholder="Max budget">
+        </div>
+        <div class="market-action-row">
+          <button class="search-count-btn" type="submit">Search Offers</button>
+          <a class="sell-panel-btn" href="#sell-car-form">Sell Your Car</a>
+        </div>
+        <div class="market-assurance">
+          <span class="market-assurance-icon">OK</span>
+          <span><strong>Safe. Transparent. Secure.</strong>Your data is protected and your experience is our priority.</span>
+        </div>
+      </form>
+    </section>
+
+    <section class="quick-filter-panel" aria-label="Marketplace shortcuts">
+      <div class="filter-group">
+        <h2>Shop by need</h2>
+        <div class="filter-chips">
+          <a class="filter-chip" href="/sell-car">Family SUVs</a>
+          <a class="filter-chip" href="/sell-car">Daily commuters</a>
+          <a class="filter-chip" href="/sell-car">Performance cars</a>
+          <a class="filter-chip" href="/sell-car">Low mileage</a>
+          <a class="filter-chip" href="/sell-car">Budget picks</a>
+          <a class="filter-chip" href="/sell-car">Newly listed</a>
+        </div>
+      </div>
+      <div class="filter-group">
+        <h2>Popular brands</h2>
+        <div class="brand-chips">
+          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/bmw.webp" alt="BMW"><span>BMW</span></a>
+          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/mercedes.webp" alt="Mercedes"><span>Mercedes</span></a>
+          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/audi.webp" alt="Audi"><span>Audi</span></a>
+          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/porsche.webp" alt="Porsche"><span>Porsche</span></a>
+          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/volkswagen.webp" alt="Volkswagen"><span>Volkswagen</span></a>
+          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/ford.webp" alt="Ford"><span>Ford</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="sell-car-form" class="sell-form-section" aria-label="Sell your car form">
       <aside class="listing-form-panel" aria-label="Create a car listing">
         <div class="listing-form-card">
           <div class="listing-form-head">
@@ -1142,31 +1250,6 @@
           </div>
         </div>
       </aside>
-    </section>
-
-    <section class="quick-filter-panel" aria-label="Marketplace shortcuts">
-      <div class="filter-group">
-        <h2>Shop by need</h2>
-        <div class="filter-chips">
-          <a class="filter-chip" href="/sell-car">Family SUVs</a>
-          <a class="filter-chip" href="/sell-car">Daily commuters</a>
-          <a class="filter-chip" href="/sell-car">Performance cars</a>
-          <a class="filter-chip" href="/sell-car">Low mileage</a>
-          <a class="filter-chip" href="/sell-car">Budget picks</a>
-          <a class="filter-chip" href="/sell-car">Newly listed</a>
-        </div>
-      </div>
-      <div class="filter-group">
-        <h2>Popular brands</h2>
-        <div class="brand-chips">
-          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/bmw.webp" alt="BMW"><span>BMW</span></a>
-          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/mercedes.webp" alt="Mercedes"><span>Mercedes</span></a>
-          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/audi.webp" alt="Audi"><span>Audi</span></a>
-          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/porsche.webp" alt="Porsche"><span>Porsche</span></a>
-          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/volkswagen.webp" alt="Volkswagen"><span>Volkswagen</span></a>
-          <a class="brand-chip" href="/sell-car"><img src="/static/brand-logos/ford.webp" alt="Ford"><span>Ford</span></a>
-        </div>
-      </div>
     </section>
 
     <section class="market-heading">
