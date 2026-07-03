@@ -5879,6 +5879,9 @@ if (homeCompareLink) {
   const homeHeroCompareAlt = homeHeroImage?.dataset.hoverAlt || homeHeroDefaultAlt;
   const homeHeroSellSrc = homeHeroImage?.dataset.sellHoverSrc || '';
   const homeHeroSellAlt = homeHeroImage?.dataset.sellHoverAlt || homeHeroDefaultAlt;
+  const canUseHomeHeroHover = typeof window.matchMedia === 'function'
+    ? window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    : true;
   let homeHeroSwapTimer = null;
 
   const setHomeHeroImage = (src, alt) => {
@@ -5906,7 +5909,7 @@ if (homeCompareLink) {
   const showSellHeroImage = () => setHomeHeroImage(homeHeroSellSrc, homeHeroSellAlt);
   const showDefaultHeroImage = () => setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
 
-  if (homeHeroImage && homeHeroCompareSrc) {
+  if (canUseHomeHeroHover && homeHeroImage && homeHeroCompareSrc) {
     const compareHeroPreload = new Image();
     compareHeroPreload.src = homeHeroCompareSrc;
     homeCompareLink.addEventListener('mouseenter', showCompareHeroImage);
@@ -5914,7 +5917,7 @@ if (homeCompareLink) {
     homeCompareLink.addEventListener('focus', showCompareHeroImage);
     homeCompareLink.addEventListener('blur', showDefaultHeroImage);
   }
-  if (homeHeroImage && homeHeroSellSrc && homeSellLink) {
+  if (canUseHomeHeroHover && homeHeroImage && homeHeroSellSrc && homeSellLink) {
     const sellHeroPreload = new Image();
     sellHeroPreload.src = homeHeroSellSrc;
     homeSellLink.addEventListener('mouseenter', showSellHeroImage);
