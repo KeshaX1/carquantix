@@ -1333,6 +1333,7 @@ const brandSymbolBar = document.getElementById('brandSymbolBar');
 const clearBtn = document.getElementById('clearBtn');
 const compareBtn = document.getElementById('compareBtn');
 const homeCompareLink = document.getElementById('homeCompareLink');
+const homeSellLink = document.getElementById('homeSellLink');
 const homeCountryCompareLink = document.getElementById('homeCountryCompareLink');
 const fuelCalcSection = document.getElementById('fuelCalculator');
 const fuelCalcDistance = document.getElementById('fuelCalcDistance');
@@ -5847,14 +5848,33 @@ if (homeCompareLink) {
   const homeHeroDefaultAlt = homeHeroImage?.getAttribute('alt') || '';
   const homeHeroCompareSrc = homeHeroImage?.dataset.hoverSrc || '';
   const homeHeroCompareAlt = homeHeroImage?.dataset.hoverAlt || homeHeroDefaultAlt;
+  const homeHeroSellSrc = homeHeroImage?.dataset.sellHoverSrc || '';
+  const homeHeroSellAlt = homeHeroImage?.dataset.sellHoverAlt || homeHeroDefaultAlt;
+  let homeHeroSwapTimer = null;
 
   const setHomeHeroImage = (src, alt) => {
-    if (!homeHeroImage || !src || homeHeroImage.getAttribute('src') === src) return;
-    homeHeroImage.src = src;
-    homeHeroImage.alt = alt || homeHeroDefaultAlt;
+    window.clearTimeout(homeHeroSwapTimer);
+    if (!homeHeroImage || !src || homeHeroImage.getAttribute('src') === src) {
+      if (homeHeroImage) homeHeroImage.classList.remove('is-switching');
+      return;
+    }
+    homeHeroImage.classList.add('is-switching');
+    homeHeroSwapTimer = window.setTimeout(() => {
+      homeHeroImage.src = src;
+      homeHeroImage.alt = alt || homeHeroDefaultAlt;
+      homeHeroImage.addEventListener('load', () => {
+        homeHeroImage.classList.remove('is-switching');
+      }, { once: true });
+      if (homeHeroImage.complete) {
+        window.requestAnimationFrame(() => {
+          homeHeroImage.classList.remove('is-switching');
+        });
+      }
+    }, 150);
   };
 
   const showCompareHeroImage = () => setHomeHeroImage(homeHeroCompareSrc, homeHeroCompareAlt);
+  const showSellHeroImage = () => setHomeHeroImage(homeHeroSellSrc, homeHeroSellAlt);
   const showDefaultHeroImage = () => setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
 
   if (homeHeroImage && homeHeroCompareSrc) {
@@ -5864,6 +5884,14 @@ if (homeCompareLink) {
     homeCompareLink.addEventListener('mouseleave', showDefaultHeroImage);
     homeCompareLink.addEventListener('focus', showCompareHeroImage);
     homeCompareLink.addEventListener('blur', showDefaultHeroImage);
+  }
+  if (homeHeroImage && homeHeroSellSrc && homeSellLink) {
+    const sellHeroPreload = new Image();
+    sellHeroPreload.src = homeHeroSellSrc;
+    homeSellLink.addEventListener('mouseenter', showSellHeroImage);
+    homeSellLink.addEventListener('mouseleave', showDefaultHeroImage);
+    homeSellLink.addEventListener('focus', showSellHeroImage);
+    homeSellLink.addEventListener('blur', showDefaultHeroImage);
   }
 
   homeCompareLink.addEventListener('click', (event) => {

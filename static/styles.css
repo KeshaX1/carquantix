@@ -670,6 +670,13 @@ body.home-page .site-footer{
   aspect-ratio:16/9;
   object-fit:cover;
   object-position:center;
+  opacity:1;
+  transform:scale(1);
+  transition:opacity .26s ease, transform .34s ease;
+}
+.home-hero-media img.is-switching{
+  opacity:.18;
+  transform:scale(1.015);
 }
 
 @media (max-width:1100px){
