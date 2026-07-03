@@ -9,6 +9,25 @@
   }
 })();
 
+(() => {
+  if (!document.documentElement.classList.contains("home-root") || !document.body.classList.contains("home-page")) {
+    return;
+  }
+
+  window.addEventListener("wheel", (event) => {
+    const target = event.target;
+    if (target && target.closest && target.closest("input, textarea, select, [role='dialog'], .modal, .vehicle-picker-modal")) {
+      return;
+    }
+
+    const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+    if (!delta) return;
+
+    event.preventDefault();
+    window.scrollBy({ top: delta, left: 0, behavior: "auto" });
+  }, { passive: false });
+})();
+
 // Dataset: update image paths or replace with placeholders
 const VEHICLES = [
   { id: 'R8',              name: '2024 Audi R8',       power:570, acc:3.2, topSpeed:330, engine: '5.2 V10', price: '$239.800', img: '/static/images/audiR8.jpg', rearImg: '/static/rearimg/audiR8-rear.jpg', consumption: { value: 14.8, unit: 'L/100km' }, dimensions: { length: 442.9, width: 194, weight: 1590 }},
