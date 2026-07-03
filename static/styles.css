@@ -5351,3 +5351,22 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   }
 }
 
+html.home-root,
+html.home-root body.home-page{
+  height:auto !important;
+  min-height:100% !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+}
+
+body.home-page .app,
+body.home-page .main{
+  height:auto !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+
+body.home-page .home-hero{
+  height:auto !important;
+}
+
