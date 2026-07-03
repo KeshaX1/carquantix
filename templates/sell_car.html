@@ -21,21 +21,19 @@
       color: #111827;
     }
     .market-shell {
-      max-width: 1196px;
+      max-width: 1480px;
       margin: 0 auto;
       padding: 22px 20px 64px;
     }
     .market-hero {
-      margin: 0 auto 32px;
-      padding: 28px;
-      border-radius: 12px;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 14px 38px rgba(15, 23, 42, 0.1);
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-      gap: 26px;
-      align-items: stretch;
+      margin: 0 auto 34px;
+      padding: 48px 30px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 72% 28%, rgba(219, 234, 254, 0.92), transparent 33%),
+        linear-gradient(135deg, #ffffff 0%, #f8fbff 52%, #eef5ff 100%);
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      box-shadow: 0 18px 56px rgba(15, 23, 42, 0.1);
     }
     .market-hero-copy {
       display: grid;
@@ -435,20 +433,17 @@
       margin-bottom: 4px;
     }
     .listing-form-panel {
-      width: min(1240px, calc(100vw - 32px));
-      max-height: calc(100vh - 48px);
-      overflow: auto;
-      border-radius: 18px;
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      background:
-        radial-gradient(circle at 78% 28%, rgba(37, 99, 235, 0.12), transparent 32%),
-        linear-gradient(135deg, #ffffff 0%, #f8fbff 54%, #eef5ff 100%);
-      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.28);
-      padding: 26px;
+      width: 100%;
+      max-height: none;
+      overflow: visible;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
       position: relative;
       display: grid;
-      grid-template-columns: minmax(420px, 0.9fr) minmax(360px, 1fr);
-      gap: 28px;
+      grid-template-columns: minmax(430px, 0.84fr) minmax(460px, 1fr);
+      gap: 48px;
       align-items: center;
     }
     .listing-form-card {
@@ -473,76 +468,27 @@
       place-items: center;
       background: #eef5ff;
       color: #145ee8;
-      font-size: 1.9rem;
+      font-size: 0.9rem;
       font-weight: 900;
+      letter-spacing: 0;
     }
     .listing-form-visual {
       display: grid;
       align-content: center;
       gap: 28px;
       min-height: 100%;
-      padding: 18px 8px 12px;
+      padding: 0;
     }
     .listing-form-car-stage {
       position: relative;
-      min-height: 360px;
       display: grid;
       place-items: center;
-    }
-    .listing-form-car-stage::before {
-      content: "";
-      position: absolute;
-      width: min(520px, 86%);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: linear-gradient(135deg, rgba(219, 234, 254, 0.9), rgba(239, 246, 255, 0.45));
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
     }
     .listing-form-car-stage img {
       position: relative;
       z-index: 1;
-      width: min(660px, 100%);
-      max-height: 430px;
+      width: min(700px, 100%);
       object-fit: contain;
-      filter: drop-shadow(0 26px 28px rgba(15, 23, 42, 0.18));
-    }
-    .listing-trust-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-    .listing-trust-card {
-      min-height: 142px;
-      border-radius: 18px;
-      border: 1px solid rgba(226, 232, 240, 0.84);
-      background: rgba(255, 255, 255, 0.88);
-      box-shadow: 0 16px 42px rgba(15, 23, 42, 0.09);
-      display: grid;
-      justify-items: center;
-      align-content: center;
-      gap: 9px;
-      padding: 18px;
-      text-align: center;
-    }
-    .listing-trust-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: #eef5ff;
-      color: #145ee8;
-      font-weight: 950;
-      font-size: 1.15rem;
-    }
-    .listing-trust-card strong {
-      color: #0f172a;
-      font-size: 1rem;
-    }
-    .listing-trust-card span {
-      color: #64748b;
-      line-height: 1.45;
-      font-size: 0.88rem;
     }
     .listing-form-panel h2 {
       margin: 0 0 6px;
@@ -976,14 +922,7 @@
       .listing-form-icon {
         width: 48px;
         height: 48px;
-        font-size: 1.55rem;
-      }
-      .listing-trust-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-      .listing-trust-card {
-        min-height: 104px;
+        font-size: 0.78rem;
       }
     }
     @media (max-width: 520px) {
@@ -1067,38 +1006,142 @@
   </header>
 
   <main class="market-shell">
-    <section class="market-hero" aria-label="Car marketplace tools">
-      <div class="market-hero-copy">
-        <span class="market-kicker">CarQuantix Marketplace</span>
-        <h1>Buy smarter. Sell your car with clearer details.</h1>
-        <p>Browse public offers by price, mileage and seller location, or publish your own car with the same structured card buyers use to compare listings.</p>
-        <div class="market-stats">
-          <div class="market-stat">
-            <strong>{{ listings|length }}</strong>
-            <span>active offers</span>
+    <section id="sell-car-form" class="market-hero" aria-label="Sell your car form">
+      <aside class="listing-form-panel" aria-label="Create a car listing">
+        <div class="listing-form-card">
+          <div class="listing-form-head">
+            <span class="listing-form-icon" aria-hidden="true">CAR</span>
+            <div>
+              <h2>Enter your car details</h2>
+              <p>Fill in the information below to publish your listing.</p>
+            </div>
           </div>
-          <div class="market-stat">
-            <strong>0</strong>
-            <span>listing fee</span>
-          </div>
-          <div class="market-stat">
-            <strong>Direct</strong>
-            <span>seller contact</span>
+          <form class="listing-form" method="post" action="/sell-car" enctype="multipart/form-data">
+            <div class="hidden-field">
+              <label for="website">Website</label>
+              <input id="website" name="website" type="text" value="">
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="seller_name">Seller *</label>
+                <input id="seller_name" name="seller_name" type="text" maxlength="80" required value="{{ form_values.get('seller_name', '') }}">
+              </div>
+              <div class="field">
+                <label for="country">Location *</label>
+                <select id="country" name="country" required data-country-select>
+                  {% set selected_country = form_values.get('country', '') %}
+                  <option value="" {{ 'selected' if not selected_country else '' }}>Select country</option>
+                  {% for country in countries %}
+                  <option value="{{ country }}" {{ 'selected' if selected_country == country else '' }}>{{ country }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="address-fields {{ 'is-visible' if form_values.get('country') else '' }}" data-address-fields>
+              <div class="form-row">
+                <div class="field">
+                  <label for="city">City / region *</label>
+                  <input id="city" name="city" type="text" maxlength="80" value="{{ form_values.get('city', '') }}" data-address-required>
+                </div>
+                <div class="field">
+                  <label for="postal_code">Postal code</label>
+                  <input id="postal_code" name="postal_code" type="text" maxlength="30" value="{{ form_values.get('postal_code', '') }}">
+                </div>
+              </div>
+              <div class="field">
+                <label for="street">Street address</label>
+                <input id="street" name="street" type="text" maxlength="120" value="{{ form_values.get('street', '') }}">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" maxlength="120" value="{{ form_values.get('email', '') }}">
+              </div>
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" type="text" maxlength="40" value="{{ form_values.get('phone', '') }}">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="make">Make *</label>
+                <input id="make" name="make" type="text" maxlength="60" required value="{{ form_values.get('make', '') }}">
+              </div>
+              <div class="field">
+                <label for="model">Model *</label>
+                <input id="model" name="model" type="text" maxlength="80" required value="{{ form_values.get('model', '') }}">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="year">Year *</label>
+                <input id="year" name="year" type="text" inputmode="numeric" maxlength="4" required value="{{ form_values.get('year', '') }}">
+              </div>
+              <div class="field">
+                <label for="mileage">Mileage *</label>
+                <input id="mileage" name="mileage" type="text" maxlength="40" required value="{{ form_values.get('mileage', '') }}">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="fuel">Fuel</label>
+                <select id="fuel" name="fuel">
+                  {% set selected_fuel = form_values.get('fuel', '') %}
+                  <option value="" {{ 'selected' if not selected_fuel else '' }}>Select fuel type</option>
+                  <option value="Gasoline" {{ 'selected' if selected_fuel == 'Gasoline' else '' }}>Gasoline</option>
+                  <option value="Diesel" {{ 'selected' if selected_fuel == 'Diesel' else '' }}>Diesel</option>
+                  <option value="Electric" {{ 'selected' if selected_fuel == 'Electric' else '' }}>Electric</option>
+                  <option value="Hybrid" {{ 'selected' if selected_fuel == 'Hybrid' else '' }}>Hybrid</option>
+                  <option value="Plug-in hybrid" {{ 'selected' if selected_fuel == 'Plug-in hybrid' else '' }}>Plug-in hybrid</option>
+                  <option value="LPG" {{ 'selected' if selected_fuel == 'LPG' else '' }}>LPG</option>
+                </select>
+              </div>
+              <div class="field">
+                <div class="price-currency-row">
+                  <div class="field">
+                    <label for="price">Price *</label>
+                    <input id="price" name="price" type="text" maxlength="40" required value="{{ form_values.get('price', '') }}">
+                  </div>
+                  <div class="field">
+                    <label for="price_currency_input">Currency *</label>
+                    {% set selected_currency = form_values.get('price_currency', '') %}
+                    <div class="currency-input-wrap">
+                      <input id="price_currency_input" type="text" maxlength="40" list="currency_options" autocomplete="off" required value="{{ selected_currency }}" data-currency-input>
+                      <input id="price_currency" name="price_currency" type="hidden" value="{{ selected_currency }}" data-currency-code>
+                      <span class="currency-code-preview" data-currency-preview>{{ selected_currency or '---' }}</span>
+                    </div>
+                    <datalist id="currency_options">
+                      {% for currency in currencies %}
+                      <option value="{{ currency.code }}">{{ currency.display }} - {{ currency.name }}</option>
+                      {% endfor %}
+                      <option value="TL">TRY - Turkish Lira</option>
+                      <option value="EURO">EUR - Euro</option>
+                      <option value="DOLLAR">USD - US Dollar</option>
+                    </datalist>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="description">Short trim / description *</label>
+              <textarea id="description" name="description" maxlength="800" required>{{ form_values.get('description', '') }}</textarea>
+            </div>
+            <div class="image-upload-field">
+              <span>Vehicle images</span>
+              <input class="image-upload-input" id="listing_images" name="images" type="file" accept="image/*" multiple>
+              <div class="image-upload-grid" aria-label="Upload vehicle images" data-upload-grid></div>
+            </div>
+            <button class="submit-listing" type="submit">Publish Listing</button>
+            <p class="form-note">Email or phone is required because listings are public.</p>
+          </form>
+        </div>
+        <div class="listing-form-visual" aria-hidden="true">
+          <div class="listing-form-car-stage">
+            <img src="/static/icon/sellcarform.png" alt="">
           </div>
         </div>
-      </div>
-      <form class="market-search-card" action="/sell-car" method="get">
-        <h2>Search offers</h2>
-        <div class="market-search-row">
-          <input class="market-search-control" name="q" type="text" placeholder="Brand, model or keyword">
-          <input class="market-search-control" name="location" type="text" placeholder="City or region">
-          <input class="market-search-control" name="budget" type="text" placeholder="Max budget">
-        </div>
-        <div class="market-action-row">
-          <button class="search-count-btn" type="submit">Search</button>
-          <a class="sell-panel-btn" href="#sell-car-form">Sell Your Car</a>
-        </div>
-      </form>
+      </aside>
     </section>
 
     <section class="quick-filter-panel" aria-label="Marketplace shortcuts">
@@ -1220,163 +1263,6 @@
         </div>
       </div>
     </section>
-  </div>
-
-  <div id="sell-car-form" class="listing-modal {{ 'is-open' if error else '' }}" aria-label="Sell your car form">
-    <a class="listing-modal-backdrop" href="#" aria-label="Close form"></a>
-    <aside class="listing-form-panel" aria-label="Create a car listing">
-      <a class="modal-close" href="#" aria-label="Close form">&times;</a>
-      <div class="listing-form-card">
-        <div class="listing-form-head">
-          <span class="listing-form-icon" aria-hidden="true">+</span>
-          <div>
-            <h2>Create Listing</h2>
-            <p>Add your car with the same card format buyers see in the offers grid.</p>
-          </div>
-        </div>
-        <form class="listing-form" method="post" action="/sell-car" enctype="multipart/form-data">
-          <div class="hidden-field">
-            <label for="website">Website</label>
-            <input id="website" name="website" type="text" value="">
-          </div>
-          <div class="form-row">
-            <div class="field">
-              <label for="seller_name">Seller *</label>
-              <input id="seller_name" name="seller_name" type="text" maxlength="80" required value="{{ form_values.get('seller_name', '') }}">
-            </div>
-            <div class="field">
-              <label for="country">Location *</label>
-              <select id="country" name="country" required data-country-select>
-                {% set selected_country = form_values.get('country', '') %}
-                <option value="" {{ 'selected' if not selected_country else '' }}>Select country</option>
-                {% for country in countries %}
-                <option value="{{ country }}" {{ 'selected' if selected_country == country else '' }}>{{ country }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="address-fields {{ 'is-visible' if form_values.get('country') else '' }}" data-address-fields>
-            <div class="form-row">
-              <div class="field">
-                <label for="city">City / region *</label>
-                <input id="city" name="city" type="text" maxlength="80" value="{{ form_values.get('city', '') }}" data-address-required>
-              </div>
-              <div class="field">
-                <label for="postal_code">Postal code</label>
-                <input id="postal_code" name="postal_code" type="text" maxlength="30" value="{{ form_values.get('postal_code', '') }}">
-              </div>
-            </div>
-            <div class="field">
-              <label for="street">Street address</label>
-              <input id="street" name="street" type="text" maxlength="120" value="{{ form_values.get('street', '') }}">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field">
-              <label for="email">Email</label>
-              <input id="email" name="email" type="email" maxlength="120" value="{{ form_values.get('email', '') }}">
-            </div>
-            <div class="field">
-              <label for="phone">Phone</label>
-              <input id="phone" name="phone" type="text" maxlength="40" value="{{ form_values.get('phone', '') }}">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field">
-              <label for="make">Make *</label>
-              <input id="make" name="make" type="text" maxlength="60" required value="{{ form_values.get('make', '') }}">
-            </div>
-            <div class="field">
-              <label for="model">Model *</label>
-              <input id="model" name="model" type="text" maxlength="80" required value="{{ form_values.get('model', '') }}">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field">
-              <label for="year">Year *</label>
-              <input id="year" name="year" type="text" inputmode="numeric" maxlength="4" required value="{{ form_values.get('year', '') }}">
-            </div>
-            <div class="field">
-              <label for="mileage">Mileage *</label>
-              <input id="mileage" name="mileage" type="text" maxlength="40" required value="{{ form_values.get('mileage', '') }}">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field">
-              <label for="fuel">Fuel</label>
-              <select id="fuel" name="fuel">
-                {% set selected_fuel = form_values.get('fuel', '') %}
-                <option value="" {{ 'selected' if not selected_fuel else '' }}>Select fuel type</option>
-                <option value="Gasoline" {{ 'selected' if selected_fuel == 'Gasoline' else '' }}>Gasoline</option>
-                <option value="Diesel" {{ 'selected' if selected_fuel == 'Diesel' else '' }}>Diesel</option>
-                <option value="Electric" {{ 'selected' if selected_fuel == 'Electric' else '' }}>Electric</option>
-                <option value="Hybrid" {{ 'selected' if selected_fuel == 'Hybrid' else '' }}>Hybrid</option>
-                <option value="Plug-in hybrid" {{ 'selected' if selected_fuel == 'Plug-in hybrid' else '' }}>Plug-in hybrid</option>
-                <option value="LPG" {{ 'selected' if selected_fuel == 'LPG' else '' }}>LPG</option>
-              </select>
-            </div>
-            <div class="field">
-              <div class="price-currency-row">
-                <div class="field">
-                  <label for="price">Price *</label>
-                  <input id="price" name="price" type="text" maxlength="40" required value="{{ form_values.get('price', '') }}">
-                </div>
-                <div class="field">
-                  <label for="price_currency_input">Currency *</label>
-                  {% set selected_currency = form_values.get('price_currency', '') %}
-                  <div class="currency-input-wrap">
-                    <input id="price_currency_input" type="text" maxlength="40" list="currency_options" autocomplete="off" required value="{{ selected_currency }}" data-currency-input>
-                    <input id="price_currency" name="price_currency" type="hidden" value="{{ selected_currency }}" data-currency-code>
-                    <span class="currency-code-preview" data-currency-preview>{{ selected_currency or '---' }}</span>
-                  </div>
-                  <datalist id="currency_options">
-                    {% for currency in currencies %}
-                    <option value="{{ currency.code }}">{{ currency.display }} - {{ currency.name }}</option>
-                    {% endfor %}
-                    <option value="TL">TRY - Turkish Lira</option>
-                    <option value="EURO">EUR - Euro</option>
-                    <option value="DOLLAR">USD - US Dollar</option>
-                  </datalist>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="field">
-            <label for="description">Short trim / description *</label>
-            <textarea id="description" name="description" maxlength="800" required>{{ form_values.get('description', '') }}</textarea>
-          </div>
-          <div class="image-upload-field">
-            <span>Vehicle images</span>
-            <input class="image-upload-input" id="listing_images" name="images" type="file" accept="image/*" multiple>
-            <div class="image-upload-grid" aria-label="Upload vehicle images" data-upload-grid></div>
-          </div>
-          <button class="submit-listing" type="submit">Publish Listing</button>
-          <p class="form-note">Email or phone is required because listings are public.</p>
-        </form>
-      </div>
-      <div class="listing-form-visual" aria-hidden="true">
-        <div class="listing-form-car-stage">
-          <img src="/static/images-webp/bmw320.webp" alt="">
-        </div>
-        <div class="listing-trust-grid">
-          <div class="listing-trust-card">
-            <span class="listing-trust-icon">OK</span>
-            <strong>100% Secure</strong>
-            <span>Your listing details stay protected.</span>
-          </div>
-          <div class="listing-trust-card">
-            <span class="listing-trust-icon">24</span>
-            <strong>Quick Process</strong>
-            <span>Publish your car in minutes.</span>
-          </div>
-          <div class="listing-trust-card">
-            <span class="listing-trust-icon">$</span>
-            <strong>Best Value</strong>
-            <span>Reach buyers with clear details.</span>
-          </div>
-        </div>
-      </div>
-    </aside>
   </div>
 
   <footer class="site-footer">
