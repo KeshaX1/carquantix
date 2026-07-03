@@ -549,25 +549,24 @@
       align-content: center;
       gap: 28px;
       min-height: 100%;
-      padding: 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06)),
-        rgba(2, 8, 23, 0.12);
+      padding: 0;
+      border: 0;
+      background: transparent;
     }
     .listing-form-car-stage {
       position: relative;
       display: grid;
       place-items: center;
+      min-height: 560px;
     }
     .listing-form-car-stage img {
       position: relative;
       z-index: 1;
-      width: min(700px, 100%);
+      width: min(840px, 112%);
       object-fit: contain;
-      border-radius: 16px;
-      box-shadow: 0 24px 70px rgba(2, 8, 23, 0.2);
+      border-radius: 0;
+      box-shadow: none;
+      filter: drop-shadow(0 34px 58px rgba(2, 8, 23, 0.26));
     }
     .listing-form-panel h2 {
       margin: 0 0 6px;
@@ -957,7 +956,10 @@
         order: -1;
       }
       .listing-form-car-stage {
-        min-height: 260px;
+        min-height: 360px;
+      }
+      .listing-form-car-stage img {
+        width: min(760px, 108%);
       }
       .offer-grid {
         grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -1118,7 +1120,7 @@
         </div>
         <div class="market-action-row">
           <button class="search-count-btn" type="submit">Search listings</button>
-          <a class="sell-panel-btn" href="#sell-car-form">Create listing</a>
+          <a class="sell-panel-btn" href="#sell-car-form">Sell Your Car</a>
         </div>
         <div class="market-assurance">
           <span class="market-assurance-icon">CQ</span>
