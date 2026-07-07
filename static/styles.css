@@ -3408,24 +3408,40 @@ input {
 body.country-view .category-menu{
   position:static;
   transform:none;
-  width:min(980px, calc(100vw - 32px));
+  width:100%;
   max-height:none;
-  margin:24px auto;
+  min-height:calc(100dvh - 72px);
+  margin:0;
   display:block;
   z-index:auto;
+  border-left:0;
+  border-right:0;
+  border-radius:0;
 }
 
 body.country-view .category-menu-inner--countries{
   width:100%;
+  min-height:calc(100dvh - 72px);
+  padding:clamp(14px, 2vw, 24px);
 }
 
 body.country-view .country-card-grid{
+  grid-template-columns:repeat(auto-fit, minmax(190px, 1fr));
   max-height:none;
   overflow:visible;
 }
 
 body.country-view #compareBuilder{
   display:none;
+}
+
+body.country-view .main{
+  padding:0;
+}
+
+body.country-view .app{
+  display:block;
+  min-height:calc(100dvh - 72px);
 }
 
 .anchor-target{
