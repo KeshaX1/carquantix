@@ -51,7 +51,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260707-country-compare-button') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260707-home-country-preview') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
@@ -219,6 +219,26 @@
             data-hover-alt="Car comparison interface preview"
             data-sell-hover-alt="Car sale handshake preview"
           >
+          <div id="homeCountryPreview" class="home-country-preview" aria-hidden="true">
+            <div class="home-country-preview-head">
+              <span>Country comparison</span>
+              <strong>Canada vs Denmark</strong>
+            </div>
+            <div class="home-country-preview-vs">
+              <span>Canada</span>
+              <b>VS</b>
+              <span>Denmark</span>
+            </div>
+            <div class="home-country-preview-table" aria-label="Country comparison metrics">
+              <div><span>GDP per capita</span><small>2025</small></div>
+              <div><span>GNI per capita</span><small>2025</small></div>
+              <div><span>GDP</span><small>2025</small></div>
+              <div><span>Population</span><small>2025</small></div>
+              <div><span>Inflation</span><small>2025</small></div>
+              <div><span>Unemployment</span><small>2025</small></div>
+            </div>
+            <button id="homeCountryPreviewStart" class="home-country-preview-start" type="button">Choose countries</button>
+          </div>
         </figure>
       </section>
 
@@ -650,6 +670,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260707-country-compare-button') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260707-home-country-preview') }}"></script>
 </body>
 </html>

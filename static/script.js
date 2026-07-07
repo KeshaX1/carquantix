@@ -1354,6 +1354,8 @@ const compareBtn = document.getElementById('compareBtn');
 const homeCompareLink = document.getElementById('homeCompareLink');
 const homeSellLink = document.getElementById('homeSellLink');
 const homeCountryCompareLink = document.getElementById('homeCountryCompareLink');
+const homeCountryPreview = document.getElementById('homeCountryPreview');
+const homeCountryPreviewStart = document.getElementById('homeCountryPreviewStart');
 const fuelCalcSection = document.getElementById('fuelCalculator');
 const fuelCalcDistance = document.getElementById('fuelCalcDistance');
 const fuelCalcPrice = document.getElementById('fuelCalcPrice');
@@ -5893,6 +5895,7 @@ function unlockHomePage() {
 
 function openCompareBuilderFromHome() {
   const compareBuilder = document.getElementById('compareBuilder');
+  setHomeCountryPreviewVisible(false);
   unlockHomePage();
   document.body.classList.remove('country-view');
   if (categoryMenu) {
@@ -5904,6 +5907,13 @@ function openCompareBuilderFromHome() {
       compareBuilder.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
+}
+
+function setHomeCountryPreviewVisible(isVisible) {
+  const homeHeroMedia = homeCountryPreview?.closest('.home-hero-media');
+  if (!homeHeroMedia || !homeCountryPreview) return;
+  homeHeroMedia.classList.toggle('is-showing-country-preview', isVisible);
+  homeCountryPreview.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
 }
 
 if (homeCompareLink) {
@@ -5940,8 +5950,14 @@ if (homeCompareLink) {
     }, 150);
   };
 
-  const showCompareHeroImage = () => setHomeHeroImage(homeHeroCompareSrc, homeHeroCompareAlt);
-  const showSellHeroImage = () => setHomeHeroImage(homeHeroSellSrc, homeHeroSellAlt);
+  const showCompareHeroImage = () => {
+    setHomeCountryPreviewVisible(false);
+    setHomeHeroImage(homeHeroCompareSrc, homeHeroCompareAlt);
+  };
+  const showSellHeroImage = () => {
+    setHomeCountryPreviewVisible(false);
+    setHomeHeroImage(homeHeroSellSrc, homeHeroSellAlt);
+  };
   const showDefaultHeroImage = () => setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
 
   if (canUseHomeHeroHover && homeHeroImage && homeHeroCompareSrc) {
@@ -5970,6 +5986,7 @@ if (homeCompareLink) {
 }
 
 function openCountryCompareFromHome() {
+  setHomeCountryPreviewVisible(false);
   unlockHomePage();
   document.body.classList.add('country-view');
   if (categoryMenu) {
@@ -5988,8 +6005,14 @@ function openCountryCompareFromHome() {
 
 if (homeCountryCompareLink) {
   homeCountryCompareLink.addEventListener('click', (event) => {
-    if (event.currentTarget.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey) return;
     event.preventDefault();
+    setHomeCountryPreviewVisible(true);
+  });
+}
+
+if (homeCountryPreviewStart) {
+  homeCountryPreviewStart.addEventListener('click', () => {
     history.pushState(null, '', '/?view=country#countryPicker');
     openCountryCompareFromHome();
   });
