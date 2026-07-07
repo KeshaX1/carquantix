@@ -5989,6 +5989,27 @@ if (homeCompareLink) {
     homeCountryCompareLink.addEventListener('focus', showCountryPreview);
     homeCountryCompareLink.addEventListener('blur', showDefaultHeroImage);
   }
+  if (!canUseHomeHeroHover && homeHeroImage) {
+    const homeHeroSlides = [
+      { type: 'image', src: homeHeroDefaultSrc, alt: homeHeroDefaultAlt },
+      homeHeroCompareSrc ? { type: 'image', src: homeHeroCompareSrc, alt: homeHeroCompareAlt } : null,
+      homeHeroSellSrc ? { type: 'image', src: homeHeroSellSrc, alt: homeHeroSellAlt } : null,
+      homeCountryPreview ? { type: 'country' } : null
+    ].filter(Boolean);
+    let homeHeroSlideIndex = 0;
+    const showHomeHeroSlide = () => {
+      if (!document.body.classList.contains('home-page') || document.hidden || homeHeroSlides.length < 2) return;
+      homeHeroSlideIndex = (homeHeroSlideIndex + 1) % homeHeroSlides.length;
+      const slide = homeHeroSlides[homeHeroSlideIndex];
+      if (slide.type === 'country') {
+        showCountryPreview();
+      } else {
+        setHomeCountryPreviewVisible(false);
+        setHomeHeroImage(slide.src, slide.alt);
+      }
+    };
+    window.setInterval(showHomeHeroSlide, 3600);
+  }
 
   homeCompareLink.addEventListener('click', (event) => {
     if (event.currentTarget.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey) return;
