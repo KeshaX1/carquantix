@@ -5958,7 +5958,14 @@ if (homeCompareLink) {
     setHomeCountryPreviewVisible(false);
     setHomeHeroImage(homeHeroSellSrc, homeHeroSellAlt);
   };
-  const showDefaultHeroImage = () => setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
+  const showCountryPreview = () => {
+    setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
+    setHomeCountryPreviewVisible(true);
+  };
+  const showDefaultHeroImage = () => {
+    setHomeCountryPreviewVisible(false);
+    setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
+  };
 
   if (canUseHomeHeroHover && homeHeroImage && homeHeroCompareSrc) {
     const compareHeroPreload = new Image();
@@ -5975,6 +5982,12 @@ if (homeCompareLink) {
     homeSellLink.addEventListener('mouseleave', showDefaultHeroImage);
     homeSellLink.addEventListener('focus', showSellHeroImage);
     homeSellLink.addEventListener('blur', showDefaultHeroImage);
+  }
+  if (canUseHomeHeroHover && homeCountryCompareLink) {
+    homeCountryCompareLink.addEventListener('mouseenter', showCountryPreview);
+    homeCountryCompareLink.addEventListener('mouseleave', showDefaultHeroImage);
+    homeCountryCompareLink.addEventListener('focus', showCountryPreview);
+    homeCountryCompareLink.addEventListener('blur', showDefaultHeroImage);
   }
 
   homeCompareLink.addEventListener('click', (event) => {
@@ -6007,7 +6020,8 @@ if (homeCountryCompareLink) {
   homeCountryCompareLink.addEventListener('click', (event) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey) return;
     event.preventDefault();
-    setHomeCountryPreviewVisible(true);
+    history.pushState(null, '', '/?view=country#countryPicker');
+    openCountryCompareFromHome();
   });
 }
 
