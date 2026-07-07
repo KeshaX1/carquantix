@@ -51,7 +51,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260707-home-hero-cycle-2026') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260707-mobile-image-fix') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
@@ -214,7 +214,9 @@
             id="homeHeroImage"
             src="/static/icon/hero.jpg"
             data-hover-src="/static/icon/comparecars.png"
+            data-mobile-hover-src="/static/icon/comparecars-mobile.webp"
             data-sell-hover-src="/static/icon/sellyoucar.png"
+            data-mobile-sell-hover-src="/static/icon/sellyoucar-mobile.webp"
             alt="A dark sports car with blue illuminated gauges"
             data-hover-alt="Car comparison interface preview"
             data-sell-hover-alt="Car sale handshake preview"
@@ -298,7 +300,10 @@
         </div>
         <div class="home-article-layout">
           <a class="home-article-card home-article-card-featured" href="/guides">
-            <img src="/static/icon/cat-ev.jpg" alt="Electric vehicle charging at night">
+            <picture>
+              <source srcset="/static/icon/cat-ev.webp" type="image/webp">
+              <img src="/static/icon/cat-ev.jpg" alt="Electric vehicle charging at night" loading="lazy" decoding="async" width="900" height="563" onerror="this.onerror=null;this.src='/static/icon/hero.jpg';">
+            </picture>
             <div class="home-article-body">
               <span class="home-article-topic">Electric ownership</span>
               <h3>EV running costs: what to compare before the monthly bill arrives</h3>
@@ -311,7 +316,10 @@
           </a>
           <div class="home-article-stack">
             <a class="home-article-card" href="/news">
-              <img src="/static/icon/cat-performance.jpg" alt="Performance car engine bay detail">
+              <picture>
+                <source srcset="/static/icon/cat-performance.webp" type="image/webp">
+                <img src="/static/icon/cat-performance.jpg" alt="Performance car engine bay detail" loading="lazy" decoding="async" width="900" height="563" onerror="this.onerror=null;this.src='/static/icon/hero.jpg';">
+              </picture>
               <div class="home-article-body">
                 <span class="home-article-topic">Performance data</span>
                 <h3>Horsepower, acceleration and why the numbers do not always agree</h3>
@@ -323,7 +331,10 @@
               </div>
             </a>
             <a class="home-article-card" href="/guides">
-              <img src="/static/icon/cat-buying.jpg" alt="Car buying paperwork and calculator">
+              <picture>
+                <source srcset="/static/icon/cat-buying.webp" type="image/webp">
+                <img src="/static/icon/cat-buying.jpg" alt="Car buying paperwork and calculator" loading="lazy" decoding="async" width="900" height="563" onerror="this.onerror=null;this.src='/static/icon/hero.jpg';">
+              </picture>
               <div class="home-article-body">
                 <span class="home-article-topic">Buying guide</span>
                 <h3>The quick ownership checklist before you shortlist a used car</h3>
@@ -670,6 +681,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260707-home-hero-cycle-2026') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260707-mobile-image-fix') }}"></script>
 </body>
 </html>

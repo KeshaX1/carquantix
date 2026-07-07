@@ -5924,30 +5924,45 @@ if (homeCompareLink) {
   const homeHeroCompareAlt = homeHeroImage?.dataset.hoverAlt || homeHeroDefaultAlt;
   const homeHeroSellSrc = homeHeroImage?.dataset.sellHoverSrc || '';
   const homeHeroSellAlt = homeHeroImage?.dataset.sellHoverAlt || homeHeroDefaultAlt;
+  const homeHeroCompareMobileSrc = homeHeroImage?.dataset.mobileHoverSrc || homeHeroCompareSrc;
+  const homeHeroSellMobileSrc = homeHeroImage?.dataset.mobileSellHoverSrc || homeHeroSellSrc;
   const canUseHomeHeroHover = typeof window.matchMedia === 'function'
     ? window.matchMedia('(hover: hover) and (pointer: fine)').matches
     : true;
-  let homeHeroSwapTimer = null;
+  const homeHeroPreloadCache = new Map();
+  let homeHeroRequestedSrc = homeHeroDefaultSrc;
+
+  const preloadHomeHeroImage = (src) => {
+    if (!src) return Promise.resolve();
+    if (homeHeroPreloadCache.has(src)) return homeHeroPreloadCache.get(src);
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = src;
+    const ready = typeof img.decode === 'function'
+      ? img.decode().catch(() => undefined)
+      : new Promise(resolve => {
+        img.onload = resolve;
+        img.onerror = resolve;
+      });
+    homeHeroPreloadCache.set(src, ready);
+    return ready;
+  };
 
   const setHomeHeroImage = (src, alt) => {
-    window.clearTimeout(homeHeroSwapTimer);
+    homeHeroRequestedSrc = src || homeHeroDefaultSrc;
     if (!homeHeroImage || !src || homeHeroImage.getAttribute('src') === src) {
       if (homeHeroImage) homeHeroImage.classList.remove('is-switching');
       return;
     }
     homeHeroImage.classList.add('is-switching');
-    homeHeroSwapTimer = window.setTimeout(() => {
+    preloadHomeHeroImage(src).then(() => {
+      if (!homeHeroImage || homeHeroRequestedSrc !== src) return;
       homeHeroImage.src = src;
       homeHeroImage.alt = alt || homeHeroDefaultAlt;
-      homeHeroImage.addEventListener('load', () => {
+      window.requestAnimationFrame(() => {
         homeHeroImage.classList.remove('is-switching');
-      }, { once: true });
-      if (homeHeroImage.complete) {
-        window.requestAnimationFrame(() => {
-          homeHeroImage.classList.remove('is-switching');
-        });
-      }
-    }, 150);
+      });
+    });
   };
 
   const showCompareHeroImage = () => {
@@ -5968,16 +5983,14 @@ if (homeCompareLink) {
   };
 
   if (canUseHomeHeroHover && homeHeroImage && homeHeroCompareSrc) {
-    const compareHeroPreload = new Image();
-    compareHeroPreload.src = homeHeroCompareSrc;
+    preloadHomeHeroImage(homeHeroCompareSrc);
     homeCompareLink.addEventListener('mouseenter', showCompareHeroImage);
     homeCompareLink.addEventListener('mouseleave', showDefaultHeroImage);
     homeCompareLink.addEventListener('focus', showCompareHeroImage);
     homeCompareLink.addEventListener('blur', showDefaultHeroImage);
   }
   if (canUseHomeHeroHover && homeHeroImage && homeHeroSellSrc && homeSellLink) {
-    const sellHeroPreload = new Image();
-    sellHeroPreload.src = homeHeroSellSrc;
+    preloadHomeHeroImage(homeHeroSellSrc);
     homeSellLink.addEventListener('mouseenter', showSellHeroImage);
     homeSellLink.addEventListener('mouseleave', showDefaultHeroImage);
     homeSellLink.addEventListener('focus', showSellHeroImage);
@@ -5992,8 +6005,8 @@ if (homeCompareLink) {
   if (!canUseHomeHeroHover && homeHeroImage) {
     const homeHeroSlides = [
       { type: 'image', src: homeHeroDefaultSrc, alt: homeHeroDefaultAlt },
-      homeHeroCompareSrc ? { type: 'image', src: homeHeroCompareSrc, alt: homeHeroCompareAlt } : null,
-      homeHeroSellSrc ? { type: 'image', src: homeHeroSellSrc, alt: homeHeroSellAlt } : null,
+      homeHeroCompareMobileSrc ? { type: 'image', src: homeHeroCompareMobileSrc, alt: homeHeroCompareAlt } : null,
+      homeHeroSellMobileSrc ? { type: 'image', src: homeHeroSellMobileSrc, alt: homeHeroSellAlt } : null,
       homeCountryPreview ? { type: 'country' } : null
     ].filter(Boolean);
     let homeHeroSlideIndex = 0;
@@ -6008,7 +6021,12 @@ if (homeCompareLink) {
         setHomeHeroImage(slide.src, slide.alt);
       }
     };
-    window.setInterval(showHomeHeroSlide, 3600);
+    Promise.all(homeHeroSlides
+      .filter(slide => slide.type === 'image')
+      .map(slide => preloadHomeHeroImage(slide.src)))
+      .finally(() => {
+        window.setInterval(showHomeHeroSlide, 4200);
+      });
   }
 
   homeCompareLink.addEventListener('click', (event) => {

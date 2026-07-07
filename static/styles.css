@@ -941,9 +941,15 @@ body.home-page .main > :not(.main-header):not(.home-hero):not(.home-topic-sectio
   box-shadow:0 24px 70px rgba(0,0,0,0.28);
   outline:none;
 }
+.home-article-card picture,
 .home-article-card img{
   display:block;
   width:100%;
+}
+.home-article-card picture{
+  background:#020811;
+}
+.home-article-card img{
   height:220px;
   object-fit:cover;
   background:#020811;
@@ -1042,6 +1048,14 @@ body.home-page .main > :not(.main-header):not(.home-hero):not(.home-topic-sectio
   }
   .home-hero-media{
     border-radius:16px;
+  }
+  .home-hero-media img{
+    transform:none;
+    transition:opacity .16s ease;
+  }
+  .home-hero-media img.is-switching{
+    opacity:.72;
+    transform:none;
   }
   .home-topic-section{
     margin:0 -6px;
