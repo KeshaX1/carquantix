@@ -3889,19 +3889,50 @@ COUNTRY_INDICATOR_DEFS = {
     "unemployment": {"code": "SL.UEM.TOTL.ZS"},
 }
 COUNTRY_INDICATOR_CACHE = {}
+COUNTRY_INDICATOR_ALL_CACHE = {}
 COUNTRY_INDICATOR_CACHE_TTL = 6 * 60 * 60
+
+
+def extract_latest_country_indicator(rows, country_code=None):
+    normalized_country_code = (country_code or "").upper()
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        if normalized_country_code and str(row.get("countryiso3code") or "").upper() != normalized_country_code:
+            continue
+        if row.get("value") is not None:
+            return {"value": row.get("value"), "year": row.get("date", "")}
+    return {"value": None, "year": ""}
+
+
+def fetch_latest_country_indicator_from_all(country_code, indicator_code):
+    now = time.time()
+    cached = COUNTRY_INDICATOR_ALL_CACHE.get(indicator_code)
+    if cached and now - cached["timestamp"] < COUNTRY_INDICATOR_CACHE_TTL:
+        rows = cached["rows"]
+    else:
+        url = f"https://api.worldbank.org/v2/country/all/indicator/{indicator_code}"
+        response = requests.get(url, params={"format": "json", "per_page": 20000}, timeout=14)
+        response.raise_for_status()
+        payload = response.json()
+        rows = payload[1] if isinstance(payload, list) and len(payload) > 1 and isinstance(payload[1], list) else []
+        COUNTRY_INDICATOR_ALL_CACHE[indicator_code] = {"timestamp": now, "rows": rows}
+    return extract_latest_country_indicator(rows, country_code)
 
 
 def fetch_latest_country_indicator(country_code, indicator_code):
     url = f"https://api.worldbank.org/v2/country/{country_code}/indicator/{indicator_code}"
-    response = requests.get(url, params={"format": "json", "per_page": 8}, timeout=8)
-    response.raise_for_status()
-    payload = response.json()
-    rows = payload[1] if isinstance(payload, list) and len(payload) > 1 and isinstance(payload[1], list) else []
-    latest = next((row for row in rows if row.get("value") is not None), None)
-    if not latest:
-        return {"value": None, "year": ""}
-    return {"value": latest.get("value"), "year": latest.get("date", "")}
+    try:
+        response = requests.get(url, params={"format": "json", "per_page": 8}, timeout=8)
+        response.raise_for_status()
+        payload = response.json()
+        rows = payload[1] if isinstance(payload, list) and len(payload) > 1 and isinstance(payload[1], list) else []
+        latest = extract_latest_country_indicator(rows)
+        if latest["value"] is not None:
+            return latest
+    except requests.RequestException:
+        pass
+    return fetch_latest_country_indicator_from_all(country_code, indicator_code)
 
 
 @app.route("/api/country-indicators/<country_code>")
