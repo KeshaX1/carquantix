@@ -3762,6 +3762,20 @@ function createCountryCard(countryName) {
   return button;
 }
 
+function handleCountryCompareAction() {
+  if (selectedCountries.length !== 2) {
+    const message = selectedCountries.length === 1
+      ? String(t('countryCompareSingle')).replace('{country}', selectedCountries[0])
+      : t('countryCompareTitle');
+    alert(message);
+    return;
+  }
+  renderCountryComparison();
+  if (countryCompareArea) {
+    countryCompareArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
 function renderCategoryRoot(inner) {
   const countries = getCountryList();
   const card = document.createElement('button');
@@ -3785,7 +3799,7 @@ function renderCategoryRoot(inner) {
 
 function renderCountryCards(inner) {
   const header = document.createElement('div');
-  header.className = 'category-menu-header';
+  header.className = 'category-menu-header category-menu-header--countries';
   header.innerHTML = `
     <button type="button" class="category-back-btn" aria-label="Back">‹</button>
     <h3>${t('countriesTitle')}</h3>
@@ -3796,6 +3810,27 @@ function renderCountryCards(inner) {
     categoryMenuView = 'root';
     renderCategoryMenu();
   });
+  const countryActions = document.createElement('span');
+  countryActions.className = 'country-menu-actions';
+  const countrySummary = document.createElement('span');
+  countrySummary.className = 'country-selection-summary';
+  countrySummary.textContent = selectedCountries.length
+    ? selectedCountries.join(' vs ')
+    : t('countryCompareTitle');
+  const countryCompareButton = document.createElement('button');
+  countryCompareButton.type = 'button';
+  countryCompareButton.className = 'country-compare-action-btn';
+  countryCompareButton.textContent = t('compare');
+  countryCompareButton.disabled = selectedCountries.length !== 2;
+  countryCompareButton.setAttribute('aria-disabled', countryCompareButton.disabled ? 'true' : 'false');
+  countryCompareButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    handleCountryCompareAction();
+  });
+  countryActions.appendChild(countrySummary);
+  countryActions.appendChild(countryCompareButton);
+  header.appendChild(countryActions);
 
   const grid = document.createElement('div');
   grid.className = 'country-card-grid';
