@@ -378,19 +378,22 @@
       box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
     }
     .compare-table-head,
-    .sources-section {
+    .sources-section,
+    .trust-section {
       padding: 22px;
     }
     .compare-table-head {
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
     .compare-table-head h2,
-    .sources-section h2 {
+    .sources-section h2,
+    .trust-section h2 {
       margin: 0 0 8px;
       font-size: clamp(1.15rem, 1vw + 1rem, 1.55rem);
     }
     .compare-table-head p,
     .sources-section p,
+    .trust-section p,
     .data-note {
       margin: 0;
       color: var(--muted, #9fb0c5);
@@ -432,6 +435,65 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       background: var(--card, rgba(255, 255, 255, 0.03));
       box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+    }
+    .trust-section {
+      margin-top: 28px;
+      border-radius: 18px;
+      border: 1px solid rgba(94, 234, 212, 0.18);
+      background:
+        radial-gradient(circle at top left, rgba(94, 234, 212, 0.1), transparent 34%),
+        var(--card, rgba(255, 255, 255, 0.03));
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+    }
+    .trust-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+    .trust-item {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(10, 16, 28, 0.42);
+    }
+    .trust-item span {
+      display: block;
+      color: var(--muted, #9fb0c5);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .trust-item strong {
+      color: #f4f8ff;
+      line-height: 1.4;
+    }
+    .trust-actions {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .report-data-btn {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 9px 13px;
+      border-radius: 10px;
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(248, 113, 113, 0.28);
+      color: #fecaca;
+      text-decoration: none;
+      font-weight: 800;
+    }
+    .update-history {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted, #9fb0c5);
+      line-height: 1.55;
     }
     .sources-section ul {
       margin: 16px 0 0;
@@ -557,6 +619,7 @@
     }
     body:not(.dark) .compare-faq,
     body:not(.dark) .related-links-panel,
+    body:not(.dark) .trust-section,
     body:not(.dark) .sources-section {
       background: linear-gradient(180deg, #ffffff, #f8fafc);
       border-color: rgba(15, 23, 42, 0.08);
@@ -565,14 +628,30 @@
     body:not(.dark) .related-links-panel h2,
     body:not(.dark) .faq-item h3,
     body:not(.dark) .compare-table-head h2,
+    body:not(.dark) .trust-section h2,
     body:not(.dark) .sources-section h2 {
       color: #0f172a;
     }
     body:not(.dark) .compare-table-head p,
+    body:not(.dark) .trust-section p,
+    body:not(.dark) .update-history,
+    body:not(.dark) .trust-item span,
     body:not(.dark) .sources-section p,
     body:not(.dark) .sources-section li,
     body:not(.dark) .data-note {
       color: #475569;
+    }
+    body:not(.dark) .trust-item {
+      background: #f8fafc;
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+    body:not(.dark) .trust-item strong {
+      color: #0f172a;
+    }
+    body:not(.dark) .report-data-btn {
+      background: #fff1f2;
+      border-color: rgba(225, 29, 72, 0.18);
+      color: #be123c;
     }
     body:not(.dark) .faq-item p {
       color: #475569;
@@ -669,10 +748,10 @@
     {% endif %}
 
     {% if compare_decision %}
-    <section class="compare-verdict" aria-label="Quick verdict">
+    <section class="compare-verdict" aria-label="Priority verdict">
       <div class="compare-verdict-header">
-        <div class="summary-label">Quick verdict</div>
-        <h2>Winners and trade-offs for this matchup</h2>
+        <div class="summary-label">Priority verdict</div>
+        <h2>Category winners for this matchup</h2>
       </div>
       <div class="verdict-grid">
         {% for item in compare_decision.verdict_items %}
@@ -781,6 +860,7 @@
             <th>Metric</th>
             <th>{{ left_car.name }}</th>
             <th>{{ right_car.name }}</th>
+            <th>Source / standard</th>
           </tr>
         </thead>
         <tbody>
@@ -789,12 +869,54 @@
             <td>{{ row.label }}</td>
             <td class="{{ 'winner' if row.winner == 'left' else '' }}">{{ row.left_value }}</td>
             <td class="{{ 'winner' if row.winner == 'right' else '' }}">{{ row.right_value }}</td>
+            <td>{{ row.source_note }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
       <p class="data-note">Data may vary by trim, market, tires, battery, transmission, model year and testing method. Confirm exact specifications with the manufacturer or seller before making a purchase decision.</p>
     </section>
+
+    {% if compare_trust %}
+    <section class="trust-section" aria-label="Data transparency">
+      <h2>Data transparency</h2>
+      <p>CarQuantix is an independently developed vehicle research platform. Data is collected from manufacturer and public automotive sources and manually reviewed before publication when source data is available.</p>
+      <div class="trust-grid">
+        <div class="trust-item">
+          <span>Reviewed by</span>
+          <strong>{{ compare_trust.reviewed_by }}</strong>
+        </div>
+        <div class="trust-item">
+          <span>Last updated</span>
+          <strong>{{ compare_trust.last_updated }}</strong>
+        </div>
+        <div class="trust-item">
+          <span>Market used</span>
+          <strong>{{ compare_trust.market }}</strong>
+        </div>
+        <div class="trust-item">
+          <span>Test standard</span>
+          <strong>{{ compare_trust.test_standard }}</strong>
+        </div>
+        <div class="trust-item">
+          <span>Source policy</span>
+          <strong>{{ compare_trust.source_policy }}</strong>
+        </div>
+      </div>
+      <div class="trust-actions">
+        <a class="report-data-btn" href="{{ compare_trust.report_url }}">Report incorrect data</a>
+        <p>Include the model year, trim, market, the field that looks wrong, and the source you are using.</p>
+      </div>
+      {% if compare_trust.update_history %}
+      <h3>Update history</h3>
+      <ul class="update-history">
+        {% for item in compare_trust.update_history %}
+        <li><strong>{{ item.date }}</strong>: {{ item.text }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+    {% endif %}
 
     <section class="sources-section" aria-label="Sources and data notes">
       <h2>Sources and data notes</h2>

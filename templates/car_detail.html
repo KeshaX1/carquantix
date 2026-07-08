@@ -147,6 +147,12 @@
         </div>
         {% endfor %}
       </div>
+      {% if car.dataAudit and car.dataAudit.sourceUrl %}
+      <p class="data-note">
+        Source: <a href="{{ car.dataAudit.sourceUrl }}" target="_blank" rel="nofollow noopener">{{ car.dataAudit.sourceName or 'Official specification' }}</a>.
+        Checked: {{ car.dataAudit.verifiedAt or 'not recorded' }}.
+      </p>
+      {% endif %}
     </section>
 
     {% if car.rearImg %}

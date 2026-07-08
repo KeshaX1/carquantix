@@ -48,8 +48,40 @@ def _extract_array(text: str, var_name: str):
     return None
 
 
+def _strip_js_line_comments(text: str) -> str:
+    output = []
+    in_string = None
+    escape = False
+    i = 0
+    while i < len(text):
+        ch = text[i]
+        next_ch = text[i + 1] if i + 1 < len(text) else ""
+        if in_string:
+            output.append(ch)
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == in_string:
+                in_string = None
+            i += 1
+            continue
+        if ch in ("'", '"'):
+            in_string = ch
+            output.append(ch)
+            i += 1
+            continue
+        if ch == "/" and next_ch == "/":
+            while i < len(text) and text[i] not in "\r\n":
+                i += 1
+            continue
+        output.append(ch)
+        i += 1
+    return "".join(output)
+
+
 def _parse_js_array(array_text: str):
-    cleaned = re.sub(r"//.*", "", array_text)
+    cleaned = _strip_js_line_comments(array_text)
     cleaned = re.sub(r"([,{]\s*)([A-Za-z0-9_]+)\s*:", r'\1"\2":', cleaned)
     def _replace_single_quoted(match):
         content = match.group(1)

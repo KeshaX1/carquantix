@@ -76,7 +76,7 @@ const VEHICLES = [
 
   { id: 'RS2',             name: '1995 Audi RS2',      power:315, acc:5.4, topSpeed:262, engine: '2.2 turbo 20V cat Avant quattro', price: '$69.000', img: '/static/images/audiRS2.jpg', rearImg: '/static/rearimg/audiRS2-rear.png' , consumption: { value:14.5, unit: 'L/100km' }},
 
-  { id: 'RS3',             name: '2024 Audi RS3',      power:400, acc:3.8, topSpeed:250, engine: '2.5 TFSI quattro S tronic', price: '$67.930', img: '/static/images/audiRS3.jpg', rearImg: '/static/rearimg/audiRS3-rear.png' , consumption: { value:11.5, unit: 'L/100km' }},
+  { id: 'RS3',             name: '2024 Audi RS3',      power:400, acc:3.8, topSpeed:250, engine: '2.5 TFSI quattro S tronic', price: '$67.930', img: '/static/images/audiRS3.jpg', rearImg: '/static/rearimg/audiRS3-rear.png' , consumption: { value:11.5, unit: 'L/100km' }, dimensions: { length: 454.2, width: 185.1, weight: 1570 }, dataAudit: { modelYear: 2024, trim: 'RS 3 Sedan 2.5 TFSI quattro S tronic', bodyStyle: 'Sedan', priceMarket: 'United States MSRP context', measurementStandard: 'Manufacturer specification', sourceName: 'Audi official specifications', sourceUrl: 'https://www.audiusa.com/en/models/a3/rs3/2024/overview/', verifiedAt: '2026-07-08' }},
 
   { id: 'RS4',             name: '2024 Audi RS4',      power:450, acc:3.7, topSpeed:300, engine: '2.9 TFSI 450CV quattro Tipt', price: '$96.500', img: '/static/images/audiRS4.jpg', rearImg: '/static/rearimg/audiRS4-rear.jpg' , consumption: { value:12.5, unit: 'L/100km' }},
 
@@ -132,7 +132,7 @@ const VEHICLES = [
   
   { id: 'M2',              name: '2024 BMW M2',        power:530, acc:3.8, topSpeed:302, engine: 'CS 3.0 M Steptronic', price: '$124.405', img: '/static/images/bmwM2.jpg', rearImg: '/static/rearimg/bmwM2-rear.png' , consumption: { value:10.0, unit: 'L/100km' }},
 
-  { id: 'M3',              name: '2024 BMW M3',        power:530, acc:3.6, topSpeed:250, engine: 'Competition 3.0 M xDrive M Steptronic', price: '$99.900', img: '/static/images/bmwM3.jpg', rearImg: '/static/rearimg/bmwM3-rear.jpg' , consumption: { value:10.5, unit: 'L/100km' }},
+  { id: 'M3',              name: '2024 BMW M3',        power:530, acc:3.6, topSpeed:250, engine: 'Competition 3.0 M xDrive M Steptronic', price: '$99.900', img: '/static/images/bmwM3.jpg', rearImg: '/static/rearimg/bmwM3-rear.jpg' , consumption: { value:10.5, unit: 'L/100km' }, dimensions: { length: 479.4, width: 190.3, weight: 1805 }, dataAudit: { modelYear: 2024, trim: 'M3 Competition Sedan with M xDrive', bodyStyle: 'Sedan', priceMarket: 'United States MSRP context', measurementStandard: 'Manufacturer specification', sourceName: 'BMW official specifications', sourceUrl: 'https://www.bmwusa.com/vehicles/m-models/m3-sedan/overview.html', verifiedAt: '2026-07-08' }},
 
   { id: 'M4',              name: '2024 BMW M4',        power:530, acc:3.4, topSpeed:302, engine: 'CS 3.0 M xDrive M Steptronic', price: '$134.990', img: '/static/images/bmwM4.jpg', rearImg: '/static/rearimg/bmwM4-rear.jpg' , consumption: { value:11.0, unit: 'L/100km' }},
 
@@ -1339,6 +1339,7 @@ const vehiclePickerCloseBtn = document.getElementById('vehiclePickerCloseBtn');
 const vehiclePickerBackBtn = document.getElementById('vehiclePickerBackBtn');
 const vehiclePickerSearch = document.getElementById('vehiclePickerSearch');
 const compareDecisionArea = document.getElementById('compareDecisionArea');
+const compareDecisionWeights = document.getElementById('compareDecisionWeights');
 const compareDecisionVerdicts = document.getElementById('compareDecisionVerdicts');
 const compareDecisionTradeoffs = document.getElementById('compareDecisionTradeoffs');
 const compareDecisionBuyerGuide = document.getElementById('compareDecisionBuyerGuide');
@@ -1458,7 +1459,7 @@ const TRANSLATIONS = {
     originLabel: 'Origin:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Select at least one vehicle to compare',
-    maxCompare: 'Maximum 5 vehicles for comparison. Premium unlocks up to 8 vehicles plus ownership and resale calculations.',
+    maxCompare: 'Maximum 5 vehicles for comparison. Premium unlocks up to 8 vehicles plus ownership calculations.',
     maxComparePremium: 'Maximum 8 vehicles for comparison',
     commentsTitle: 'Comments',
     showComments: 'Show comments',
@@ -1488,11 +1489,11 @@ const TRANSLATIONS = {
     premiumCheckoutError: 'Checkout could not be started. Please try again.',
     resaleButton: 'Resale',
     resaleTitle: 'Resale Value (5-10-15y)',
-    resalePremiumDescription: 'Premium estimates 5, 10, and 15-year resale value or depreciation, so you can compare total value, not only speed.',
+    resalePremiumDescription: 'Free 5, 10, and 15-year resale estimates help compare total value, not only speed.',
     resaleDepreciation: 'Depreciation',
     resaleAppreciation: 'Appreciation',
     resaleCollector: 'Collector',
-    resaleLocked: 'Resale value is a premium feature.',
+    resaleLocked: 'Resale value estimates are free.',
     resaleCategoryEconomy: 'Economy',
     resaleCategoryPremium: 'Premium',
     resaleCategoryLuxury: 'Luxury',
@@ -1565,7 +1566,7 @@ const TRANSLATIONS = {
     originLabel: 'Ulkesi:',
     zeroToHundred: '0-100:',
     selectPrompt: 'Karşılaştırmak için en az bir araç seçin',
-    maxCompare: 'En fazla 5 arac secebilirsiniz. Premium 8 araca kadar karsilastirma, sahip olma maliyeti ve yeniden satis hesaplari acar.',
+    maxCompare: 'En fazla 5 arac secebilirsiniz. Premium 8 araca kadar karsilastirma ve sahip olma maliyeti hesaplari acar.',
     maxComparePremium: 'En fazla 8 araç seçebilirsiniz',
     commentsTitle: 'Yorumlar',
     showComments: 'Yorumları göster',
@@ -1595,11 +1596,11 @@ const TRANSLATIONS = {
     premiumCheckoutError: 'Ödeme ekranı başlatılamadı. Lütfen tekrar deneyin.',
     resaleButton: 'Yeniden Satış',
     resaleTitle: 'Yeniden Satış Tahmini (5-10-15y)',
-    resalePremiumDescription: 'Premium, 5, 10 ve 15 yillik yeniden satis degeri veya deger kaybini tahmin eder; sadece hizi degil toplam degeri de karsilastirirsiniz.',
+    resalePremiumDescription: 'Ucretsiz 5, 10 ve 15 yillik yeniden satis tahminiyle sadece hizi degil toplam degeri de karsilastirirsiniz.',
     resaleDepreciation: 'Değer Kaybı',
     resaleAppreciation: 'Değer Artışı',
     resaleCollector: 'Koleksiyon',
-    resaleLocked: 'Yeniden satış tahmini premium özelliktir.',
+    resaleLocked: 'Yeniden satis tahmini ucretsizdir.',
     resaleCategoryEconomy: 'Ekonomi',
     resaleCategoryPremium: 'Premium',
     resaleCategoryLuxury: 'Lüks',
@@ -2039,7 +2040,7 @@ TRANSLATIONS.ru = {
   resaleDepreciation: 'Уценка',
   resaleAppreciation: 'Рост стоимости',
   resaleCollector: 'Коллекционный',
-  resaleLocked: 'Оценка перепродажи доступна только в Premium.',
+  resaleLocked: 'Resale estimates are free.',
   resaleCategoryEconomy: 'Эконом',
   resaleCategoryPremium: 'Премиум',
   resaleCategoryLuxury: 'Люкс',
@@ -2848,7 +2849,40 @@ function getVehicleDimensions(vehicle) {
     length: recorded.length ?? estimated.length,
     width: recorded.width ?? estimated.width,
     weight: recorded.weight ?? estimated.weight,
+    source: recorded.length !== undefined && recorded.width !== undefined && recorded.weight !== undefined ? 'recorded' : 'estimated',
   };
+}
+
+function extractVehicleYear(value) {
+  const match = String(value || '').match(/\b(19|20)\d{2}\b/);
+  return match ? Number(match[0]) : '-';
+}
+
+function getVehicleDataAudit(vehicle) {
+  const audit = vehicle?.dataAudit || {};
+  return {
+    modelYear: audit.modelYear ?? extractVehicleYear(vehicle?.name),
+    trim: audit.trim || vehicle?.engine || '-',
+    bodyStyle: audit.bodyStyle || '-',
+    priceMarket: audit.priceMarket || 'Market not recorded',
+    measurementStandard: audit.measurementStandard || 'Not recorded',
+    sourceName: audit.sourceName || 'Source not recorded',
+    sourceUrl: audit.sourceUrl || '',
+    verifiedAt: audit.verifiedAt || 'Not reviewed',
+  };
+}
+
+function getDimensionCellLabel(value, unit, dimensions) {
+  const label = formatDimensionValue(value, unit);
+  return dimensions.source === 'estimated' ? `${label} (est.)` : label;
+}
+
+function getDimensionCellTitle(vehicle, dimensions) {
+  const audit = getVehicleDataAudit(vehicle);
+  if (dimensions.source === 'estimated') {
+    return 'Estimated fallback: exact manufacturer dimensions are not recorded for this vehicle yet.';
+  }
+  return `Recorded from ${audit.sourceName}; checked ${audit.verifiedAt}.`;
 }
 
 function updateCompareBuilderCopy() {
@@ -4946,8 +4980,7 @@ function renderSelected() {
       ? `<a class="detail-btn" href="${buildCarDetailUrl(v)}" aria-label="${t('details')} ${v.name}">${t('details')}</a>`
       : '';
     const resale = buildResalePrediction(v);
-    const resaleAllowed = hasPremiumAccess;
-    const resalePanel = (resale && resaleAllowed) ? `
+    const resalePanel = resale ? `
       <div class="resale-panel hidden" data-id="${key}">
         <div class="resale-title">${t('resaleTitle')}</div>
         <div class="resale-meta">${resale.kind === 'appreciation' ? t('resaleAppreciation') : t('resaleDepreciation')}: ${formatRate(resale.rate)} · ${resale.categoryLabel}</div>
@@ -4959,14 +4992,7 @@ function renderSelected() {
       </div>
     ` : '';
     const resaleButton = resale
-      ? (
-        resaleAllowed
-          ? `<button class="resale-btn" type="button" data-id="${key}">${t('resaleButton')}</button>`
-          : `<button class="resale-btn locked" type="button" data-locked="1">${t('premiumUnlock')}</button>`
-      )
-      : '';
-    const resalePremiumNote = (resale && !resaleAllowed)
-      ? `<div class="premium-feature-note">${t('resalePremiumDescription')}</div>`
+      ? `<button class="resale-btn" type="button" data-id="${key}">${t('resaleButton')}</button>`
       : '';
     card.innerHTML = `
       <div class="thumb-row ${gallery.length > 1 ? 'dual' : 'single'}">
@@ -4986,7 +5012,6 @@ function renderSelected() {
           <span class="price-value">${formatPrice(v.price)}</span>
           ${resaleButton}
         </div>
-        ${resalePremiumNote}
         ${resalePanel}
         <div class="stat-line"><strong>${t('zeroToHundred')}</strong> ${v.acc}s</div>
         <div class="card-actions">
@@ -5027,10 +5052,6 @@ function renderSelected() {
   });
   compareArea.querySelectorAll('.resale-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.dataset.locked === '1') {
-        startFuelPremiumCheckout();
-        return;
-      }
       const id = btn.dataset.id;
       if (!id) return;
       const panel = compareArea.querySelector(`.resale-panel[data-id="${id}"]`);
@@ -5112,182 +5133,104 @@ function getBuyerGuideEngineReason(vehicle) {
   return `its ${engineText} powertrain`;
 }
 
+const DEFAULT_DECISION_WEIGHTS = {
+  performance: 40,
+  price: 30,
+  fuelCost: 20,
+  practicality: 10,
+};
+
+let decisionWeights = { ...DEFAULT_DECISION_WEIGHTS };
+
+const DECISION_WEIGHT_FIELDS = [
+  { key: 'performance', label: 'Performance' },
+  { key: 'price', label: 'Price' },
+  { key: 'fuelCost', label: 'Fuel Cost' },
+  { key: 'practicality', label: 'Practicality' },
+];
+
+function getFiniteMetricValues(vehicles, getValue) {
+  return vehicles
+    .map((vehicle) => Number(getValue(vehicle)))
+    .filter((value) => Number.isFinite(value));
+}
+
+function getNormalizedMetricScore(vehicle, vehicles, getValue, higherIsBetter = true, fallback = 50) {
+  const value = Number(getValue(vehicle));
+  if (!Number.isFinite(value)) return fallback;
+  const values = getFiniteMetricValues(vehicles, getValue);
+  if (values.length < 2) return fallback;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  if (min === max) return fallback;
+  const normalized = higherIsBetter
+    ? (value - min) / (max - min)
+    : (max - value) / (max - min);
+  return Math.round(normalized * 100);
+}
+
+function getComparableConsumptionValue(vehicle, vehicles) {
+  const info = getConsumptionInfo(vehicle);
+  if (!info || !Number.isFinite(Number(info.value))) return NaN;
+  const units = new Set(
+    vehicles
+      .map((item) => getConsumptionInfo(item))
+      .filter((entry) => entry && Number.isFinite(Number(entry.value)))
+      .map((entry) => String(entry.unit || '').toLowerCase())
+  );
+  return units.size === 1 ? Number(info.value) : NaN;
+}
+
+function getVehicleCategoryScores(vehicle, vehicles) {
+  const performance = Math.round((
+    getNormalizedMetricScore(vehicle, vehicles, (item) => item.power, true) +
+    getNormalizedMetricScore(vehicle, vehicles, (item) => item.acc, false) +
+    getNormalizedMetricScore(vehicle, vehicles, (item) => item.topSpeed, true)
+  ) / 3);
+  const price = getNormalizedMetricScore(vehicle, vehicles, (item) => getPriceMeta(item.price).amount, false);
+  const fuelCost = getNormalizedMetricScore(vehicle, vehicles, (item) => getComparableConsumptionValue(item, vehicles), false);
+  const year = getNormalizedMetricScore(vehicle, vehicles, (item) => extractModelYear(item), true);
+  const dimensions = getVehicleDimensions(vehicle);
+  const weightScore = getNormalizedMetricScore(vehicle, vehicles, (item) => getVehicleDimensions(item).weight, false);
+  const cabinScore = getNormalizedMetricScore(vehicle, vehicles, (item) => {
+    const itemDimensions = getVehicleDimensions(item);
+    return Number(itemDimensions.length || 0) + Number(itemDimensions.width || 0);
+  }, true);
+  const practicality = Math.round((year * 0.2) + (weightScore * 0.25) + (cabinScore * 0.25) + (fuelCost * 0.3));
+  const value = Math.round((price * 0.45) + (performance * 0.35) + (fuelCost * 0.2));
+  const daily = Math.round((price * 0.25) + (fuelCost * 0.3) + (practicality * 0.3) + (year * 0.15));
+  const runningCost = Math.round((fuelCost * 0.7) + (price * 0.3));
+  const longTrips = Math.round((
+    getNormalizedMetricScore(vehicle, vehicles, (item) => item.topSpeed, true) * 0.25
+  ) + (
+    getNormalizedMetricScore(vehicle, vehicles, (item) => item.power, true) * 0.2
+  ) + (fuelCost * 0.25) + (cabinScore * 0.3));
+  const userPriority = Math.round((
+    performance * decisionWeights.performance +
+    price * decisionWeights.price +
+    fuelCost * decisionWeights.fuelCost +
+    practicality * decisionWeights.practicality
+  ) / Math.max(1, decisionWeights.performance + decisionWeights.price + decisionWeights.fuelCost + decisionWeights.practicality));
+
+  return { performance, price, fuelCost, practicality, value, daily, runningCost, longTrips, userPriority, dimensions };
+}
+
+function getCategoryLeaders(vehicles, scoreMap, key) {
+  const scored = vehicles
+    .map((vehicle) => ({ vehicle, score: scoreMap.get(getDecisionVehicleKey(vehicle))?.[key] }))
+    .filter((entry) => Number.isFinite(entry.score));
+  if (!scored.length) return [];
+  const best = Math.max(...scored.map((entry) => entry.score));
+  return scored.filter((entry) => entry.score === best).map((entry) => entry.vehicle);
+}
+
+function getLeaderScore(scoreMap, leaders, key) {
+  const leader = leaders && leaders[0];
+  return leader ? scoreMap.get(getDecisionVehicleKey(leader))?.[key] : null;
+}
+
 function buildCompareDecisionData(leftVehicle, rightVehicle) {
-  if (!leftVehicle || !rightVehicle) return null;
-
-  const leftName = String(leftVehicle.name || leftVehicle.id || 'Vehicle A').trim();
-  const rightName = String(rightVehicle.name || rightVehicle.id || 'Vehicle B').trim();
-  const leftPrice = getPriceMeta(leftVehicle.price).amount;
-  const rightPrice = getPriceMeta(rightVehicle.price).amount;
-  const leftConsumption = getConsumptionInfo(leftVehicle);
-  const rightConsumption = getConsumptionInfo(rightVehicle);
-  const leftYear = extractModelYear(leftVehicle);
-  const rightYear = extractModelYear(rightVehicle);
-
-  const powerWinner = compareNumericValues(leftVehicle.power, rightVehicle.power, true);
-  const accWinner = compareNumericValues(leftVehicle.acc, rightVehicle.acc, false);
-  const topSpeedWinner = compareNumericValues(leftVehicle.topSpeed, rightVehicle.topSpeed, true);
-  const priceWinner = compareNumericValues(leftPrice, rightPrice, false);
-  const yearWinner = compareNumericValues(leftYear, rightYear, true);
-  const consumptionWinner = (
-    leftConsumption &&
-    rightConsumption &&
-    String(leftConsumption.unit || '').toLowerCase() === String(rightConsumption.unit || '').toLowerCase()
-  ) ? compareNumericValues(leftConsumption.value, rightConsumption.value, false) : null;
-
-  const performanceScores = { left: 0, right: 0 };
-  const performanceLabels = { left: [], right: [] };
-  [
-    [powerWinner, 'power'],
-    [accWinner, '0-100 km/h'],
-    [topSpeedWinner, 'top speed'],
-  ].forEach(([winner, label]) => {
-    if (!winner) return;
-    performanceScores[winner] += 1;
-    performanceLabels[winner].push(label);
-  });
-
-  let performanceWinner = null;
-  if (performanceScores.left !== performanceScores.right) {
-    performanceWinner = performanceScores.left > performanceScores.right ? 'left' : 'right';
-  } else {
-    performanceWinner = accWinner || powerWinner || topSpeedWinner;
-  }
-
-  const valueScores = { left: 0, right: 0 };
-  const valueLabels = { left: [], right: [] };
-  [
-    [priceWinner, 'price'],
-    [consumptionWinner, 'efficiency'],
-    [yearWinner, 'model year'],
-  ].forEach(([winner, label]) => {
-    if (!winner) return;
-    valueScores[winner] += 1;
-    valueLabels[winner].push(label);
-  });
-
-  let valueWinner = null;
-  if (valueScores.left !== valueScores.right) {
-    valueWinner = valueScores.left > valueScores.right ? 'left' : 'right';
-  } else {
-    valueWinner = priceWinner || consumptionWinner || yearWinner;
-  }
-
-  const speedWinner = topSpeedWinner || accWinner || performanceWinner;
-  const overallScores = { left: 0, right: 0 };
-  [powerWinner, accWinner, topSpeedWinner, priceWinner, consumptionWinner, yearWinner, performanceWinner, valueWinner, speedWinner].forEach((winner) => {
-    if (winner) overallScores[winner] += 1;
-  });
-
-  let overallWinner = null;
-  if (overallScores.left !== overallScores.right) {
-    overallWinner = overallScores.left > overallScores.right ? 'left' : 'right';
-  } else {
-    overallWinner = performanceWinner || valueWinner || speedWinner;
-  }
-
-  const winnerName = {
-    left: leftName,
-    right: rightName,
-    null: 'Too close to call',
-  };
-
-  const verdicts = [
-    {
-      label: 'Performance winner',
-      winner: winnerName[performanceWinner ?? 'null'],
-      reason: performanceWinner
-        ? `Leads on ${joinDecisionLabels(performanceLabels[performanceWinner])}.`
-        : 'No clear edge on the recorded performance data.',
-    },
-    {
-      label: 'Speed winner',
-      winner: winnerName[speedWinner ?? 'null'],
-      reason: speedWinner
-        ? (topSpeedWinner === speedWinner ? 'Higher top speed on paper.' : 'Quicker acceleration on paper.')
-        : 'No clear speed advantage on the recorded data.',
-    },
-    {
-      label: 'Value winner',
-      winner: winnerName[valueWinner ?? 'null'],
-      reason: valueWinner
-        ? `Stronger on ${joinDecisionLabels(valueLabels[valueWinner])}.`
-        : 'No clear value edge on price, efficiency, or model year.',
-    },
-    {
-      label: 'Overall winner',
-      winner: winnerName[overallWinner ?? 'null'],
-      reason: overallWinner
-        ? 'Wins more of the recorded comparison categories overall.'
-        : 'The available data is too evenly matched to separate them.',
-    },
-  ];
-
-  const leftPros = [];
-  const leftCons = [];
-  const rightPros = [];
-  const rightCons = [];
-
-  if (powerWinner === 'left') {
-    pushUnique(leftPros, 'More power');
-    pushUnique(rightCons, 'Less power');
-  } else if (powerWinner === 'right') {
-    pushUnique(rightPros, 'More power');
-    pushUnique(leftCons, 'Less power');
-  }
-
-  if (accWinner === 'left') {
-    pushUnique(leftPros, 'Quicker 0-100 km/h');
-    pushUnique(rightCons, 'Slower off the line');
-  } else if (accWinner === 'right') {
-    pushUnique(rightPros, 'Quicker 0-100 km/h');
-    pushUnique(leftCons, 'Slower off the line');
-  }
-
-  if (topSpeedWinner === 'left') {
-    pushUnique(leftPros, 'Higher top speed');
-    pushUnique(rightCons, 'Lower top speed');
-  } else if (topSpeedWinner === 'right') {
-    pushUnique(rightPros, 'Higher top speed');
-    pushUnique(leftCons, 'Lower top speed');
-  }
-
-  if (priceWinner === 'left') {
-    pushUnique(leftPros, 'Lower price');
-    pushUnique(rightCons, 'Higher price');
-  } else if (priceWinner === 'right') {
-    pushUnique(rightPros, 'Lower price');
-    pushUnique(leftCons, 'Higher price');
-  }
-
-  if (consumptionWinner === 'left') {
-    pushUnique(leftPros, 'Better efficiency');
-    pushUnique(rightCons, 'Higher fuel consumption');
-  } else if (consumptionWinner === 'right') {
-    pushUnique(rightPros, 'Better efficiency');
-    pushUnique(leftCons, 'Higher fuel consumption');
-  }
-
-  if (yearWinner === 'left') {
-    pushUnique(leftPros, 'Newer model year');
-    pushUnique(rightCons, 'Older model year');
-  } else if (yearWinner === 'right') {
-    pushUnique(rightPros, 'Newer model year');
-    pushUnique(leftCons, 'Older model year');
-  }
-
-  if (!leftPros.length) pushUnique(leftPros, 'Competitive overall spec balance');
-  if (!rightPros.length) pushUnique(rightPros, 'Competitive overall spec balance');
-  if (!leftCons.length) pushUnique(leftCons, 'Few clear weaknesses in the recorded specs');
-  if (!rightCons.length) pushUnique(rightCons, 'Few clear weaknesses in the recorded specs');
-
-  return {
-    verdicts,
-    tradeoffs: [
-      { title: leftName, pros: leftPros.slice(0, 3), cons: leftCons.slice(0, 3) },
-      { title: rightName, pros: rightPros.slice(0, 3), cons: rightCons.slice(0, 3) },
-    ],
-  };
+  return buildGroupCompareDecisionData([leftVehicle, rightVehicle]);
 }
 
 function getDecisionVehicleKey(vehicle) {
@@ -5394,6 +5337,10 @@ function buildGroupCompareDecisionData(vehicles) {
   const priceMeta = getNumericDecisionMeta(items, (vehicle) => getPriceMeta(vehicle.price).amount, false);
   const yearMeta = getNumericDecisionMeta(items, (vehicle) => extractModelYear(vehicle), true);
   const consumptionMeta = getConsumptionDecisionMeta(items);
+  const scoreMap = new Map(items.map((vehicle) => [
+    getDecisionVehicleKey(vehicle),
+    getVehicleCategoryScores(vehicle, items),
+  ]));
 
   const performanceAggregate = buildDecisionAggregate(items, [
     { label: 'power', leaders: powerMeta.leaders },
@@ -5411,57 +5358,58 @@ function buildGroupCompareDecisionData(vehicles) {
     ? { leaders: topSpeedMeta.leaders }
     : (accMeta.leaders.length ? { leaders: accMeta.leaders } : { leaders: performanceAggregate.leaders });
 
-  const overallAggregate = buildDecisionAggregate(items, [
-    { leaders: powerMeta.leaders },
-    { leaders: accMeta.leaders },
-    { leaders: topSpeedMeta.leaders },
-    { leaders: priceMeta.leaders },
-    { leaders: consumptionMeta.leaders },
-    { leaders: yearMeta.leaders },
-    { leaders: performanceAggregate.leaders },
-    { leaders: valueAggregate.leaders },
-    { leaders: speedAggregate.leaders },
-  ]);
+  const bestPerformanceLeaders = getCategoryLeaders(items, scoreMap, 'performance');
+  const bestValueLeaders = getCategoryLeaders(items, scoreMap, 'value');
+  const bestDailyLeaders = getCategoryLeaders(items, scoreMap, 'daily');
+  const runningCostLeaders = getCategoryLeaders(items, scoreMap, 'runningCost');
+  const longTripLeaders = getCategoryLeaders(items, scoreMap, 'longTrips');
+  const userPriorityLeaders = getCategoryLeaders(items, scoreMap, 'userPriority');
 
   const performanceLabels = getAggregateLeaderLabels(performanceAggregate);
   const valueLabels = getAggregateLeaderLabels(valueAggregate);
 
   const verdicts = [
     {
-      label: 'Performance winner',
-      winner: formatDecisionWinnerNames(performanceAggregate.leaders),
-      reason: performanceAggregate.leaders.length
-        ? `${performanceAggregate.leaders.length > 1 ? 'Shared lead' : 'Leads'} on ${joinDecisionLabels(performanceLabels)}.`
+      label: 'Best Performance',
+      winner: formatDecisionWinnerNames(bestPerformanceLeaders),
+      reason: bestPerformanceLeaders.length
+        ? `Highest weighted performance score from power, acceleration, and top speed (${getLeaderScore(scoreMap, bestPerformanceLeaders, 'performance')}/100).`
         : 'No clear edge on the recorded performance data.',
     },
     {
-      label: 'Speed winner',
-      winner: formatDecisionWinnerNames(speedAggregate.leaders),
-      reason: speedAggregate.leaders.length
-        ? (
-          topSpeedMeta.leaders.length
-            ? `${topSpeedMeta.leaders.length > 1 ? 'Share' : 'Has'} the highest top speed on paper.`
-            : `${accMeta.leaders.length > 1 ? 'Share' : 'Has'} the quickest acceleration on paper.`
-        )
-        : 'No clear speed advantage on the recorded data.',
+      label: 'Best Value',
+      winner: formatDecisionWinnerNames(bestValueLeaders),
+      reason: bestValueLeaders.length
+        ? `Best mix of price, performance, and efficiency (${getLeaderScore(scoreMap, bestValueLeaders, 'value')}/100).`
+        : 'No clear value edge from the recorded data.',
     },
     {
-      label: 'Value winner',
-      winner: formatDecisionWinnerNames(valueAggregate.leaders),
-      reason: valueAggregate.leaders.length
-        ? `${valueAggregate.leaders.length > 1 ? 'Shared lead' : 'Stronger'} on ${joinDecisionLabels(valueLabels)}.`
-        : 'No clear value edge on price, efficiency, or model year.',
+      label: 'Best Daily Driver',
+      winner: formatDecisionWinnerNames(bestDailyLeaders),
+      reason: bestDailyLeaders.length
+        ? `Best everyday balance of price, efficiency, practicality, and model year (${getLeaderScore(scoreMap, bestDailyLeaders, 'daily')}/100).`
+        : 'No clear daily-use edge from the recorded data.',
     },
     {
-      label: 'Overall winner',
-      winner: formatDecisionWinnerNames(overallAggregate.leaders),
-      reason: overallAggregate.leaders.length
-        ? (
-          overallAggregate.leaders.length > 1
-            ? 'Share the strongest overall score across the recorded categories.'
-            : 'Wins more of the recorded comparison categories overall.'
-        )
-        : 'The available data is too evenly matched to separate them.',
+      label: 'Lowest Running Cost',
+      winner: formatDecisionWinnerNames(runningCostLeaders),
+      reason: runningCostLeaders.length
+        ? `Lowest cost score from recorded consumption and listed price (${getLeaderScore(scoreMap, runningCostLeaders, 'runningCost')}/100).`
+        : 'No clear running-cost edge from the recorded data.',
+    },
+    {
+      label: 'Best for Long Trips',
+      winner: formatDecisionWinnerNames(longTripLeaders),
+      reason: longTripLeaders.length
+        ? `Best long-trip score from efficiency, cabin-size proxy, power, and top speed (${getLeaderScore(scoreMap, longTripLeaders, 'longTrips')}/100).`
+        : 'No clear long-trip edge from the recorded data.',
+    },
+    {
+      label: 'Your Priority Pick',
+      winner: formatDecisionWinnerNames(userPriorityLeaders),
+      reason: userPriorityLeaders.length
+        ? `Based on your weights: performance ${decisionWeights.performance}%, price ${decisionWeights.price}%, fuel cost ${decisionWeights.fuelCost}%, practicality ${decisionWeights.practicality}%.`
+        : 'Adjust the priority sliders to separate this matchup.',
     },
   ];
 
@@ -5471,7 +5419,7 @@ function buildGroupCompareDecisionData(vehicles) {
   const priceLeaderKeys = new Set(priceMeta.leaders.map(getDecisionVehicleKey));
   const consumptionLeaderKeys = new Set(consumptionMeta.leaders.map(getDecisionVehicleKey));
   const yearLeaderKeys = new Set(yearMeta.leaders.map(getDecisionVehicleKey));
-  const overallLeaderKeys = new Set(overallAggregate.leaders.map(getDecisionVehicleKey));
+  const userPriorityLeaderKeys = new Set(userPriorityLeaders.map(getDecisionVehicleKey));
 
   const tradeoffs = items.map((vehicle) => {
     const key = getDecisionVehicleKey(vehicle);
@@ -5508,8 +5456,8 @@ function buildGroupCompareDecisionData(vehicles) {
       else pushUnique(cons, 'Older model than the newest option');
     }
 
-    if (overallLeaderKeys.has(key)) {
-      pushUnique(pros, 'Strong overall spec balance');
+    if (userPriorityLeaderKeys.has(key)) {
+      pushUnique(pros, 'Matches the current priority weights');
     }
 
     if (!pros.length) pushUnique(pros, 'Competitive overall spec balance');
@@ -5535,7 +5483,7 @@ function buildGroupCompareDecisionData(vehicles) {
 
     const engineReason = getBuyerGuideEngineReason(vehicle);
     if (engineReason) pushUnique(reasons, engineReason);
-    if (!reasons.length && overallLeaderKeys.has(key)) pushUnique(reasons, 'its overall spec balance');
+    if (!reasons.length && userPriorityLeaderKeys.has(key)) pushUnique(reasons, 'the current priority weights');
     if (!reasons.length) pushUnique(reasons, 'its specific balance of price, performance, and usability');
 
     const name = getDecisionVehicleName(vehicle);
@@ -5548,8 +5496,43 @@ function buildGroupCompareDecisionData(vehicles) {
   return { verdicts, tradeoffs, buyerRecommendations };
 }
 
+function renderDecisionWeightControls() {
+  if (!compareDecisionWeights) return;
+  compareDecisionWeights.innerHTML = `
+    <div class="decision-weights-head">
+      <div>
+        <div class="section-kicker">Your weights</div>
+        <h3>Set what matters most</h3>
+      </div>
+      <button class="decision-weight-reset" type="button" data-weight-reset>Reset</button>
+    </div>
+    <div class="decision-weight-grid">
+      ${DECISION_WEIGHT_FIELDS.map((field) => `
+        <label class="decision-weight-field">
+          <span>${field.label}</span>
+          <input type="range" min="0" max="100" step="5" value="${decisionWeights[field.key]}" data-weight-key="${field.key}">
+          <strong>${decisionWeights[field.key]}%</strong>
+        </label>
+      `).join('')}
+    </div>
+  `;
+
+  compareDecisionWeights.querySelectorAll('[data-weight-key]').forEach((input) => {
+    input.addEventListener('input', () => {
+      decisionWeights[input.dataset.weightKey] = Number(input.value);
+      renderCompareDecisionSection();
+    });
+  });
+
+  compareDecisionWeights.querySelector('[data-weight-reset]')?.addEventListener('click', () => {
+    decisionWeights = { ...DEFAULT_DECISION_WEIGHTS };
+    renderCompareDecisionSection();
+  });
+}
+
 function renderCompareDecisionSection() {
   if (!compareDecisionArea || !compareDecisionVerdicts || !compareDecisionTradeoffs) return;
+  if (compareDecisionWeights) compareDecisionWeights.innerHTML = '';
   compareDecisionVerdicts.innerHTML = '';
   compareDecisionTradeoffs.innerHTML = '';
   if (compareDecisionBuyerGuide) {
@@ -5568,6 +5551,8 @@ function renderCompareDecisionSection() {
     compareDecisionArea.classList.add('hidden');
     return;
   }
+
+  renderDecisionWeightControls();
 
   data.verdicts.forEach((item) => {
     const card = document.createElement('article');
@@ -5673,10 +5658,11 @@ function buildTable(options = {}) {
   selected.forEach(v => {
     const tr = document.createElement('tr');
 
-    function td(content, highlight = false, className){
+    function td(content, highlight = false, className, title){
       const td = document.createElement('td');
       if (highlight) td.classList.add('highlight');
       if (className) td.classList.add(className);
+      if (title) td.title = title;
       td.innerHTML = content;
       return td;
     }
@@ -5694,9 +5680,10 @@ function buildTable(options = {}) {
     tr.appendChild(td(v.acc, Number(v.acc) === minAcc));
     tr.appendChild(td(v.topSpeed, Number(v.topSpeed) === maxTop));
     tr.appendChild(td(v.engine));
-    tr.appendChild(td(formatDimensionValue(dimensions.length, 'cm')));
-    tr.appendChild(td(formatDimensionValue(dimensions.width, 'cm')));
-    tr.appendChild(td(formatDimensionValue(dimensions.weight, 'kg')));
+    const dimensionTitle = getDimensionCellTitle(v, dimensions);
+    tr.appendChild(td(getDimensionCellLabel(dimensions.length, 'cm', dimensions), false, '', dimensionTitle));
+    tr.appendChild(td(getDimensionCellLabel(dimensions.width, 'cm', dimensions), false, '', dimensionTitle));
+    tr.appendChild(td(getDimensionCellLabel(dimensions.weight, 'kg', dimensions), false, '', dimensionTitle));
     tr.appendChild(td(formatPrice(v.price) || '-'));
     tr.appendChild(td(consumptionText, false, 'col-consumption'));
     tr.appendChild(td(formatCostValue(costValue), false, 'col-cost'));

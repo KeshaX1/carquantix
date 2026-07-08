@@ -1329,6 +1329,14 @@ def format_display_price(value):
 
 def build_car_specs(car):
     specs = []
+    audit = (car or {}).get("dataAudit") or {}
+    dimensions = (car or {}).get("dimensions") or {}
+    if audit.get("modelYear"):
+        specs.append({"label": "Model Year", "value": audit.get("modelYear")})
+    if audit.get("trim"):
+        specs.append({"label": "Trim", "value": audit.get("trim")})
+    if audit.get("bodyStyle"):
+        specs.append({"label": "Body Style", "value": audit.get("bodyStyle")})
     power = car.get("power")
     if power is not None:
         specs.append({"label": "Power", "value": f"{power} hp"})
@@ -1344,6 +1352,8 @@ def build_car_specs(car):
     price = car.get("price")
     if price:
         specs.append({"label": "Price", "value": format_display_price(price)})
+    if audit.get("priceMarket"):
+        specs.append({"label": "Price Market", "value": audit.get("priceMarket")})
     consumption = car.get("consumption") or {}
     if consumption.get("value") is not None and consumption.get("unit"):
         specs.append(
@@ -1352,6 +1362,18 @@ def build_car_specs(car):
                 "value": f"{consumption['value']} {consumption['unit']}",
             }
         )
+    if dimensions.get("length") is not None:
+        specs.append({"label": "Length", "value": f"{dimensions['length']:g} cm"})
+    if dimensions.get("width") is not None:
+        specs.append({"label": "Width", "value": f"{dimensions['width']:g} cm"})
+    if dimensions.get("weight") is not None:
+        specs.append({"label": "Weight", "value": f"{dimensions['weight']:g} kg"})
+    if audit.get("measurementStandard"):
+        specs.append({"label": "Measurement Standard", "value": audit.get("measurementStandard")})
+    if audit.get("sourceName"):
+        specs.append({"label": "Data Source", "value": audit.get("sourceName")})
+    if audit.get("verifiedAt"):
+        specs.append({"label": "Checked", "value": audit.get("verifiedAt")})
     return specs
 
 
@@ -1646,6 +1668,11 @@ def resolve_compare_slug(compare_slug, slug_map):
 
 
 def build_compare_spec_rows(car_a, car_b):
+    def metric_source_note(label):
+        if label in {"Power", "0-100 km/h", "Top Speed", "Engine"}:
+            return "Manufacturer or public specification source; confirm exact local trim."
+        return "See sources and data transparency notes."
+
     def metric_row(label, key, higher_is_better=True, formatter=None):
         left_value = car_a.get(key)
         right_value = car_b.get(key)
@@ -1660,6 +1687,7 @@ def build_compare_spec_rows(car_a, car_b):
             "left_value": formatter(left_value) if formatter else left_value,
             "right_value": formatter(right_value) if formatter else right_value,
             "winner": winner,
+            "source_note": metric_source_note(label),
         }
 
     def estimated_dimensions(car):
@@ -1699,13 +1727,21 @@ def build_compare_spec_rows(car_a, car_b):
     def dimension_row(label, key, unit):
         left_dimensions = car_a.get("dimensions") or {}
         right_dimensions = car_b.get("dimensions") or {}
+        left_recorded = key in left_dimensions
+        right_recorded = key in right_dimensions
         left_value = left_dimensions.get(key, estimated_dimensions(car_a).get(key))
         right_value = right_dimensions.get(key, estimated_dimensions(car_b).get(key))
+        def display(value, recorded):
+            if not isinstance(value, (int, float)):
+                return "-"
+            suffix = "" if recorded else " est."
+            return f"{value:g} {unit}{suffix}"
         return {
             "label": label,
-            "left_value": f"{left_value:g} {unit}" if isinstance(left_value, (int, float)) else "-",
-            "right_value": f"{right_value:g} {unit}" if isinstance(right_value, (int, float)) else "-",
+            "left_value": display(left_value, left_recorded),
+            "right_value": display(right_value, right_recorded),
             "winner": None,
+            "source_note": "Recorded dimensions when available; estimated values are marked est.",
         }
 
     consumption_a = car_a.get("consumption") or {}
@@ -1727,6 +1763,7 @@ def build_compare_spec_rows(car_a, car_b):
             "left_value": car_a.get("engine") or "-",
             "right_value": car_b.get("engine") or "-",
             "winner": None,
+            "source_note": metric_source_note("Engine"),
         },
         dimension_row("Length", "length", "cm"),
         dimension_row("Width", "width", "cm"),
@@ -1736,6 +1773,7 @@ def build_compare_spec_rows(car_a, car_b):
             "left_value": format_display_price(car_a.get("price")),
             "right_value": format_display_price(car_b.get("price")),
             "winner": None,
+            "source_note": "Listed market value; market context appears in the transparency panel.",
         },
         {
             "label": "Consumption",
@@ -1750,6 +1788,7 @@ def build_compare_spec_rows(car_a, car_b):
                 else "-"
             ),
             "winner": consumption_winner,
+            "source_note": "Manufacturer, EPA, WLTP, or public economy figure when available.",
         },
     ]
 
@@ -1805,26 +1844,26 @@ def build_compare_quick_verdict(car_a, car_b, compare_decision):
         return override["quick_verdict"]
 
     left_name, right_name = get_compare_display_names(car_a, car_b)
-    overall = next(
+    priority = next(
         (
             item
             for item in (compare_decision or {}).get("verdict_items", [])
-            if item.get("label") == "Overall winner"
+            if item.get("label") == "Priority Pick"
         ),
         None,
     )
-    winner = str((overall or {}).get("winner") or "").strip()
+    winner = str((priority or {}).get("winner") or "").strip()
     if winner and winner not in {"Too close to call", left_name, right_name}:
         winner = strip_vehicle_year(winner)
     if winner and winner not in {"Too close to call", ""}:
         other = right_name if winner == left_name else left_name
         return (
-            f"The {winner} is the better pick if you want the strongest overall spec balance in this matchup, "
-            f"while the {other} can still make more sense if its price, comfort or daily-use character fits your priorities better."
+            f"The {winner} is the better pick under the default priority weights, "
+            f"while the {other} can still make more sense if you weight price, running cost, comfort or performance differently."
         )
     return (
-        f"The {left_name} vs {right_name} decision is close, so the better choice depends on whether you value performance, "
-        "price, comfort, reliability or daily driving more."
+        f"The {left_name} vs {right_name} decision should be read by category, not as one universal winner. "
+        "The better choice depends on how you weight performance, price, running cost and practicality."
     )
 
 
@@ -2091,6 +2130,119 @@ def append_unique(items, value):
         items.append(value)
 
 
+DEFAULT_COMPARE_WEIGHTS = {
+    "performance": 40,
+    "price": 30,
+    "fuel_cost": 20,
+    "practicality": 10,
+}
+
+
+def normalized_score(value, values, higher_is_better=True, fallback=50):
+    numeric_values = [v for v in values if isinstance(v, (int, float))]
+    if not isinstance(value, (int, float)) or len(numeric_values) < 2:
+        return fallback
+    low = min(numeric_values)
+    high = max(numeric_values)
+    if low == high:
+        return fallback
+    ratio = (value - low) / (high - low) if higher_is_better else (high - value) / (high - low)
+    return round(max(0, min(1, ratio)) * 100)
+
+
+def comparable_consumption_value(car, cars):
+    info = (car or {}).get("consumption") or {}
+    if not isinstance(info.get("value"), (int, float)) or not info.get("unit"):
+        return None
+    units = {
+        str((entry.get("consumption") or {}).get("unit") or "").lower()
+        for entry in cars
+        if isinstance((entry.get("consumption") or {}).get("value"), (int, float))
+    }
+    return info.get("value") if len(units) == 1 else None
+
+
+def decision_dimension_value(car, key):
+    dimensions = (car or {}).get("dimensions") or {}
+    value = dimensions.get(key)
+    return value if isinstance(value, (int, float)) else None
+
+
+def build_priority_scores(cars, weights=None):
+    weights = weights or DEFAULT_COMPARE_WEIGHTS
+    scores = {}
+    power_values = [car.get("power") for car in cars]
+    acc_values = [car.get("acc") for car in cars]
+    top_speed_values = [car.get("topSpeed") for car in cars]
+    price_values = [parse_price_amount(car.get("price")) for car in cars]
+    consumption_values = [comparable_consumption_value(car, cars) for car in cars]
+    year_values = [extract_model_year(car) for car in cars]
+    weight_values = [decision_dimension_value(car, "weight") for car in cars]
+    cabin_values = [
+        (
+            (decision_dimension_value(car, "length") or 0)
+            + (decision_dimension_value(car, "width") or 0)
+        )
+        or None
+        for car in cars
+    ]
+
+    for car in cars:
+        performance = round((
+            normalized_score(car.get("power"), power_values, True)
+            + normalized_score(car.get("acc"), acc_values, False)
+            + normalized_score(car.get("topSpeed"), top_speed_values, True)
+        ) / 3)
+        price = normalized_score(parse_price_amount(car.get("price")), price_values, False)
+        fuel_cost = normalized_score(comparable_consumption_value(car, cars), consumption_values, False)
+        year = normalized_score(extract_model_year(car), year_values, True)
+        weight_score = normalized_score(decision_dimension_value(car, "weight"), weight_values, False)
+        cabin_score = normalized_score(
+            ((decision_dimension_value(car, "length") or 0) + (decision_dimension_value(car, "width") or 0)) or None,
+            cabin_values,
+            True,
+        )
+        practicality = round((year * 0.2) + (weight_score * 0.25) + (cabin_score * 0.25) + (fuel_cost * 0.3))
+        value = round((price * 0.45) + (performance * 0.35) + (fuel_cost * 0.2))
+        daily = round((price * 0.25) + (fuel_cost * 0.3) + (practicality * 0.3) + (year * 0.15))
+        running_cost = round((fuel_cost * 0.7) + (price * 0.3))
+        long_trips = round(
+            normalized_score(car.get("topSpeed"), top_speed_values, True) * 0.25
+            + normalized_score(car.get("power"), power_values, True) * 0.2
+            + fuel_cost * 0.25
+            + cabin_score * 0.3
+        )
+        weight_total = max(1, sum(weights.values()))
+        user_priority = round(
+            (
+                performance * weights["performance"]
+                + price * weights["price"]
+                + fuel_cost * weights["fuel_cost"]
+                + practicality * weights["practicality"]
+            )
+            / weight_total
+        )
+        scores[id(car)] = {
+            "performance": performance,
+            "value": value,
+            "daily": daily,
+            "running_cost": running_cost,
+            "long_trips": long_trips,
+            "user_priority": user_priority,
+        }
+    return scores
+
+
+def priority_winner(cars, scores, key):
+    valid = [(car, scores.get(id(car), {}).get(key)) for car in cars]
+    valid = [(car, score) for car, score in valid if isinstance(score, (int, float))]
+    if not valid:
+        return None, None
+    best = max(score for _, score in valid)
+    winners = [car for car, score in valid if score == best]
+    return winners[0] if len(winners) == 1 else None, best
+
+
 def build_compare_decision_data(car_a, car_b):
     if not car_a or not car_b:
         return None
@@ -2103,6 +2255,7 @@ def build_compare_decision_data(car_a, car_b):
     right_price_amount = parse_price_amount(car_b.get("price"))
     left_consumption = car_a.get("consumption") or {}
     right_consumption = car_b.get("consumption") or {}
+    priority_scores = build_priority_scores([car_a, car_b])
 
     power_winner = compare_numeric_values(car_a.get("power"), car_b.get("power"), True)
     acc_winner = compare_numeric_values(car_a.get("acc"), car_b.get("acc"), False)
@@ -2158,23 +2311,13 @@ def build_compare_decision_data(car_a, car_b):
 
     speed_winner = top_speed_winner or acc_winner or performance_winner
 
-    overall_scores = {"left": 0, "right": 0}
-    for winner in (power_winner, acc_winner, top_speed_winner, price_winner, consumption_winner, year_winner):
-        if winner:
-            overall_scores[winner] += 1
-    if performance_winner:
-        overall_scores[performance_winner] += 1
-    if value_winner:
-        overall_scores[value_winner] += 1
-    if speed_winner:
-        overall_scores[speed_winner] += 1
-
-    if overall_scores["left"] > overall_scores["right"]:
-        overall_winner = "left"
-    elif overall_scores["right"] > overall_scores["left"]:
-        overall_winner = "right"
-    else:
-        overall_winner = performance_winner or value_winner or speed_winner
+    cars = [car_a, car_b]
+    best_performance_car, best_performance_score = priority_winner(cars, priority_scores, "performance")
+    best_value_car, best_value_score = priority_winner(cars, priority_scores, "value")
+    best_daily_car, best_daily_score = priority_winner(cars, priority_scores, "daily")
+    running_cost_car, running_cost_score = priority_winner(cars, priority_scores, "running_cost")
+    long_trip_car, long_trip_score = priority_winner(cars, priority_scores, "long_trips")
+    user_priority_car, user_priority_score = priority_winner(cars, priority_scores, "user_priority")
 
     winner_name = {
         "left": left_name,
@@ -2182,43 +2325,45 @@ def build_compare_decision_data(car_a, car_b):
         None: "Too close to call",
     }
 
+    def car_name(car):
+        return str((car or {}).get("name") or "").strip() or "Too close to call"
+
+    def scored_reason(score, text):
+        return f"{text} ({score}/100)." if isinstance(score, (int, float)) else "The available data is too evenly matched to separate them."
+
     verdict_items = [
         {
-            "label": "Performance winner",
-            "winner": winner_name[performance_winner],
-            "reason": (
-                f"Leads on {join_compare_labels(performance_labels[performance_winner])}."
-                if performance_winner and performance_labels[performance_winner]
-                else "No clear edge on the recorded performance data."
-            ),
+            "label": "Best Performance",
+            "winner": car_name(best_performance_car) if best_performance_car else "Too close to call",
+            "reason": scored_reason(best_performance_score, "Highest weighted performance score from power, acceleration, and top speed"),
         },
         {
-            "label": "Speed winner",
-            "winner": winner_name[speed_winner],
-            "reason": (
-                "Higher top speed on paper."
-                if speed_winner and top_speed_winner == speed_winner
-                else "Quicker acceleration on paper."
-                if speed_winner and acc_winner == speed_winner
-                else "No clear speed advantage on the recorded data."
-            ),
+            "label": "Best Value",
+            "winner": car_name(best_value_car) if best_value_car else "Too close to call",
+            "reason": scored_reason(best_value_score, "Best mix of price, performance, and efficiency"),
         },
         {
-            "label": "Value winner",
-            "winner": winner_name[value_winner],
-            "reason": (
-                f"Stronger on {join_compare_labels(value_labels[value_winner])}."
-                if value_winner and value_labels[value_winner]
-                else "No clear value edge on price, efficiency, or model year."
-            ),
+            "label": "Best Daily Driver",
+            "winner": car_name(best_daily_car) if best_daily_car else "Too close to call",
+            "reason": scored_reason(best_daily_score, "Best everyday balance of price, efficiency, practicality, and model year"),
         },
         {
-            "label": "Overall winner",
-            "winner": winner_name[overall_winner],
+            "label": "Lowest Running Cost",
+            "winner": car_name(running_cost_car) if running_cost_car else "Too close to call",
+            "reason": scored_reason(running_cost_score, "Lowest cost score from recorded consumption and listed price"),
+        },
+        {
+            "label": "Best for Long Trips",
+            "winner": car_name(long_trip_car) if long_trip_car else "Too close to call",
+            "reason": scored_reason(long_trip_score, "Best long-trip score from efficiency, cabin-size proxy, power, and top speed"),
+        },
+        {
+            "label": "Priority Pick",
+            "winner": car_name(user_priority_car) if user_priority_car else "Too close to call",
             "reason": (
-                "Wins more of the recorded comparison categories overall."
-                if overall_winner
-                else "The available data is too evenly matched to separate them."
+                f"Using default weights: performance {DEFAULT_COMPARE_WEIGHTS['performance']}%, "
+                f"price {DEFAULT_COMPARE_WEIGHTS['price']}%, fuel cost {DEFAULT_COMPARE_WEIGHTS['fuel_cost']}%, "
+                f"practicality {DEFAULT_COMPARE_WEIGHTS['practicality']}%."
             ),
         },
     ]
@@ -2619,6 +2764,15 @@ def build_compare_source_links(car_a, car_b):
 
     for car in (car_a, car_b):
         name = get_vehicle_name(car)
+        audit = (car or {}).get("dataAudit") or {}
+        source_url = audit.get("sourceUrl")
+        if source_url and source_url not in seen:
+            sources.append({
+                "label": audit.get("sourceName") or f"{name} recorded specification source",
+                "href": source_url,
+            })
+            seen.add(source_url)
+            continue
         brand = get_vehicle_brand(car)
         brand_key = brand.lower()
         href = MANUFACTURER_SOURCE_DOMAINS.get(brand_key)
@@ -2638,6 +2792,65 @@ def build_compare_source_links(car_a, car_b):
         {"label": "CarQuantix methodology and data notes", "href": "/methodology"},
     ])
     return sources
+
+
+def infer_vehicle_market(car):
+    audit = (car or {}).get("dataAudit") or {}
+    market_text = str(audit.get("priceMarket") or "").lower()
+    price_text = str((car or {}).get("price") or "")
+    if "united states" in market_text or "usa" in market_text or "$" in price_text:
+        return "US"
+    if "united kingdom" in market_text or "uk" in market_text or "£" in price_text:
+        return "UK"
+    if "europe" in market_text or "eu" in market_text or "€" in price_text:
+        return "EU"
+    return "US"
+
+
+def build_compare_trust_meta(car_a, car_b):
+    cars = [car for car in (car_a, car_b) if car]
+    audit_dates = sorted({
+        str((car.get("dataAudit") or {}).get("verifiedAt") or "").strip()
+        for car in cars
+        if str((car.get("dataAudit") or {}).get("verifiedAt") or "").strip()
+    })
+    last_updated = audit_dates[-1] if audit_dates else "2026-07-08"
+    markets = []
+    for car in cars:
+        market = infer_vehicle_market(car)
+        if market not in markets:
+            markets.append(market)
+    standards = []
+    for car in cars:
+        standard = str((car.get("dataAudit") or {}).get("measurementStandard") or "").strip()
+        if standard and standard not in standards:
+            standards.append(standard)
+    if not standards:
+        standards.append("Manufacturer/public specification baseline")
+    update_history = [
+        {
+            "date": last_updated,
+            "text": "Comparison transparency metadata refreshed.",
+        },
+        {
+            "date": "2026-07-08",
+            "text": "Added source notes, market context, test-standard notes, and correction workflow.",
+        },
+    ]
+    model_names = " vs ".join(str(car.get("name") or car.get("id") or "Vehicle").strip() for car in cars)
+    subject = urllib.parse.quote(f"Incorrect data report: {model_names}")
+    body = urllib.parse.quote(
+        "Please include the model year, trim, market, field that looks incorrect, and the source you are using."
+    )
+    return {
+        "reviewed_by": "CarQuantix data review (independently developed platform)",
+        "last_updated": last_updated,
+        "market": " / ".join(markets) if markets else "US",
+        "test_standard": "; ".join(standards),
+        "source_policy": "Manufacturer and public automotive sources; manually reviewed before publication when source data is available.",
+        "report_url": f"mailto:carquantix@gmail.com?subject={subject}&body={body}",
+        "update_history": update_history,
+    }
 
 
 def build_indexable_compare_slugs(cars, slug_map):
@@ -4144,7 +4357,7 @@ def contact():
         "contact.html",
         canonical_url=canonical_url,
         meta_title="Contact - CarQuantix",
-        meta_description="Contact the CarQuantix team for product support, data questions, business inquiries, partnerships, media requests or account assistance.",
+        meta_description="Contact CarQuantix for product support, vehicle data corrections, business inquiries, partnerships, media requests or account assistance.",
         robots_directive="index,follow",
     )
 
@@ -4245,7 +4458,7 @@ def pricing():
         "pricing.html",
         canonical_url=canonical_url,
         meta_title="Pricing - CarQuantix",
-        meta_description="Review CarQuantix pricing, subscription plans, account features and comparison tools for researching vehicle performance and ownership costs.",
+        meta_description="Review CarQuantix access information, free public comparison tools, account-only features, data requests and vehicle research options.",
         robots_directive="index,follow",
     )
 
@@ -4589,6 +4802,7 @@ def compare_detail(compare_slug):
         compare_sections=compare_sections,
         compare_faq=compare_faq,
         compare_sources=build_compare_source_links(left_car, right_car),
+        compare_trust=build_compare_trust_meta(left_car, right_car),
         race_video=race_video,
         comments_page=f"compare:{resolved['canonical_slug']}",
         canonical_url=canonical_url,
