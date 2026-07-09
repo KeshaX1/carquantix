@@ -284,10 +284,29 @@
     }
   };
 
+  const initWheelScrollFallback = () => {
+    window.addEventListener('wheel', (event) => {
+      const target = event.target;
+      if (target && target.closest && target.closest('input, textarea, select, [role="dialog"], .modal, .vehicle-picker-modal')) {
+        return;
+      }
+      const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+      if (!delta) return;
+      const scroller = document.scrollingElement || document.documentElement;
+      const before = scroller.scrollTop;
+      window.requestAnimationFrame(() => {
+        if (Math.abs(scroller.scrollTop - before) < 1) {
+          window.scrollBy({ top: delta, left: 0, behavior: 'auto' });
+        }
+      });
+    }, { passive: true });
+  };
+
   initTheme();
   initLanguage();
   applyText();
   initHeroHover();
   initLoginLazyLoad();
   initDeferredAdsense();
+  initWheelScrollFallback();
 })();

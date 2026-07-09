@@ -5965,7 +5965,20 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     font-size:0.8rem;
   }
   body.home-page .home-hero-media{
-    display:none;
+    display:block !important;
+    width:min(340px, 100%);
+    height:auto;
+    aspect-ratio:1/1;
+    margin:28px auto 0;
+    border-radius:18px;
+  }
+  body.home-page .home-hero-media picture,
+  body.home-page .home-hero-media img{
+    height:100%;
+  }
+  body.home-page .home-hero-media img{
+    width:100%;
+    object-fit:cover;
   }
   body.home-page .home-hero-media.is-showing-country-preview{
     overflow:visible;

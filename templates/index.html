@@ -112,7 +112,9 @@
       body.home-page .home-hero-lead{margin-top:18px;font-size:1rem}
       body.home-page .home-hero-actions{width:100%;margin-top:26px}
       body.home-page .home-hero-btn{flex:1 1 150px;min-height:40px;padding-inline:14px;font-size:.82rem}
-      body.home-page .home-hero-media{display:none!important}
+      body.home-page .home-hero-media{display:block!important;width:min(340px,100%);height:auto;aspect-ratio:1/1;margin:28px auto 0;border-radius:18px}
+      body.home-page .home-hero-media picture,body.home-page .home-hero-media img{height:100%}
+      body.home-page .home-hero-media img{width:100%;object-fit:cover}
     }
     @media (max-width:520px){
       body.home-page .topbar{min-height:72px;height:auto;flex-wrap:wrap;align-items:center;gap:8px;padding:9px 12px;overflow:visible}
@@ -128,11 +130,11 @@
       body.home-page .home-hero-btn{min-height:38px;padding:0 14px;font-size:.8rem}
     }
   </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-square-scroll1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-mobile-hero-scroll2') }}">
   {% else %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-square-scroll1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-mobile-hero-scroll2') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
   {% endif %}
@@ -295,13 +297,13 @@
             See performance, running costs, ownership data and market insight side by side before you decide.
           </p>
           <div class="home-hero-actions" aria-label="Primary actions">
-            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/?view=compare#compareBuilder" target="_blank" rel="noopener noreferrer"><span data-i18n="homeHeroCompare">Compare Cars</span> <span aria-hidden="true">-&gt;</span></a>
-            <a id="homeSellLink" class="home-hero-btn home-hero-btn-secondary" href="/sell-car"><span data-i18n="homeHeroSell">Sell Your Cars</span> <span aria-hidden="true">-&gt;</span></a>
+            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/?view=compare#compareBuilder" target="_blank" rel="noopener noreferrer"><span data-i18n="homeHeroCompare">Compare Cars</span></a>
+            <a id="homeSellLink" class="home-hero-btn home-hero-btn-secondary" href="/sell-car"><span data-i18n="homeHeroSell">Sell Your Cars</span></a>
           </div>
         </div>
         <figure class="home-hero-media">
           <picture>
-            <source srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" media="(max-width: 760px)">
+            <source srcset="/static/icon/hero.jpg" media="(max-width: 760px)">
             <img
               id="homeHeroImage"
               src="/static/icon/hero.jpg"
@@ -714,9 +716,9 @@
     </div>
   </div>
   {% if home_view %}
-  <script src="{{ url_for('static', filename='home.js', v='20260709-home-lite1') }}" data-full-script="{{ url_for('static', filename='script.js', v='20260709-home-lite1') }}" defer></script>
+  <script src="{{ url_for('static', filename='home.js', v='20260710-mobile-hero-scroll2') }}" data-full-script="{{ url_for('static', filename='script.js', v='20260710-mobile-hero-scroll2') }}" defer></script>
   {% else %}
-  <script src="{{ url_for('static', filename='script.js', v='20260709-home-lite1') }}" defer></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260710-mobile-hero-scroll2') }}" defer></script>
   {% endif %}
 </body>
 </html>
