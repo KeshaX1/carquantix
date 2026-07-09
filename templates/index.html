@@ -86,7 +86,17 @@
     body.home-page .home-hero-btn-secondary{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02);color:#f4f9ff}
     body.home-page .home-hero-media{margin:0;border:1px solid rgba(255,255,255,.1);border-radius:22px;overflow:hidden;background:#000}
     body.home-page .home-hero-media picture,body.home-page .home-hero-media img{display:block;width:100%}
-    body.home-page .home-hero-media img{aspect-ratio:16/9;object-fit:cover;object-position:center}
+    body.home-page .home-hero-media img{aspect-ratio:16/9;object-fit:cover;object-position:center 58%;filter:brightness(1.08) saturate(1.05)}
+    body.home-page #compareArea.compare-area.hidden{display:none!important}
+    @media (min-width:1101px){
+      body.home-page .home-hero{grid-template-columns:minmax(420px,.82fr) minmax(460px,.92fr);gap:clamp(32px,4vw,62px);min-height:min(720px,calc(100dvh - 68px));padding:clamp(28px,4vh,48px) clamp(44px,6vw,96px)}
+      body.home-page .home-hero-copy{max-width:540px}
+      body.home-page .home-hero-title{font-size:clamp(3rem,4.2vw,4.55rem);line-height:1.1}
+      body.home-page .home-hero-lead{max-width:500px;margin-top:20px;font-size:1rem}
+      body.home-page .home-hero-actions{margin-top:26px}
+      body.home-page .home-hero-media{justify-self:center;width:min(760px,44vw);max-height:calc(100dvh - 180px);border-radius:18px}
+      body.home-page .home-hero-media img{max-height:calc(100dvh - 180px)}
+    }
     @media (max-width:760px){
       body.home-page .topbar{position:relative;min-height:54px;height:54px;padding:8px 10px;padding-right:76px;overflow:hidden}
       body.home-page .brand-name{font-size:clamp(1.45rem,6vw,2rem)}
@@ -117,11 +127,11 @@
       body.home-page .home-hero-btn{min-height:38px;padding:0 14px;font-size:.8rem}
     }
   </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-desktop-restore1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-home-layout-fix1') }}">
   {% else %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-desktop-restore1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-home-layout-fix1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
   {% endif %}
@@ -528,7 +538,7 @@
         </section>
       </div>
 
-      <section id="compareArea" class="compare-area" aria-live="polite">
+      <section id="compareArea" class="compare-area hidden" aria-live="polite">
         <p class="empty">No vehicles selected. Start by adding vehicles from the list.</p>
       </section>
 

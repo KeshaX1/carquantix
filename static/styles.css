@@ -764,7 +764,8 @@ body.home-page:not(.dark) .site-footer .footer-social-link {
   width:100%;
   aspect-ratio:16/9;
   object-fit:cover;
-  object-position:center;
+  object-position:center 58%;
+  filter:brightness(1.08) saturate(1.05);
   opacity:1;
   transform:scale(1);
   transition:opacity .26s ease, transform .34s ease;
@@ -1086,6 +1087,39 @@ body.home-page:not(.dark) .site-footer .footer-social-link {
   color:#8fa8bf;
   font-size:0.78rem;
   font-weight:750;
+}
+
+@media (min-width:1101px){
+  body.home-page .home-hero{
+    grid-template-columns:minmax(420px,0.82fr) minmax(460px,0.92fr);
+    gap:clamp(32px,4vw,62px);
+    min-height:min(720px, calc(100dvh - 68px));
+    padding:clamp(28px,4vh,48px) clamp(44px,6vw,96px);
+  }
+  body.home-page .home-hero-copy{
+    max-width:540px;
+  }
+  body.home-page .home-hero-title{
+    font-size:clamp(3rem,4.2vw,4.55rem);
+    line-height:1.1;
+  }
+  body.home-page .home-hero-lead{
+    max-width:500px;
+    margin-top:20px;
+    font-size:1rem;
+  }
+  body.home-page .home-hero-actions{
+    margin-top:26px;
+  }
+  body.home-page .home-hero-media{
+    justify-self:center;
+    width:min(760px,44vw);
+    max-height:calc(100dvh - 180px);
+    border-radius:18px;
+  }
+  body.home-page .home-hero-media img{
+    max-height:calc(100dvh - 180px);
+  }
 }
 
 @media (max-width:1100px){
@@ -2055,6 +2089,10 @@ th{color:var(--muted);font-weight:600}
   font-size:0.88rem;
 }
 .hidden{display:none}
+.compare-area.hidden,
+#compareArea.compare-area.hidden{
+  display:none !important;
+}
 
 /* highlight for maxima */
 .highlight {
