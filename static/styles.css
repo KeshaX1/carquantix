@@ -1113,12 +1113,18 @@ body.home-page:not(.dark) .site-footer .footer-social-link {
   }
   body.home-page .home-hero-media{
     justify-self:center;
-    width:min(760px,44vw);
+    width:min(620px,38vw);
+    aspect-ratio:1/1;
     max-height:calc(100dvh - 180px);
     border-radius:18px;
   }
+  body.home-page .home-hero-media picture{
+    height:100%;
+  }
   body.home-page .home-hero-media img{
-    max-height:calc(100dvh - 180px);
+    height:100%;
+    aspect-ratio:1/1;
+    max-height:none;
   }
 }
 

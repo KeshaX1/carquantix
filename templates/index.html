@@ -94,8 +94,9 @@
       body.home-page .home-hero-title{font-size:clamp(3rem,4.2vw,4.55rem);line-height:1.1}
       body.home-page .home-hero-lead{max-width:500px;margin-top:20px;font-size:1rem}
       body.home-page .home-hero-actions{margin-top:26px}
-      body.home-page .home-hero-media{justify-self:center;width:min(760px,44vw);max-height:calc(100dvh - 180px);border-radius:18px}
-      body.home-page .home-hero-media img{max-height:calc(100dvh - 180px)}
+      body.home-page .home-hero-media{justify-self:center;width:min(620px,38vw);aspect-ratio:1/1;max-height:calc(100dvh - 180px);border-radius:18px}
+      body.home-page .home-hero-media picture{height:100%}
+      body.home-page .home-hero-media img{height:100%;aspect-ratio:1/1;max-height:none}
     }
     @media (max-width:760px){
       body.home-page .topbar{position:relative;min-height:54px;height:54px;padding:8px 10px;padding-right:76px;overflow:hidden}
@@ -127,11 +128,11 @@
       body.home-page .home-hero-btn{min-height:38px;padding:0 14px;font-size:.8rem}
     }
   </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-home-layout-fix1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-square-hero1') }}">
   {% else %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-home-layout-fix1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-square-hero1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
   {% endif %}
