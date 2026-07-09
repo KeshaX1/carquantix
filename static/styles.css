@@ -520,7 +520,6 @@ html.home-root body.home-page{
   overscroll-behavior:none;
 }
 body.home-page .app{
-  display:block;
   min-height:calc(100dvh - 68px);
   height:auto;
   max-height:none;
@@ -528,7 +527,7 @@ body.home-page .app{
 }
 body.home-page .main{
   min-height:100%;
-  padding:0;
+  padding-bottom:0;
   overflow:visible;
 }
 body.home-page .main > :not(.main-header):not(.home-hero):not(.home-topic-section):not(.home-article-section){
@@ -549,9 +548,6 @@ body.home-page .main > :not(.main-header):not(.home-hero):not(.home-topic-sectio
   background:
     radial-gradient(circle at 26% 34%, rgba(0,195,255,0.18), transparent 34%),
     linear-gradient(115deg, #031f31 0%, #051322 44%, #03070e 68%, #061735 100%);
-}
-body.home-page .home-hero{
-  margin:0;
 }
 .home-hero::before{
   content:"";
