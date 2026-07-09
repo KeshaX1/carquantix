@@ -3647,6 +3647,17 @@ body.country-view #compareBuilder{
   display:none;
 }
 
+body.country-view .home-hero,
+body.country-view .home-topic-section,
+body.country-view .home-article-section,
+body.country-view #seoTopSlot,
+body.country-view #tableArea,
+body.country-view #commentsSection,
+body.country-view #popularComparisons,
+body.country-view #raceLinksSection{
+  display:none !important;
+}
+
 body.country-view .main{
   padding:0;
 }
