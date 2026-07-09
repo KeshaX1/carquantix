@@ -1354,9 +1354,6 @@ const clearBtn = document.getElementById('clearBtn');
 const compareBtn = document.getElementById('compareBtn');
 const homeCompareLink = document.getElementById('homeCompareLink');
 const homeSellLink = document.getElementById('homeSellLink');
-const homeCountryCompareLink = document.getElementById('homeCountryCompareLink');
-const homeCountryPreview = document.getElementById('homeCountryPreview');
-const homeCountryPreviewStart = document.getElementById('homeCountryPreviewStart');
 const fuelCalcSection = document.getElementById('fuelCalculator');
 const fuelCalcDistance = document.getElementById('fuelCalcDistance');
 const fuelCalcPrice = document.getElementById('fuelCalcPrice');
@@ -1430,20 +1427,20 @@ const TRANSLATIONS = {
     brandAll: 'All brands',
     countriesTitle: 'Countries',
     countryClear: 'Clear countries',
-    countryCompareKicker: 'Country comparison',
-    countryCompareTitle: 'Select two countries',
-    countryCompareSingle: 'Select one more country to compare with {country}.',
-    countryCompareReady: 'Press Compare to load country indicators.',
-    countryCompareLoading: 'Loading country indicators...',
-    countryCompareError: 'Country indicators could not be loaded right now.',
-    countryCompareSource: 'Economic indicators load from the World Bank open data API.',
+    countryCompareKicker: 'Vehicle comparison',
+    countryCompareTitle: 'Select vehicles',
+    countryCompareSingle: 'Select one more vehicle to compare.',
+    countryCompareReady: 'Press Compare after selecting vehicles.',
+    countryCompareLoading: 'Loading vehicle comparison...',
+    countryCompareError: 'Vehicle comparison could not be loaded right now.',
+    countryCompareSource: 'Vehicle comparisons use car specifications and ownership data.',
     countryMetrics: {
-      gdpPerCapita: 'GDP per capita',
-      gniPerCapita: 'GNI per capita',
-      gdp: 'GDP',
-      population: 'Population',
-      inflation: 'Inflation',
-      unemployment: 'Unemployment',
+      gdpPerCapita: 'Price',
+      gniPerCapita: 'Running cost',
+      gdp: 'Resale value',
+      population: 'Availability',
+      inflation: 'Fuel or charging cost',
+      unemployment: 'Maintenance cost',
     },
     filters: { topSpeed: 'Top Speed', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Price' },
     comparison: 'Comparison',
@@ -1537,13 +1534,13 @@ const TRANSLATIONS = {
     brandAll: 'Tüm markalar',
     countriesTitle: 'Ülkeler',
     countryClear: 'Ülkeleri temizle',
-    countryCompareKicker: 'Ülke karşılaştırması',
-    countryCompareTitle: 'İki ülke seçin',
-    countryCompareSingle: '{country} ile karşılaştırmak için bir ülke daha seçin.',
-    countryCompareReady: 'Ülke göstergelerini yüklemek için Karşılaştır butonuna basın.',
-    countryCompareLoading: 'Ülke göstergeleri yükleniyor...',
-    countryCompareError: 'Ülke göstergeleri şu anda yüklenemedi.',
-    countryCompareSource: 'Ekonomik göstergeler World Bank açık veri API üzerinden yüklenir.',
+    countryCompareKicker: 'Araç karşılaştırması',
+    countryCompareTitle: 'Araç seçin',
+    countryCompareSingle: 'Karşılaştırmak için bir araç daha seçin.',
+    countryCompareReady: 'Araçları seçtikten sonra Karşılaştır butonuna basın.',
+    countryCompareLoading: 'Araç karşılaştırması yükleniyor...',
+    countryCompareError: 'Araç karşılaştırması şu anda yüklenemedi.',
+    countryCompareSource: 'Araç karşılaştırmaları teknik veriler ve sahiplik verileriyle yapılır.',
     countryMetrics: {
       gdpPerCapita: 'Kişi başı milli gelir',
       gniPerCapita: 'Kişi başı GSMH',
@@ -1641,13 +1638,13 @@ const TRANSLATIONS = {
     brandAll: 'Alle Marken',
     countriesTitle: 'Länder',
     countryClear: 'Länder löschen',
-    countryCompareKicker: 'Ländervergleich',
-    countryCompareTitle: 'Zwei Länder wählen',
-    countryCompareSingle: 'Wählen Sie ein weiteres Land für den Vergleich mit {country}.',
-    countryCompareReady: 'Drücken Sie Vergleichen, um Länderindikatoren zu laden.',
-    countryCompareLoading: 'Länderindikatoren werden geladen...',
-    countryCompareError: 'Länderindikatoren konnten nicht geladen werden.',
-    countryCompareSource: 'Wirtschaftsindikatoren werden aus der offenen World-Bank-API geladen.',
+    countryCompareKicker: 'Fahrzeugvergleich',
+    countryCompareTitle: 'Fahrzeuge wählen',
+    countryCompareSingle: 'Wählen Sie ein weiteres Fahrzeug zum Vergleichen.',
+    countryCompareReady: 'Drücken Sie Vergleichen, nachdem Fahrzeuge gewählt wurden.',
+    countryCompareLoading: 'Fahrzeugvergleich wird geladen...',
+    countryCompareError: 'Fahrzeugvergleich konnte nicht geladen werden.',
+    countryCompareSource: 'Fahrzeugvergleiche nutzen technische Daten und Besitzdaten.',
     filters: { topSpeed: 'Höchstgeschwindigkeit', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Preis' },
     comparison: 'Vergleich',
     clear: 'Auswahl löschen',
@@ -1716,13 +1713,13 @@ const TRANSLATIONS = {
     brandAll: 'Toutes les marques',
     countriesTitle: 'Pays',
     countryClear: 'Effacer les pays',
-    countryCompareKicker: 'Comparaison de pays',
-    countryCompareTitle: 'Sélectionnez deux pays',
-    countryCompareSingle: 'Sélectionnez un autre pays à comparer avec {country}.',
-    countryCompareReady: 'Appuyez sur Comparer pour charger les indicateurs.',
-    countryCompareLoading: 'Chargement des indicateurs...',
-    countryCompareError: 'Les indicateurs ne peuvent pas être chargés.',
-    countryCompareSource: 'Les indicateurs économiques viennent de l API ouverte de la Banque mondiale.',
+    countryCompareKicker: 'Comparaison de vehicules',
+    countryCompareTitle: 'Selectionnez des vehicules',
+    countryCompareSingle: 'Selectionnez un autre vehicule a comparer.',
+    countryCompareReady: 'Appuyez sur Comparer apres avoir choisi des vehicules.',
+    countryCompareLoading: 'Chargement de la comparaison...',
+    countryCompareError: 'La comparaison ne peut pas etre chargee.',
+    countryCompareSource: 'Les comparaisons utilisent les specifications et donnees de possession.',
     filters: { topSpeed: 'Vitesse max', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Prix' },
     comparison: 'Comparaison',
     clear: 'Effacer la sélection',
@@ -1791,13 +1788,13 @@ const TRANSLATIONS = {
     brandAll: 'Todas las marcas',
     countriesTitle: 'Países',
     countryClear: 'Limpiar países',
-    countryCompareKicker: 'Comparación de países',
-    countryCompareTitle: 'Selecciona dos países',
-    countryCompareSingle: 'Selecciona otro país para comparar con {country}.',
-    countryCompareReady: 'Pulsa Comparar para cargar los indicadores.',
-    countryCompareLoading: 'Cargando indicadores...',
-    countryCompareError: 'No se pudieron cargar los indicadores.',
-    countryCompareSource: 'Los indicadores económicos se cargan desde la API abierta del Banco Mundial.',
+    countryCompareKicker: 'Comparacion de vehiculos',
+    countryCompareTitle: 'Selecciona vehiculos',
+    countryCompareSingle: 'Selecciona otro vehiculo para comparar.',
+    countryCompareReady: 'Pulsa Comparar despues de elegir vehiculos.',
+    countryCompareLoading: 'Cargando comparacion...',
+    countryCompareError: 'No se pudo cargar la comparacion.',
+    countryCompareSource: 'Las comparaciones usan especificaciones y datos de propiedad.',
     filters: { topSpeed: 'Velocidad máx', nameAZ: 'A-Z', acc: '0-100 (s)', price: 'Precio' },
     comparison: 'Comparación',
     clear: 'Limpiar selección',
@@ -1985,8 +1982,6 @@ const HOME_TRANSLATIONS = {
     homeHeroLead: 'See performance, running costs, ownership data and market insight side by side before you decide.',
     homeHeroCompare: 'Compare Cars',
     homeHeroSell: 'Sell Your Cars',
-    homeHeroCountry: 'Country compare',
-    homeCountryPreviewStart: 'Choose countries',
     homeTopicsKicker: 'Research streams',
     homeTopicsTitle: 'Explore the data behind better car choices.',
     homeTopicsLead: 'Move from quick comparisons into focused guides, market signals and ownership insights built around real buying decisions.',
@@ -2032,8 +2027,6 @@ const HOME_TRANSLATIONS = {
     homeHeroLead: 'Karar vermeden once performansi, kullanim maliyetlerini, sahiplik verilerini ve pazar bilgilerini yan yana inceleyin.',
     homeHeroCompare: 'Arabalari Karsilastir',
     homeHeroSell: 'Arabanizi Satin',
-    homeHeroCountry: 'Ulke karsilastirmasi',
-    homeCountryPreviewStart: 'Ulkeleri secin',
     homeTopicsKicker: 'Arastirma alanlari',
     homeTopicsTitle: 'Daha iyi araba secimleri icin verinin arkasina bakin.',
     homeTopicsLead: 'Hizli karsilastirmalardan rehberlere, pazar sinyallerine ve gercek satin alma kararlarina odaklanan sahiplik analizlerine gecin.',
@@ -2079,8 +2072,6 @@ const HOME_TRANSLATIONS = {
     homeHeroLead: 'Vergleiche Leistung, Betriebskosten, Besitzdaten und Marktsignale nebeneinander, bevor du entscheidest.',
     homeHeroCompare: 'Autos vergleichen',
     homeHeroSell: 'Auto verkaufen',
-    homeHeroCountry: 'Lander vergleichen',
-    homeCountryPreviewStart: 'Lander auswahlen',
     homeTopicsKicker: 'Recherchebereiche',
     homeTopicsTitle: 'Entdecke die Daten hinter besseren Autoentscheidungen.',
     homeTopicsLead: 'Wechsle von schnellen Vergleichen zu Guides, Marktsignalen und Besitzanalysen fur echte Kaufentscheidungen.',
@@ -2126,8 +2117,6 @@ const HOME_TRANSLATIONS = {
     homeHeroLead: 'Comparez performances, couts d utilisation, donnees de possession et signaux du marche avant de decider.',
     homeHeroCompare: 'Comparer les voitures',
     homeHeroSell: 'Vendre votre voiture',
-    homeHeroCountry: 'Comparer les pays',
-    homeCountryPreviewStart: 'Choisir les pays',
     homeTopicsKicker: 'Axes de recherche',
     homeTopicsTitle: 'Explorez les donnees derriere de meilleurs choix auto.',
     homeTopicsLead: 'Passez des comparaisons rapides aux guides, signaux du marche et analyses de possession pour de vraies decisions d achat.',
@@ -2173,8 +2162,6 @@ const HOME_TRANSLATIONS = {
     homeHeroLead: 'Compara rendimiento, costos de uso, datos de propiedad e informacion de mercado antes de decidir.',
     homeHeroCompare: 'Comparar autos',
     homeHeroSell: 'Vende tu auto',
-    homeHeroCountry: 'Comparar paises',
-    homeCountryPreviewStart: 'Elegir paises',
     homeTopicsKicker: 'Lineas de investigacion',
     homeTopicsTitle: 'Explora los datos detras de mejores decisiones de auto.',
     homeTopicsLead: 'Pasa de comparaciones rapidas a guias, senales de mercado e informacion de propiedad basada en decisiones reales.',
@@ -2646,11 +2633,6 @@ function initFavoritesUI() {
 function initCategoryMenu() {
   const categoryMenuTriggers = [categoryMenuTrigger, mobileCategoryMenuTrigger].filter(Boolean);
   if (!categoryMenu) return;
-  if (document.body.classList.contains('country-view')) {
-    categoryMenuView = 'countries';
-    categoryMenu.classList.add('open');
-    categoryMenu.setAttribute('aria-hidden', 'false');
-  }
   renderCategoryMenu();
   if (!categoryMenuTriggers.length) return;
 
@@ -2682,34 +2664,7 @@ function initCategoryMenu() {
 
   categoryMenu.addEventListener('click', (event) => {
     event.stopPropagation();
-    const categoryEntry = event.target.closest('.category-entry-card');
-    if (categoryEntry) {
-      event.preventDefault();
-      categoryMenuView = 'countries';
-      renderCategoryMenu();
-      categoryMenu.classList.add('open');
-      setCategoryExpanded(true);
-      categoryMenu.setAttribute('aria-hidden', 'false');
-      return;
-    }
-    const countryCard = event.target.closest('.country-card-btn');
-    if (countryCard) {
-      event.preventDefault();
-      toggleCountrySelection(countryCard.dataset.country);
-      categoryMenu.classList.add('open');
-      setCategoryExpanded(true);
-      categoryMenu.setAttribute('aria-hidden', 'false');
-      return;
-    }
-    const backButton = event.target.closest('.category-back-btn');
-    if (backButton) {
-      event.preventDefault();
-      categoryMenuView = 'root';
-      renderCategoryMenu();
-      categoryMenu.classList.add('open');
-      setCategoryExpanded(true);
-      categoryMenu.setAttribute('aria-hidden', 'false');
-    }
+    event.preventDefault();
   });
 
   document.addEventListener('click', (event) => {
@@ -4116,6 +4071,8 @@ function handleCountryCompareAction() {
 }
 
 function renderCategoryRoot(inner) {
+  void inner;
+  return;
   const countries = getCountryList();
   const card = document.createElement('button');
   card.type = 'button';
@@ -4181,6 +4138,7 @@ function renderCountryCards(inner) {
 function renderCategoryMenu() {
   if (!categoryMenu) return;
   categoryMenu.innerHTML = '';
+  categoryMenuView = 'root';
   const inner = document.createElement('div');
   inner.className = `category-menu-inner category-menu-inner--${categoryMenuView}`;
   if (categoryMenuView === 'countries') {
@@ -6147,25 +6105,9 @@ if (brandSelect) {
 if (clearBtn) {
   clearBtn.addEventListener('click', () => { setSelected([]); renderSelected(); });
 }
-if (countryCompareClearBtn) {
-  countryCompareClearBtn.addEventListener('click', () => {
-    selectedCountries = [];
-    renderCategoryMenu();
-    renderCountryComparePlaceholder();
-  });
-}
 if (compareBtn) {
   compareBtn.addEventListener('click', () => {
     ensureAdScriptsLoaded();
-    if (selectedCountries.length === 1 && selected.length === 0) {
-      alert(String(t('countryCompareSingle')).replace('{country}', selectedCountries[0]));
-      return;
-    }
-    if (selectedCountries.length === 2) {
-      renderCountryComparison();
-      if (countryCompareArea) countryCompareArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
     if (selected.length === 0) { alert(t('selectPrompt')); return; }
     if (selected.length === 2 && selected.every(vehicle => (vehicle.catalog || activeCatalog) === 'cars')) {
       const compareUrl = buildCompareDetailUrl(selected[0], selected[1]);
@@ -6200,10 +6142,7 @@ function openCompareBuilderFromHome() {
 }
 
 function setHomeCountryPreviewVisible(isVisible) {
-  const homeHeroMedia = homeCountryPreview?.closest('.home-hero-media');
-  if (!homeHeroMedia || !homeCountryPreview) return;
-  homeHeroMedia.classList.toggle('is-showing-country-preview', isVisible);
-  homeCountryPreview.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+  void isVisible;
 }
 
 if (homeCompareLink) {
@@ -6263,10 +6202,6 @@ if (homeCompareLink) {
     setHomeCountryPreviewVisible(false);
     setHomeHeroImage(homeHeroSellSrc, homeHeroSellAlt);
   };
-  const showCountryPreview = () => {
-    setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
-    setHomeCountryPreviewVisible(true);
-  };
   const showDefaultHeroImage = () => {
     setHomeCountryPreviewVisible(false);
     setHomeHeroImage(homeHeroDefaultSrc, homeHeroDefaultAlt);
@@ -6286,30 +6221,19 @@ if (homeCompareLink) {
     homeSellLink.addEventListener('focus', showSellHeroImage);
     homeSellLink.addEventListener('blur', showDefaultHeroImage);
   }
-  if (canUseHomeHeroHover && homeCountryCompareLink) {
-    homeCountryCompareLink.addEventListener('mouseenter', showCountryPreview);
-    homeCountryCompareLink.addEventListener('mouseleave', showDefaultHeroImage);
-    homeCountryCompareLink.addEventListener('focus', showCountryPreview);
-    homeCountryCompareLink.addEventListener('blur', showDefaultHeroImage);
-  }
   if (!canUseHomeHeroHover && homeHeroImage) {
     const homeHeroSlides = [
       { type: 'image', src: homeHeroDefaultSrc, alt: homeHeroDefaultAlt },
       homeHeroCompareMobileSrc ? { type: 'image', src: homeHeroCompareMobileSrc, alt: homeHeroCompareAlt } : null,
-      homeHeroSellMobileSrc ? { type: 'image', src: homeHeroSellMobileSrc, alt: homeHeroSellAlt } : null,
-      homeCountryPreview ? { type: 'country' } : null
+      homeHeroSellMobileSrc ? { type: 'image', src: homeHeroSellMobileSrc, alt: homeHeroSellAlt } : null
     ].filter(Boolean);
     let homeHeroSlideIndex = 0;
     const showHomeHeroSlide = () => {
       if (!document.body.classList.contains('home-page') || document.hidden || homeHeroSlides.length < 2) return;
       homeHeroSlideIndex = (homeHeroSlideIndex + 1) % homeHeroSlides.length;
       const slide = homeHeroSlides[homeHeroSlideIndex];
-      if (slide.type === 'country') {
-        showCountryPreview();
-      } else {
-        setHomeCountryPreviewVisible(false);
-        setHomeHeroImage(slide.src, slide.alt);
-      }
+      setHomeCountryPreviewVisible(false);
+      setHomeHeroImage(slide.src, slide.alt);
     };
     Promise.all(homeHeroSlides
       .filter(slide => slide.type === 'image')
@@ -6327,45 +6251,12 @@ if (homeCompareLink) {
   });
 }
 
-function openCountryCompareFromHome() {
-  setHomeCountryPreviewVisible(false);
-  unlockHomePage();
-  document.body.classList.add('country-view');
-  if (categoryMenu) {
-    categoryMenuView = 'countries';
-    renderCategoryMenu();
-    categoryMenu.classList.add('open');
-    categoryMenu.setAttribute('aria-hidden', 'false');
-  }
-  renderCountryComparePlaceholder(false, true);
-  if (countryCompareArea) {
-    window.requestAnimationFrame(() => {
-      countryCompareArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
-}
-
-if (homeCountryCompareLink) {
-  homeCountryCompareLink.addEventListener('click', (event) => {
-    if (event.metaKey || event.ctrlKey || event.shiftKey) return;
-    event.preventDefault();
-    history.pushState(null, '', '/?view=country#countryPicker');
-    openCountryCompareFromHome();
-  });
-}
-
-if (homeCountryPreviewStart) {
-  homeCountryPreviewStart.addEventListener('click', () => {
-    history.pushState(null, '', '/?view=country#countryPicker');
-    openCountryCompareFromHome();
-  });
-}
-
 const viewParam = new URLSearchParams(window.location.search).get('view');
 if (window.location.hash === '#compareBuilder' || viewParam === 'compare') {
   openCompareBuilderFromHome();
-} else if (window.location.hash === '#countryPicker' || viewParam === 'country') {
-  openCountryCompareFromHome();
+} else if (viewParam === 'country') {
+  history.replaceState(null, '', '/?view=compare#compareBuilder');
+  openCompareBuilderFromHome();
 }
 
 
@@ -6486,7 +6377,6 @@ function applyTranslations() {
   if (brandLabel) brandLabel.textContent = pack.brandLabel || 'Brand';
   if (brandSelect) buildBrandOptions();
   renderCategoryMenu();
-  renderCountryComparison();
   document.querySelectorAll('#filterBar button').forEach(btn => {
     const key = btn.dataset.sort || btn.dataset.type;
     if (pack.filters && pack.filters[key]) btn.textContent = pack.filters[key];
