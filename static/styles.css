@@ -756,6 +756,9 @@ body.home-page:not(.dark) .site-footer .footer-social-link {
 .home-hero-media.is-showing-country-preview img{
   display:none;
 }
+.home-hero-media picture{
+  display:block;
+}
 .home-hero-media img{
   display:block;
   width:100%;

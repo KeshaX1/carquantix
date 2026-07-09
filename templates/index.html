@@ -25,6 +25,8 @@
   <link rel="icon" type="image/png" sizes="64x64" href="/static/icon/6464px.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/static/icon/192192px.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/static/icon/192192px.png">
+  <link rel="preload" as="image" href="/static/icon/hero-mobile.webp" type="image/webp" media="(max-width: 760px)" fetchpriority="high">
+  <link rel="preload" as="image" href="/static/icon/hero.jpg" media="(min-width: 761px)" fetchpriority="high">
   {% include "_adsense_head.html" %}
   <script type="application/ld+json">
   {
@@ -51,7 +53,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-site-shell-fix') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-mobile-lcp1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
 </head>
@@ -208,17 +210,24 @@
           </div>
         </div>
         <figure class="home-hero-media">
-          <img
-            id="homeHeroImage"
-            src="/static/icon/hero.jpg"
-            data-hover-src="/static/icon/comparecars.png"
-            data-mobile-hover-src="/static/icon/comparecars-mobile.webp"
-            data-sell-hover-src="/static/icon/sellyoucar.png"
-            data-mobile-sell-hover-src="/static/icon/sellyoucar-mobile.webp"
-            alt="A dark sports car with blue illuminated gauges"
-            data-hover-alt="Car comparison interface preview"
-            data-sell-hover-alt="Car sale handshake preview"
-          >
+          <picture>
+            <source srcset="/static/icon/hero-mobile.webp" type="image/webp" media="(max-width: 760px)">
+            <img
+              id="homeHeroImage"
+              src="/static/icon/hero.jpg"
+              width="1920"
+              height="1080"
+              fetchpriority="high"
+              decoding="async"
+              data-hover-src="/static/icon/comparecars.png"
+              data-mobile-hover-src="/static/icon/comparecars-mobile.webp"
+              data-sell-hover-src="/static/icon/sellyoucar.png"
+              data-mobile-sell-hover-src="/static/icon/sellyoucar-mobile.webp"
+              alt="A dark sports car with blue illuminated gauges"
+              data-hover-alt="Car comparison interface preview"
+              data-sell-hover-alt="Car sale handshake preview"
+            >
+          </picture>
         </figure>
       </section>
 
@@ -614,6 +623,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260709-home-i18n') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260709-mobile-lcp1') }}" defer></script>
 </body>
 </html>

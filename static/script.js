@@ -6221,28 +6221,6 @@ if (homeCompareLink) {
     homeSellLink.addEventListener('focus', showSellHeroImage);
     homeSellLink.addEventListener('blur', showDefaultHeroImage);
   }
-  if (!canUseHomeHeroHover && homeHeroImage) {
-    const homeHeroSlides = [
-      { type: 'image', src: homeHeroDefaultSrc, alt: homeHeroDefaultAlt },
-      homeHeroCompareMobileSrc ? { type: 'image', src: homeHeroCompareMobileSrc, alt: homeHeroCompareAlt } : null,
-      homeHeroSellMobileSrc ? { type: 'image', src: homeHeroSellMobileSrc, alt: homeHeroSellAlt } : null
-    ].filter(Boolean);
-    let homeHeroSlideIndex = 0;
-    const showHomeHeroSlide = () => {
-      if (!document.body.classList.contains('home-page') || document.hidden || homeHeroSlides.length < 2) return;
-      homeHeroSlideIndex = (homeHeroSlideIndex + 1) % homeHeroSlides.length;
-      const slide = homeHeroSlides[homeHeroSlideIndex];
-      setHomeCountryPreviewVisible(false);
-      setHomeHeroImage(slide.src, slide.alt);
-    };
-    Promise.all(homeHeroSlides
-      .filter(slide => slide.type === 'image')
-      .map(slide => preloadHomeHeroImage(slide.src)))
-      .finally(() => {
-        window.setInterval(showHomeHeroSlide, 4200);
-      });
-  }
-
   homeCompareLink.addEventListener('click', (event) => {
     if (event.currentTarget.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey) return;
     event.preventDefault();
