@@ -980,12 +980,6 @@ body.home-page:not(.dark) .site-footer .footer-social-link {
   background:#06101d;
 }
 
-body.home-page .home-topic-section,
-body.home-page .home-article-section,
-body.home-page .site-footer{
-  content-visibility:auto;
-  contain-intrinsic-size:640px;
-}
 .home-article-head{
   display:flex;
   align-items:end;
