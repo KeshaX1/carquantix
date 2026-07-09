@@ -5885,6 +5885,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     grid-template-columns:1fr;
     gap:12px;
     padding:14px 18px;
+    align-content:start;
   }
   body.home-page .home-hero-title{
     font-size:clamp(2.05rem,11vw,3.05rem);
@@ -5902,8 +5903,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     font-size:0.8rem;
   }
   body.home-page .home-hero-media{
-    max-width:82vw;
-    justify-self:center;
+    display:none;
   }
   body.home-page .home-hero-media.is-showing-country-preview{
     overflow:visible;
