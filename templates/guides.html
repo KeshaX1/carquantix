@@ -19,9 +19,10 @@
   <meta name="description" content="{{ meta_description or 'Beginner-friendly car guides about horsepower, comparisons, sports cars, EV choices and ownership cost.' }}">
   <meta name="robots" content="{{ robots_directive or 'index,follow' }}">
   <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/guides' }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260328-social-icons1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-site-shell-fix') }}">
 </head>
 <body class="about-page content-page" data-page="guides">
+  {% include '_topbar.html' %}
   <main class="about-wrap">
     <section class="about-card">
       <div class="content-hero">

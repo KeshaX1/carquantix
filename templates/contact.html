@@ -21,9 +21,10 @@
   <meta name="description" content="{{ meta_description or 'Contact CarQuantix for support, partnerships and product questions.' }}">
   <meta name="robots" content="{{ robots_directive or 'index,follow' }}">
   <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/contact' }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260328-social-icons1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-site-shell-fix') }}">
 </head>
 <body class="about-page" data-page="contact">
+  {% include '_topbar.html' %}
   <main class="about-wrap">
     <section class="about-card">
       <h1 data-i18n="contact.title">Contact</h1>

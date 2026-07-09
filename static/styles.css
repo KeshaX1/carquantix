@@ -2152,6 +2152,27 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
+body.about-page,
+body.privacy-page,
+body.car-detail-page,
+body.car-market-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body.about-page > main,
+body.privacy-page > main,
+body.car-detail-page > main,
+body.car-market-page > main {
+  flex: 1 0 auto;
+}
+
+body:not(.home-page) .site-footer {
+  width: 100%;
+  margin-top: auto;
+}
+
 .item, .compare-card {
   background: var(--card);
   color: var(--text);
@@ -3578,6 +3599,7 @@ input {
   line-height: 1;
   letter-spacing: 0.3px;
   color: #fff;
+  text-decoration: none;
 }
 
 .brand-copy {
@@ -4048,6 +4070,33 @@ body:not(.dark) .category-entry-card:hover {
 .top-lang-host {
   display: flex;
   align-items: center;
+}
+
+.topbar-lang-select {
+  min-height: 36px;
+  padding: 0 34px 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: #eaf0ff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.topbar-lang-select option {
+  background: #10141d;
+  color: #eaf0ff;
+}
+
+body:not(.dark) .topbar-lang-select {
+  border-color: rgba(15,23,42,0.12);
+  background: rgba(15,23,42,0.04);
+  color: #0f172a;
+}
+
+body:not(.dark) .topbar-lang-select option {
+  background: #ffffff;
+  color: #0f172a;
 }
 
 .top-switch {

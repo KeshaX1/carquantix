@@ -19,9 +19,10 @@
   <meta name="description" content="{{ meta_description or 'General car writing, editorial overviews and readable automotive topics from CarQuantix.' }}">
   <meta name="robots" content="{{ robots_directive or 'index,follow' }}">
   <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/blog' }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260328-social-icons1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-site-shell-fix') }}">
 </head>
 <body class="about-page content-page" data-page="blog">
+  {% include '_topbar.html' %}
   <main class="about-wrap">
     <section class="about-card">
       <div class="content-hero">

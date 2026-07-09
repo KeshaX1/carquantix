@@ -21,9 +21,10 @@
   <meta name="description" content="{{ meta_description or 'Learn what CarQuantix does and how we help users compare vehicles.' }}">
   <meta name="robots" content="{{ robots_directive or 'index,follow' }}">
   <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/about-us' }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260328-social-icons1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-site-shell-fix') }}">
 </head>
 <body class="about-page" data-page="about">
+  {% include '_topbar.html' %}
   <main class="about-wrap">
     <section class="about-card">
       <h1 data-i18n="about.title">About Us - CarQuantix</h1>

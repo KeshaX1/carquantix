@@ -28,7 +28,7 @@
   {% endif %}
   {% include "_adsense_head.html" %}
   <script type="application/ld+json">{{ page_schema|tojson }}</script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260328-social-icons1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-site-shell-fix') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     .compare-detail-main {
@@ -664,21 +664,7 @@
   </style>
 </head>
 <body class="car-detail-page">
-  <header class="topbar">
-    <div class="brand-block">
-      <span class="brand-name">CarQuantix</span>
-      <span class="brand-copy">&copy; 2026</span>
-    </div>
-    <nav class="top-links" aria-label="Top links">
-      <a href="/" class="top-link">Home</a>
-      <a href="/sell-car" class="top-link">Sell Your Car</a>
-      <a href="/news" class="top-link">News</a>
-      <a href="/guides" class="top-link">Guides</a>
-      <a href="/blog" class="top-link">Blog</a>
-      <a href="/pricing" class="top-link">Pricing</a>
-    </nav>
-    <div class="auth-area"></div>
-  </header>
+  {% include '_topbar.html' %}
 
   <main class="compare-detail-main">
     <section class="compare-intro">

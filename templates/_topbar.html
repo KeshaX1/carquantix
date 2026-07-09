@@ -1,0 +1,59 @@
+<header class="topbar site-topbar">
+  <div class="brand-block">
+    <a class="brand-name" href="/">CarQuantix</a>
+    <span class="brand-copy">&copy; 2026</span>
+  </div>
+  <nav class="top-links" aria-label="Top links">
+    <a href="/" class="top-link" data-i18n="navHome">Home</a>
+    <a href="/news" class="top-link" data-i18n="navNews">News</a>
+    <a href="/guides" class="top-link" data-i18n="navGuides">Guides</a>
+    <a href="/blog" class="top-link" data-i18n="navBlog">Blog</a>
+    <a href="/pricing" class="top-link" data-i18n="navPricing">Pricing</a>
+  </nav>
+  <div class="auth-area">
+    <div class="switch-row top-switch">
+      <span data-i18n="darkMode">Dark Mode</span>
+      <label class="switch">
+        <input type="checkbox" data-site-theme-toggle aria-label="Toggle dark mode">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <select class="topbar-lang-select" aria-label="Language selector" data-site-lang-select>
+      <option value="en">English</option>
+      <option value="tr">Turkce</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Francais</option>
+      <option value="es">Espanol</option>
+    </select>
+    {% if user %}
+    <a class="auth-btn" href="/">Account</a>
+    {% else %}
+    <a class="auth-btn" href="/#login">Log In</a>
+    {% endif %}
+  </div>
+</header>
+<script>
+(() => {
+  const themeToggle = document.querySelector('[data-site-theme-toggle]');
+  const langSelect = document.querySelector('[data-site-lang-select]');
+  const storedTheme = localStorage.getItem('theme');
+  const defaultDark = storedTheme ? storedTheme === 'dark' : true;
+  const syncTheme = (next) => {
+    document.body.classList.toggle('dark', next);
+    if (themeToggle) themeToggle.checked = next;
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
+  syncTheme(defaultDark);
+  if (themeToggle) {
+    themeToggle.addEventListener('change', (event) => syncTheme(event.target.checked));
+  }
+  if (langSelect) {
+    const storedLang = (localStorage.getItem('appLang') || 'en').toLowerCase();
+    langSelect.value = storedLang;
+    langSelect.addEventListener('change', () => {
+      localStorage.setItem('appLang', langSelect.value);
+      window.location.reload();
+    });
+  }
+})();
+</script>
