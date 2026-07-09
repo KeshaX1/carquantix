@@ -206,14 +206,25 @@
     const compareLink = document.getElementById('homeCompareLink');
     const sellLink = document.getElementById('homeSellLink');
     if (!img || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    const defaultSrc = img.currentSrc || img.src;
+    const defaultSrc = img.getAttribute('src') || img.currentSrc || img.src;
     const defaultAlt = img.alt;
+    const preload = (src) => {
+      if (!src) return;
+      const preview = new Image();
+      preview.decoding = 'async';
+      preview.src = src;
+    };
     const setImage = (src, alt) => {
-      if (!src || img.src.endsWith(src)) return;
-      img.src = src;
+      if (!src || img.getAttribute('src') === src) return;
+      img.classList.add('is-switching');
+      window.setTimeout(() => {
+        img.setAttribute('src', src);
+        img.classList.remove('is-switching');
+      }, 60);
       img.alt = alt || defaultAlt;
     };
     const restore = () => setImage(defaultSrc, defaultAlt);
+    [img.dataset.hoverSrc, img.dataset.sellHoverSrc].forEach(preload);
     if (compareLink && img.dataset.hoverSrc) {
       compareLink.addEventListener('mouseenter', () => setImage(img.dataset.hoverSrc, img.dataset.hoverAlt));
       compareLink.addEventListener('mouseleave', restore);
