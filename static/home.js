@@ -181,22 +181,24 @@
   const initLanguage = () => {
     const host = document.getElementById('topLangHost');
     if (!host) return;
-    const select = document.createElement('select');
+    const select = host.querySelector('select') || document.createElement('select');
     select.className = 'topbar-lang-select';
     select.setAttribute('aria-label', 'Language selector');
-    LANGUAGES.forEach((lang) => {
-      const option = document.createElement('option');
-      option.value = lang.code;
-      option.textContent = lang.label;
-      select.appendChild(option);
-    });
+    if (!select.options.length) {
+      LANGUAGES.forEach((lang) => {
+        const option = document.createElement('option');
+        option.value = lang.code;
+        option.textContent = lang.label;
+        select.appendChild(option);
+      });
+    }
     select.value = currentLang;
     select.addEventListener('change', () => {
       currentLang = getLang(select.value).code;
       localStorage.setItem('appLang', currentLang);
       applyText();
     });
-    host.replaceChildren(select);
+    if (!select.parentElement) host.replaceChildren(select);
   };
 
   const initHeroHover = () => {

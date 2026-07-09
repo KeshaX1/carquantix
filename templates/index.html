@@ -104,8 +104,11 @@
       body.home-page .home-hero-media{display:none!important}
     }
     @media (max-width:520px){
-      body.home-page .topbar{min-height:72px;height:auto;flex-wrap:wrap;padding:9px 12px}
-      body.home-page .auth-area{position:static;transform:none;width:100%;justify-content:space-between}
+      body.home-page .topbar{min-height:72px;height:auto;flex-wrap:wrap;align-items:center;gap:8px;padding:9px 12px;overflow:visible}
+      body.home-page .auth-area{position:static;transform:none;display:flex;width:100%;justify-content:space-between;gap:8px}
+      body.home-page .top-switch{display:flex;align-items:center;gap:8px;min-height:32px;font-size:.72rem}
+      body.home-page #loginBtn,body.home-page .auth-btn{min-height:32px;padding:6px 12px;font-size:.76rem}
+      body.home-page .top-lang-host{display:flex;min-width:86px;min-height:32px}
       body.home-page .app{min-height:calc(100dvh - 72px)}
       body.home-page .home-hero{min-height:calc(100dvh - 72px);padding:14px 18px 30px}
       body.home-page .home-hero-title{font-size:clamp(2.05rem,11vw,3.05rem)}
@@ -152,11 +155,21 @@
       <div class="switch-row top-switch">
         <span id="darkModeLabel" data-i18n="darkMode">Dark Mode</span>
         <label class="switch">
-          <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+          <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode" checked>
           <span class="slider"></span>
         </label>
       </div>
-      <div id="topLangHost" class="top-lang-host" aria-label="Language selector"></div>
+      <div id="topLangHost" class="top-lang-host" aria-label="Language selector">
+        {% if home_view %}
+        <select class="topbar-lang-select" aria-label="Language selector">
+          <option value="en" selected>English</option>
+          <option value="tr">Turkce</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Francais</option>
+          <option value="es">Espanol</option>
+        </select>
+        {% endif %}
+      </div>
       {% if user %}
       <div class="notifications-wrap">
         <button id="notificationsBtn" class="top-icon-btn" type="button" aria-label="Notifications" title="Notifications">

@@ -5871,6 +5871,11 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
     justify-content:space-between;
     gap:8px;
   }
+  body.home-page .top-lang-host{
+    display:flex;
+    min-width:86px;
+    min-height:32px;
+  }
   body.home-page .top-switch{
     display:flex;
     align-items:center;
