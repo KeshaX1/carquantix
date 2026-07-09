@@ -2090,6 +2090,63 @@ TRANSLATIONS.ru = {
   raceLinksSearch: 'Искать на YouTube',
 };
 
+const FOOTER_TRANSLATIONS = {
+  en: {
+    navHome: 'Home',
+    navSellCar: 'Sell Your Car',
+    navMethodology: 'Methodology',
+    footerCorporate: 'Corporate',
+    footerExplore: 'Explore',
+    footerInfo: 'Information',
+  },
+  tr: {
+    navHome: 'Ana Sayfa',
+    navSellCar: 'Arabanizi Satin',
+    navMethodology: 'Metodoloji',
+    footerCorporate: 'Kurumsal',
+    footerExplore: 'Kesfet',
+    footerInfo: 'Bilgi',
+  },
+  de: {
+    navHome: 'Startseite',
+    navSellCar: 'Auto verkaufen',
+    navMethodology: 'Methodik',
+    footerCorporate: 'Unternehmen',
+    footerExplore: 'Entdecken',
+    footerInfo: 'Information',
+  },
+  fr: {
+    navHome: 'Accueil',
+    navSellCar: 'Vendre votre voiture',
+    navMethodology: 'Methodologie',
+    footerCorporate: 'Entreprise',
+    footerExplore: 'Explorer',
+    footerInfo: 'Information',
+  },
+  es: {
+    navHome: 'Inicio',
+    navSellCar: 'Vende tu auto',
+    navMethodology: 'Metodologia',
+    footerCorporate: 'Empresa',
+    footerExplore: 'Explorar',
+    footerInfo: 'Informacion',
+  },
+  ru: {
+    navHome: 'Glavnaya',
+    navSellCar: 'Prodazha avto',
+    navMethodology: 'Metodologiya',
+    footerCorporate: 'Kompaniya',
+    footerExplore: 'Razdely',
+    footerInfo: 'Informatsiya',
+  },
+};
+
+Object.keys(FOOTER_TRANSLATIONS).forEach((code) => {
+  if (TRANSLATIONS[code]) {
+    Object.assign(TRANSLATIONS[code], FOOTER_TRANSLATIONS[code]);
+  }
+});
+
 const getLang = (code) => LANGUAGES.find(l => l.code === code);
 let currentLang = localStorage.getItem('appLang');
 if (!getLang(currentLang)) currentLang = LANGUAGES[0].code;
@@ -6280,12 +6337,15 @@ function setLanguage(code) {
 }
 
 function initLanguageMenu() {
+  const topLangHost = document.getElementById('topLangHost');
   const sidebarHost = document.querySelector('.sidebar-header');
   let host = null;
 
-  // Prefer placing near main title; fall back to sidebar, then auth/topbar
+  // Prefer the desktop topbar slot; fall back to page-local positions.
   const mainHeader = document.querySelector('.main-header');
-  if (mainHeader) {
+  if (topLangHost) {
+    host = topLangHost;
+  } else if (mainHeader) {
     let leftGroup = mainHeader.querySelector('.main-header-left');
     if (!leftGroup) {
       leftGroup = document.createElement('div');
