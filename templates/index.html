@@ -50,11 +50,79 @@
     "logo": "https://carquantix.com/static/icon/Icon.jpeg"
   }
   </script>
+  {% if home_view %}
+  <style>
+    :root{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#e7f2fb;color-scheme:dark}
+    *{box-sizing:border-box}
+    html.home-root,html.home-root body.home-page{width:100%;min-height:100%;margin:0;padding:0;overflow-x:hidden;background:#03070e}
+    body.home-page{margin:0;background:#03070e;color:#e7f2fb}
+    body.home-page .topbar{position:sticky;top:0;z-index:1300;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 20px;background:linear-gradient(180deg,rgba(20,22,27,.96),rgba(20,22,27,.9));border-bottom:1px solid rgba(255,255,255,.06)}
+    body.home-page .brand-block{display:flex;align-items:baseline;gap:10px;min-width:0}
+    body.home-page .brand-name{font-size:34px;font-weight:800;line-height:1;color:#fff;text-decoration:none}
+    body.home-page .brand-copy{color:#c8d2ea;font-weight:600;font-size:14px}
+    body.home-page .top-links{display:flex;align-items:center;gap:30px}
+    body.home-page .top-link{color:#eaf0ff;text-decoration:none;font-weight:800;font-size:14px}
+    body.home-page .auth-area{position:relative;display:flex;align-items:center;gap:14px}
+    body.home-page .top-switch{display:flex;align-items:center;gap:8px;color:#eaf0ff;font-size:14px;font-weight:800}
+    body.home-page .switch{position:relative;display:inline-block;width:48px;height:26px}
+    body.home-page .switch input{opacity:0;width:0;height:0}
+    body.home-page .slider{position:absolute;cursor:pointer;inset:0;background:#12c9ff;border-radius:999px}
+    body.home-page .slider:before{content:"";position:absolute;width:18px;height:18px;right:4px;top:4px;background:#fff;border-radius:50%}
+    body.home-page .top-lang-host select,.topbar-lang-select{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eaf0ff;font-weight:700}
+    body.home-page .auth-btn{min-height:44px;padding:0 22px;border:0;border-radius:8px;background:#08a8ff;color:#fff;font-weight:800}
+    body.home-page .app{display:block;min-height:calc(100dvh - 68px);height:auto;overflow:visible}
+    body.home-page .main{display:flex;flex-direction:column;min-height:100%;padding:0;overflow:visible}
+    body.home-page .main>:not(.main-header):not(.home-hero):not(.home-topic-section):not(.home-article-section){display:none!important}
+    body.home-page .home-hero{position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(360px,1fr);align-items:center;gap:54px;min-height:calc(100dvh - 68px);margin:0;padding:clamp(34px,6vh,72px) clamp(24px,8vw,128px);overflow:hidden;border-bottom:1px solid rgba(255,255,255,.04);background:radial-gradient(circle at 26% 34%,rgba(0,195,255,.18),transparent 34%),linear-gradient(115deg,#031f31 0%,#051322 44%,#03070e 68%,#061735 100%)}
+    body.home-page .home-hero:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.38))}
+    body.home-page .home-hero-copy,body.home-page .home-hero-media{position:relative;z-index:1}
+    body.home-page .home-hero-copy{display:flex;flex-direction:column;align-items:flex-start;max-width:560px}
+    body.home-page .home-hero-title{margin:0;color:#f3f8ff;font-size:clamp(2.8rem,5vw,5.1rem);line-height:1.08;font-weight:800;letter-spacing:0}
+    body.home-page .home-hero-title span{color:#10c9ff}
+    body.home-page .home-hero-lead{max-width:540px;margin:26px 0 0;color:#c3d7eb;font-size:1.15rem;line-height:1.55}
+    body.home-page .home-hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+    body.home-page .home-hero-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:0 24px;border-radius:999px;font-size:.95rem;font-weight:800;text-decoration:none}
+    body.home-page .home-hero-btn-primary{border:1px solid transparent;background:#12c9ff;color:#00131d}
+    body.home-page .home-hero-btn-secondary{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02);color:#f4f9ff}
+    body.home-page .home-hero-media{margin:0;border:1px solid rgba(255,255,255,.1);border-radius:22px;overflow:hidden;background:#000}
+    body.home-page .home-hero-media picture,body.home-page .home-hero-media img{display:block;width:100%}
+    body.home-page .home-hero-media img{aspect-ratio:16/9;object-fit:cover;object-position:center}
+    @media (max-width:760px){
+      body.home-page .topbar{position:relative;min-height:54px;height:54px;padding:8px 10px;padding-right:76px;overflow:hidden}
+      body.home-page .brand-name{font-size:clamp(1.45rem,6vw,2rem)}
+      body.home-page .brand-copy{font-size:.72rem}
+      body.home-page .top-links,body.home-page .top-switch{display:none}
+      body.home-page .auth-area{position:absolute;right:8px;top:50%;transform:translateY(-50%);gap:6px}
+      body.home-page .topbar-lang-select{min-height:32px;max-width:76px;padding:0 8px;font-size:.72rem}
+      body.home-page .auth-btn{min-height:34px;padding:0 12px;font-size:.76rem}
+      body.home-page .app{min-height:calc(100dvh - 54px)}
+      body.home-page .home-hero{grid-template-columns:1fr;align-content:start;gap:0;min-height:calc(100dvh - 54px);padding:42px 18px 34px}
+      body.home-page .home-hero-title{font-size:clamp(2.2rem,12vw,3.4rem)}
+      body.home-page .home-hero-lead{margin-top:18px;font-size:1rem}
+      body.home-page .home-hero-actions{width:100%;margin-top:26px}
+      body.home-page .home-hero-btn{flex:1 1 150px;min-height:40px;padding-inline:14px;font-size:.82rem}
+      body.home-page .home-hero-media{display:none!important}
+    }
+    @media (max-width:520px){
+      body.home-page .topbar{min-height:72px;height:auto;flex-wrap:wrap;padding:9px 12px}
+      body.home-page .auth-area{position:static;transform:none;width:100%;justify-content:space-between}
+      body.home-page .app{min-height:calc(100dvh - 72px)}
+      body.home-page .home-hero{min-height:calc(100dvh - 72px);padding:14px 18px 30px}
+      body.home-page .home-hero-title{font-size:clamp(2.05rem,11vw,3.05rem)}
+      body.home-page .home-hero-lead{margin-top:12px;font-size:.86rem}
+      body.home-page .home-hero-actions{margin-top:16px}
+      body.home-page .home-hero-btn{min-height:38px;padding:0 14px;font-size:.8rem}
+    }
+  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-critical-css1') }}" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-critical-css1') }}"></noscript>
+  {% else %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-mobile-no-hero1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-critical-css1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
+  {% endif %}
 </head>
 <body class="{{ 'home-page' if home_view else view_mode ~ '-view' }}">
   <header class="topbar">

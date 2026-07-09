@@ -255,9 +255,37 @@
     });
   };
 
+  const initDeferredAdsense = () => {
+    const account = document.querySelector('meta[name="google-adsense-account"]')?.content;
+    if (!account) return;
+    let didLoad = false;
+    const loadAdsense = () => {
+      if (didLoad) return;
+      didLoad = true;
+      if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
+      const script = document.createElement('script');
+      script.async = true;
+      script.crossOrigin = 'anonymous';
+      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(account)}`;
+      document.head.appendChild(script);
+    };
+    const scheduleAdsense = () => {
+      window.setTimeout(loadAdsense, 12000);
+      ['pointerdown', 'keydown', 'scroll'].forEach((eventName) => {
+        window.addEventListener(eventName, loadAdsense, { once: true, passive: true });
+      });
+    };
+    if (document.readyState === 'complete') {
+      scheduleAdsense();
+    } else {
+      window.addEventListener('load', scheduleAdsense, { once: true });
+    }
+  };
+
   initTheme();
   initLanguage();
   applyText();
   initHeroHover();
   initLoginLazyLoad();
+  initDeferredAdsense();
 })();
