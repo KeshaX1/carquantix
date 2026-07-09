@@ -623,6 +623,10 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260709-mobile-lcp1') }}" defer></script>
+  {% if home_view %}
+  <script src="{{ url_for('static', filename='home.js', v='20260709-home-lite1') }}" data-full-script="{{ url_for('static', filename='script.js', v='20260709-home-lite1') }}" defer></script>
+  {% else %}
+  <script src="{{ url_for('static', filename='script.js', v='20260709-home-lite1') }}" defer></script>
+  {% endif %}
 </body>
 </html>

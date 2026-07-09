@@ -6974,6 +6974,11 @@ if (loginBtn && loginModal) {
       closeLoginModal();
     }
   });
+
+  if (window.__carQuantixOpenLoginAfterLoad) {
+    window.__carQuantixOpenLoginAfterLoad = false;
+    openLoginModal();
+  }
 }
 
 const setAuthMode = (mode) => {
