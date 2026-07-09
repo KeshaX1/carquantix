@@ -197,17 +197,17 @@
       {% if home_view %}
       <section class="home-hero" aria-label="CarQuantix introduction">
         <div class="home-hero-copy">
-          <span class="home-hero-kicker"><span aria-hidden="true"></span>Smarter vehicle decisions</span>
+          <span class="home-hero-kicker"><span aria-hidden="true"></span><span data-i18n="homeHeroKicker">Smarter vehicle decisions</span></span>
           <h1 class="home-hero-title">
-            Compare cars by the <span>numbers that matter</span>.
+            <span data-i18n="homeHeroTitlePrefix">Compare cars by the</span> <span data-i18n="homeHeroTitleAccent">numbers that matter</span><span data-i18n="homeHeroTitleSuffix">.</span>
           </h1>
-          <p class="home-hero-lead">
+          <p class="home-hero-lead" data-i18n="homeHeroLead">
             See performance, running costs, ownership data and market insight side by side before you decide.
           </p>
           <div class="home-hero-actions" aria-label="Primary actions">
-            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/?view=compare#compareBuilder" target="_blank" rel="noopener noreferrer">Compare Cars <span aria-hidden="true">-&gt;</span></a>
-            <a id="homeSellLink" class="home-hero-btn home-hero-btn-secondary" href="/sell-car">Sell Your Cars <span aria-hidden="true">-&gt;</span></a>
-            <a id="homeCountryCompareLink" class="home-hero-btn home-hero-btn-country" href="/?view=country#countryPicker" target="_blank" rel="noopener noreferrer">Country compare <span aria-hidden="true">-&gt;</span></a>
+            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/?view=compare#compareBuilder" target="_blank" rel="noopener noreferrer"><span data-i18n="homeHeroCompare">Compare Cars</span> <span aria-hidden="true">-&gt;</span></a>
+            <a id="homeSellLink" class="home-hero-btn home-hero-btn-secondary" href="/sell-car"><span data-i18n="homeHeroSell">Sell Your Cars</span> <span aria-hidden="true">-&gt;</span></a>
+            <a id="homeCountryCompareLink" class="home-hero-btn home-hero-btn-country" href="/?view=country#countryPicker" target="_blank" rel="noopener noreferrer"><span data-i18n="homeHeroCountry">Country compare</span> <span aria-hidden="true">-&gt;</span></a>
           </div>
         </div>
         <figure class="home-hero-media">
@@ -240,53 +240,53 @@
               <div><span>Inflation</span><small>2026</small></div>
               <div><span>Unemployment</span><small>2026</small></div>
             </div>
-            <button id="homeCountryPreviewStart" class="home-country-preview-start" type="button">Choose countries</button>
+            <button id="homeCountryPreviewStart" class="home-country-preview-start" type="button" data-i18n="homeCountryPreviewStart">Choose countries</button>
           </div>
         </figure>
       </section>
 
       <section class="home-topic-section" aria-label="CarQuantix research topics">
         <div class="home-topic-head">
-          <span class="home-topic-kicker">Research streams</span>
-          <h2>Explore the data behind better car choices.</h2>
-          <p>Move from quick comparisons into focused guides, market signals and ownership insights built around real buying decisions.</p>
+          <span class="home-topic-kicker" data-i18n="homeTopicsKicker">Research streams</span>
+          <h2 data-i18n="homeTopicsTitle">Explore the data behind better car choices.</h2>
+          <p data-i18n="homeTopicsLead">Move from quick comparisons into focused guides, market signals and ownership insights built around real buying decisions.</p>
         </div>
         <div class="home-topic-grid">
           <a class="home-topic-card" href="/guides">
             <span class="home-topic-icon" aria-hidden="true">01</span>
-            <h3>Buyer Shortlists</h3>
-            <p>Model comparisons, value picks and practical checks before you commit to a car.</p>
-            <span class="home-topic-link">Open guides <span aria-hidden="true">-&gt;</span></span>
+            <h3 data-i18n="homeTopicBuyerTitle">Buyer Shortlists</h3>
+            <p data-i18n="homeTopicBuyerText">Model comparisons, value picks and practical checks before you commit to a car.</p>
+            <span class="home-topic-link"><span data-i18n="homeTopicBuyerLink">Open guides</span> <span aria-hidden="true">-&gt;</span></span>
           </a>
           <a class="home-topic-card" href="/news">
             <span class="home-topic-icon" aria-hidden="true">02</span>
-            <h3>Market Updates</h3>
-            <p>New vehicle launches, price moves and industry changes that can affect your next decision.</p>
-            <span class="home-topic-link">Read news <span aria-hidden="true">-&gt;</span></span>
+            <h3 data-i18n="homeTopicMarketTitle">Market Updates</h3>
+            <p data-i18n="homeTopicMarketText">New vehicle launches, price moves and industry changes that can affect your next decision.</p>
+            <span class="home-topic-link"><span data-i18n="homeTopicMarketLink">Read news</span> <span aria-hidden="true">-&gt;</span></span>
           </a>
           <a class="home-topic-card" href="/blog">
             <span class="home-topic-icon" aria-hidden="true">03</span>
-            <h3>Ownership Costs</h3>
-            <p>Fuel, charging, depreciation and running-cost thinking for daily drivers and performance cars.</p>
-            <span class="home-topic-link">View articles <span aria-hidden="true">-&gt;</span></span>
+            <h3 data-i18n="homeTopicOwnershipTitle">Ownership Costs</h3>
+            <p data-i18n="homeTopicOwnershipText">Fuel, charging, depreciation and running-cost thinking for daily drivers and performance cars.</p>
+            <span class="home-topic-link"><span data-i18n="homeTopicOwnershipLink">View articles</span> <span aria-hidden="true">-&gt;</span></span>
           </a>
           <a class="home-topic-card" href="/?view=compare#compareBuilder">
             <span class="home-topic-icon" aria-hidden="true">04</span>
-            <h3>Performance Data</h3>
-            <p>Horsepower, acceleration and top-speed numbers arranged for side-by-side comparison.</p>
-            <span class="home-topic-link">Compare cars <span aria-hidden="true">-&gt;</span></span>
+            <h3 data-i18n="homeTopicPerformanceTitle">Performance Data</h3>
+            <p data-i18n="homeTopicPerformanceText">Horsepower, acceleration and top-speed numbers arranged for side-by-side comparison.</p>
+            <span class="home-topic-link"><span data-i18n="homeTopicPerformanceLink">Compare cars</span> <span aria-hidden="true">-&gt;</span></span>
           </a>
           <a class="home-topic-card" href="/methodology">
             <span class="home-topic-icon" aria-hidden="true">05</span>
-            <h3>Data Methodology</h3>
-            <p>How CarQuantix treats specs, estimates and model-year differences across vehicle data.</p>
-            <span class="home-topic-link">See notes <span aria-hidden="true">-&gt;</span></span>
+            <h3 data-i18n="homeTopicMethodologyTitle">Data Methodology</h3>
+            <p data-i18n="homeTopicMethodologyText">How CarQuantix treats specs, estimates and model-year differences across vehicle data.</p>
+            <span class="home-topic-link"><span data-i18n="homeTopicMethodologyLink">See notes</span> <span aria-hidden="true">-&gt;</span></span>
           </a>
           <a class="home-topic-card" href="/sell-car">
             <span class="home-topic-icon" aria-hidden="true">06</span>
-            <h3>Marketplace Listings</h3>
-            <p>Browse public offers or publish a structured listing with price, mileage and seller details.</p>
-            <span class="home-topic-link">Visit marketplace <span aria-hidden="true">-&gt;</span></span>
+            <h3 data-i18n="homeTopicMarketplaceTitle">Marketplace Listings</h3>
+            <p data-i18n="homeTopicMarketplaceText">Browse public offers or publish a structured listing with price, mileage and seller details.</p>
+            <span class="home-topic-link"><span data-i18n="homeTopicMarketplaceLink">Visit marketplace</span> <span aria-hidden="true">-&gt;</span></span>
           </a>
         </div>
       </section>
@@ -294,10 +294,10 @@
       <section class="home-article-section" aria-label="Latest CarQuantix articles">
         <div class="home-article-head">
           <div>
-            <h2>Latest CarQuantix reads</h2>
-            <p>Fresh analysis for people comparing performance, cost and ownership trade-offs before they choose.</p>
+            <h2 data-i18n="homeArticlesTitle">Latest CarQuantix reads</h2>
+            <p data-i18n="homeArticlesLead">Fresh analysis for people comparing performance, cost and ownership trade-offs before they choose.</p>
           </div>
-          <a class="home-article-all" href="/blog">View all articles</a>
+          <a class="home-article-all" href="/blog" data-i18n="homeArticlesAll">View all articles</a>
         </div>
         <div class="home-article-layout">
           <a class="home-article-card home-article-card-featured" href="/guides">
@@ -306,12 +306,12 @@
               <img src="/static/icon/cat-ev.jpg" alt="Electric vehicle charging at night" loading="lazy" decoding="async" width="900" height="563" onerror="this.onerror=null;this.src='/static/icon/hero.jpg';">
             </picture>
             <div class="home-article-body">
-              <span class="home-article-topic">Electric ownership</span>
-              <h3>EV running costs: what to compare before the monthly bill arrives</h3>
-              <p>Look beyond range figures and compare charging price, efficiency, commute distance and seasonal losses.</p>
+              <span class="home-article-topic" data-i18n="homeArticleEvTopic">Electric ownership</span>
+              <h3 data-i18n="homeArticleEvTitle">EV running costs: what to compare before the monthly bill arrives</h3>
+              <p data-i18n="homeArticleEvText">Look beyond range figures and compare charging price, efficiency, commute distance and seasonal losses.</p>
               <div class="home-article-meta">
                 <span>Jul 3, 2026</span>
-                <span>8 min read</span>
+                <span data-i18n="homeArticleEvRead">8 min read</span>
               </div>
             </div>
           </a>
@@ -322,12 +322,12 @@
                 <img src="/static/icon/cat-performance.jpg" alt="Performance car engine bay detail" loading="lazy" decoding="async" width="900" height="563" onerror="this.onerror=null;this.src='/static/icon/hero.jpg';">
               </picture>
               <div class="home-article-body">
-                <span class="home-article-topic">Performance data</span>
-                <h3>Horsepower, acceleration and why the numbers do not always agree</h3>
-                <p>How gearing, traction and weight can change what a spec sheet seems to promise.</p>
+                <span class="home-article-topic" data-i18n="homeArticlePerformanceTopic">Performance data</span>
+                <h3 data-i18n="homeArticlePerformanceTitle">Horsepower, acceleration and why the numbers do not always agree</h3>
+                <p data-i18n="homeArticlePerformanceText">How gearing, traction and weight can change what a spec sheet seems to promise.</p>
                 <div class="home-article-meta">
                   <span>Jul 3, 2026</span>
-                  <span>6 min read</span>
+                  <span data-i18n="homeArticlePerformanceRead">6 min read</span>
                 </div>
               </div>
             </a>
@@ -337,12 +337,12 @@
                 <img src="/static/icon/cat-buying.jpg" alt="Car buying paperwork and calculator" loading="lazy" decoding="async" width="900" height="563" onerror="this.onerror=null;this.src='/static/icon/hero.jpg';">
               </picture>
               <div class="home-article-body">
-                <span class="home-article-topic">Buying guide</span>
-                <h3>The quick ownership checklist before you shortlist a used car</h3>
-                <p>Price is only one signal. Add mileage, fuel, depreciation and seller clarity before deciding.</p>
+                <span class="home-article-topic" data-i18n="homeArticleBuyingTopic">Buying guide</span>
+                <h3 data-i18n="homeArticleBuyingTitle">The quick ownership checklist before you shortlist a used car</h3>
+                <p data-i18n="homeArticleBuyingText">Price is only one signal. Add mileage, fuel, depreciation and seller clarity before deciding.</p>
                 <div class="home-article-meta">
                   <span>Jul 3, 2026</span>
-                  <span>7 min read</span>
+                  <span data-i18n="homeArticleBuyingRead">7 min read</span>
                 </div>
               </div>
             </a>
@@ -649,6 +649,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260709-top-lang-footer') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260709-home-i18n') }}"></script>
 </body>
 </html>
