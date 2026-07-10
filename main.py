@@ -4182,6 +4182,8 @@ def country_indicators(country_code):
 
 @app.route("/")
 def index():
+    if request.args.get("view") in {"compare", "country"}:
+        return redirect("/compare-cars", code=301)
     user = session.get("user")
     cars, slug_map = load_cars()
     search_query = str(request.args.get("q") or "").strip()
@@ -4250,6 +4252,28 @@ def blog():
         canonical_url=canonical_url,
         meta_title="CarQuantix Blog - Car Writing and Editorials",
         meta_description="Read CarQuantix automotive editorials, car buying context, performance explainers and practical notes for comparing vehicles more clearly.",
+        robots_directive="index,follow",
+    )
+
+
+@app.route("/compare-cars")
+def compare_cars_page():
+    user = session.get("user")
+    cars, slug_map = load_cars()
+    car_links = build_car_links(cars)
+    canonical_url = f"{get_base_url()}/compare-cars"
+    return render_template(
+        "index.html",
+        view_mode="compare",
+        user=user,
+        car_links=car_links,
+        featured_car_links=select_featured_car_links(car_links),
+        featured_compare_links=build_featured_compare_links(cars, slug_map),
+        paddle_client_token=PADDLE_CLIENT_TOKEN,
+        paddle_env=PADDLE_ENV,
+        canonical_url=canonical_url,
+        meta_title="Compare Cars Side-by-Side - CarQuantix",
+        meta_description="Compare cars and motorcycles side by side by horsepower, acceleration, top speed, price, consumption and ownership cost.",
         robots_directive="index,follow",
     )
 
@@ -4844,6 +4868,7 @@ def sitemap():
     base_url = get_base_url()
     urls = [
         f"{base_url}/",
+        f"{base_url}/compare-cars",
         f"{base_url}/news",
         f"{base_url}/guides",
         f"{base_url}/blog",

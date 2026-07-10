@@ -6335,20 +6335,13 @@ if (homeCompareLink) {
       }
     });
   }
-  homeCompareLink.addEventListener('click', (event) => {
-    if (event.currentTarget.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey) return;
-    event.preventDefault();
-    history.pushState(null, '', '/?view=compare#compareBuilder');
-    openCompareBuilderFromHome();
-  });
 }
 
 const viewParam = new URLSearchParams(window.location.search).get('view');
 if (window.location.hash === '#compareBuilder' || viewParam === 'compare') {
-  openCompareBuilderFromHome();
+  if (window.location.pathname === '/') window.location.replace('/compare-cars');
 } else if (viewParam === 'country') {
-  history.replaceState(null, '', '/?view=compare#compareBuilder');
-  openCompareBuilderFromHome();
+  window.location.replace('/compare-cars');
 }
 
 

@@ -14,6 +14,7 @@ from main import (  # noqa: E402
 def generate_sitemap(base_url: str, output_path: Path) -> None:
     urls = [
         f"{base_url}/",
+        f"{base_url}/compare-cars",
         f"{base_url}/news",
         f"{base_url}/guides",
         f"{base_url}/blog",

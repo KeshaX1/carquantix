@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-{% set view_mode = request.args.get('view') or 'home' %}
+{% set view_mode = view_mode | default(request.args.get('view') or 'home', true) %}
 {% set home_view = view_mode not in ['compare', 'country'] %}
 <html lang="en" class="{{ 'home-root' if home_view else '' }}">
 <head>
@@ -279,7 +279,7 @@
             See performance, running costs, ownership data and market insight side by side before you decide.
           </p>
           <div class="home-hero-actions" aria-label="Primary actions">
-            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/?view=compare#compareBuilder"><span data-i18n="homeHeroCompare">Compare Cars</span></a>
+            <a id="homeCompareLink" class="home-hero-btn home-hero-btn-primary" href="/compare-cars"><span data-i18n="homeHeroCompare">Compare Cars</span></a>
             <a id="homeSellLink" class="home-hero-btn home-hero-btn-secondary" href="/sell-car"><span data-i18n="homeHeroSell">Sell Your Cars</span></a>
           </div>
         </div>
@@ -329,7 +329,7 @@
             <p data-i18n="homeTopicOwnershipText">Fuel, charging, depreciation and running-cost thinking for daily drivers and performance cars.</p>
             <span class="home-topic-link"><span data-i18n="homeTopicOwnershipLink">View articles</span> <span aria-hidden="true">-&gt;</span></span>
           </a>
-          <a class="home-topic-card" href="/?view=compare#compareBuilder">
+          <a class="home-topic-card" href="/compare-cars">
             <span class="home-topic-icon" aria-hidden="true">04</span>
             <h3 data-i18n="homeTopicPerformanceTitle">Performance Data</h3>
             <p data-i18n="homeTopicPerformanceText">Horsepower, acceleration and top-speed numbers arranged for side-by-side comparison.</p>
@@ -684,6 +684,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260710-login-overlay2') }}" defer></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260710-compare-page1') }}" defer></script>
 </body>
 </html>
