@@ -205,7 +205,7 @@
     const img = document.getElementById('homeHeroImage');
     const compareLink = document.getElementById('homeCompareLink');
     const sellLink = document.getElementById('homeSellLink');
-    if (!img || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (!img) return;
     const defaultSrc = img.getAttribute('src') || img.currentSrc || img.src;
     const defaultAlt = img.alt;
     const preload = (src) => {
@@ -224,6 +224,43 @@
       img.alt = alt || defaultAlt;
     };
     const restore = () => setImage(defaultSrc, defaultAlt);
+    const mobileMedia = window.matchMedia('(max-width: 760px)');
+    const mobileSlides = [
+      [img.dataset.mobileHoverSrc, img.dataset.hoverAlt],
+      [img.dataset.mobileSellHoverSrc, img.dataset.sellHoverAlt]
+    ].filter(([src]) => Boolean(src));
+    let mobileSlideIndex = 0;
+    let mobileRotationTimer = null;
+
+    const stopMobileRotation = () => {
+      if (mobileRotationTimer !== null) {
+        window.clearInterval(mobileRotationTimer);
+        mobileRotationTimer = null;
+      }
+    };
+    const startMobileRotation = () => {
+      stopMobileRotation();
+      if (!mobileMedia.matches || mobileSlides.length < 2) return;
+      mobileSlides.forEach(([src]) => preload(src));
+      mobileSlideIndex = 0;
+      setImage(...mobileSlides[mobileSlideIndex]);
+      mobileRotationTimer = window.setInterval(() => {
+        mobileSlideIndex = (mobileSlideIndex + 1) % mobileSlides.length;
+        setImage(...mobileSlides[mobileSlideIndex]);
+      }, 3500);
+    };
+
+    startMobileRotation();
+    mobileMedia.addEventListener('change', () => {
+      if (mobileMedia.matches) {
+        startMobileRotation();
+      } else {
+        stopMobileRotation();
+        restore();
+      }
+    });
+
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     [img.dataset.hoverSrc, img.dataset.sellHoverSrc].forEach(preload);
     if (compareLink && img.dataset.hoverSrc) {
       compareLink.addEventListener('mouseenter', () => setImage(img.dataset.hoverSrc, img.dataset.hoverAlt));
