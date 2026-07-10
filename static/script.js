@@ -2188,6 +2188,27 @@ Object.keys(HOME_TRANSLATIONS).forEach((code) => {
   }
 });
 
+Object.assign(TRANSLATIONS.en, {
+  decisionKicker: 'Priority verdict', decisionTitle: 'Choose winners by real buying priorities',
+  decisionLead: 'Adjust what matters most, then compare category winners instead of relying on one generic overall winner.',
+});
+Object.assign(TRANSLATIONS.tr, {
+  decisionKicker: 'Öncelik kararı', decisionTitle: 'Gerçek satın alma önceliklerine göre kazananları seçin',
+  decisionLead: 'Sizin için önemli olan ölçütleri ayarlayın ve tek bir genel sonuç yerine kategori kazananlarını karşılaştırın.',
+});
+Object.assign(TRANSLATIONS.de, {
+  decisionKicker: 'Prioritätsurteil', decisionTitle: 'Sieger nach echten Kaufprioritäten wählen',
+  decisionLead: 'Passen Sie die wichtigsten Kriterien an und vergleichen Sie Kategoriesieger statt eines pauschalen Gesamtsiegers.',
+});
+Object.assign(TRANSLATIONS.fr, {
+  decisionKicker: 'Verdict prioritaire', decisionTitle: 'Choisissez selon vos vraies priorités d’achat',
+  decisionLead: 'Ajustez les critères importants puis comparez les gagnants de chaque catégorie.',
+});
+Object.assign(TRANSLATIONS.es, {
+  decisionKicker: 'Veredicto por prioridades', decisionTitle: 'Elige según tus prioridades reales de compra',
+  decisionLead: 'Ajusta lo que más importa y compara ganadores por categoría.',
+});
+
 TRANSLATIONS.ru = {
   ...TRANSLATIONS.en,
   vehiclesTitle: 'Транспорт',
@@ -5391,6 +5412,39 @@ const DECISION_WEIGHT_FIELDS = [
   { key: 'practicality', label: 'Practicality' },
 ];
 
+const DECISION_UI = {
+  tr: {
+    'Your weights': 'Ağırlıklarınız', 'Set what matters most': 'Sizin için önemli olanı ayarlayın', Reset: 'Sıfırla',
+    Performance: 'Performans', Price: 'Fiyat', 'Fuel Cost': 'Yakıt Maliyeti', Practicality: 'Kullanışlılık',
+    'Best Performance': 'En İyi Performans', 'Best Value': 'En İyi Değer', 'Best Daily Driver': 'En İyi Günlük Araç',
+    'Lowest Running Cost': 'En Düşük İşletme Maliyeti', 'Best for Long Trips': 'Uzun Yol İçin En İyi', 'Your Priority Pick': 'Öncelik Seçiminiz',
+    Pros: 'Artılar', Cons: 'Eksiler', 'Buyer guide': 'Alıcı rehberi', 'Who should buy which?': 'Hangi aracı kim satın almalı?',
+    'Power leader': 'Güç lideri', 'Quickest 0-100 km/h': 'En hızlı 0-100 km/sa', 'Top speed leader': 'Azami hız lideri',
+    'Lowest price': 'En düşük fiyat', 'Best efficiency': 'En iyi verimlilik', 'Newest model year': 'En yeni model yılı',
+    'Matches the current priority weights': 'Mevcut öncelik ağırlıklarıyla eşleşiyor', 'Competitive overall spec balance': 'Rekabetçi genel teknik denge',
+    'Less power than the group leader': 'Grup liderinden daha düşük güç', 'Slower off the line than the quickest pick': 'En hızlı seçeneğe göre daha yavaş hızlanma',
+    'Lower top speed than the fastest pick': 'En hızlı seçeneğe göre daha düşük azami hız', 'Higher price than the value leader': 'Değer liderinden daha yüksek fiyat',
+    'Less efficient than the best option': 'En iyi seçenekten daha düşük verimlilik', 'Older model than the newest option': 'En yeni seçenekten daha eski model',
+  },
+  de: {
+    'Your weights': 'Ihre Gewichtung', 'Set what matters most': 'Wichtige Kriterien festlegen', Reset: 'Zurücksetzen',
+    Performance: 'Leistung', Price: 'Preis', 'Fuel Cost': 'Energiekosten', Practicality: 'Alltagstauglichkeit',
+    'Best Performance': 'Beste Leistung', 'Best Value': 'Bestes Preis-Leistungs-Verhältnis', 'Best Daily Driver': 'Bestes Alltagsauto',
+    'Lowest Running Cost': 'Niedrigste Betriebskosten', 'Best for Long Trips': 'Am besten für Langstrecken', 'Your Priority Pick': 'Ihre Prioritätswahl',
+    Pros: 'Vorteile', Cons: 'Nachteile', 'Buyer guide': 'Kaufratgeber', 'Who should buy which?': 'Welches Auto passt zu wem?',
+    'Power leader': 'Leistungsstärkstes Fahrzeug', 'Quickest 0-100 km/h': 'Schnellste 0–100 km/h', 'Top speed leader': 'Höchste Endgeschwindigkeit',
+    'Lowest price': 'Niedrigster Preis', 'Best efficiency': 'Beste Effizienz', 'Newest model year': 'Neuestes Modelljahr',
+    'Matches the current priority weights': 'Entspricht der aktuellen Gewichtung', 'Competitive overall spec balance': 'Ausgewogene technische Daten',
+    'Less power than the group leader': 'Weniger Leistung als der Gruppensieger', 'Slower off the line than the quickest pick': 'Langsamere Beschleunigung als die schnellste Wahl',
+    'Lower top speed than the fastest pick': 'Niedrigere Endgeschwindigkeit als die schnellste Wahl', 'Higher price than the value leader': 'Höherer Preis als der Preis-Leistungs-Sieger',
+    'Less efficient than the best option': 'Weniger effizient als die beste Option', 'Older model than the newest option': 'Älter als das neueste Modell',
+  },
+};
+
+function decisionUi(text) {
+  return DECISION_UI[currentLang]?.[text] || text;
+}
+
 function getFiniteMetricValues(vehicles, getValue) {
   return vehicles
     .map((vehicle) => Number(getValue(vehicle)))
@@ -5743,15 +5797,15 @@ function renderDecisionWeightControls() {
   compareDecisionWeights.innerHTML = `
     <div class="decision-weights-head">
       <div>
-        <div class="section-kicker">Your weights</div>
-        <h3>Set what matters most</h3>
+        <div class="section-kicker">${decisionUi('Your weights')}</div>
+        <h3>${decisionUi('Set what matters most')}</h3>
       </div>
-      <button class="decision-weight-reset" type="button" data-weight-reset>Reset</button>
+      <button class="decision-weight-reset" type="button" data-weight-reset>${decisionUi('Reset')}</button>
     </div>
     <div class="decision-weight-grid">
       ${DECISION_WEIGHT_FIELDS.map((field) => `
         <label class="decision-weight-field">
-          <span>${field.label}</span>
+          <span>${decisionUi(field.label)}</span>
           <input type="range" min="0" max="100" step="5" value="${decisionWeights[field.key]}" data-weight-key="${field.key}">
           <strong>${decisionWeights[field.key]}%</strong>
         </label>
@@ -5800,7 +5854,7 @@ function renderCompareDecisionSection() {
     const card = document.createElement('article');
     card.className = 'compare-decision-verdict';
     card.innerHTML = `
-      <div class="section-kicker">${item.label}</div>
+      <div class="section-kicker">${decisionUi(item.label)}</div>
       <strong>${item.winner}</strong>
       <p>${item.reason}</p>
     `;
@@ -5813,15 +5867,15 @@ function renderCompareDecisionSection() {
     card.innerHTML = `
       <h3>${group.title}</h3>
       <div class="decision-tradeoff-group">
-        <h4>Pros</h4>
+        <h4>${decisionUi('Pros')}</h4>
         <ul class="decision-tradeoff-list pros">
-          ${group.pros.map((item) => `<li>${item}</li>`).join('')}
+          ${group.pros.map((item) => `<li>${decisionUi(item)}</li>`).join('')}
         </ul>
       </div>
       <div class="decision-tradeoff-group">
-        <h4>Cons</h4>
+        <h4>${decisionUi('Cons')}</h4>
         <ul class="decision-tradeoff-list cons">
-          ${group.cons.map((item) => `<li>${item}</li>`).join('')}
+          ${group.cons.map((item) => `<li>${decisionUi(item)}</li>`).join('')}
         </ul>
       </div>
     `;
@@ -5833,8 +5887,8 @@ function renderCompareDecisionSection() {
     buyerGuide.className = 'compare-buyer-guide';
     buyerGuide.setAttribute('aria-label', 'Who should buy which');
     buyerGuide.innerHTML = `
-      <div class="section-kicker">Buyer guide</div>
-      <h2>Who should buy which?</h2>
+      <div class="section-kicker">${decisionUi('Buyer guide')}</div>
+      <h2>${decisionUi('Who should buy which?')}</h2>
       <div class="buyer-guide-grid">
         ${data.buyerRecommendations.map((item) => `
           <article class="buyer-guide-item">
@@ -6201,6 +6255,38 @@ if (homeCompareLink) {
     homeSellLink.addEventListener('mouseleave', showDefaultHeroImage);
     homeSellLink.addEventListener('focus', showSellHeroImage);
     homeSellLink.addEventListener('blur', showDefaultHeroImage);
+  }
+  if (homeHeroImage && homeHeroCompareMobileSrc && homeHeroSellMobileSrc && typeof window.matchMedia === 'function') {
+    const mobileHeroMedia = window.matchMedia('(max-width: 760px)');
+    const mobileHeroSlides = [
+      [homeHeroCompareMobileSrc, homeHeroCompareAlt],
+      [homeHeroSellMobileSrc, homeHeroSellAlt],
+    ];
+    let mobileHeroIndex = 0;
+    let mobileHeroTimer = null;
+    const stopMobileHeroRotation = () => {
+      if (mobileHeroTimer !== null) window.clearInterval(mobileHeroTimer);
+      mobileHeroTimer = null;
+    };
+    const startMobileHeroRotation = () => {
+      stopMobileHeroRotation();
+      if (!mobileHeroMedia.matches) return;
+      mobileHeroSlides.forEach(([src]) => preloadHomeHeroImage(src));
+      mobileHeroIndex = 0;
+      setHomeHeroImage(...mobileHeroSlides[mobileHeroIndex]);
+      mobileHeroTimer = window.setInterval(() => {
+        mobileHeroIndex = (mobileHeroIndex + 1) % mobileHeroSlides.length;
+        setHomeHeroImage(...mobileHeroSlides[mobileHeroIndex]);
+      }, 3500);
+    };
+    startMobileHeroRotation();
+    mobileHeroMedia.addEventListener('change', () => {
+      if (mobileHeroMedia.matches) startMobileHeroRotation();
+      else {
+        stopMobileHeroRotation();
+        showDefaultHeroImage();
+      }
+    });
   }
   homeCompareLink.addEventListener('click', (event) => {
     if (event.currentTarget.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey) return;

@@ -44,7 +44,7 @@
             <li data-copy-en="{{ item.points_en[idx] }}" data-copy-tr="{{ item.points_tr[idx] }}">{{ item.points_en[idx] }}</li>
             {% endfor %}
           </ul>
-          <a class="content-card-link" href="/guides/{{ item.slug }}">Read guide</a>
+          <a class="content-card-link" href="/guides/{{ item.slug }}" data-i18n="guides.readLink">Read guide</a>
         </article>
         {% endfor %}
       </div>
@@ -59,7 +59,7 @@
     </section>
   </main>
   {% include '_footer.html' %}
-  <script src="{{ url_for('static', filename='page_i18n.js', v='20260316-guides-blog1') }}"></script>
+  <script src="{{ url_for('static', filename='page_i18n.js', v='20260710-language-completion1') }}"></script>
   <script>
     (() => {
       const lang = (localStorage.getItem('appLang') || 'en').toLowerCase();

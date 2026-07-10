@@ -4723,7 +4723,7 @@ def car_detail(slug):
         meta_title=meta_title,
         meta_description=meta_description,
         canonical_url=canonical_url,
-        robots_directive="index,follow",
+        robots_directive="index,follow" if is_indexable else "noindex,follow",
         adsense_enabled=True,
         page_schema=page_schema,
         related_car_links=build_related_car_links(car, cars, limit=8),
@@ -4808,7 +4808,7 @@ def compare_detail(compare_slug):
         canonical_url=canonical_url,
         meta_title=meta_title,
         meta_description=meta_description,
-        robots_directive="index,follow",
+        robots_directive="index,follow" if is_indexable else "noindex,follow",
         adsense_enabled=True,
         page_schema=page_schema,
         related_car_links=unique_link_entries(
@@ -4829,7 +4829,6 @@ def compare_detail(compare_slug):
 
 @app.route("/sitemap.xml")
 def sitemap():
-    cars, slug_map = load_cars()
     base_url = get_base_url()
     urls = [
         f"{base_url}/",
@@ -4847,9 +4846,6 @@ def sitemap():
     ]
     urls.extend(f"{base_url}/guides/{item['slug']}" for item in GUIDE_ITEMS if item.get("slug"))
     urls.extend(f"{base_url}/blog/{item['slug']}" for item in BLOG_ITEMS if item.get("slug"))
-    car_links = build_car_links(cars)
-    urls.extend(f"{base_url}/cars/{entry['slug']}" for entry in car_links if entry.get("slug"))
-    urls.extend(f"{base_url}{entry['href']}" for entry in build_featured_compare_links(cars, slug_map, limit=None))
     entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
     xml = (
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

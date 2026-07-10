@@ -22,56 +22,57 @@
   <link rel="canonical" href="{{ canonical_url or 'https://carquantix.com/methodology' }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260709-site-shell-fix') }}">
 </head>
-<body class="about-page article-page">
+<body class="about-page article-page" data-page="methodology">
   {% include '_topbar.html' %}
 
   <main class="article-wrap">
     <article class="article-shell">
       <header class="article-hero">
-        <span class="content-kicker">Data notes</span>
-        <h1>Methodology and Data Notes</h1>
-        <p>CarQuantix is built to help users compare vehicles quickly, but vehicle data should always be read with context. This page explains how the comparison logic should be interpreted.</p>
+        <span class="content-kicker" data-i18n="method.kicker">Data notes</span>
+        <h1 data-i18n="method.title">Methodology and Data Notes</h1>
+        <p data-i18n="method.lead">CarQuantix is built to help users compare vehicles quickly, but vehicle data should always be read with context. This page explains how the comparison logic should be interpreted.</p>
       </header>
 
       <div class="article-body">
         <section>
-          <h2>What CarQuantix compares</h2>
-          <p>The platform focuses on practical comparison points: horsepower, 0-100 km/h acceleration, top speed, engine or powertrain type, listed price, and fuel or energy consumption when available. These figures are placed side by side so users can understand trade-offs instead of chasing one isolated number.</p>
-          <p>Performance data is useful for shortlisting, but it is not a complete buying recommendation. Real ownership also depends on trim, market, tire package, maintenance, insurance, local fuel or electricity prices, warranty coverage, and resale value.</p>
+          <h2 data-i18n="method.compareTitle">What CarQuantix compares</h2>
+          <p data-i18n="method.compareP1">The platform focuses on practical comparison points: horsepower, 0-100 km/h acceleration, top speed, engine or powertrain type, listed price, and fuel or energy consumption when available. These figures are placed side by side so users can understand trade-offs instead of chasing one isolated number.</p>
+          <p data-i18n="method.compareP2">Performance data is useful for shortlisting, but it is not a complete buying recommendation. Real ownership also depends on trim, market, tire package, maintenance, insurance, local fuel or electricity prices, warranty coverage, and resale value.</p>
         </section>
 
         <section>
-          <h2>How winners are selected</h2>
-          <p>Comparison pages now separate category winners instead of declaring one universal overall winner. Best Performance uses power, 0-100 km/h acceleration, and top speed. Best Value combines listed price, performance, and efficiency. Daily-driver, running-cost, and long-trip categories use the relevant recorded data available for each model.</p>
-          <p>The priority pick is a weighted decision aid, not a final purchase instruction. Users can change the weight of performance, price, fuel cost, and practicality because a car can win one category and still be the wrong choice for a specific driver.</p>
+          <h2 data-i18n="method.winnersTitle">How winners are selected</h2>
+          <p data-i18n="method.winnersP1">Comparison pages now separate category winners instead of declaring one universal overall winner. Best Performance uses power, 0-100 km/h acceleration, and top speed. Best Value combines listed price, performance, and efficiency. Daily-driver, running-cost, and long-trip categories use the relevant recorded data available for each model.</p>
+          <p data-i18n="method.winnersP2">The priority pick is a weighted decision aid, not a final purchase instruction. Users can change the weight of performance, price, fuel cost, and practicality because a car can win one category and still be the wrong choice for a specific driver.</p>
         </section>
 
         <section>
-          <h2>Data accuracy and local differences</h2>
-          <p>Vehicle figures can vary by market, model year, trim, transmission, battery size, tire package, and testing method. When a number affects a buying decision, confirm the exact local version with the manufacturer, seller, or official specification sheet.</p>
-          <p>Each verified vehicle record should identify the model year, trim or motor, body style, price market, measurement standard, source address, and the date the record was checked. Dimensions shown with an "est." suffix are fallback estimates used only when exact dimensions have not yet been recorded.</p>
-          <p>CarQuantix aims to make research faster by organizing the important questions. It is not a substitute for an inspection, test drive, official quote, or professional advice before a purchase.</p>
+          <h2 data-i18n="method.accuracyTitle">Data accuracy and local differences</h2>
+          <p data-i18n="method.accuracyP1">Vehicle figures can vary by market, model year, trim, transmission, battery size, tire package, and testing method. When a number affects a buying decision, confirm the exact local version with the manufacturer, seller, or official specification sheet.</p>
+          <p data-i18n="method.accuracyP2">Each verified vehicle record should identify the model year, trim or motor, body style, price market, measurement standard, source address, and the date the record was checked. Dimensions shown with an "est." suffix are fallback estimates used only when exact dimensions have not yet been recorded.</p>
+          <p data-i18n="method.accuracyP3">CarQuantix aims to make research faster by organizing the important questions. It is not a substitute for an inspection, test drive, official quote, or professional advice before a purchase.</p>
         </section>
 
         <section>
-          <h2>Ownership cost interpretation</h2>
-          <p>Fuel and charging estimates should be adapted to the user's real prices and mileage. The same car can have a different cost profile in different cities or countries. Insurance, tax, tires, servicing, financing, and depreciation can matter more than small differences in fuel use.</p>
-          <p>For a stronger comparison, create a yearly estimate for each vehicle. Add distance driven, fuel or electricity price, service expectations, tire replacement, insurance, and expected depreciation. Then use the CarQuantix table as the performance and efficiency layer of that decision.</p>
+          <h2 data-i18n="method.costTitle">Ownership cost interpretation</h2>
+          <p data-i18n="method.costP1">Fuel and charging estimates should be adapted to the user's real prices and mileage. The same car can have a different cost profile in different cities or countries. Insurance, tax, tires, servicing, financing, and depreciation can matter more than small differences in fuel use.</p>
+          <p data-i18n="method.costP2">For a stronger comparison, create a yearly estimate for each vehicle. Add distance driven, fuel or electricity price, service expectations, tire replacement, insurance, and expected depreciation. Then use the CarQuantix table as the performance and efficiency layer of that decision.</p>
         </section>
 
         <section>
-          <h2>Editorial policy</h2>
-          <p>CarQuantix aims to provide useful automotive comparison content based on publicly available specifications, manufacturer information, safety references, fuel economy resources, market context, and editorial analysis.</p>
-          <p>We do not claim that every figure is final for every market or trim. Vehicle specifications may vary depending on model year, region, tire package, battery, transmission, optional equipment, and testing method. If you find an error, contact us and we will review the page.</p>
+          <h2 data-i18n="method.editorialTitle">Editorial policy</h2>
+          <p data-i18n="method.editorialP1">CarQuantix aims to provide useful automotive comparison content based on publicly available specifications, manufacturer information, safety references, fuel economy resources, market context, and editorial analysis.</p>
+          <p data-i18n="method.editorialP2">We do not claim that every figure is final for every market or trim. Vehicle specifications may vary depending on model year, region, tire package, battery, transmission, optional equipment, and testing method. If you find an error, contact us and we will review the page.</p>
         </section>
       </div>
 
       <footer class="article-footer-note">
-        <p>Last reviewed: 2026-07-08.</p>
-        <a href="/">Back to comparison tool</a>
+        <p><span data-i18n="method.reviewed">Last reviewed</span>: 2026-07-08.</p>
+        <a href="/" data-i18n="method.back">Back to comparison tool</a>
       </footer>
     </article>
   </main>
   {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='page_i18n.js', v='20260710-language-completion1') }}"></script>
 </body>
 </html>
