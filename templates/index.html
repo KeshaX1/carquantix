@@ -171,17 +171,7 @@
           <span class="slider"></span>
         </label>
       </div>
-      <div id="topLangHost" class="top-lang-host" aria-label="Language selector">
-        {% if home_view %}
-        <select class="topbar-lang-select" aria-label="Language selector">
-          <option value="en" selected>English</option>
-          <option value="tr">Turkce</option>
-          <option value="de">Deutsch</option>
-          <option value="fr">Francais</option>
-          <option value="es">Espanol</option>
-        </select>
-        {% endif %}
-      </div>
+      <div id="topLangHost" class="top-lang-host" aria-label="Language selector"></div>
       {% if user %}
       <div class="notifications-wrap">
         <button id="notificationsBtn" class="top-icon-btn" type="button" aria-label="Notifications" title="Notifications">
@@ -272,14 +262,6 @@
     <main class="main" role="main">
       <header class="main-header">
         <div class="main-header-left">
-          <div class="lang-wrapper" data-lang-shell="1">
-            <button type="button" class="lang-toggle">
-              <span class="lang-label">English</span>
-              <span class="lang-caret">&#9662;</span>
-            </button>
-            <button type="button" class="mobile-panel-toggle" hidden></button>
-            <div class="lang-menu" role="menu"></div>
-          </div>
           <button id="mobileThemeToggle" class="mobile-theme-toggle" type="button" aria-pressed="true" aria-label="Toggle dark mode">
             <span class="mobile-theme-toggle-mark" aria-hidden="true"></span>
             <span data-i18n="darkMode">Dark Mode</span>
@@ -714,6 +696,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260710-language-completion1') }}" defer></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260710-single-language-menu1') }}" defer></script>
 </body>
 </html>
