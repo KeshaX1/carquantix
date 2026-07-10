@@ -35,6 +35,11 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret")
 app.permanent_session_lifetime = timedelta(days=180)
 
+
+@app.context_processor
+def inject_current_user():
+    return {"user": session.get("user")}
+
 oauth = OAuth(app)
 # GOOGLE DISCOVERY URL (compulsory)
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
@@ -4940,10 +4945,25 @@ def seo_slug(slug):
         )
     return "Not Found", 404
 
+def safe_auth_return_path(value):
+    candidate = str(value or "").strip()
+    parsed = urllib.parse.urlsplit(candidate)
+    if (
+        not candidate.startswith("/")
+        or candidate.startswith("//")
+        or parsed.scheme
+        or parsed.netloc
+        or any(character in candidate for character in ("\\", "\r", "\n"))
+    ):
+        return "/"
+    return candidate
+
+
 @app.route("/login/google")
 def login_google():
     if 'google' not in oauth._registry:
         return jsonify({"ok": False, "message": "Google login not configured."}), 500
+    session["oauth_return_path"] = safe_auth_return_path(request.args.get("next"))
     print(f"[auth] using client_id={GOOGLE_CLIENT_ID}")
     redirect_uri = url_for("authorize_google", _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
@@ -4969,7 +4989,7 @@ def authorize_google():
         session["user"] = session_user_payload(persisted)
     else:
         session["user"] = session_user_payload(user)
-    return redirect("/")
+    return redirect(session.pop("oauth_return_path", "/"))
 
 @app.route("/login/facebook")
 def login_facebook():

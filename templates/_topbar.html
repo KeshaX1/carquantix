@@ -20,22 +20,242 @@
     </div>
     <select class="topbar-lang-select" aria-label="Language selector" data-site-lang-select>
       <option value="en">English</option>
-      <option value="tr">Turkce</option>
+      <option value="tr">Türkçe</option>
       <option value="de">Deutsch</option>
-      <option value="fr">Francais</option>
-      <option value="es">Espanol</option>
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+      <option value="ru">Русский</option>
     </select>
     {% if user %}
     <a class="auth-btn" href="/" data-i18n="account">Account</a>
     {% else %}
-    <a class="auth-btn" href="/#login" data-i18n="login">Log In</a>
+    <button class="auth-btn" type="button" data-site-login-open data-i18n="login">Log In</button>
     {% endif %}
   </div>
 </header>
+
+{% if not user %}
+<div class="site-login-modal" data-site-login-modal aria-hidden="true" hidden>
+  <button class="site-login-backdrop" type="button" data-site-login-close aria-label="Close"></button>
+  <section class="site-login-dialog" role="dialog" aria-modal="true" aria-labelledby="siteLoginTitle">
+    <button class="site-login-close" type="button" data-site-login-close aria-label="Close">&times;</button>
+    <h2 id="siteLoginTitle" data-site-auth-copy="title">Log In</h2>
+    <form class="site-login-form" data-site-login-form>
+      <label class="site-login-label" for="siteLoginEmail" data-site-auth-copy="email">Email</label>
+      <input id="siteLoginEmail" class="site-login-input" type="email" autocomplete="email" required data-site-login-email>
+      <label class="site-login-label" for="siteLoginPassword" data-site-auth-copy="password">Password</label>
+      <div class="site-login-password-row">
+        <input id="siteLoginPassword" class="site-login-input" type="password" autocomplete="current-password" minlength="8" required data-site-login-password>
+        <button class="site-login-password-toggle" type="button" data-site-password-toggle aria-label="Show password" title="Show password">&#128065;</button>
+      </div>
+      <div class="site-login-error" data-site-login-error role="alert" aria-live="polite" hidden></div>
+      <button class="site-login-submit" type="submit" data-site-auth-copy="submit">Log In</button>
+    </form>
+    <a class="site-login-google" href="/login/google" data-site-google-login data-site-auth-copy="google">Continue with Google</a>
+  </section>
+</div>
+{% endif %}
+
+<style>
+  .site-login-modal[hidden] { display: none !important; }
+  .site-login-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+  }
+  .site-login-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: rgba(0, 0, 0, 0.72);
+    cursor: default;
+  }
+  .site-login-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(420px, calc(100vw - 40px));
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    background: #1d1f24;
+    color: #f8fafc;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5);
+  }
+  .site-login-dialog h2 {
+    margin: 0 42px 22px 0;
+    font-size: 1.55rem;
+  }
+  .site-login-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    color: inherit;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .site-login-form { display: grid; gap: 10px; }
+  .site-login-label { font-size: 0.86rem; font-weight: 800; }
+  .site-login-input {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid #4b5563;
+    border-radius: 9px;
+    background: #111318;
+    color: #f8fafc;
+    font: inherit;
+  }
+  .site-login-password-row { display: flex; align-items: stretch; gap: 8px; }
+  .site-login-password-row .site-login-input { min-width: 0; flex: 1; }
+  .site-login-password-toggle {
+    flex: 0 0 46px;
+    border: 1px solid #4b5563;
+    border-radius: 9px;
+    background: #111827;
+    color: #f8fafc;
+    cursor: pointer;
+  }
+  .site-login-error {
+    padding: 9px 10px;
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    border-radius: 9px;
+    background: rgba(127, 29, 29, 0.3);
+    color: #fecaca;
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+  .site-login-submit,
+  .site-login-google {
+    min-height: 44px;
+    border: 0;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    font: inherit;
+    font-weight: 800;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .site-login-submit {
+    margin-top: 6px;
+    background: linear-gradient(135deg, #078cff, #12c9ff);
+    color: #06101d;
+  }
+  .site-login-google {
+    width: 100%;
+    margin-top: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
+    color: #f8fafc;
+  }
+  body.site-login-modal-open { overflow: hidden !important; }
+  body:not(.dark) .site-login-dialog {
+    border-color: rgba(15, 23, 42, 0.12);
+    background: #ffffff;
+    color: #0f172a;
+  }
+  body:not(.dark) .site-login-close,
+  body:not(.dark) .site-login-password-toggle {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+  }
+  body:not(.dark) .site-login-input {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+  }
+  body:not(.dark) .site-login-google {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+  }
+  @media (max-width: 760px) {
+    .site-topbar { padding-right: 170px; }
+    .site-topbar .top-links {
+      padding-left: 10px;
+      gap: 10px;
+    }
+    .site-topbar .top-link { font-size: 12px; }
+    .site-login-modal { padding: 14px; }
+    .site-login-dialog {
+      width: min(360px, calc(100vw - 28px));
+      max-height: calc(100dvh - 28px);
+      padding: 24px 18px 20px;
+    }
+    .site-login-dialog h2 { font-size: 1.35rem; }
+  }
+</style>
+
 <script>
 (() => {
+  const topbar = document.querySelector('.site-topbar');
   const themeToggle = document.querySelector('[data-site-theme-toggle]');
   const langSelect = document.querySelector('[data-site-lang-select]');
+  const loginOpen = document.querySelector('[data-site-login-open]');
+  const loginModal = document.querySelector('[data-site-login-modal]');
+  const loginForm = document.querySelector('[data-site-login-form]');
+  const emailInput = document.querySelector('[data-site-login-email]');
+  const passwordInput = document.querySelector('[data-site-login-password]');
+  const passwordToggle = document.querySelector('[data-site-password-toggle]');
+  const loginError = document.querySelector('[data-site-login-error]');
+  const googleLogin = document.querySelector('[data-site-google-login]');
+
+  const COPY = {
+    en: { darkMode: 'Dark Mode', navHome: 'Home', navNews: 'News', navGuides: 'Guides', navBlog: 'Blog', navPricing: 'Pricing', login: 'Log In', account: 'Account', title: 'Log In', email: 'Email', password: 'Password', submit: 'Log In', google: 'Continue with Google', showPassword: 'Show password', hidePassword: 'Hide password', required: 'Email and password are required.', invalid: 'Invalid email or password.', generic: 'Something went wrong. Please try again.', close: 'Close' },
+    tr: { darkMode: 'Karanlık Mod', navHome: 'Ana Sayfa', navNews: 'Haberler', navGuides: 'Rehberler', navBlog: 'Blog', navPricing: 'Fiyatlandırma', login: 'Giriş Yap', account: 'Hesabım', title: 'Giriş Yap', email: 'E-posta', password: 'Parola', submit: 'Giriş Yap', google: 'Google ile devam et', showPassword: 'Parolayı göster', hidePassword: 'Parolayı gizle', required: 'E-posta ve parola gereklidir.', invalid: 'E-posta veya parola hatalı.', generic: 'Bir hata oluştu. Lütfen tekrar deneyin.', close: 'Kapat' },
+    de: { darkMode: 'Dunkelmodus', navHome: 'Startseite', navNews: 'Neuigkeiten', navGuides: 'Ratgeber', navBlog: 'Blog', navPricing: 'Preise', login: 'Anmelden', account: 'Konto', title: 'Anmelden', email: 'E-Mail', password: 'Passwort', submit: 'Anmelden', google: 'Mit Google fortfahren', showPassword: 'Passwort anzeigen', hidePassword: 'Passwort ausblenden', required: 'E-Mail und Passwort sind erforderlich.', invalid: 'E-Mail oder Passwort ist falsch.', generic: 'Ein Fehler ist aufgetreten. Bitte erneut versuchen.', close: 'Schließen' },
+    fr: { darkMode: 'Mode sombre', navHome: 'Accueil', navNews: 'Actualités', navGuides: 'Guides', navBlog: 'Blog', navPricing: 'Tarifs', login: 'Connexion', account: 'Compte', title: 'Connexion', email: 'E-mail', password: 'Mot de passe', submit: 'Connexion', google: 'Continuer avec Google', showPassword: 'Afficher le mot de passe', hidePassword: 'Masquer le mot de passe', required: "L'e-mail et le mot de passe sont obligatoires.", invalid: 'E-mail ou mot de passe incorrect.', generic: 'Une erreur est survenue. Réessayez.', close: 'Fermer' },
+    es: { darkMode: 'Modo oscuro', navHome: 'Inicio', navNews: 'Noticias', navGuides: 'Guías', navBlog: 'Blog', navPricing: 'Precios', login: 'Iniciar sesión', account: 'Cuenta', title: 'Iniciar sesión', email: 'Correo electrónico', password: 'Contraseña', submit: 'Iniciar sesión', google: 'Continuar con Google', showPassword: 'Mostrar contraseña', hidePassword: 'Ocultar contraseña', required: 'El correo y la contraseña son obligatorios.', invalid: 'El correo o la contraseña no son válidos.', generic: 'Se produjo un error. Inténtalo de nuevo.', close: 'Cerrar' },
+    ru: { darkMode: 'Тёмный режим', navHome: 'Главная', navNews: 'Новости', navGuides: 'Руководства', navBlog: 'Блог', navPricing: 'Цены', login: 'Войти', account: 'Аккаунт', title: 'Войти', email: 'Электронная почта', password: 'Пароль', submit: 'Войти', google: 'Продолжить с Google', showPassword: 'Показать пароль', hidePassword: 'Скрыть пароль', required: 'Необходимо ввести электронную почту и пароль.', invalid: 'Неверная электронная почта или пароль.', generic: 'Произошла ошибка. Повторите попытку.', close: 'Закрыть' },
+  };
+
+  let currentLang = (localStorage.getItem('appLang') || 'en').toLowerCase();
+  if (!COPY[currentLang]) currentLang = 'en';
+
+  const getCopy = () => COPY[currentLang] || COPY.en;
+  const updatePasswordToggle = () => {
+    if (!passwordToggle || !passwordInput) return;
+    const label = getCopy()[passwordInput.type === 'text' ? 'hidePassword' : 'showPassword'];
+    passwordToggle.setAttribute('aria-label', label);
+    passwordToggle.title = label;
+  };
+  const applyCopy = () => {
+    const copy = getCopy();
+    topbar?.querySelectorAll('[data-i18n]').forEach((element) => {
+      const key = element.getAttribute('data-i18n');
+      if (copy[key]) element.textContent = copy[key];
+    });
+    loginModal?.querySelectorAll('[data-site-auth-copy]').forEach((element) => {
+      const key = element.getAttribute('data-site-auth-copy');
+      if (copy[key]) element.textContent = copy[key];
+    });
+    if (emailInput) emailInput.placeholder = copy.email;
+    if (passwordInput) passwordInput.placeholder = copy.password;
+    loginModal?.querySelectorAll('[data-site-login-close]').forEach((element) => {
+      element.setAttribute('aria-label', copy.close);
+    });
+    if (langSelect) langSelect.value = currentLang;
+    document.documentElement.lang = currentLang;
+    updatePasswordToggle();
+  };
+
   const storedTheme = localStorage.getItem('theme');
   const defaultDark = storedTheme ? storedTheme === 'dark' : true;
   const syncTheme = (next) => {
@@ -48,12 +268,93 @@
     themeToggle.addEventListener('change', (event) => syncTheme(event.target.checked));
   }
   if (langSelect) {
-    const storedLang = (localStorage.getItem('appLang') || 'en').toLowerCase();
-    langSelect.value = storedLang;
     langSelect.addEventListener('change', () => {
-      localStorage.setItem('appLang', langSelect.value);
+      currentLang = COPY[langSelect.value] ? langSelect.value : 'en';
+      localStorage.setItem('appLang', currentLang);
+      applyCopy();
       window.location.reload();
     });
   }
+
+  const openLogin = () => {
+    if (!loginModal) return;
+    loginModal.hidden = false;
+    loginModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('site-login-modal-open');
+    if (loginError) loginError.hidden = true;
+    applyCopy();
+    window.setTimeout(() => emailInput?.focus(), 0);
+  };
+  const closeLogin = () => {
+    if (!loginModal) return;
+    loginModal.hidden = true;
+    loginModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('site-login-modal-open');
+    loginOpen?.focus();
+  };
+
+  loginOpen?.addEventListener('click', openLogin);
+  loginModal?.querySelectorAll('[data-site-login-close]').forEach((element) => {
+    element.addEventListener('click', closeLogin);
+  });
+  if (window.location.hash === '#login') {
+    openLogin();
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+  }
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && loginModal && !loginModal.hidden) closeLogin();
+  });
+  passwordToggle?.addEventListener('click', () => {
+    if (!passwordInput) return;
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    updatePasswordToggle();
+  });
+
+  if (googleLogin) {
+    const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    googleLogin.href = `/login/google?next=${encodeURIComponent(next)}`;
+  }
+
+  loginForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const copy = getCopy();
+    const email = (emailInput?.value || '').trim();
+    const password = passwordInput?.value || '';
+    if (!email || !password) {
+      if (loginError) {
+        loginError.textContent = copy.required;
+        loginError.hidden = false;
+      }
+      return;
+    }
+    const submit = loginForm.querySelector('[type="submit"]');
+    if (submit) submit.disabled = true;
+    if (loginError) loginError.hidden = true;
+    try {
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) {
+        if (loginError) {
+          loginError.textContent = data.message === 'Invalid email or password.' ? copy.invalid : data.message === 'Email and password are required.' ? copy.required : copy.generic;
+          loginError.hidden = false;
+        }
+        return;
+      }
+      window.location.reload();
+    } catch (error) {
+      if (loginError) {
+        loginError.textContent = copy.generic;
+        loginError.hidden = false;
+      }
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  });
+
+  applyCopy();
 })();
 </script>
