@@ -7048,13 +7048,15 @@ const stopPromoVideo = () => {
 
 const openLoginModal = () => {
   if (!loginModal) return;
-  loginModal.style.display = "block";
+  loginModal.style.display = "flex";
+  document.body.classList.add("login-modal-open");
   ensurePromoVideoLoaded();
 };
 
 const closeLoginModal = () => {
   if (!loginModal) return;
   loginModal.style.display = "none";
+  document.body.classList.remove("login-modal-open");
   stopPromoVideo();
 };
 

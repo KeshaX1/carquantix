@@ -130,11 +130,11 @@
       body.home-page .home-hero-btn{min-height:38px;padding:0 14px;font-size:.8rem}
     }
   </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-mobile-login-fix1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-login-overlay2') }}">
   {% else %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-mobile-login-fix1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-login-overlay2') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
   {% endif %}
@@ -209,7 +209,7 @@
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <div class="modal-left">
-        <video class="promo-video" data-src="{{ url_for('login_media', filename='lgnvideo.mp4') }}" preload="none" muted loop playsinline>
+        <video class="promo-video" src="{{ url_for('login_media', filename='lgnvideo.mp4') }}" poster="/static/icon/hero.jpg" preload="metadata" muted loop playsinline>
           Your browser does not support the video tag.
         </video>
       </div>
@@ -696,6 +696,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260710-russian-home1') }}" defer></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260710-login-overlay2') }}" defer></script>
 </body>
 </html>
