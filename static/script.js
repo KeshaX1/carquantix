@@ -5161,12 +5161,12 @@ function lockVehiclePickerPageScroll() {
 
 function unlockVehiclePickerPageScroll() {
   document.body.classList.remove('modal-open');
-  if (!vehiclePickerScrollLocked) return;
   document.body.style.position = '';
   document.body.style.top = '';
   document.body.style.left = '';
   document.body.style.right = '';
   document.body.style.width = '';
+  if (!vehiclePickerScrollLocked) return;
   window.scrollTo(0, vehiclePickerScrollY);
   vehiclePickerScrollY = 0;
   vehiclePickerScrollLocked = false;
@@ -7052,6 +7052,22 @@ const closeLoginModal = () => {
   document.body.classList.remove("login-modal-open");
   stopPromoVideo();
 };
+
+const clearStalePageScrollLocks = () => {
+  const picker = document.getElementById('vehiclePickerModal');
+  const pickerIsOpen = Boolean(picker && !picker.classList.contains('hidden'));
+  const loginIsOpen = Boolean(loginModal && loginModal.style.display === 'flex');
+  if (pickerIsOpen || loginIsOpen) return;
+  document.body.classList.remove('modal-open', 'login-modal-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+};
+
+clearStalePageScrollLocks();
+window.addEventListener('pageshow', clearStalePageScrollLocks);
 
 const resetSignupFlow = () => {
   signupStage = "start";

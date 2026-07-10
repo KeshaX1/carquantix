@@ -4898,6 +4898,12 @@ body.login-modal-open {
   overflow: hidden !important;
 }
 
+body.home-page:not(.login-modal-open):not(.modal-open),
+body.compare-view:not(.login-modal-open):not(.modal-open) {
+  position: static !important;
+  overflow-y: auto !important;
+}
+
 .modal-content {
   display: flex;
   width: 700px;
