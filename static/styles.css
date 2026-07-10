@@ -1093,7 +1093,7 @@ body.home-page:not(.dark) .site-footer .footer-social-link {
   body.home-page .home-hero{
     grid-template-columns:minmax(420px,0.72fr) minmax(640px,1.18fr);
     gap:clamp(42px,5vw,84px);
-    min-height:min(720px, calc(100dvh - 68px));
+    min-height:calc(100dvh - 68px);
     padding:clamp(28px,4vh,48px) clamp(44px,5vw,84px);
   }
   body.home-page .home-hero-copy{
