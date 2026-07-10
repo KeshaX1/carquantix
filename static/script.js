@@ -2429,6 +2429,87 @@ Object.keys(FOOTER_TRANSLATIONS).forEach((code) => {
   }
 });
 
+const COMPARE_BUILDER_TRANSLATIONS = {
+  en: {
+    compareBuilderTitleCars: 'Compare Cars Side-by-Side', compareBuilderTitleMotorcycles: 'Compare Motorcycles Side-by-Side',
+    compareBuilderKickerCars: 'Compare builder', compareBuilderKickerMotorcycles: 'Motorcycle compare builder',
+    addVehicle: 'Add a vehicle', addMotorcycle: 'Add a motorcycle',
+  },
+  tr: {
+    catalogCars: 'Arabalar', catalogMotorcycles: 'Motosikletler', navNews: 'Haberler', navGuides: 'Rehberler', navBlog: 'Blog',
+    compareBuilderTitleCars: 'Arabaları Yan Yana Karşılaştır', compareBuilderTitleMotorcycles: 'Motosikletleri Yan Yana Karşılaştır',
+    compareBuilderKickerCars: 'Karşılaştırma aracı', compareBuilderKickerMotorcycles: 'Motosiklet karşılaştırma aracı',
+    addVehicle: 'Araç ekle', addMotorcycle: 'Motosiklet ekle',
+  },
+  de: {
+    catalogCars: 'Autos', catalogMotorcycles: 'Motorräder', navNews: 'Nachrichten', navGuides: 'Ratgeber', navBlog: 'Blog',
+    compareBuilderTitleCars: 'Autos direkt vergleichen', compareBuilderTitleMotorcycles: 'Motorräder direkt vergleichen',
+    compareBuilderKickerCars: 'Vergleich erstellen', compareBuilderKickerMotorcycles: 'Motorradvergleich erstellen',
+    addVehicle: 'Fahrzeug hinzufügen', addMotorcycle: 'Motorrad hinzufügen',
+  },
+  fr: {
+    catalogCars: 'Voitures', catalogMotorcycles: 'Motos', navNews: 'Actualités', navGuides: 'Guides', navBlog: 'Blog',
+    compareBuilderTitleCars: 'Comparer les voitures côte à côte', compareBuilderTitleMotorcycles: 'Comparer les motos côte à côte',
+    compareBuilderKickerCars: 'Outil de comparaison', compareBuilderKickerMotorcycles: 'Comparateur de motos',
+    addVehicle: 'Ajouter un véhicule', addMotorcycle: 'Ajouter une moto',
+  },
+  es: {
+    catalogCars: 'Autos', catalogMotorcycles: 'Motos', navNews: 'Noticias', navGuides: 'Guías', navBlog: 'Blog',
+    compareBuilderTitleCars: 'Comparar autos lado a lado', compareBuilderTitleMotorcycles: 'Comparar motos lado a lado',
+    compareBuilderKickerCars: 'Herramienta de comparación', compareBuilderKickerMotorcycles: 'Comparador de motos',
+    addVehicle: 'Añadir un vehículo', addMotorcycle: 'Añadir una moto',
+  },
+  ru: {
+    catalogCars: 'Автомобили', catalogMotorcycles: 'Мотоциклы', navNews: 'Новости', navGuides: 'Руководства', navBlog: 'Блог',
+    compareBuilderTitleCars: 'Сравнение автомобилей', compareBuilderTitleMotorcycles: 'Сравнение мотоциклов',
+    compareBuilderKickerCars: 'Конструктор сравнения', compareBuilderKickerMotorcycles: 'Сравнение мотоциклов',
+    addVehicle: 'Добавить автомобиль', addMotorcycle: 'Добавить мотоцикл',
+  },
+};
+
+Object.entries(COMPARE_BUILDER_TRANSLATIONS).forEach(([code, copy]) => {
+  if (TRANSLATIONS[code]) Object.assign(TRANSLATIONS[code], copy);
+});
+
+const AUTH_TRANSLATIONS = {
+  en: {
+    authLogin: 'Log In', authEmail: 'Email', authPassword: 'Password', authFullName: 'Full Name', authStrength: 'Password strength', authNone: '-', authWeak: 'weak', authMedium: 'medium', authStrong: 'strong',
+    authPasswordHint: 'Min 8 characters, mix letters/numbers.', authForgot: 'Forgot your password?', authGoogle: 'Continue with Google', authNoAccount: "Don't have an account?", authCreateOne: 'Create one', authCreateAccount: 'Create Account', authHaveAccount: 'Have an account?', authBackLogin: 'Back to login', authResetPassword: 'Reset Password', authRemembered: 'Remembered your password?', authSendCode: 'Send Code', authNewPassword: 'New password', authVerifyCode: 'Verify Code', authVerificationCode: 'Verification code', authCodeHint: 'Enter the 6-digit code sent to your email.', authResetCodeHint: 'Enter the 6-digit code sent to your email to reset your password.', authResendCode: 'Resend code', authShowPassword: 'Show password', authHidePassword: 'Hide password', authPasswordMin: 'Password must be at least 8 characters.', authGenericError: 'Something went wrong.', authEnterEmailReset: 'Please enter your email to reset.', authEnterResetCode: 'Please enter the reset code.', authInvalidCode: 'Invalid code.', authEnterVerificationCode: 'Please enter the verification code.', authNetworkError: 'Network error. Please try again.', authResetPrompt: 'Enter your email to get a reset code.', authCodeSent: 'Code sent.', authResetCodeSent: 'Reset code sent.', authEmailFailed: 'Code generated but email failed to send.', authUnableResend: 'Unable to resend code.',
+  },
+  tr: {
+    authLogin: 'Giriş Yap', authEmail: 'E-posta', authPassword: 'Parola', authFullName: 'Ad Soyad', authStrength: 'Parola gücü', authNone: '-', authWeak: 'zayıf', authMedium: 'orta', authStrong: 'güçlü', authPasswordHint: 'En az 8 karakter; harf ve rakam kullanın.', authForgot: 'Parolanızı mı unuttunuz?', authGoogle: 'Google ile devam et', authNoAccount: 'Hesabınız yok mu?', authCreateOne: 'Hesap oluştur', authCreateAccount: 'Hesap Oluştur', authHaveAccount: 'Hesabınız var mı?', authBackLogin: 'Girişe dön', authResetPassword: 'Parolayı Sıfırla', authRemembered: 'Parolanızı hatırladınız mı?', authSendCode: 'Kod Gönder', authNewPassword: 'Yeni parola', authVerifyCode: 'Kodu Doğrula', authVerificationCode: 'Doğrulama kodu', authCodeHint: 'E-postanıza gönderilen 6 haneli kodu girin.', authResetCodeHint: 'Parolanızı sıfırlamak için e-postanıza gönderilen 6 haneli kodu girin.', authResendCode: 'Kodu yeniden gönder', authShowPassword: 'Parolayı göster', authHidePassword: 'Parolayı gizle', authPasswordMin: 'Parola en az 8 karakter olmalıdır.', authGenericError: 'Bir hata oluştu.', authEnterEmailReset: 'Sıfırlamak için e-postanızı girin.', authEnterResetCode: 'Sıfırlama kodunu girin.', authInvalidCode: 'Kod geçersiz.', authEnterVerificationCode: 'Doğrulama kodunu girin.', authNetworkError: 'Ağ hatası. Tekrar deneyin.', authResetPrompt: 'Sıfırlama kodu almak için e-postanızı girin.', authCodeSent: 'Kod gönderildi.', authResetCodeSent: 'Sıfırlama kodu gönderildi.', authEmailFailed: 'Kod oluşturuldu ancak e-posta gönderilemedi.', authUnableResend: 'Kod yeniden gönderilemedi.',
+  },
+  de: {
+    authLogin: 'Anmelden', authEmail: 'E-Mail', authPassword: 'Passwort', authFullName: 'Vollständiger Name', authStrength: 'Passwortstärke', authNone: '-', authWeak: 'schwach', authMedium: 'mittel', authStrong: 'stark', authPasswordHint: 'Mindestens 8 Zeichen mit Buchstaben und Zahlen.', authForgot: 'Passwort vergessen?', authGoogle: 'Mit Google fortfahren', authNoAccount: 'Noch kein Konto?', authCreateOne: 'Konto erstellen', authCreateAccount: 'Konto erstellen', authHaveAccount: 'Bereits ein Konto?', authBackLogin: 'Zurück zur Anmeldung', authResetPassword: 'Passwort zurücksetzen', authRemembered: 'Passwort wieder eingefallen?', authSendCode: 'Code senden', authNewPassword: 'Neues Passwort', authVerifyCode: 'Code bestätigen', authVerificationCode: 'Bestätigungscode', authCodeHint: 'Geben Sie den sechsstelligen Code aus Ihrer E-Mail ein.', authResetCodeHint: 'Geben Sie den sechsstelligen Code zum Zurücksetzen ein.', authResendCode: 'Code erneut senden', authShowPassword: 'Passwort anzeigen', authHidePassword: 'Passwort ausblenden', authPasswordMin: 'Das Passwort muss mindestens 8 Zeichen lang sein.', authGenericError: 'Ein Fehler ist aufgetreten.', authEnterEmailReset: 'Geben Sie Ihre E-Mail-Adresse ein.', authEnterResetCode: 'Geben Sie den Rücksetzungscode ein.', authInvalidCode: 'Ungültiger Code.', authEnterVerificationCode: 'Geben Sie den Bestätigungscode ein.', authNetworkError: 'Netzwerkfehler. Bitte erneut versuchen.', authResetPrompt: 'Geben Sie Ihre E-Mail-Adresse ein, um einen Code zu erhalten.', authCodeSent: 'Code wurde gesendet.', authResetCodeSent: 'Rücksetzungscode wurde gesendet.', authEmailFailed: 'Code erstellt, E-Mail konnte jedoch nicht gesendet werden.', authUnableResend: 'Code konnte nicht erneut gesendet werden.',
+  },
+  fr: {
+    authLogin: 'Connexion', authEmail: 'E-mail', authPassword: 'Mot de passe', authFullName: 'Nom complet', authStrength: 'Sécurité du mot de passe', authNone: '-', authWeak: 'faible', authMedium: 'moyenne', authStrong: 'forte', authPasswordHint: '8 caractères minimum avec lettres et chiffres.', authForgot: 'Mot de passe oublié ?', authGoogle: 'Continuer avec Google', authNoAccount: 'Pas encore de compte ?', authCreateOne: 'Créer un compte', authCreateAccount: 'Créer un compte', authHaveAccount: 'Vous avez déjà un compte ?', authBackLogin: 'Retour à la connexion', authResetPassword: 'Réinitialiser le mot de passe', authRemembered: 'Mot de passe retrouvé ?', authSendCode: 'Envoyer le code', authNewPassword: 'Nouveau mot de passe', authVerifyCode: 'Vérifier le code', authVerificationCode: 'Code de vérification', authCodeHint: 'Saisissez le code à 6 chiffres envoyé par e-mail.', authResetCodeHint: 'Saisissez le code à 6 chiffres pour réinitialiser le mot de passe.', authResendCode: 'Renvoyer le code', authShowPassword: 'Afficher le mot de passe', authHidePassword: 'Masquer le mot de passe', authPasswordMin: 'Le mot de passe doit contenir au moins 8 caractères.', authGenericError: 'Une erreur est survenue.', authEnterEmailReset: 'Saisissez votre e-mail.', authEnterResetCode: 'Saisissez le code de réinitialisation.', authInvalidCode: 'Code invalide.', authEnterVerificationCode: 'Saisissez le code de vérification.', authNetworkError: 'Erreur réseau. Réessayez.', authResetPrompt: 'Saisissez votre e-mail pour recevoir un code.', authCodeSent: 'Code envoyé.', authResetCodeSent: 'Code de réinitialisation envoyé.', authEmailFailed: "Code créé, mais l'e-mail n'a pas pu être envoyé.", authUnableResend: 'Impossible de renvoyer le code.',
+  },
+  es: {
+    authLogin: 'Iniciar sesión', authEmail: 'Correo electrónico', authPassword: 'Contraseña', authFullName: 'Nombre completo', authStrength: 'Seguridad de la contraseña', authNone: '-', authWeak: 'débil', authMedium: 'media', authStrong: 'fuerte', authPasswordHint: 'Mínimo 8 caracteres con letras y números.', authForgot: '¿Olvidaste tu contraseña?', authGoogle: 'Continuar con Google', authNoAccount: '¿No tienes una cuenta?', authCreateOne: 'Crear una', authCreateAccount: 'Crear cuenta', authHaveAccount: '¿Ya tienes una cuenta?', authBackLogin: 'Volver al inicio', authResetPassword: 'Restablecer contraseña', authRemembered: '¿Recordaste tu contraseña?', authSendCode: 'Enviar código', authNewPassword: 'Nueva contraseña', authVerifyCode: 'Verificar código', authVerificationCode: 'Código de verificación', authCodeHint: 'Introduce el código de 6 dígitos enviado a tu correo.', authResetCodeHint: 'Introduce el código de 6 dígitos para restablecer tu contraseña.', authResendCode: 'Reenviar código', authShowPassword: 'Mostrar contraseña', authHidePassword: 'Ocultar contraseña', authPasswordMin: 'La contraseña debe tener al menos 8 caracteres.', authGenericError: 'Se produjo un error.', authEnterEmailReset: 'Introduce tu correo electrónico.', authEnterResetCode: 'Introduce el código de restablecimiento.', authInvalidCode: 'Código no válido.', authEnterVerificationCode: 'Introduce el código de verificación.', authNetworkError: 'Error de red. Inténtalo de nuevo.', authResetPrompt: 'Introduce tu correo para recibir un código.', authCodeSent: 'Código enviado.', authResetCodeSent: 'Código de restablecimiento enviado.', authEmailFailed: 'Se creó el código, pero no se pudo enviar el correo.', authUnableResend: 'No se pudo reenviar el código.',
+  },
+  ru: {
+    authLogin: 'Войти', authEmail: 'Электронная почта', authPassword: 'Пароль', authFullName: 'Полное имя', authStrength: 'Надёжность пароля', authNone: '-', authWeak: 'слабый', authMedium: 'средний', authStrong: 'надёжный', authPasswordHint: 'Не менее 8 символов, включая буквы и цифры.', authForgot: 'Забыли пароль?', authGoogle: 'Продолжить с Google', authNoAccount: 'Нет аккаунта?', authCreateOne: 'Создать аккаунт', authCreateAccount: 'Создать аккаунт', authHaveAccount: 'Уже есть аккаунт?', authBackLogin: 'Вернуться ко входу', authResetPassword: 'Сбросить пароль', authRemembered: 'Вспомнили пароль?', authSendCode: 'Отправить код', authNewPassword: 'Новый пароль', authVerifyCode: 'Подтвердить код', authVerificationCode: 'Код подтверждения', authCodeHint: 'Введите шестизначный код из письма.', authResetCodeHint: 'Введите шестизначный код для сброса пароля.', authResendCode: 'Отправить код повторно', authShowPassword: 'Показать пароль', authHidePassword: 'Скрыть пароль', authPasswordMin: 'Пароль должен содержать не менее 8 символов.', authGenericError: 'Произошла ошибка.', authEnterEmailReset: 'Введите адрес электронной почты.', authEnterResetCode: 'Введите код сброса.', authInvalidCode: 'Неверный код.', authEnterVerificationCode: 'Введите код подтверждения.', authNetworkError: 'Ошибка сети. Повторите попытку.', authResetPrompt: 'Введите e-mail, чтобы получить код сброса.', authCodeSent: 'Код отправлен.', authResetCodeSent: 'Код сброса отправлен.', authEmailFailed: 'Код создан, но письмо отправить не удалось.', authUnableResend: 'Не удалось повторно отправить код.',
+  },
+};
+
+Object.entries(AUTH_TRANSLATIONS).forEach(([code, copy]) => {
+  if (TRANSLATIONS[code]) Object.assign(TRANSLATIONS[code], copy);
+});
+
+const AUTH_SERVER_TRANSLATIONS = {
+  en: { authEmailPasswordRequired: 'Email and password are required.', authInvalidCredentials: 'Invalid email or password.', authAccountExists: 'An account with this email already exists.', authEmailCodeRequired: 'Email and code are required.', authVerificationMissing: 'No verification request was found. Please request a new code.', authEmailRequired: 'Email is required.', authResetFieldsRequired: 'Email, code and a new password are required.', authResetMissing: 'No password reset request was found. Please request a new code.', authResetExpired: 'The reset code has expired. Please request a new one.', authAccountNotFound: 'No account was found for this email.' },
+  tr: { authEmailPasswordRequired: 'E-posta ve parola gereklidir.', authInvalidCredentials: 'E-posta veya parola hatalı.', authAccountExists: 'Bu e-posta adresiyle zaten bir hesap var.', authEmailCodeRequired: 'E-posta ve kod gereklidir.', authVerificationMissing: 'Doğrulama isteği bulunamadı. Yeni bir kod isteyin.', authEmailRequired: 'E-posta gereklidir.', authResetFieldsRequired: 'E-posta, kod ve yeni parola gereklidir.', authResetMissing: 'Parola sıfırlama isteği bulunamadı. Yeni bir kod isteyin.', authResetExpired: 'Sıfırlama kodunun süresi doldu. Yeni bir kod isteyin.', authAccountNotFound: 'Bu e-posta adresine ait hesap bulunamadı.' },
+  de: { authEmailPasswordRequired: 'E-Mail und Passwort sind erforderlich.', authInvalidCredentials: 'E-Mail oder Passwort ist falsch.', authAccountExists: 'Für diese E-Mail-Adresse besteht bereits ein Konto.', authEmailCodeRequired: 'E-Mail und Code sind erforderlich.', authVerificationMissing: 'Keine Bestätigungsanfrage gefunden. Fordern Sie einen neuen Code an.', authEmailRequired: 'Die E-Mail-Adresse ist erforderlich.', authResetFieldsRequired: 'E-Mail, Code und ein neues Passwort sind erforderlich.', authResetMissing: 'Keine Anfrage zum Zurücksetzen gefunden. Fordern Sie einen neuen Code an.', authResetExpired: 'Der Rücksetzungscode ist abgelaufen. Fordern Sie einen neuen an.', authAccountNotFound: 'Für diese E-Mail-Adresse wurde kein Konto gefunden.' },
+  fr: { authEmailPasswordRequired: "L'e-mail et le mot de passe sont obligatoires.", authInvalidCredentials: 'E-mail ou mot de passe incorrect.', authAccountExists: 'Un compte existe déjà avec cette adresse e-mail.', authEmailCodeRequired: "L'e-mail et le code sont obligatoires.", authVerificationMissing: 'Aucune demande de vérification trouvée. Demandez un nouveau code.', authEmailRequired: "L'e-mail est obligatoire.", authResetFieldsRequired: "L'e-mail, le code et un nouveau mot de passe sont obligatoires.", authResetMissing: 'Aucune demande de réinitialisation trouvée. Demandez un nouveau code.', authResetExpired: 'Le code a expiré. Demandez-en un nouveau.', authAccountNotFound: 'Aucun compte trouvé pour cette adresse e-mail.' },
+  es: { authEmailPasswordRequired: 'El correo y la contraseña son obligatorios.', authInvalidCredentials: 'El correo o la contraseña no son válidos.', authAccountExists: 'Ya existe una cuenta con este correo.', authEmailCodeRequired: 'El correo y el código son obligatorios.', authVerificationMissing: 'No se encontró una solicitud de verificación. Solicita un código nuevo.', authEmailRequired: 'El correo electrónico es obligatorio.', authResetFieldsRequired: 'El correo, el código y una contraseña nueva son obligatorios.', authResetMissing: 'No se encontró una solicitud de restablecimiento. Solicita un código nuevo.', authResetExpired: 'El código ha caducado. Solicita uno nuevo.', authAccountNotFound: 'No se encontró ninguna cuenta con este correo.' },
+  ru: { authEmailPasswordRequired: 'Необходимо ввести электронную почту и пароль.', authInvalidCredentials: 'Неверная электронная почта или пароль.', authAccountExists: 'Аккаунт с этой электронной почтой уже существует.', authEmailCodeRequired: 'Необходимо ввести электронную почту и код.', authVerificationMissing: 'Запрос на подтверждение не найден. Запросите новый код.', authEmailRequired: 'Необходимо ввести электронную почту.', authResetFieldsRequired: 'Необходимо ввести электронную почту, код и новый пароль.', authResetMissing: 'Запрос на сброс пароля не найден. Запросите новый код.', authResetExpired: 'Срок действия кода истёк. Запросите новый код.', authAccountNotFound: 'Аккаунт с этой электронной почтой не найден.' },
+};
+
+Object.entries(AUTH_SERVER_TRANSLATIONS).forEach(([code, copy]) => {
+  if (TRANSLATIONS[code]) Object.assign(TRANSLATIONS[code], copy);
+});
+
 const getLang = (code) => LANGUAGES.find(l => l.code === code);
 let currentLang = localStorage.getItem('appLang');
 if (!getLang(currentLang)) currentLang = LANGUAGES[0].code;
@@ -3195,13 +3276,13 @@ function getDimensionCellTitle(vehicle, dimensions) {
 function updateCompareBuilderCopy() {
   if (compareBuilderTitle) {
     compareBuilderTitle.textContent = activeCatalog === 'motorcycles'
-      ? 'Compare Motorcycles Side-by-Side'
-      : 'Compare Cars Side-by-Side';
+      ? t('compareBuilderTitleMotorcycles')
+      : t('compareBuilderTitleCars');
   }
   if (compareBuilderKicker) {
     compareBuilderKicker.textContent = activeCatalog === 'motorcycles'
-      ? 'Motorcycle compare builder'
-      : 'Compare builder';
+      ? t('compareBuilderKickerMotorcycles')
+      : t('compareBuilderKickerCars');
   }
 }
 
@@ -5092,7 +5173,7 @@ function renderCompareSlots() {
         <span class="compare-slot-remove" data-remove-slot="${index}" title="Remove">x</span>
       `;
     } else {
-      const addLabel = activeCatalog === 'motorcycles' ? 'Add a motorcycle' : 'Add a vehicle';
+      const addLabel = activeCatalog === 'motorcycles' ? t('addMotorcycle') : t('addVehicle');
       button.innerHTML = `
         <span class="compare-slot-plus">+</span>
         <span>${addLabel}</span>
@@ -6525,6 +6606,7 @@ function applyTranslations() {
     const key = el.dataset.i18n;
     if (pack[key]) el.textContent = pack[key];
   });
+  updateCompareBuilderCopy();
   const popularComparisonsViewAll = document.getElementById('popularComparisonsViewAll');
   if (popularComparisonsViewAll) {
     const openLabel = pack.viewAllComparisons || 'View all';
@@ -7012,6 +7094,8 @@ const forgotLink = document.getElementById("forgotLink");
 const submitBtn = document.getElementById("submitBtn");
 const authError = document.getElementById("authError");
 const strengthLabel = document.getElementById("strengthLabel");
+const passwordHint = document.getElementById("passwordHint");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
 const verificationCodeInput = document.getElementById("verificationCode");
 const codeBlock = document.getElementById("codeBlock");
 const codeHint = document.getElementById("codeHint");
@@ -7020,6 +7104,82 @@ let authMode = "login";
 let signupStage = "start"; // start -> verify
 let pendingSignupPayload = null;
 let resetStage = "idle"; // idle -> start -> verify
+
+const AUTH_SERVER_MESSAGE_KEYS = {
+  "Email and password are required.": "authEmailPasswordRequired",
+  "Invalid email or password.": "authInvalidCredentials",
+  "An account with this email already exists.": "authAccountExists",
+  "Account already exists.": "authAccountExists",
+  "Email and code are required.": "authEmailCodeRequired",
+  "No verification pending for this email.": "authVerificationMissing",
+  "Invalid verification code.": "authInvalidCode",
+  "Email is required.": "authEmailRequired",
+  "Email, code, and new password are required.": "authResetFieldsRequired",
+  "Password must be at least 8 characters.": "authPasswordMin",
+  "No reset pending for this email.": "authResetMissing",
+  "Reset code expired. Please request a new one.": "authResetExpired",
+  "Invalid reset code.": "authInvalidCode",
+  "No account found for this email.": "authAccountNotFound",
+};
+
+function localizeAuthMessage(message, fallbackKey = "authGenericError") {
+  const key = AUTH_SERVER_MESSAGE_KEYS[String(message || "").trim()] || fallbackKey;
+  return t(key);
+}
+
+function updatePasswordToggleCopy() {
+  if (!togglePassword || !loginPassword) return;
+  const label = t(loginPassword.type === "text" ? "authHidePassword" : "authShowPassword");
+  togglePassword.setAttribute("aria-label", label);
+  togglePassword.title = label;
+}
+
+function refreshAuthCopy() {
+  const isVerificationStep = signupStage === "verify" || resetStage === "verify";
+  const titleKey =
+    authMode === "login"
+      ? "authLogin"
+      : authMode === "reset"
+      ? "authResetPassword"
+      : "authCreateAccount";
+  const submitKey = isVerificationStep
+    ? "authVerifyCode"
+    : authMode === "login"
+    ? "authLogin"
+    : authMode === "reset"
+    ? "authSendCode"
+    : "authCreateAccount";
+
+  if (formTitle) formTitle.textContent = t(titleKey);
+  if (submitBtn) submitBtn.textContent = t(submitKey);
+  if (toggleAuthMode) {
+    toggleAuthMode.textContent = t(authMode === "login" ? "authCreateOne" : "authBackLogin");
+  }
+  if (toggleCopyText) {
+    const copyKey =
+      authMode === "login"
+        ? "authNoAccount"
+        : authMode === "reset"
+        ? "authRemembered"
+        : "authHaveAccount";
+    toggleCopyText.textContent = t(copyKey);
+  }
+  if (loginName) loginName.placeholder = t("authFullName");
+  if (loginEmail) loginEmail.placeholder = t("authEmail");
+  if (loginPassword) {
+    loginPassword.placeholder = t(authMode === "reset" ? "authNewPassword" : "authPassword");
+  }
+  if (verificationCodeInput) verificationCodeInput.placeholder = t("authVerificationCode");
+  if (passwordHint) passwordHint.textContent = t("authPasswordHint");
+  if (forgotLink) forgotLink.textContent = t("authForgot");
+  if (googleLoginBtn) googleLoginBtn.textContent = t("authGoogle");
+  if (resendCodeBtn) resendCodeBtn.textContent = t("authResendCode");
+  if (codeHint) {
+    codeHint.textContent = t(authMode === "reset" ? "authResetCodeHint" : "authCodeHint");
+  }
+  updatePasswordToggleCopy();
+  updateStrength();
+}
 
 const ensurePromoVideoLoaded = () => {
   if (!promoVideo) return;
@@ -7041,6 +7201,7 @@ const stopPromoVideo = () => {
 
 const openLoginModal = () => {
   if (!loginModal) return;
+  refreshAuthCopy();
   loginModal.style.display = "flex";
   document.body.classList.add("login-modal-open");
   ensurePromoVideoLoaded();
@@ -7084,11 +7245,7 @@ const resetSignupFlow = () => {
   if (loginEmail) loginEmail.readOnly = false;
   if (loginName) loginName.readOnly = false;
   if (loginPassword) loginPassword.readOnly = false;
-  if (loginPassword) loginPassword.placeholder = authMode === "reset" ? "New password" : "Password";
-  if (submitBtn) {
-    submitBtn.textContent =
-      authMode === "login" ? "Log In" : authMode === "reset" ? "Send Code" : "Create Account";
-  }
+  refreshAuthCopy();
 };
 
 if (loginBtn && loginModal) {
@@ -7108,23 +7265,6 @@ if (loginBtn && loginModal) {
 
 const setAuthMode = (mode) => {
   authMode = mode;
-  if (formTitle) {
-    formTitle.textContent = mode === "login" ? "Log In" : mode === "reset" ? "Reset Password" : "Create Account";
-  }
-  if (submitBtn) {
-    submitBtn.textContent = mode === "login" ? "Log In" : mode === "reset" ? "Send Code" : "Create Account";
-  }
-  if (toggleAuthMode) {
-    toggleAuthMode.textContent = mode === "login" ? "Create one" : "Back to login";
-  }
-  if (toggleCopyText) {
-    toggleCopyText.textContent =
-      mode === "login"
-        ? "Don't have an account?"
-        : mode === "reset"
-        ? "Remembered your password?"
-        : "Have an account?";
-  }
   if (loginName) loginName.classList.toggle("hidden", mode !== "signup");
   if (authError) authError.classList.add("hidden");
   resetSignupFlow();
@@ -7146,10 +7286,10 @@ if (togglePassword && loginPassword) {
     const isText = loginPassword.type === "text";
     loginPassword.type = isText ? "password" : "text";
     togglePassword.classList.toggle("showing", !isText);
-    togglePassword.setAttribute("aria-label", isText ? "Show password" : "Hide password");
-    togglePassword.title = isText ? "Show password" : "Hide password";
+    updatePasswordToggleCopy();
   });
   togglePassword.classList.toggle("showing", loginPassword.type === "text");
+  updatePasswordToggleCopy();
 }
 
 function computeStrength(pw) {
@@ -7169,8 +7309,15 @@ function updateStrength() {
   const pw = loginPassword ? loginPassword.value : "";
   const strength = computeStrength(pw);
   strengthLabel.classList.remove("strength-weak", "strength-medium", "strength-strong");
-  strengthLabel.textContent = `Password strength: ${strength}`;
-  strengthLabel.classList.add(`strength-${strength}`);
+  const strengthKey = pw
+    ? strength === "strong"
+      ? "authStrong"
+      : strength === "medium"
+      ? "authMedium"
+      : "authWeak"
+    : "authNone";
+  strengthLabel.textContent = `${t("authStrength")}: ${t(strengthKey)}`;
+  if (pw) strengthLabel.classList.add(`strength-${strength}`);
 }
 
 if (loginPassword) {
@@ -7188,7 +7335,7 @@ if (authForm) {
     const requirePasswordCheck = authMode !== "reset" || resetStage === "verify";
     if (requirePasswordCheck && payload.password.length < 8) {
       if (authError) {
-        authError.textContent = "Password must be at least 8 characters.";
+        authError.textContent = t("authPasswordMin");
         authError.classList.remove("hidden");
       }
       return;
@@ -7206,10 +7353,10 @@ if (authForm) {
         const data = await res.json();
         if (!res.ok || !data.ok) {
           if (authError) {
-            authError.textContent = data.message || "Something went wrong.";
+            authError.textContent = localizeAuthMessage(data.message);
             authError.classList.remove("hidden");
           } else {
-            alert(data.message || "Something went wrong.");
+            alert(localizeAuthMessage(data.message));
           }
           return;
         }
@@ -7221,7 +7368,7 @@ if (authForm) {
         if (resetStage === "start") {
           if (!payload.email) {
             if (authError) {
-              authError.textContent = "Please enter your email to reset.";
+              authError.textContent = t("authEnterEmailReset");
               authError.classList.remove("hidden");
             }
             return;
@@ -7233,24 +7380,23 @@ if (authForm) {
           });
           const data = await res.json();
           resetStage = "verify";
-          if (submitBtn) submitBtn.textContent = "Verify Code";
           if (codeBlock) codeBlock.classList.remove("hidden");
           if (verificationCodeInput) verificationCodeInput.classList.remove("hidden");
           if (codeHint) {
-            codeHint.textContent = "Enter the 6-digit code sent to your email to reset your password.";
             codeHint.classList.remove("hidden");
           }
           if (resendCodeBtn) resendCodeBtn.classList.remove("hidden");
           if (loginEmail) loginEmail.readOnly = true;
-          let successMsg = "Reset code sent.";
+          refreshAuthCopy();
+          let successMsg = t("authResetCodeSent");
           if (data.send_error) {
-            successMsg = "Code generated but email failed to send.";
+            successMsg = t("authEmailFailed");
           }
           if (authError) {
-            authError.textContent = data.message || successMsg;
+            authError.textContent = successMsg;
             authError.classList.remove("hidden");
           } else {
-            alert(data.message || successMsg);
+            alert(successMsg);
           }
           return;
         }
@@ -7259,7 +7405,7 @@ if (authForm) {
           const code = (verificationCodeInput?.value || "").trim();
           if (!code) {
             if (authError) {
-              authError.textContent = "Please enter the reset code.";
+              authError.textContent = t("authEnterResetCode");
               authError.classList.remove("hidden");
             }
             return;
@@ -7272,10 +7418,10 @@ if (authForm) {
           const data = await res.json();
           if (!res.ok || !data.ok) {
             if (authError) {
-              authError.textContent = data.message || "Invalid code.";
+              authError.textContent = localizeAuthMessage(data.message, "authInvalidCode");
               authError.classList.remove("hidden");
             } else {
-              alert(data.message || "Invalid code.");
+              alert(localizeAuthMessage(data.message, "authInvalidCode"));
             }
             return;
           }
@@ -7294,15 +7440,14 @@ if (authForm) {
         const data = await res.json();
         if (!res.ok || !data.ok) {
           if (authError) {
-            authError.textContent = data.message || "Something went wrong.";
+            authError.textContent = localizeAuthMessage(data.message);
             authError.classList.remove("hidden");
           } else {
-            alert(data.message || "Something went wrong.");
+            alert(localizeAuthMessage(data.message));
           }
           return;
         }
         signupStage = "verify";
-        if (submitBtn) submitBtn.textContent = "Verify Code";
         if (codeBlock) codeBlock.classList.remove("hidden");
         if (verificationCodeInput) verificationCodeInput.classList.remove("hidden");
         if (codeHint) codeHint.classList.remove("hidden");
@@ -7310,9 +7455,10 @@ if (authForm) {
         if (loginEmail) loginEmail.readOnly = true;
         if (loginName) loginName.readOnly = true;
         if (loginPassword) loginPassword.readOnly = true;
-        let successMsg = "Code sent.";
+        refreshAuthCopy();
+        let successMsg = t("authCodeSent");
         if (data.send_error) {
-          successMsg = "Code generated but email failed to send.";
+          successMsg = t("authEmailFailed");
         }
         if (authError) {
           authError.textContent = successMsg;
@@ -7327,7 +7473,7 @@ if (authForm) {
         const code = (verificationCodeInput?.value || "").trim();
         if (!code) {
           if (authError) {
-            authError.textContent = "Please enter the verification code.";
+            authError.textContent = t("authEnterVerificationCode");
             authError.classList.remove("hidden");
           }
           return;
@@ -7340,10 +7486,10 @@ if (authForm) {
         const data = await res.json();
         if (!res.ok || !data.ok) {
           if (authError) {
-            authError.textContent = data.message || "Invalid code.";
+            authError.textContent = localizeAuthMessage(data.message, "authInvalidCode");
             authError.classList.remove("hidden");
           } else {
-            alert(data.message || "Invalid code.");
+            alert(localizeAuthMessage(data.message, "authInvalidCode"));
           }
           if (data.message && data.message.toLowerCase().includes("no verification pending")) {
             resetSignupFlow();
@@ -7354,10 +7500,10 @@ if (authForm) {
       }
     } catch (err) {
       if (authError) {
-        authError.textContent = "Network error. Please try again.";
+        authError.textContent = t("authNetworkError");
         authError.classList.remove("hidden");
       } else {
-        alert("Network error. Please try again.");
+        alert(t("authNetworkError"));
       }
     }
   });
@@ -7368,12 +7514,13 @@ if (forgotLink) {
     e.preventDefault();
     setAuthMode("reset");
     if (authError) {
-      authError.textContent = "Enter your email to get a reset code.";
+      authError.textContent = t("authResetPrompt");
       authError.classList.remove("hidden");
     }
   });
 }
 
+document.addEventListener("languagechange", refreshAuthCopy);
 setAuthMode("login");
 
 if (resendCodeBtn) {
@@ -7388,14 +7535,14 @@ if (resendCodeBtn) {
         const data = await res.json();
         if (!res.ok || !data.ok) {
           if (authError) {
-            authError.textContent = data.message || "Unable to resend code.";
+            authError.textContent = localizeAuthMessage(data.message, "authUnableResend");
             authError.classList.remove("hidden");
           }
           return;
         }
-        let successMsg = "Code sent.";
+        let successMsg = t("authCodeSent");
         if (data.send_error) {
-          successMsg = "Code generated but email failed to send.";
+          successMsg = t("authEmailFailed");
         }
         if (authError) {
           authError.textContent = successMsg;
@@ -7410,27 +7557,27 @@ if (resendCodeBtn) {
           body: JSON.stringify({ email: loginEmail.value.trim() }),
         });
         const data = await res.json();
-        let successMsg = "Reset code sent.";
+        let successMsg = t("authResetCodeSent");
         if (data.send_error) {
-          successMsg = "Code generated but email failed to send.";
+          successMsg = t("authEmailFailed");
         }
         if (!res.ok || !data.ok) {
           if (authError) {
-            authError.textContent = data.message || "Unable to resend code.";
+            authError.textContent = localizeAuthMessage(data.message, "authUnableResend");
             authError.classList.remove("hidden");
           }
           return;
         }
         if (authError) {
-          authError.textContent = data.message || successMsg;
+          authError.textContent = successMsg;
           authError.classList.remove("hidden");
         } else {
-          alert(data.message || successMsg);
+          alert(successMsg);
         }
       }
     } catch (err) {
       if (authError) {
-        authError.textContent = "Network error. Please try again.";
+        authError.textContent = t("authNetworkError");
         authError.classList.remove("hidden");
       }
     }

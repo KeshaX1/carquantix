@@ -157,7 +157,7 @@
         </section>
       </div>
       {% endif %}
-      <a href="/" id="topHomeLink" class="top-link">Home</a>
+      <a href="/" id="topHomeLink" class="top-link" data-i18n="navHome">Home</a>
       <a href="/news" id="topNewsLink" class="top-link" data-i18n="navNews">News</a>
       <a href="/guides" id="topGuidesLink" class="top-link" data-i18n="navGuides">Guides</a>
       <a href="/blog" id="topBlogLink" class="top-link" data-i18n="navBlog">Blog</a>
@@ -234,7 +234,7 @@
           <div id="authError" class="form-error hidden" role="alert" aria-live="polite"></div>
           <div class="strength-row">
             <span id="strengthLabel">Password strength: -</span>
-            <span class="hint">Min 8 characters, mix letters/numbers.</span>
+            <span id="passwordHint" class="hint">Min 8 characters, mix letters/numbers.</span>
           </div>
           <div id="codeBlock" class="hidden">
             <input id="verificationCode" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Verification code" />
@@ -245,15 +245,11 @@
           <button type="submit" class="primary" id="submitBtn">Log In</button>
         </form>
 <div class="social">
-  <button type="button" onclick="window.location.href='/login/google'">
+  <button id="googleLoginBtn" type="button" onclick="window.location.href='/login/google'">
     Continue with Google
   </button>
-
-  <button type="button" onclick="window.location.href='/login/facebook'">
-    Continue with Facebook
-  </button>
 </div>
-        <p id="toggleCopy"><span id="toggleCopyText">Donâ€™t have an account?</span> <a href="#" id="toggleAuthMode">Create one</a></p>
+        <p id="toggleCopy"><span id="toggleCopyText">Don&apos;t have an account?</span> <a href="#" id="toggleAuthMode">Create one</a></p>
       </div>
     </div>
   </div>
@@ -684,6 +680,6 @@
       <div id="vehiclePickerGrid" class="vehicle-picker-grid"></div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='script.js', v='20260710-scroll-unlock1') }}" defer></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260710-login-languages1') }}" defer></script>
 </body>
 </html>
