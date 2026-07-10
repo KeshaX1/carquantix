@@ -1,7 +1,5 @@
-{% if adsense_enabled | default(true) %}
 <meta name="google-adsense-account" content="ca-pub-6413682917914910">
-{% if not (home_view | default(false)) %}
+{% if adsense_enabled | default(true) %}
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6413682917914910"
         crossorigin="anonymous"></script>
-{% endif %}
 {% endif %}

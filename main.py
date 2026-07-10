@@ -4268,7 +4268,9 @@ def guide_article(slug):
         "headline": article["title"],
         "description": article["summary"],
         "url": canonical_url,
+        "author": {"@type": "Organization", "name": "CarQuantix Editorial Team"},
         "publisher": {"@type": "Organization", "name": "CarQuantix"},
+        "dateModified": "2026-07-10",
     }
     return render_template(
         "article_detail.html",
@@ -4298,7 +4300,9 @@ def blog_article(slug):
         "headline": article["title"],
         "description": article["summary"],
         "url": canonical_url,
+        "author": {"@type": "Organization", "name": "CarQuantix Editorial Team"},
         "publisher": {"@type": "Organization", "name": "CarQuantix"},
+        "dateModified": "2026-07-10",
     }
     return render_template(
         "article_detail.html",
@@ -4323,6 +4327,7 @@ def methodology():
         meta_title="Methodology and Data Notes - CarQuantix",
         meta_description="See how CarQuantix compares vehicle performance, fuel consumption, pricing and ownership context with clear methods and practical data notes.",
         robots_directive="index,follow",
+        adsense_enabled=False,
     )
 
 
@@ -4335,6 +4340,7 @@ def privacy_policy():
         meta_title="CarQuantix Privacy Policy",
         meta_description="Read how CarQuantix collects, uses and protects your data, including privacy practices for accounts, analytics, subscriptions and site features.",
         robots_directive="index,follow",
+        adsense_enabled=False,
     )
 
 
@@ -4347,6 +4353,7 @@ def about_us():
         meta_title="About Us - CarQuantix",
         meta_description="Learn how CarQuantix helps drivers compare cars with horsepower, acceleration, top speed, pricing, fuel use and practical ownership context.",
         robots_directive="index,follow",
+        adsense_enabled=False,
     )
 
 
@@ -4359,6 +4366,7 @@ def contact():
         meta_title="Contact - CarQuantix",
         meta_description="Contact CarQuantix for product support, vehicle data corrections, business inquiries, partnerships, media requests or account assistance.",
         robots_directive="index,follow",
+        adsense_enabled=False,
     )
 
 
@@ -4432,6 +4440,7 @@ def sell_car():
         meta_description="Buy used cars and sell your car on CarQuantix. Browse public vehicle listings with price, mileage, city and seller contact details.",
         robots_directive="index,follow",
         page_schema=page_schema,
+        adsense_enabled=False,
     )
 
 
@@ -4460,6 +4469,7 @@ def pricing():
         meta_title="Pricing - CarQuantix",
         meta_description="Review CarQuantix access information, free public comparison tools, account-only features, data requests and vehicle research options.",
         robots_directive="index,follow",
+        adsense_enabled=False,
     )
 
 
@@ -4472,6 +4482,7 @@ def terms():
         meta_title="Terms and Conditions - CarQuantix",
         meta_description="Read the CarQuantix terms and conditions covering website use, accounts, subscriptions, vehicle data, content rights and service limitations.",
         robots_directive="index,follow",
+        adsense_enabled=False,
     )
 
 
@@ -4484,6 +4495,7 @@ def refund_policy():
         meta_title="Refund Policy - CarQuantix",
         meta_description="Review the CarQuantix refund policy for subscriptions and digital services, including eligibility, timing, billing issues and support steps.",
         robots_directive="index,follow",
+        adsense_enabled=False,
     )
 
 
@@ -4724,7 +4736,7 @@ def car_detail(slug):
         meta_description=meta_description,
         canonical_url=canonical_url,
         robots_directive="index,follow" if is_indexable else "noindex,follow",
-        adsense_enabled=True,
+        adsense_enabled=is_indexable,
         page_schema=page_schema,
         related_car_links=build_related_car_links(car, cars, limit=8),
         related_compare_links=build_related_compare_links_for_car(car, cars, slug_map, limit=8),
@@ -4809,7 +4821,7 @@ def compare_detail(compare_slug):
         meta_title=meta_title,
         meta_description=meta_description,
         robots_directive="index,follow" if is_indexable else "noindex,follow",
-        adsense_enabled=True,
+        adsense_enabled=is_indexable,
         page_schema=page_schema,
         related_car_links=unique_link_entries(
             build_related_car_links(left_car, cars, limit=5) + build_related_car_links(right_car, cars, limit=5),
