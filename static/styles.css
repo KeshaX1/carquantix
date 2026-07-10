@@ -5026,8 +5026,15 @@ body.dark #togglePassword {
 }
 
 .form-error {
-  color: #d9534f;
+  display: block;
+  padding: 8px 10px;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border-radius: 7px;
+  background: rgba(127, 29, 29, 0.24);
+  color: #ffb4b4 !important;
   font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .modal-right .primary {
@@ -5726,13 +5733,22 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   /* Login modal more compact + password visibility fix */
   .modal-content {
     width: min(90vw, 340px);
-    margin: 6vh auto;
+    margin: 3vh auto;
     flex-direction: column;
-    max-height: 74vh;
+    max-height: 90dvh;
     overflow: auto;
   }
-  .modal-left { height: 130px; }
-  .promo-video { height: 130px; }
+  .modal-left {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .promo-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
   .modal-right { padding: 10px; gap: 8px; }
   .modal-right h3 { font-size: 16px; }
   .modal-right input { padding: 7px; font-size: 13px; color: var(--input-text); -webkit-text-fill-color: var(--input-text); }

@@ -130,11 +130,11 @@
       body.home-page .home-hero-btn{min-height:38px;padding:0 14px;font-size:.8rem}
     }
   </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-full-height-hero1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-mobile-login-fix1') }}">
   {% else %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-full-height-hero1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260710-mobile-login-fix1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
   {% endif %}
@@ -231,6 +231,7 @@
               </svg>
             </button>
           </div>
+          <div id="authError" class="form-error hidden" role="alert" aria-live="polite"></div>
           <div class="strength-row">
             <span id="strengthLabel">Password strength: -</span>
             <span class="hint">Min 8 characters, mix letters/numbers.</span>
@@ -242,7 +243,6 @@
           </div>
           <a href="#" id="forgotLink">Forgot your password?</a>
           <button type="submit" class="primary" id="submitBtn">Log In</button>
-          <div id="authError" class="form-error hidden"></div>
         </form>
 <div class="social">
   <button type="button" onclick="window.location.href='/login/google'">
