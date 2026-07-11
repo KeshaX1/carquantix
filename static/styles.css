@@ -4975,9 +4975,9 @@ body.compare-view:not(.login-modal-open):not(.modal-open) {
   display: none;
 }
 
-/* Hide WebKit credentials/autofill icon */
-.password-row input[type="password"]::-webkit-credentials-auto-fill-button,
-.password-row input[type="password"]::-webkit-textfield-decoration-container {
+/* Hide only the WebKit credentials icon. Hiding the decoration container also
+   hides password bullets and collapses the field in iOS Safari. */
+.password-row input[type="password"]::-webkit-credentials-auto-fill-button {
   visibility: hidden;
   display: none !important;
 }
@@ -5767,11 +5767,20 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }
   .modal-right { padding: 10px; gap: 8px; }
   .modal-right h3 { font-size: 16px; }
   .modal-right input { padding: 7px; font-size: 13px; color: var(--input-text); -webkit-text-fill-color: var(--input-text); }
-  .password-row input { color: var(--input-text); -webkit-text-fill-color: var(--input-text); }
+  .password-row input {
+    display:block;
+    width:100%;
+    min-width:0;
+    min-height:42px;
+    line-height:1.25;
+    color:var(--input-text) !important;
+    -webkit-text-fill-color:var(--input-text) !important;
+    opacity:1;
+  }
   .modal-right .primary { padding: 8px; font-size: 13px; }
   .modal-right .social button { padding: 7px; font-size: 12px; }
   .strength-row { font-size: 10px; }
-  #togglePassword { padding: 6px 8px; }
+  #togglePassword { flex:0 0 42px; width:42px; min-height:42px; padding:6px 8px; }
 }
 
 .compare-card .thumb-row.dual,
