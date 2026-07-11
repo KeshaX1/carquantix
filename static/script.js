@@ -6669,6 +6669,11 @@ function initLanguageMenu() {
   }
   if (!host) return;
 
+  // The lightweight home script creates a native select before the full
+  // application script is loaded. Replace it instead of rendering a second
+  // language control next to it after the login modal is opened.
+  host.querySelectorAll('.topbar-lang-select').forEach(select => select.remove());
+
   let wrapper = host.querySelector('.lang-wrapper[data-lang-shell="1"]');
   if (!wrapper) {
     wrapper = document.createElement('div');
