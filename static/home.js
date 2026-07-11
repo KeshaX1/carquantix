@@ -341,13 +341,10 @@
       const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
       if (!delta) return;
       const scroller = document.scrollingElement || document.documentElement;
-      const before = scroller.scrollTop;
-      window.requestAnimationFrame(() => {
-        if (Math.abs(scroller.scrollTop - before) < 1) {
-          window.scrollBy({ top: delta, left: 0, behavior: 'auto' });
-        }
-      });
-    }, { passive: true });
+      const multiplier = event.deltaMode === 1 ? 18 : event.deltaMode === 2 ? window.innerHeight : 1;
+      event.preventDefault();
+      scroller.scrollTop += delta * multiplier;
+    }, { passive: false });
   };
 
   initTheme();
