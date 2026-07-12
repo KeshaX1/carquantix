@@ -4323,6 +4323,7 @@ AUTOSEO_ALLOWED_TAGS = set(bleach.sanitizer.ALLOWED_TAGS).union({
     "figure", "figcaption", "table", "thead", "tbody", "tr", "th", "td",
 })
 AUTOSEO_ALLOWED_ATTRIBUTES = {
+    "*": ["id"],
     "a": ["href", "title", "rel"],
     "img": ["src", "alt", "title", "width", "height", "loading"],
     "th": ["scope"],
@@ -4331,12 +4332,28 @@ AUTOSEO_ALLOWED_ATTRIBUTES = {
 
 
 def sanitize_autoseo_html(value):
-    return bleach.clean(
+    cleaned = bleach.clean(
         str(value or ""),
         tags=AUTOSEO_ALLOWED_TAGS,
         attributes=AUTOSEO_ALLOWED_ATTRIBUTES,
         protocols={"http", "https", "mailto"},
         strip=True,
+    )
+    # Older stored articles were sanitized before heading IDs were allowed.
+    # Rebuild conventional anchor IDs so their table-of-contents links work.
+    def add_heading_id(match):
+        tag, attributes, inner_html = match.group(1), match.group(2) or "", match.group(3)
+        if re.search(r"\sid\s*=", attributes, flags=re.IGNORECASE):
+            return match.group(0)
+        heading_text = re.sub(r"<[^>]+>", "", inner_html)
+        anchor = re.sub(r"[^a-z0-9]+", "-", heading_text.lower()).strip("-")
+        return f"<{tag}{attributes} id=\"{anchor}\">{inner_html}</{tag}>" if anchor else match.group(0)
+
+    return re.sub(
+        r"<(h[1-4])(\s[^>]*)?>(.*?)</\1>",
+        add_heading_id,
+        cleaned,
+        flags=re.IGNORECASE | re.DOTALL,
     )
 
 
@@ -4498,6 +4515,7 @@ def guide_article(slug):
 def blog_article(slug):
     generated_article = load_autoseo_articles(slug)
     if generated_article:
+        generated_article["content_html"] = sanitize_autoseo_html(generated_article.get("content_html"))
         canonical_url = f"{get_base_url()}/blog/{generated_article['slug']}"
         page_schema = {
             "@context": "https://schema.org",
