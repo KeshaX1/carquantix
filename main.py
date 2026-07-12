@@ -13,6 +13,7 @@ import time
 import secrets
 import smtplib
 import requests
+import bleach
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from email.message import EmailMessage
@@ -128,6 +129,7 @@ PENDING_PATH = resolve_data_path("PENDING_PATH", "pending_verifications.json")
 PENDING_RESET_PATH = resolve_data_path("PENDING_RESET_PATH", "pending_resets.json")
 COMMENTS_PATH = resolve_data_path("COMMENTS_PATH", "comments.json")
 CAR_LISTINGS_PATH = resolve_data_path("CAR_LISTINGS_PATH", "car_listings.json")
+AUTOSEO_ARTICLES_PATH = resolve_data_path("AUTOSEO_ARTICLES_PATH", "autoseo_articles.json")
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 STATIC_DIR = Path(__file__).with_name("static")
@@ -262,6 +264,7 @@ PADDLE_CLIENT_TOKEN = os.environ.get("PADDLE_CLIENT_TOKEN", "").strip()
 PADDLE_API_BASE = "https://api.paddle.com" if PADDLE_ENV == "production" else "https://sandbox-api.paddle.com"
 PREMIUM_ACTIVE_STATUSES = {"active", "trialing"}
 DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
+AUTOSEO_WEBHOOK_TOKEN = os.environ.get("AUTOSEO_WEBHOOK_TOKEN", "").strip()
 DB_CONNECT_TIMEOUT_SECONDS = int(os.environ.get("DB_CONNECT_TIMEOUT_SECONDS", "5"))
 DB_RUNTIME_DISABLED = False
 DB_BOOTSTRAP_ATTEMPTED = False
@@ -4098,6 +4101,38 @@ def health():
     return jsonify({"ok": True}), 200
 
 
+@app.route("/api/autoseo/webhook", methods=["POST"])
+def autoseo_webhook():
+    if not AUTOSEO_WEBHOOK_TOKEN:
+        return jsonify({"error": "Webhook is not configured"}), 503
+    authorization = request.headers.get("Authorization", "")
+    if not hmac.compare_digest(authorization, f"Bearer {AUTOSEO_WEBHOOK_TOKEN}"):
+        return jsonify({"error": "Unauthorized"}), 401
+    raw_body = request.get_data(cache=True)
+    signature = request.headers.get("X-AutoSEO-Signature", "").strip().lower()
+    if signature:
+        expected = hmac.new(AUTOSEO_WEBHOOK_TOKEN.encode("utf-8"), raw_body, hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(signature, expected):
+            return jsonify({"error": "Invalid signature"}), 401
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Invalid JSON body"}), 400
+    event = str(payload.get("event") or request.headers.get("X-AutoSEO-Event") or "").strip()
+    if event == "test":
+        return jsonify({"url": f"{get_base_url()}/blog"})
+    if event not in {"article.published", "article.updated"}:
+        return jsonify({"error": "Unsupported event"}), 400
+    try:
+        article = normalize_autoseo_article(payload)
+        save_autoseo_article(article)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception:
+        app.logger.exception("AutoSEO webhook delivery failed")
+        return jsonify({"error": "Could not save article"}), 500
+    return jsonify({"url": f"{get_base_url()}/blog/{article['slug']}"})
+
+
 COUNTRY_INDICATOR_DEFS = {
     "gdpPerCapita": {"code": "NY.GDP.PCAP.CD"},
     "gniPerCapita": {"code": "NY.GNP.PCAP.CD"},
@@ -4251,14 +4286,149 @@ def guides():
 @app.route("/blog")
 def blog():
     canonical_url = f"{get_base_url()}{request.path}"
+    autoseo_items = [
+        {
+            "slug": item["slug"],
+            "tag_en": "AutoSEO",
+            "tag_tr": "AutoSEO",
+            "title_en": item["title"],
+            "title_tr": item["title"],
+            "summary_en": item.get("meta_description") or "Read the latest CarQuantix article.",
+            "summary_tr": item.get("meta_description") or "En yeni CarQuantix yazısını okuyun.",
+        }
+        for item in load_autoseo_articles()
+    ]
     return render_template(
         "blog.html",
-        blog_items=BLOG_ITEMS,
+        blog_items=autoseo_items + BLOG_ITEMS,
         canonical_url=canonical_url,
         meta_title="CarQuantix Blog - Car Writing and Editorials",
         meta_description="Read CarQuantix automotive editorials, car buying context, performance explainers and practical notes for comparing vehicles more clearly.",
         robots_directive="index,follow",
     )
+
+
+AUTOSEO_ALLOWED_TAGS = set(bleach.sanitizer.ALLOWED_TAGS).union({
+    "article", "section", "div", "p", "br", "h1", "h2", "h3", "h4",
+    "ul", "ol", "li", "blockquote", "pre", "code", "hr", "img",
+    "figure", "figcaption", "table", "thead", "tbody", "tr", "th", "td",
+})
+AUTOSEO_ALLOWED_ATTRIBUTES = {
+    "a": ["href", "title", "rel"],
+    "img": ["src", "alt", "title", "width", "height", "loading"],
+    "th": ["scope"],
+    "td": ["colspan", "rowspan"],
+}
+
+
+def sanitize_autoseo_html(value):
+    return bleach.clean(
+        str(value or ""),
+        tags=AUTOSEO_ALLOWED_TAGS,
+        attributes=AUTOSEO_ALLOWED_ATTRIBUTES,
+        protocols={"http", "https", "mailto"},
+        strip=True,
+    )
+
+
+def normalize_autoseo_article(payload):
+    slug = re.sub(r"[^a-z0-9]+", "-", str(payload.get("slug") or "").lower()).strip("-")[:180]
+    title = str(payload.get("title") or "").strip()[:300]
+    article_id = str(payload.get("id") or "").strip()[:100]
+    if not article_id or not slug or not title:
+        raise ValueError("id, slug and title are required")
+    return {
+        "autoseo_id": article_id,
+        "slug": slug,
+        "title": title,
+        "meta_description": str(payload.get("metaDescription") or "").strip()[:500],
+        "content_html": sanitize_autoseo_html(payload.get("content_html")),
+        "hero_image_url": str(payload.get("heroImageUrl") or "").strip()[:2000],
+        "hero_image_alt": str(payload.get("heroImageAlt") or "").strip()[:500],
+        "language_code": str(payload.get("languageCode") or "en").strip()[:12],
+        "published_at": str(payload.get("publishedAt") or "").strip()[:50],
+        "updated_at": str(payload.get("updatedAt") or "").strip()[:50],
+    }
+
+
+def ensure_autoseo_table(conn):
+    with conn.cursor() as cur:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS autoseo_articles (
+                autoseo_id TEXT PRIMARY KEY,
+                slug TEXT NOT NULL UNIQUE,
+                title TEXT NOT NULL,
+                meta_description TEXT,
+                content_html TEXT NOT NULL,
+                hero_image_url TEXT,
+                hero_image_alt TEXT,
+                language_code TEXT NOT NULL DEFAULT 'en',
+                published_at TEXT,
+                source_updated_at TEXT,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+        """)
+
+
+def save_autoseo_article(article):
+    if db_enabled():
+        with get_db_conn() as conn:
+            ensure_autoseo_table(conn)
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO autoseo_articles
+                        (autoseo_id, slug, title, meta_description, content_html,
+                         hero_image_url, hero_image_alt, language_code, published_at, source_updated_at)
+                    VALUES (%(autoseo_id)s, %(slug)s, %(title)s, %(meta_description)s,
+                            %(content_html)s, %(hero_image_url)s, %(hero_image_alt)s,
+                            %(language_code)s, %(published_at)s, %(updated_at)s)
+                    ON CONFLICT (autoseo_id) DO UPDATE SET
+                        slug = EXCLUDED.slug, title = EXCLUDED.title,
+                        meta_description = EXCLUDED.meta_description,
+                        content_html = EXCLUDED.content_html,
+                        hero_image_url = EXCLUDED.hero_image_url,
+                        hero_image_alt = EXCLUDED.hero_image_alt,
+                        language_code = EXCLUDED.language_code,
+                        published_at = EXCLUDED.published_at,
+                        source_updated_at = EXCLUDED.source_updated_at,
+                        updated_at = NOW()
+                """, article)
+            conn.commit()
+        return
+    articles = []
+    if AUTOSEO_ARTICLES_PATH.exists():
+        try:
+            articles = json.loads(AUTOSEO_ARTICLES_PATH.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            articles = []
+    articles = [item for item in articles if str(item.get("autoseo_id")) != article["autoseo_id"]]
+    articles.append(article)
+    ensure_parent_dir(AUTOSEO_ARTICLES_PATH)
+    AUTOSEO_ARTICLES_PATH.write_text(json.dumps(articles, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def load_autoseo_articles(slug=None):
+    if db_enabled():
+        try:
+            with get_db_conn() as conn:
+                ensure_autoseo_table(conn)
+                with conn.cursor() as cur:
+                    if slug:
+                        cur.execute("SELECT * FROM autoseo_articles WHERE slug = %s", (slug,))
+                        row = cur.fetchone()
+                        return row
+                    cur.execute("SELECT * FROM autoseo_articles ORDER BY COALESCE(published_at, source_updated_at) DESC")
+                    return cur.fetchall()
+        except Exception as exc:
+            print(f"[autoseo] database read failed: {exc}")
+    try:
+        articles = json.loads(AUTOSEO_ARTICLES_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        articles = []
+    if slug:
+        return next((item for item in articles if item.get("slug") == slug), None)
+    return articles
 
 
 @app.route("/compare-cars")
@@ -4317,6 +4487,29 @@ def guide_article(slug):
 
 @app.route("/blog/<slug>")
 def blog_article(slug):
+    generated_article = load_autoseo_articles(slug)
+    if generated_article:
+        canonical_url = f"{get_base_url()}/blog/{generated_article['slug']}"
+        page_schema = {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": generated_article["title"],
+            "description": generated_article.get("meta_description") or "",
+            "url": canonical_url,
+            "author": {"@type": "Organization", "name": "CarQuantix Editorial Team"},
+            "publisher": {"@type": "Organization", "name": "CarQuantix"},
+            "datePublished": generated_article.get("published_at") or None,
+            "dateModified": generated_article.get("source_updated_at") or generated_article.get("published_at") or None,
+        }
+        return render_template(
+            "autoseo_article.html",
+            article=generated_article,
+            canonical_url=canonical_url,
+            meta_title=f"{generated_article['title']} - CarQuantix Blog",
+            meta_description=generated_article.get("meta_description") or generated_article["title"],
+            robots_directive="index,follow",
+            page_schema=page_schema,
+        )
     article = build_article_context(BLOG_ITEMS, BLOG_ARTICLE_SECTIONS, slug, "Blog", "/blog")
     if not article:
         return "Not Found", 404
@@ -4888,6 +5081,7 @@ def sitemap():
     ]
     urls.extend(f"{base_url}/guides/{item['slug']}" for item in GUIDE_ITEMS if item.get("slug"))
     urls.extend(f"{base_url}/blog/{item['slug']}" for item in BLOG_ITEMS if item.get("slug"))
+    urls.extend(f"{base_url}/blog/{item['slug']}" for item in load_autoseo_articles() if item.get("slug"))
     entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
     xml = (
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
