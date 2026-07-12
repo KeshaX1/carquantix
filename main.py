@@ -129,7 +129,16 @@ PENDING_PATH = resolve_data_path("PENDING_PATH", "pending_verifications.json")
 PENDING_RESET_PATH = resolve_data_path("PENDING_RESET_PATH", "pending_resets.json")
 COMMENTS_PATH = resolve_data_path("COMMENTS_PATH", "comments.json")
 CAR_LISTINGS_PATH = resolve_data_path("CAR_LISTINGS_PATH", "car_listings.json")
-AUTOSEO_ARTICLES_PATH = resolve_data_path("AUTOSEO_ARTICLES_PATH", "autoseo_articles.json")
+# AutoSEO content is created at runtime and must survive Render deploys. Unlike
+# bundled seed JSON files, always prefer APP_DATA_DIR when it is configured.
+AUTOSEO_ARTICLES_PATH = Path(
+    os.environ.get("AUTOSEO_ARTICLES_PATH")
+    or (
+        str(Path(os.environ["APP_DATA_DIR"]).expanduser() / "autoseo_articles.json")
+        if os.environ.get("APP_DATA_DIR")
+        else str(Path(__file__).with_name("autoseo_articles.json"))
+    )
+).expanduser()
 PENDING_EXPIRY_SECONDS = 600  # 10 minutes
 LOGIN_MEDIA_DIR = Path(__file__).with_name("login logo")
 STATIC_DIR = Path(__file__).with_name("static")
