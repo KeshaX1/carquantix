@@ -3459,6 +3459,60 @@ body.dark .comment-section textarea::placeholder {
   line-height: 1.7;
 }
 
+/* AutoSEO articles can contain wide generated images, tables and embeds. */
+.autoseo-page .article-wrap {
+  width: min(1400px, calc(100% - 32px));
+}
+
+.autoseo-page .article-shell {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.autoseo-hero-image {
+  margin: 32px 0 0;
+}
+
+.autoseo-hero-image img,
+.autoseo-content img,
+.autoseo-content video,
+.autoseo-content iframe,
+.autoseo-content svg {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+
+.autoseo-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.autoseo-content table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  .autoseo-page .article-wrap {
+    width: calc(100% - 16px);
+    margin-top: 12px;
+  }
+
+  .autoseo-page .article-shell {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .autoseo-page .article-hero h1 {
+    font-size: clamp(1.75rem, 9vw, 2.5rem);
+  }
+}
+
 .car-analysis {
   margin-top: 34px;
   display: grid;

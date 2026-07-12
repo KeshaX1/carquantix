@@ -14,9 +14,9 @@
   <meta property="og:url" content="{{ canonical_url }}">
   {% if article.hero_image_url %}<meta property="og:image" content="{{ article.hero_image_url }}">{% endif %}
   <script type="application/ld+json">{{ page_schema|tojson }}</script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260712-autoseo1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260712-autoseo-layout2') }}">
 </head>
-<body class="about-page article-page">
+<body class="about-page article-page autoseo-page">
   {% include '_topbar.html' %}
   <main class="article-wrap">
     <article class="article-shell">
@@ -28,7 +28,7 @@
         <p class="article-byline">By CarQuantix Editorial Team</p>
       </header>
       {% if article.hero_image_url %}
-      <figure><img src="{{ article.hero_image_url }}" alt="{{ article.hero_image_alt or article.title }}" loading="eager"></figure>
+      <figure class="autoseo-hero-image"><img src="{{ article.hero_image_url }}" alt="{{ article.hero_image_alt or article.title }}" loading="eager"></figure>
       {% endif %}
       <div class="article-body autoseo-content">{{ article.content_html|safe }}</div>
       <footer class="article-footer-note"><a href="/blog">Back to Blog</a></footer>
