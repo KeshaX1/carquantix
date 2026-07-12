@@ -207,17 +207,18 @@
 
   <!-- Modal -->
   <div id="loginModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+      <button id="loginModalClose" class="login-modal-close" type="button" aria-label="Close">&times;</button>
       <div class="modal-left">
-        <video class="promo-video" src="{{ url_for('login_media', filename='lgnvideo.mp4') }}" poster="/static/icon/hero.jpg" preload="metadata" muted loop playsinline>
-          Your browser does not support the video tag.
-        </video>
+        <img class="promo-video" src="/static/icon/hero.jpg" alt="A dark sports car with blue illuminated gauges" width="1920" height="1080" decoding="async">
       </div>
       <div class="modal-right">
         <h3 id="formTitle">Log In</h3>
         <form id="authForm">
           <input id="loginName" class="hidden" type="text" placeholder="Full Name" autocomplete="name" />
+          <label class="login-field-label" for="loginEmail">Email</label>
           <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required />
+          <label class="login-field-label" for="loginPassword">Password</label>
           <div class="password-row">
             <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required />
             <button type="button" id="togglePassword" aria-label="Show password" title="Show password">

@@ -7086,6 +7086,7 @@ window.addEventListener('resize', () => {
 // Open popup
 const loginBtn = document.getElementById("loginBtn");
 const loginModal = document.getElementById("loginModal");
+const loginModalClose = document.getElementById("loginModalClose");
 const authForm = document.getElementById("authForm");
 const promoVideo = document.querySelector(".promo-video");
 const loginName = document.getElementById("loginName");
@@ -7255,6 +7256,7 @@ const resetSignupFlow = () => {
 
 if (loginBtn && loginModal) {
   loginBtn.addEventListener("click", openLoginModal);
+  loginModalClose?.addEventListener("click", closeLoginModal);
 
   window.addEventListener("click", (e) => {
     if (e.target === loginModal) {
@@ -7267,6 +7269,10 @@ if (loginBtn && loginModal) {
     openLoginModal();
   }
 }
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && loginModal?.style.display === "flex") closeLoginModal();
+});
 
 const setAuthMode = (mode) => {
   authMode = mode;
