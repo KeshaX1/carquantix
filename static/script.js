@@ -6495,6 +6495,21 @@ if (mobileThemeToggle) {
   });
 }
 
+if (document.body.classList.contains('home-page')) {
+  window.addEventListener('wheel', (event) => {
+    const target = event.target;
+    if (target?.closest?.('input, textarea, select, [role="dialog"], .modal, .vehicle-picker-modal')) {
+      return;
+    }
+    const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+    if (!delta) return;
+    const scroller = document.scrollingElement || document.documentElement;
+    const multiplier = event.deltaMode === 1 ? 18 : event.deltaMode === 2 ? window.innerHeight : 1;
+    event.preventDefault();
+    scroller.scrollTop += delta * multiplier;
+  }, { passive: false });
+}
+
 const topSellCarLink = document.getElementById('topSellCarLink');
 const startSellModeTransition = (href) => {
   if (!href) return;
