@@ -130,11 +130,11 @@
       body.home-page .home-hero-btn{min-height:38px;padding:0 14px;font-size:.8rem}
     }
   </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260711-ios-password1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260713-theme-icons1') }}">
   {% else %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260711-ios-password1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260713-theme-icons1') }}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"></noscript>
   {% endif %}
@@ -165,11 +165,10 @@
     </nav>
     <div class="auth-area">
       <div class="switch-row top-switch">
-        <span id="darkModeLabel" data-i18n="darkMode">Dark Mode</span>
-        <label class="switch">
-          <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode" checked>
-          <span class="slider"></span>
-        </label>
+        <button id="themeToggle" class="theme-icon-toggle is-dark" type="button" aria-pressed="true" aria-label="Switch to light mode" title="Switch to light mode">
+          <svg class="theme-sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="theme-moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/><path d="M17.5 4.5v3M16 6h3"/></svg>
+        </button>
       </div>
       <div id="topLangHost" class="top-lang-host" aria-label="Language selector"></div>
       {% if user %}
@@ -260,8 +259,8 @@
       <header class="main-header">
         <div class="main-header-left">
           <button id="mobileThemeToggle" class="mobile-theme-toggle" type="button" aria-pressed="true" aria-label="Toggle dark mode">
-            <span class="mobile-theme-toggle-mark" aria-hidden="true"></span>
-            <span data-i18n="darkMode">Dark Mode</span>
+            <svg class="theme-sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+            <svg class="theme-moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/><path d="M17.5 4.5v3M16 6h3"/></svg>
           </button>
         </div>
       </header>
@@ -682,9 +681,9 @@
     </div>
   </div>
   {% if home_view %}
-  <script src="{{ url_for('static', filename='home.js', v='20260711-wheel-scroll2') }}" data-full-script="{{ url_for('static', filename='script.js', v='20260711-single-language1') }}" defer></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260713-theme-icons1') }}" defer></script>
   {% else %}
-  <script src="{{ url_for('static', filename='script.js', v='20260711-single-language1') }}" defer></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260713-auth-fix1') }}" defer></script>
   {% endif %}
 </body>
 </html>

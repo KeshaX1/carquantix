@@ -2447,6 +2447,33 @@ body.home-page .site-footer .footer-social {
   border-top-color: rgba(255,255,255,0.12);
 }
 
+body.home-page:not(.dark) .site-footer {
+  background: #f8fafc;
+  border-top-color: rgba(15,23,42,0.12);
+  box-shadow: 0 -18px 48px rgba(15,23,42,0.06);
+}
+
+body.home-page:not(.dark) .site-footer .footer-logo,
+body.home-page:not(.dark) .site-footer .footer-link-title {
+  color: #0f172a;
+}
+
+body.home-page:not(.dark) .site-footer .footer-copy,
+body.home-page:not(.dark) .site-footer .footer-links a,
+body.home-page:not(.dark) .site-footer .footer-social-title {
+  color: #475569;
+}
+
+body.home-page:not(.dark) .site-footer .footer-social {
+  border-top-color: rgba(15,23,42,0.12);
+}
+
+body.home-page:not(.dark) .site-footer .footer-social-link {
+  color: #0f172a;
+  border-color: rgba(15,23,42,0.2);
+  background: #ffffff;
+}
+
 body.dark .site-footer,
 .about-page .site-footer,
 .privacy-page .site-footer {
@@ -4207,6 +4234,52 @@ body:not(.dark) .topbar-lang-select option {
 .top-switch {
   color: #eaf0ff;
   font-size: 14px;
+}
+
+.theme-icon-toggle,
+.mobile-theme-toggle {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  background: #111827;
+  color: #f8fafc;
+  cursor: pointer;
+}
+
+.theme-icon-toggle svg,
+.mobile-theme-toggle svg {
+  grid-area: 1 / 1;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-icon-toggle .theme-sun-icon,
+.mobile-theme-toggle .theme-sun-icon { display: none; }
+.theme-icon-toggle.is-dark .theme-sun-icon,
+.mobile-theme-toggle.is-dark .theme-sun-icon { display: block; }
+.theme-icon-toggle.is-dark .theme-moon-icon,
+.mobile-theme-toggle.is-dark .theme-moon-icon { display: none; }
+
+body:not(.dark) .theme-icon-toggle,
+body:not(.dark) .mobile-theme-toggle {
+  border-color: rgba(15,23,42,0.18);
+  background: #ffffff;
+  color: #0f172a;
+}
+
+body.home-page:not(.dark) .topbar-lang-select {
+  border-color: rgba(15,23,42,0.22);
+  background: #ffffff;
+  color: #0f172a;
 }
 
 .sell-car-cta {
@@ -6150,5 +6223,42 @@ body.home-page .main{
 
 body.home-page .home-hero{
   height:auto !important;
+}
+
+/* Theme controls: show the action available for the current theme. */
+.theme-icon-toggle,
+.mobile-theme-toggle,
+.mobile-theme-toggle.is-dark {
+  width:40px;
+  height:40px;
+  min-height:40px;
+  padding:0;
+  display:inline-grid;
+  place-items:center;
+  gap:0;
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:10px;
+  background:#111827;
+  color:#f8fafc;
+  box-shadow:none;
+}
+
+body:not(.dark) .theme-icon-toggle,
+body:not(.dark) .mobile-theme-toggle,
+body:not(.dark) .mobile-theme-toggle.is-dark {
+  border-color:rgba(15,23,42,0.18);
+  background:#ffffff;
+  color:#0f172a;
+}
+
+body.home-page:not(.dark) .top-lang-host .topbar-lang-select {
+  border-color:rgba(15,23,42,0.24);
+  background:#ffffff;
+  color:#0f172a;
+}
+
+body.home-page:not(.dark) .top-lang-host .topbar-lang-select option {
+  background:#ffffff;
+  color:#0f172a;
 }
 

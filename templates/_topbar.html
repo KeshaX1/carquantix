@@ -12,11 +12,10 @@
   </nav>
   <div class="auth-area">
     <div class="switch-row top-switch">
-      <span data-i18n="darkMode">Dark Mode</span>
-      <label class="switch">
-        <input type="checkbox" data-site-theme-toggle aria-label="Toggle dark mode">
-        <span class="slider"></span>
-      </label>
+      <button class="theme-icon-toggle is-dark" type="button" data-site-theme-toggle aria-pressed="true" aria-label="Switch to light mode" title="Switch to light mode">
+        <svg class="theme-sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="theme-moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/><path d="M17.5 4.5v3M16 6h3"/></svg>
+      </button>
     </div>
     <select class="topbar-lang-select" aria-label="Language selector" data-site-lang-select>
       <option value="en">English</option>
@@ -50,10 +49,13 @@
       <label class="site-login-label" for="siteLoginPassword" data-site-auth-copy="password">Password</label>
       <div class="site-login-password-row">
         <input id="siteLoginPassword" class="site-login-input" type="password" placeholder="Password" autocomplete="current-password" minlength="8" required data-site-login-password>
-        <button class="site-login-password-toggle" type="button" data-site-password-toggle aria-label="Show password" title="Show password">&#128065;</button>
+        <button class="site-login-password-toggle" type="button" data-site-password-toggle aria-label="Show password" title="Show password">
+          <svg class="site-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+          <svg class="site-eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 4l16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
       </div>
       <div class="site-login-error" data-site-login-error role="alert" aria-live="polite" hidden></div>
-      <div class="site-login-strength"><span>Password strength: -</span><span>Min 8 characters, mix letters/numbers.</span></div>
+      <div class="site-login-strength"><span data-site-password-strength>Password strength: -</span><span>Min 8 characters, mix letters/numbers.</span></div>
       <a class="site-login-forgot" href="/?auth=reset">Forgot your password?</a>
       <button class="site-login-submit" type="submit" data-site-auth-copy="submit">Log In</button>
     </form>
@@ -139,6 +141,10 @@
     color: #f8fafc;
     cursor: pointer;
   }
+  .site-login-password-toggle svg { width:18px; height:18px; display:block; margin:auto; }
+  .site-login-password-toggle .site-eye-closed { display:none; }
+  .site-login-password-toggle.is-showing .site-eye-open { display:none; }
+  .site-login-password-toggle.is-showing .site-eye-closed { display:block; }
   .site-login-error {
     padding: 9px 10px;
     border: 1px solid rgba(239, 68, 68, 0.5);
@@ -149,6 +155,9 @@
     font-weight: 700;
   }
   .site-login-strength { display:flex; justify-content:space-between; gap:12px; color:#8b8f98; font-size:.76rem; }
+  .site-login-strength-weak { color:#ef4444; font-weight:700; }
+  .site-login-strength-medium { color:#f59e0b; font-weight:700; }
+  .site-login-strength-strong { color:#22c55e; font-weight:700; }
   .site-login-forgot, .site-login-create a { color:inherit; }
   .site-login-forgot { width:fit-content; margin:4px 0; font-size:1rem; }
   .site-login-create { margin:22px 0 0; }
@@ -234,11 +243,12 @@
   const emailInput = document.querySelector('[data-site-login-email]');
   const passwordInput = document.querySelector('[data-site-login-password]');
   const passwordToggle = document.querySelector('[data-site-password-toggle]');
+  const passwordStrength = document.querySelector('[data-site-password-strength]');
   const loginError = document.querySelector('[data-site-login-error]');
   const googleLogin = document.querySelector('[data-site-google-login]');
 
   const COPY = {
-    en: { darkMode: 'Dark Mode', navHome: 'Home', navNews: 'News', navGuides: 'Guides', navBlog: 'Blog', navPricing: 'Pricing', login: 'Log In', account: 'Account', title: 'Log In', email: 'Email', password: 'Password', submit: 'Log In', google: 'Continue with Google', showPassword: 'Show password', hidePassword: 'Hide password', required: 'Email and password are required.', invalid: 'Invalid email or password.', generic: 'Something went wrong. Please try again.', close: 'Close' },
+    en: { darkMode: 'Dark Mode', navHome: 'Home', navNews: 'News', navGuides: 'Guides', navBlog: 'Blog', navPricing: 'Pricing', login: 'Log In', account: 'Account', title: 'Log In', email: 'Email', password: 'Password', submit: 'Log In', google: 'Continue with Google', showPassword: 'Show password', hidePassword: 'Hide password', strength: 'Password strength', weak: 'weak', medium: 'medium', strong: 'strong', required: 'Email and password are required.', invalid: 'Invalid email or password.', generic: 'Something went wrong. Please try again.', close: 'Close' },
     tr: { darkMode: 'Karanlık Mod', navHome: 'Ana Sayfa', navNews: 'Haberler', navGuides: 'Rehberler', navBlog: 'Blog', navPricing: 'Fiyatlandırma', login: 'Giriş Yap', account: 'Hesabım', title: 'Giriş Yap', email: 'E-posta', password: 'Parola', submit: 'Giriş Yap', google: 'Google ile devam et', showPassword: 'Parolayı göster', hidePassword: 'Parolayı gizle', required: 'E-posta ve parola gereklidir.', invalid: 'E-posta veya parola hatalı.', generic: 'Bir hata oluştu. Lütfen tekrar deneyin.', close: 'Kapat' },
     de: { darkMode: 'Dunkelmodus', navHome: 'Startseite', navNews: 'Neuigkeiten', navGuides: 'Ratgeber', navBlog: 'Blog', navPricing: 'Preise', login: 'Anmelden', account: 'Konto', title: 'Anmelden', email: 'E-Mail', password: 'Passwort', submit: 'Anmelden', google: 'Mit Google fortfahren', showPassword: 'Passwort anzeigen', hidePassword: 'Passwort ausblenden', required: 'E-Mail und Passwort sind erforderlich.', invalid: 'E-Mail oder Passwort ist falsch.', generic: 'Ein Fehler ist aufgetreten. Bitte erneut versuchen.', close: 'Schließen' },
     fr: { darkMode: 'Mode sombre', navHome: 'Accueil', navNews: 'Actualités', navGuides: 'Guides', navBlog: 'Blog', navPricing: 'Tarifs', login: 'Connexion', account: 'Compte', title: 'Connexion', email: 'E-mail', password: 'Mot de passe', submit: 'Connexion', google: 'Continuer avec Google', showPassword: 'Afficher le mot de passe', hidePassword: 'Masquer le mot de passe', required: "L'e-mail et le mot de passe sont obligatoires.", invalid: 'E-mail ou mot de passe incorrect.', generic: 'Une erreur est survenue. Réessayez.', close: 'Fermer' },
@@ -255,6 +265,24 @@
     const label = getCopy()[passwordInput.type === 'text' ? 'hidePassword' : 'showPassword'];
     passwordToggle.setAttribute('aria-label', label);
     passwordToggle.title = label;
+    passwordToggle.classList.toggle('is-showing', passwordInput.type === 'text');
+  };
+  const computePasswordStrength = (password) => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    if (password.length >= 12) score++;
+    return score >= 4 ? 'strong' : score >= 2 ? 'medium' : 'weak';
+  };
+  const updatePasswordStrength = () => {
+    if (!passwordStrength || !passwordInput) return;
+    const password = passwordInput.value;
+    const strength = password ? computePasswordStrength(password) : '';
+    passwordStrength.classList.remove('site-login-strength-weak', 'site-login-strength-medium', 'site-login-strength-strong');
+    passwordStrength.textContent = `${getCopy().strength || COPY.en.strength}: ${strength ? (getCopy()[strength] || strength) : '-'}`;
+    if (strength) passwordStrength.classList.add(`site-login-strength-${strength}`);
   };
   const applyCopy = () => {
     const copy = getCopy();
@@ -274,18 +302,25 @@
     if (langSelect) langSelect.value = currentLang;
     document.documentElement.lang = currentLang;
     updatePasswordToggle();
+    updatePasswordStrength();
   };
 
   const storedTheme = localStorage.getItem('theme');
   const defaultDark = storedTheme ? storedTheme === 'dark' : true;
   const syncTheme = (next) => {
     document.body.classList.toggle('dark', next);
-    if (themeToggle) themeToggle.checked = next;
+    if (themeToggle) {
+      themeToggle.classList.toggle('is-dark', next);
+      themeToggle.setAttribute('aria-pressed', String(next));
+      const label = next ? 'Switch to light mode' : 'Switch to dark mode';
+      themeToggle.setAttribute('aria-label', label);
+      themeToggle.title = label;
+    }
     localStorage.setItem('theme', next ? 'dark' : 'light');
   };
   syncTheme(defaultDark);
   if (themeToggle) {
-    themeToggle.addEventListener('change', (event) => syncTheme(event.target.checked));
+    themeToggle.addEventListener('click', () => syncTheme(!document.body.classList.contains('dark')));
   }
   if (langSelect) {
     langSelect.addEventListener('change', () => {
@@ -329,6 +364,7 @@
     passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
     updatePasswordToggle();
   });
+  passwordInput?.addEventListener('input', updatePasswordStrength);
 
   if (googleLogin) {
     const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;

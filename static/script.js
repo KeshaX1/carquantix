@@ -6461,10 +6461,19 @@ const defaultDark = isLocalHost ? true : (storedTheme ? storedTheme === 'dark' :
 const syncTheme = (forceDark) => {
   const next = typeof forceDark === 'boolean' ? forceDark : document.body.classList.contains('dark');
   document.body.classList.toggle('dark', next);
-  if (themeToggle) themeToggle.checked = next;
+  if (themeToggle) {
+    themeToggle.classList.toggle('is-dark', next);
+    themeToggle.setAttribute('aria-pressed', String(next));
+    const label = next ? 'Switch to light mode' : 'Switch to dark mode';
+    themeToggle.setAttribute('aria-label', label);
+    themeToggle.title = label;
+  }
   if (mobileThemeToggle) {
     mobileThemeToggle.classList.toggle('is-dark', next);
     mobileThemeToggle.setAttribute('aria-pressed', String(next));
+    const label = next ? 'Switch to light mode' : 'Switch to dark mode';
+    mobileThemeToggle.setAttribute('aria-label', label);
+    mobileThemeToggle.title = label;
   }
   localStorage.setItem('theme', next ? 'dark' : 'light');
 };
@@ -6473,8 +6482,8 @@ document.body.classList.toggle('dark', defaultDark);
 
 if (themeToggle) {
   syncTheme(defaultDark);
-  themeToggle.addEventListener('change', (e) => {
-    syncTheme(e.target.checked);
+  themeToggle.addEventListener('click', () => {
+    syncTheme(!document.body.classList.contains('dark'));
   });
 } else {
   syncTheme(defaultDark);
