@@ -5106,6 +5106,10 @@ body.dark #togglePassword {
   line-height: 1.35;
 }
 
+.form-error.hidden {
+  display: none;
+}
+
 .modal-right .primary {
   background: linear-gradient(135deg, #009dff, #00aaff);
   color: white;
