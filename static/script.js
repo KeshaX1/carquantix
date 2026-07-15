@@ -3015,7 +3015,6 @@ function renderNotifications() {
   sorted.forEach(notice => {
     const { vehicle, catalog } = resolveNotificationVehicle(notice);
     if (!vehicle) return;
-    const itemTimestamp = parseNoticeTimestamp(vehicle.addedAt) || notice.detectedAt || Date.now();
     const catalogLabel = catalog === 'motorcycles'
       ? t('notificationsCatalogMotorcycles')
       : t('notificationsCatalogCars');
@@ -3024,7 +3023,7 @@ function renderNotifications() {
     item.innerHTML = `
       <div class="notice-kicker">${t('notificationsNewArrival')}</div>
       <div class="notice-text">${vehicle.name}</div>
-      <div class="notice-date">${catalogLabel} · ${getNotificationAgeLabel(itemTimestamp)}</div>
+      <div class="notice-date">${catalogLabel}</div>
     `;
     notificationsList.appendChild(item);
   });
