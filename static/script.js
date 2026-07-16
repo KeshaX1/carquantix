@@ -5549,8 +5549,7 @@ const DECISION_UI = {
   tr: {
     'Your weights': 'Ağırlıklarınız', 'Set what matters most': 'Sizin için önemli olanı ayarlayın', Reset: 'Sıfırla',
     Performance: 'Performans', Price: 'Fiyat', 'Fuel Cost': 'Yakıt Maliyeti', Practicality: 'Kullanışlılık',
-    'Best Performance': 'En İyi Performans', 'Best Value': 'En İyi Değer', 'Best Daily Driver': 'En İyi Günlük Araç',
-    'Lowest Running Cost': 'En Düşük İşletme Maliyeti', 'Best for Long Trips': 'Uzun Yol İçin En İyi', 'Your Priority Pick': 'Öncelik Seçiminiz',
+    'Best Performance': 'En İyi Performans', 'Best Value': 'En İyi Değer', 'Your Priority Pick': 'Öncelik Seçiminiz',
     Pros: 'Artılar', Cons: 'Eksiler', 'Buyer guide': 'Alıcı rehberi', 'Who should buy which?': 'Hangi aracı kim satın almalı?',
     'Power leader': 'Güç lideri', 'Quickest 0-100 km/h': 'En hızlı 0-100 km/sa', 'Top speed leader': 'Azami hız lideri',
     'Lowest price': 'En düşük fiyat', 'Best efficiency': 'En iyi verimlilik', 'Newest model year': 'En yeni model yılı',
@@ -5562,8 +5561,7 @@ const DECISION_UI = {
   de: {
     'Your weights': 'Ihre Gewichtung', 'Set what matters most': 'Wichtige Kriterien festlegen', Reset: 'Zurücksetzen',
     Performance: 'Leistung', Price: 'Preis', 'Fuel Cost': 'Energiekosten', Practicality: 'Alltagstauglichkeit',
-    'Best Performance': 'Beste Leistung', 'Best Value': 'Bestes Preis-Leistungs-Verhältnis', 'Best Daily Driver': 'Bestes Alltagsauto',
-    'Lowest Running Cost': 'Niedrigste Betriebskosten', 'Best for Long Trips': 'Am besten für Langstrecken', 'Your Priority Pick': 'Ihre Prioritätswahl',
+    'Best Performance': 'Beste Leistung', 'Best Value': 'Bestes Preis-Leistungs-Verhältnis', 'Your Priority Pick': 'Ihre Prioritätswahl',
     Pros: 'Vorteile', Cons: 'Nachteile', 'Buyer guide': 'Kaufratgeber', 'Who should buy which?': 'Welches Auto passt zu wem?',
     'Power leader': 'Leistungsstärkstes Fahrzeug', 'Quickest 0-100 km/h': 'Schnellste 0–100 km/h', 'Top speed leader': 'Höchste Endgeschwindigkeit',
     'Lowest price': 'Niedrigster Preis', 'Best efficiency': 'Beste Effizienz', 'Newest model year': 'Neuestes Modelljahr',
@@ -5789,9 +5787,6 @@ function buildGroupCompareDecisionData(vehicles) {
 
   const bestPerformanceLeaders = getCategoryLeaders(items, scoreMap, 'performance');
   const bestValueLeaders = getCategoryLeaders(items, scoreMap, 'value');
-  const bestDailyLeaders = getCategoryLeaders(items, scoreMap, 'daily');
-  const runningCostLeaders = getCategoryLeaders(items, scoreMap, 'runningCost');
-  const longTripLeaders = getCategoryLeaders(items, scoreMap, 'longTrips');
   const userPriorityLeaders = getCategoryLeaders(items, scoreMap, 'userPriority');
 
   const performanceLabels = getAggregateLeaderLabels(performanceAggregate);
@@ -5811,27 +5806,6 @@ function buildGroupCompareDecisionData(vehicles) {
       reason: bestValueLeaders.length
         ? `Best mix of price, performance, and efficiency (${getLeaderScore(scoreMap, bestValueLeaders, 'value')}/100).`
         : 'No clear value edge from the recorded data.',
-    },
-    {
-      label: 'Best Daily Driver',
-      winner: formatDecisionWinnerNames(bestDailyLeaders),
-      reason: bestDailyLeaders.length
-        ? `Best everyday balance of price, efficiency, practicality, and model year (${getLeaderScore(scoreMap, bestDailyLeaders, 'daily')}/100).`
-        : 'No clear daily-use edge from the recorded data.',
-    },
-    {
-      label: 'Lowest Running Cost',
-      winner: formatDecisionWinnerNames(runningCostLeaders),
-      reason: runningCostLeaders.length
-        ? `Lowest cost score from recorded consumption and listed price (${getLeaderScore(scoreMap, runningCostLeaders, 'runningCost')}/100).`
-        : 'No clear running-cost edge from the recorded data.',
-    },
-    {
-      label: 'Best for Long Trips',
-      winner: formatDecisionWinnerNames(longTripLeaders),
-      reason: longTripLeaders.length
-        ? `Best long-trip score from efficiency, cabin-size proxy, power, and top speed (${getLeaderScore(scoreMap, longTripLeaders, 'longTrips')}/100).`
-        : 'No clear long-trip edge from the recorded data.',
     },
     {
       label: 'Your Priority Pick',

@@ -1085,8 +1085,8 @@ GUIDE_ARTICLE_SECTIONS = {
 }
 COMPARE_SEO_OVERRIDES = {
     "2018-porsche-panamera-vs-2024-bmw-m5": {
-        "title": "BMW M5 vs Porsche Panamera: Performance, Price, Reliability and Daily Driving",
-        "meta_description": "Compare the BMW M5 and Porsche Panamera by performance, price, reliability, comfort, maintenance cost and daily driving to decide which one fits you better.",
+        "title": "BMW M5 vs Porsche Panamera: Performance, Price, Efficiency and Cost",
+        "meta_description": "Compare recorded BMW M5 and Porsche Panamera performance, listed price, efficiency and calculated energy-cost scenarios.",
         "quick_verdict": "The BMW M5 is better if you want stronger performance, a sportier driving feel and more direct pace, while the Porsche Panamera makes more sense if luxury comfort and grand-touring polish matter more.",
         "reverse_keyword": "Porsche Panamera vs BMW M5",
         "related_compare_links": [
@@ -1099,13 +1099,13 @@ COMPARE_SEO_OVERRIDES = {
         ],
     },
     "2018-mclaren-720s-vs-2023-ferrari-f8": {
-        "title": "Ferrari F8 vs McLaren 720S: Speed, Price, Reliability and Driving Experience",
-        "meta_description": "Compare the Ferrari F8 and McLaren 720S by speed, price, reliability, maintenance cost and driving experience before choosing the better supercar.",
+        "title": "Ferrari F8 vs McLaren 720S: Performance, Price, Efficiency and Cost",
+        "meta_description": "Compare recorded Ferrari F8 and McLaren 720S performance, listed price, efficiency and calculated energy-cost scenarios.",
         "quick_verdict": "The McLaren 720S is the sharper pick for outright speed and acceleration, while the Ferrari F8 is better if brand character, engine drama and emotional appeal matter most.",
     },
     "2024-audi-q8-vs-2024-bmw-x5": {
-        "title": "BMW X5 vs Audi Q8: Luxury SUV Comparison, Price, Comfort and Reliability",
-        "meta_description": "Compare the BMW X5 and Audi Q8 by price, comfort, reliability, performance, maintenance cost and daily driving to choose the better luxury SUV.",
+        "title": "BMW X5 vs Audi Q8: Performance, Price, Efficiency and Cost",
+        "meta_description": "Compare recorded BMW X5 and Audi Q8 performance, listed price, efficiency and calculated energy-cost scenarios.",
         "quick_verdict": "The BMW X5 is the better all-round luxury SUV for balanced performance and practicality, while the Audi Q8 is the stronger choice if design, cabin style and relaxed cruising are your priorities.",
         "reverse_keyword": "Audi Q8 vs BMW X5",
         "related_compare_links": [
@@ -1118,13 +1118,13 @@ COMPARE_SEO_OVERRIDES = {
         ],
     },
     "2024-lexus-nx-vs-2024-mercedes-benz-glc": {
-        "title": "Lexus NX vs Mercedes GLC: Reliability, Comfort, Price and Daily Driving",
-        "meta_description": "Compare the Lexus NX and Mercedes GLC by reliability, comfort, price, maintenance cost, performance and daily driving to choose the better luxury SUV.",
+        "title": "Lexus NX vs Mercedes GLC: Performance, Price, Efficiency and Cost",
+        "meta_description": "Compare recorded Lexus NX and Mercedes GLC performance, listed price, efficiency and calculated energy-cost scenarios.",
         "quick_verdict": "The Lexus NX is better if reliability, running costs and ownership peace of mind are your priorities, while the Mercedes GLC is stronger if cabin prestige and refinement matter more.",
     },
     "2022-porsche-911-vs-2024-jaguar-f-type": {
-        "title": "Jaguar F-Type vs Porsche 911: Sports Car Comparison, Price and Driving Feel",
-        "meta_description": "Compare the Jaguar F-Type and Porsche 911 by performance, price, reliability, maintenance cost and driving feel before choosing the better sports car.",
+        "title": "Jaguar F-Type vs Porsche 911: Performance, Price, Efficiency and Cost",
+        "meta_description": "Compare recorded Jaguar F-Type and Porsche 911 performance, listed price, efficiency and calculated energy-cost scenarios.",
         "quick_verdict": "The Porsche 911 is the stronger all-round sports car for performance, precision and resale strength, while the Jaguar F-Type is best for buyers who want style, sound and grand-touring character.",
     },
 }
@@ -2398,10 +2398,6 @@ def build_compare_decision_data(car_a, car_b):
     cars = [car_a, car_b]
     best_performance_car, best_performance_score = priority_winner(cars, priority_scores, "performance")
     best_value_car, best_value_score = priority_winner(cars, priority_scores, "value")
-    best_daily_car, best_daily_score = priority_winner(cars, priority_scores, "daily")
-    running_cost_car, running_cost_score = priority_winner(cars, priority_scores, "running_cost")
-    long_trip_car, long_trip_score = priority_winner(cars, priority_scores, "long_trips")
-    user_priority_car, user_priority_score = priority_winner(cars, priority_scores, "user_priority")
 
     winner_name = {
         "left": left_name,
@@ -2425,11 +2421,6 @@ def build_compare_decision_data(car_a, car_b):
             "label": "Best Value",
             "winner": car_name(best_value_car) if best_value_car else "Too close to call",
             "reason": scored_reason(best_value_score, "Best mix of price, performance, and efficiency"),
-        },
-        {
-            "label": "Lowest Running Cost",
-            "winner": car_name(running_cost_car) if running_cost_car else "Too close to call",
-            "reason": scored_reason(running_cost_score, "Lowest cost score from recorded consumption and listed price"),
         },
     ]
 
@@ -4171,7 +4162,10 @@ def listing_upload(filename):
 
 @app.route("/health")
 def health():
-    return jsonify({"ok": True}), 200
+    return jsonify({
+        "ok": True,
+        "commit": os.environ.get("RENDER_GIT_COMMIT", "unknown"),
+    }), 200
 
 
 @app.route("/api/autoseo/webhook", methods=["POST"])
