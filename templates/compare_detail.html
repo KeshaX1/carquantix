@@ -863,6 +863,23 @@
       <p class="data-note">Data may vary by trim, market, tires, battery, transmission, model year and testing method. Confirm exact specifications with the manufacturer or seller before making a purchase decision.</p>
     </section>
 
+    {% if original_metrics %}
+    <section class="trust-section" aria-label="CarQuantix calculated comparison">
+      <div class="summary-label">Original calculation</div>
+      <h2>CarQuantix five-year energy and performance-value scenario</h2>
+      <p>{{ original_metrics.assumptions }}</p>
+      <div class="trust-grid">
+        <div class="trust-item"><span>{{ original_metrics.left.name }} annual energy</span><strong>${{ '%.0f'|format(original_metrics.left.annual_energy_cost) if original_metrics.left.annual_energy_cost is not none else 'Not available' }}</strong></div>
+        <div class="trust-item"><span>{{ original_metrics.right.name }} annual energy</span><strong>${{ '%.0f'|format(original_metrics.right.annual_energy_cost) if original_metrics.right.annual_energy_cost is not none else 'Not available' }}</strong></div>
+        <div class="trust-item"><span>{{ original_metrics.left.name }} five-year energy</span><strong>${{ '%.0f'|format(original_metrics.left.five_year_energy_cost) if original_metrics.left.five_year_energy_cost is not none else 'Not available' }}</strong></div>
+        <div class="trust-item"><span>{{ original_metrics.right.name }} five-year energy</span><strong>${{ '%.0f'|format(original_metrics.right.five_year_energy_cost) if original_metrics.right.five_year_energy_cost is not none else 'Not available' }}</strong></div>
+        <div class="trust-item"><span>{{ original_metrics.left.name }} performance-value index</span><strong>{{ '%.2f'|format(original_metrics.left.value_index) if original_metrics.left.value_index is not none else 'Not available' }}</strong></div>
+        <div class="trust-item"><span>{{ original_metrics.right.name }} performance-value index</span><strong>{{ '%.2f'|format(original_metrics.right.value_index) if original_metrics.right.value_index is not none else 'Not available' }}</strong></div>
+      </div>
+      <p class="data-note"><strong>Formula:</strong> {{ original_metrics.formula }} These are comparable scenarios based on recorded inputs, not ownership promises or resale forecasts.</p>
+    </section>
+    {% endif %}
+
     {% if compare_trust %}
     <section class="trust-section" aria-label="Data transparency">
       <h2>Data transparency</h2>

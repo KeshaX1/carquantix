@@ -63,9 +63,9 @@ const VEHICLES = [
 
   { id: 'RS5',             name: '2024 Audi RS5',      power:470, acc:3.7, topSpeed:300, engine: '2.9 tfsi quattro 450cv tiptronic', price: '$87.900', img: '/static/images/audiRS5.jpg', rearImg: '/static/rearimg/audiRS5-rear.jpg' , consumption: { value:12.0, unit: 'L/100km' }},
 
-  { id: 'RS6',             name: '2024 Audi RS6',      power:630, acc:3.3, topSpeed:305, engine: 'GT 4.0 TFSI V8', price: '$132.980', img: '/static/images/audiRS6.jpg', rearImg: '/static/rearimg/audiRS6-rear.png' , consumption: { value:15.0, unit: 'L/100km' }},
+  { id: 'RS6',             name: '2024 Audi RS6',      power:630, acc:3.3, topSpeed:305, engine: 'GT 4.0 TFSI V8', price: '$132.980', img: '/static/images/audiRS6.jpg', rearImg: '/static/rearimg/audiRS6-rear.png' , consumption: { value:12.7, unit: 'L/100km' }, dataAudit: { modelYear: 2024, trim: 'RS 6 Avant GT TFSI (463 kW)', bodyStyle: 'Avant', priceMarket: 'Site-listed price; technical source does not verify this price', measurementStandard: 'Audi technical data; WLTP consumption', sourceName: 'Audi MediaCenter technical data', sourceUrl: 'https://www.audi-mediacenter.com/en/rs-6-avant-35/technical-data?show=tfsi-441-kw', verifiedAt: '2026-07-16' }},
 
-  { id: 'RS7',             name: '2024 Audi RS7',      power:630, acc:3.4, topSpeed:280, engine: 'performance 4.0 TFSI V8', price: '$155.400', img: '/static/images/audiRS7.jpg', rearImg: '/static/rearimg/audiRS7-rear.jpg' , consumption: { value:13.5, unit: 'L/100km' }},
+  { id: 'RS7',             name: '2024 Audi RS7',      power:630, acc:3.4, topSpeed:280, engine: 'performance 4.0 TFSI V8', price: '$155.400', img: '/static/images/audiRS7.jpg', rearImg: '/static/rearimg/audiRS7-rear.jpg' , consumption: { value:12.6, unit: 'L/100km' }, dataAudit: { modelYear: 2024, trim: 'RS 7 Sportback performance TFSI (463 kW)', bodyStyle: 'Sportback', priceMarket: 'Site-listed price; technical source does not verify this price', measurementStandard: 'Audi technical data; WLTP consumption', sourceName: 'Audi MediaCenter technical data', sourceUrl: 'https://www.audi-mediacenter.com/de/rs-7-sportback-38/technische-daten?show=tfsi-441-kw', verifiedAt: '2026-07-16' }},
   
   { id: 'TT RS',           name: '2024 Audi TT RS',    power:400 , acc:3.9, topSpeed:250, engine: '2.5 TFSI quattro S tronic', price: '$84.980', img: '/static/images/audiTTRS.jpg', rearImg: '/static/rearimg/audiTTRS-rear.jpg' , consumption: { value:9.5, unit: 'L/100km' }},
 
@@ -117,13 +117,13 @@ const VEHICLES = [
 
   { id: 'M4',              name: '2024 BMW M4',        power:530, acc:3.4, topSpeed:302, engine: 'CS 3.0 M xDrive M Steptronic', price: '$134.990', img: '/static/images/bmwM4.jpg', rearImg: '/static/rearimg/bmwM4-rear.jpg' , consumption: { value:11.0, unit: 'L/100km' }},
 
-  { id: 'M5',              name: '2024 BMW M5',        power:726, acc:3.5, topSpeed:250, engine: '4.4 V8 Plug-in Hybrid M xDrive M Steptronic', price: '$129.950', img: '/static/images/bmwM5.jpg', rearImg: '/static/rearimg/bmwM5-rear.jpg' , consumption: { value:25, unit: 'kWh/100km' }},
+  { id: 'M5',              name: '2024 BMW M5',        power:727, acc:3.5, topSpeed:250, engine: '4.4 V8 Plug-in Hybrid M xDrive M Steptronic', price: '$129.950', img: '/static/images/bmwM5.jpg', rearImg: '/static/rearimg/bmwM5-rear.jpg' , consumption: { value:25.5, unit: 'kWh/100km weighted plus 1.7 L/100km' }, dataAudit: { modelYear: 2024, trim: 'BMW M5 Sedan (G90)', bodyStyle: 'Sedan', priceMarket: 'Site-listed price; technical source does not verify this price', measurementStandard: 'BMW press kit; weighted combined WLTP', sourceName: 'BMW Group PressClub: The all-new BMW M5', sourceUrl: 'https://www.press.bmwgroup.com/global/article/detail/T0443252EN/the-all-new-bmw-m5?language=en', verifiedAt: '2026-07-16' }},
 
   { id: 'M5 CS',           name: '2022 BMW M5',        power:635, acc:3.0, topSpeed:305, engine: 'CS 4.4 V8 xDrive Steptronic', price: '$142.995', img: '/static/images/bmwM5CS.jpg', rearImg: '/static/rearimg/bmwM5CS-rear.png' , consumption: { value:14.0, unit: 'L/100km' }},
 
   { id: 'M6',              name: '2017 BMW M6',        power:600, acc:3.9, topSpeed:250, engine: 'Competition 4.4 V8 M DCT', price: '$69.890', img: '/static/images/bmwM6.jpg', rearImg: '/static/rearimg/bmwM6-rear.png' , consumption: { value:11.5, unit: 'L/100km' }},
 
-  { id: 'M8',              name: '2022 BMW M8',        power:625, acc:3.2, topSpeed:250, engine: 'Competition 4.4 V8 xDrive Steptronic Sport', price: '$139.890', img: '/static/images/bmwM8.jpg', rearImg: '/static/rearimg/bmwM8-rear.jpg' , consumption: { value:12.5, unit: 'L/100km' }},
+  { id: 'M8',              name: '2022 BMW M8',        power:625, acc:3.2, topSpeed:250, engine: 'Competition 4.4 V8 xDrive Steptronic Sport', price: '$139.890', img: '/static/images/bmwM8.jpg', rearImg: '/static/rearimg/bmwM8-rear.jpg' , consumption: { value:12.5, unit: 'L/100km' }, dataAudit: { modelYear: 2022, trim: 'M8 Competition Coupe', bodyStyle: 'Coupe', priceMarket: 'Site-listed price; technical source does not verify this price', measurementStandard: 'BMW official press specifications', sourceName: 'BMW Group PressClub: new M8 Competition Coupe', sourceUrl: 'https://www.press.bmwgroup.com/united-kingdom/article/detail/T0365542EN_GB/the-new-bmw-m8-competition-coup%C3%A9-convertible-and-gran-coup%C3%A9?language=en_GB', verifiedAt: '2026-07-16' }},
 
   { id: 'İ7',              name: '2024 BMW i7',        power:660, acc:3.7, topSpeed:250, engine: 'M70 105.7 kWh xDrive', price: '$85.900', img: '/static/images/bmwİ7.jpg', rearImg: '/static/rearimg/bmwİ7-rear.jpg' , consumption: { value:23.5, unit: 'kWh/100km' }},
 
@@ -143,7 +143,7 @@ const VEHICLES = [
 
   { id: 'XM',              name: '2024 BMW XM',        power:476, acc:5.1, topSpeed:250, engine: '50e Plug-in Hybrid M xDrive M Steptronic', price: '$109.900', img: '/static/images/bmwXM.jpg', rearImg: '/static/rearimg/bmwXM-rear.png' , consumption: { value:30, unit: 'kWh/100km' }},
 
-  { id: 'AMG GT',          name: '2024 Mercedes-Benz AMG GT', power:816, acc:2.8, topSpeed:320, engine: '63 S E PERFORMANCE V8', price: '$199,900', img: '/static/images/mercedesAMGGT.jpg', rearImg: '/static/rearimg/mercedesAMGGT-rear.png'  , consumption: { value:11.0, unit: 'L/100km' }},
+  { id: 'AMG GT',          name: '2024 Mercedes-Benz AMG GT', power:816, acc:2.8, topSpeed:320, engine: '63 S E PERFORMANCE V8', price: '$199,900', img: '/static/images/mercedesAMGGT.jpg', rearImg: '/static/rearimg/mercedesAMGGT-rear.png'  , consumption: { value:11.0, unit: 'L/100km' }, dataAudit: { modelYear: 2024, trim: 'Mercedes-AMG GT 63 S E PERFORMANCE Coupe', bodyStyle: 'Coupe', priceMarket: 'Site-listed price; technical source does not verify this price', measurementStandard: 'Mercedes-Benz official press information', sourceName: 'Mercedes-Benz official press release', sourceUrl: 'https://imprensa.mercedes-benz.com.br/releases/mercedes-amg-gt-63-s-e-performance-coupe-leva-a-performance-das-pistas-para-as-ruas', verifiedAt: '2026-07-16' }},
 
   { id: 'AMG ONE',         name: '2025 Mercedes-Benz AMG ONE', power:1063, acc:2.9, topSpeed:352, engine: '1.6 V6 E PERFORMANCE', price: '$3,387,950', img: '/static/images/mercedesAMGONE.jpg', rearImg: '/static/rearimg/mercedesAMGONE-rear.png' , consumption: { value:35, unit: 'L/100km' }},
 
@@ -305,7 +305,7 @@ const VEHICLES = [
 
   { id: 'C7',              name: '2019 Corvette C7', power:466 , acc:4.2, topSpeed:290, engine: 'V8 6.2 2LT AT8', price: '$79.900', img: '/static/images/corvetteC7.png', rearImg: '/static/rearimg/corvetteC7-rear.jpg' , consumption: { value:15.0, unit: 'L/100km' }},
 
-  { id: 'C8',              name: '2025 Corvette C8', power:495, acc:3.5, topSpeed:296, engine: 'Stingray 6.2 V8', price: '$119.969', img: '/static/images/corvetteC8.png', rearImg: '/static/rearimg/corvetteC8-rear.png' , consumption: { value:12.0, unit: 'L/100km' }},
+  { id: 'C8',              name: '2025 Corvette C8', power:495, acc:3.5, topSpeed:296, engine: 'Stingray 6.2 V8 with performance exhaust', price: '$119.969', img: '/static/images/corvetteC8.png', rearImg: '/static/rearimg/corvetteC8-rear.png' , consumption: { value:12.0, unit: 'L/100km' }, dataAudit: { modelYear: 2025, trim: 'Corvette Stingray with performance exhaust', bodyStyle: 'Coupe', priceMarket: 'Site-listed price; official page does not verify this price', measurementStandard: 'Chevrolet official model specification; acceleration/top-speed entries require separate review', sourceName: 'Chevrolet official Corvette page', sourceUrl: 'https://www.chevrolet.com/performance/corvette', verifiedAt: '2026-07-16' }},
 
   { id: 'Ateca',           name: '2025 CUPRA Ateca', power:247, acc:9.3, topSpeed:199, engine: '1.5 TSI', price: '$42.490', img: '/static/images/cupraateca.png', rearImg: '/static/rearimg/cupraateca-rear.png' , consumption: { value:8.0, unit: 'L/100km' }},
 
@@ -864,7 +864,7 @@ const VEHICLES = [
 
   { id: '911',          name: '2022 Porsche 911', power:385, acc:4.4, topSpeed:289, engine: '4 3.0 PDK', price: '$118.900', img: '/static/images/porsche911.png', rearImg: '/static/rearimg/porsche911-rear.jpg' , consumption: { value:13.0, unit: 'L/100km' }},
 
-  { id: '911 Turbo',    name: '2024 Porsche 911 Turbo', power:580, acc:2.8, topSpeed:320, engine: '3.8 Twin-Turbo Flat-6', price: '$197.200', img: '/static/images/porsche911.png', rearImg: '/static/rearimg/porsche911-rear.jpg' , consumption: { value:12.5, unit: 'L/100km' }},
+  { id: '911 Turbo',    name: '2024 Porsche 911 Turbo', power:580, acc:2.8, topSpeed:320, engine: '3.745 L twin-turbo flat-six', price: '$197.200', img: '/static/images/porsche911.png', rearImg: '/static/rearimg/porsche911-rear.jpg' , consumption: { value:12.3, unit: 'L/100km' }, dataAudit: { modelYear: 2024, trim: '911 Turbo (992.1)', bodyStyle: 'Coupe', priceMarket: 'Site-listed price; technical source does not verify this price', measurementStandard: 'Porsche official technical/press data; WLTP consumption upper bound', sourceName: 'Porsche Newsroom: 911 Turbo technical data', sourceUrl: 'https://newsroom.porsche.com/en_PME/2024/products/911-turbo-remastered-auction-highlight-at-icons-of-porsche.html', verifiedAt: '2026-07-16' }},
 
   { id: '930',          name: '1989 Porsche 930', power:282, acc:5.4, topSpeed:260, engine: '3.3 Turbo', price: '$140.000', img: '/static/images/porsche930.png', rearImg: '/static/rearimg/porsche930-rear.png' , consumption: { value:14.0, unit: 'L/100km' }},
 
@@ -908,7 +908,7 @@ const VEHICLES = [
 
   { id: 'Macan',        name: '2021 Porsche Macan', power:245, acc:6.2, topSpeed:232, engine: 'T 2.0', price: '$56.900', img: '/static/images/porscheMacan.jpg', rearImg: '/static/rearimg/porscheMacan-rear.png' , consumption: { value:9.0, unit: 'L/100km' }},
 
-  { id: 'Panamera',     name: '2018 Porsche Panamera', power:330, acc:5.3, topSpeed:259, engine: '4 3.0 V6', price: '$59.990', img: '/static/images/porschePanamera.png', rearImg: '/static/rearimg/porschePanamera-rear.png' , consumption: { value:11.0, unit: 'L/100km' }},
+  { id: 'Panamera',     name: '2018 Porsche Panamera', power:330, acc:5.3, topSpeed:259, engine: 'Panamera 4 3.0 L mono-turbo V6', price: '$59.990', img: '/static/images/porschePanamera.png', rearImg: '/static/rearimg/porschePanamera-rear.png' , consumption: { value:11.0, unit: 'L/100km' }, dataAudit: { modelYear: 2018, trim: 'Panamera 4', bodyStyle: 'Sedan', priceMarket: 'Site-listed used-price context; official MY18 MSRP was $89,600', measurementStandard: 'Porsche MY2018 US technical information', sourceName: 'Porsche Newsroom MY2018 Panamera technical data', sourceUrl: 'https://newsroom.porsche.com/dam/jcr%3Ac629e2c4-a8db-46ad-9a14-3e9b59a3cc90/2018_Porsche_Panamera_Technical_Information.pdf', verifiedAt: '2026-07-16' }},
 
   { id: 'Targa',        name: '2021 Porsche Targa', power:385, acc:4.4, topSpeed:289, engine: '3.0L Twin-Turbo Boxer 6', price: '$144.900', img: '/static/images/porscheTarga.jpg', rearImg: '/static/rearimg/porscheTarga-rear.png' , consumption: { value:12.0, unit: 'L/100km' }},
 

@@ -295,15 +295,15 @@ FEATURED_CAR_LIMIT = int(os.environ.get("FEATURED_CAR_LIMIT", "10"))
 CURATED_COMPARE_REFERENCES = [
     ("M5", "RS6"),
     ("M8", "AMG GT"),
-    ("RS7", "GT-R"),
+    ("M5", "RS7"),
     ("Panamera", "M8"),
-    ("C8", "911 Turbo"),
+    ("RS6", "911 Turbo"),
     ("M5", "M8"),
     ("M5", "AMG GT"),
     ("RS7", "911 Turbo"),
-    ("Panamera", "AMG GT"),
-    ("Panamera", "911 Turbo"),
     ("M8", "911 Turbo"),
+    ("Panamera", "911 Turbo"),
+    ("RS6", "M8"),
     ("X5", "GLS"),
     ("Q8", "GLS"),
     ("C8", "Huracan"),
@@ -1558,7 +1558,10 @@ def select_featured_car_links(car_links):
 
 
 def build_indexable_car_slugs(cars):
-    return {entry["slug"] for entry in select_featured_car_links(build_car_links(cars)) if entry.get("slug")}
+    # Vehicle records remain useful inside the comparison tool, but the
+    # templated detail pages are withheld from search until each receives a
+    # page-specific editorial review.
+    return set()
 
 
 def resolve_car_reference(reference, cars, slug_map):
@@ -1692,9 +1695,11 @@ def resolve_compare_slug(compare_slug, slug_map):
 
 def build_compare_spec_rows(car_a, car_b):
     def metric_source_note(label):
-        if label in {"Power", "0-100 km/h", "Top Speed", "Engine"}:
-            return "Manufacturer or public specification source; confirm exact local trim."
-        return "See sources and data transparency notes."
+        left_audit = car_a.get("dataAudit") or {}
+        right_audit = car_b.get("dataAudit") or {}
+        left_source = left_audit.get("sourceName") or "unverified record"
+        right_source = right_audit.get("sourceName") or "unverified record"
+        return f"{car_a.get('name')}: {left_source}; {car_b.get('name')}: {right_source}."
 
     def metric_row(label, key, higher_is_better=True, formatter=None):
         left_value = car_a.get(key)
@@ -1920,27 +1925,6 @@ def build_compare_content_sections(car_a, car_b, compare_decision):
             ),
         },
         {
-            "heading": "Interior and Comfort",
-            "body": (
-                f"Interior and comfort matter most if this will be a daily car. "
-                f"{left_name} and {right_name} should be judged by seating position, cabin space, ride quality, visibility, infotainment and long-distance refinement, not only by acceleration numbers."
-            ),
-        },
-        {
-            "heading": "Reliability",
-            "body": (
-                "Reliability is best judged by ownership history, service records and common repair patterns for each model. "
-                f"Before choosing between {left_name} and {right_name}, check known issues, warranty coverage and how easily each car can be serviced where you live."
-            ),
-        },
-        {
-            "heading": "Maintenance Cost",
-            "body": (
-                "Maintenance cost can outweigh a small purchase-price difference. "
-                f"For {left_name} vs {right_name}, compare scheduled servicing, tires, brakes, insurance, parts availability and depreciation before deciding which one is cheaper to own."
-            ),
-        },
-        {
             "heading": "Fuel Economy",
             "body": (
                 f"Fuel economy is part of the long-term cost picture. "
@@ -1962,6 +1946,9 @@ def build_compare_content_sections(car_a, car_b, compare_decision):
         },
     ]
 
+    override_sections = get_compare_seo_override(car_a, car_b).get("editorial_sections") or []
+    sections[3:3] = override_sections
+
     reverse_keyword = get_compare_seo_override(car_a, car_b).get("reverse_keyword")
     if reverse_keyword:
         sections.insert(
@@ -1976,6 +1963,44 @@ def build_compare_content_sections(car_a, car_b, compare_decision):
         )
 
     return sections
+
+
+def build_compare_original_metrics(car_a, car_b):
+    """Transparent CarQuantix scenarios, not measured tests or market forecasts."""
+    annual_distance = 15000
+    fuel_price = 1.25
+    electricity_price = 0.18
+
+    def metrics(car):
+        price = parse_price_amount(car.get("price"))
+        power = numeric_or_none(car.get("power"))
+        consumption = car.get("consumption") or {}
+        consumption_value = numeric_or_none(consumption.get("value"))
+        unit = str(consumption.get("unit") or "")
+        energy_price = electricity_price if "kWh" in unit else fuel_price
+        annual_energy_cost = None
+        is_hybrid = bool(re.search(r"hybrid", str(car.get("engine") or ""), re.I))
+        if consumption_value is not None and not is_hybrid:
+            annual_energy_cost = annual_distance / 100 * consumption_value * energy_price
+        five_year_energy_cost = annual_energy_cost * 5 if annual_energy_cost is not None else None
+        value_index = power / price * 10000 if power is not None and price else None
+        return {
+            "name": car.get("name"),
+            "annual_energy_cost": annual_energy_cost,
+            "five_year_energy_cost": five_year_energy_cost,
+            "value_index": value_index,
+            "unit": unit,
+        }
+
+    return {
+        "assumptions": (
+            "15,000 km/year; $1.25 per litre or $0.18 per kWh; unchanged consumption and energy price. "
+            "Insurance, tax, servicing, tires, finance and depreciation are excluded."
+        ),
+        "formula": "Energy cost = distance / 100 × recorded consumption × assumed unit price. Value index = hp / listed price × 10,000.",
+        "left": metrics(car_a),
+        "right": metrics(car_b),
+    }
 
 
 def build_compare_faq(car_a, car_b, compare_decision):
@@ -2671,7 +2696,7 @@ def build_editorial_compare_links(cars, slug_map, limit=8):
     return unique_link_entries(
         (
             {"href": entry.get("href"), "title": entry.get("title")}
-            for entry in build_featured_compare_links(cars, slug_map, limit=None)
+            for entry in build_featured_compare_links(cars, slug_map, limit=FEATURED_COMPARE_LIMIT)
         ),
         limit=limit,
     )
@@ -2696,7 +2721,7 @@ def build_related_compare_links_for_car(car, cars, slug_map, limit=8, exclude_hr
     target_brand = get_vehicle_brand(car).lower()
     scored = []
     popular = []
-    for entry in build_featured_compare_links(cars, slug_map, limit=None):
+    for entry in build_featured_compare_links(cars, slug_map, limit=FEATURED_COMPARE_LIMIT):
         href = str(entry.get("href") or "")
         if not href or href == exclude_href:
             continue
@@ -2735,7 +2760,7 @@ def build_related_compare_links_for_pair(left_car, right_car, cars, slug_map, li
     target_brands = {get_vehicle_brand(left_car).lower(), get_vehicle_brand(right_car).lower()} - {""}
     scored = []
     popular = []
-    for entry in build_featured_compare_links(cars, slug_map, limit=None):
+    for entry in build_featured_compare_links(cars, slug_map, limit=FEATURED_COMPARE_LIMIT):
         href = str(entry.get("href") or "")
         if not href or href == exclude_href:
             continue
@@ -2747,7 +2772,12 @@ def build_related_compare_links_for_pair(left_car, right_car, cars, slug_map, li
         if score:
             scored.append((score, link))
     ordered = [link for _, link in sorted(scored, key=lambda item: item[0], reverse=True)]
-    return unique_link_entries(override_links + ordered + popular, limit=limit)
+    allowed_hrefs = {
+        entry.get("href")
+        for entry in build_featured_compare_links(cars, slug_map, limit=FEATURED_COMPARE_LIMIT)
+    }
+    candidates = [entry for entry in override_links + ordered + popular if entry.get("href") in allowed_hrefs]
+    return unique_link_entries(candidates, limit=limit)
 
 
 MANUFACTURER_SOURCE_DOMAINS = {
@@ -2866,7 +2896,7 @@ def build_compare_trust_meta(car_a, car_b):
         "Please include the model year, trim, market, field that looks incorrect, and the source you are using."
     )
     return {
-        "reviewed_by": "CarQuantix data review (independently developed platform)",
+        "reviewed_by": f"{EDITORIAL_AUTHOR['name']} — {EDITORIAL_AUTHOR['role']}",
         "last_updated": last_updated,
         "market": " / ".join(markets) if markets else "US",
         "test_standard": "; ".join(standards),
@@ -2879,10 +2909,21 @@ def build_compare_trust_meta(car_a, car_b):
 def build_indexable_compare_slugs(cars, slug_map):
     slugs = set()
     for entry in build_featured_compare_links(cars, slug_map):
+        pair = (entry.get("left_car"), entry.get("right_car"))
+        if not all(is_review_ready_car(car) for car in pair):
+            continue
         href = str(entry.get("href") or "")
         if href.startswith("/compare/"):
             slugs.add(href.rsplit("/", 1)[-1])
     return slugs
+
+
+def is_review_ready_car(car):
+    audit = (car or {}).get("dataAudit") or {}
+    return all(
+        str(audit.get(field) or "").strip()
+        for field in ("modelYear", "trim", "priceMarket", "measurementStandard", "sourceName", "sourceUrl", "verifiedAt")
+    )
 
 
 @app.before_request
@@ -5086,6 +5127,7 @@ def compare_detail(compare_slug):
         compare_faq=compare_faq,
         compare_sources=build_compare_source_links(left_car, right_car),
         compare_trust=build_compare_trust_meta(left_car, right_car),
+        original_metrics=build_compare_original_metrics(left_car, right_car),
         race_video=race_video,
         comments_page=f"compare:{resolved['canonical_slug']}",
         canonical_url=canonical_url,
@@ -5094,10 +5136,7 @@ def compare_detail(compare_slug):
         robots_directive="index,follow" if is_indexable else "noindex,follow",
         adsense_enabled=is_indexable,
         page_schema=page_schema,
-        related_car_links=unique_link_entries(
-            build_related_car_links(left_car, cars, limit=5) + build_related_car_links(right_car, cars, limit=5),
-            limit=8,
-        ),
+        related_car_links=[],
         related_compare_links=build_related_compare_links_for_pair(
             left_car,
             right_car,
@@ -5113,6 +5152,7 @@ def compare_detail(compare_slug):
 @app.route("/sitemap.xml")
 def sitemap():
     base_url = get_base_url()
+    cars, slug_map = load_cars()
     urls = [
         f"{base_url}/",
         f"{base_url}/compare-cars",
@@ -5130,6 +5170,11 @@ def sitemap():
     ]
     urls.extend(f"{base_url}/guides/{item['slug']}" for item in GUIDE_ITEMS if item.get("slug"))
     urls.extend(f"{base_url}/blog/{item['slug']}" for item in BLOG_ITEMS if item.get("slug"))
+    urls.extend(
+        f"{base_url}/compare/{entry['href'].rsplit('/', 1)[-1]}"
+        for entry in build_featured_compare_links(cars, slug_map)
+        if entry.get("href") and entry["href"].rsplit("/", 1)[-1] in build_indexable_compare_slugs(cars, slug_map)
+    )
     urls.append(f"{base_url}{EDITORIAL_AUTHOR['url_path']}")
     entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
     xml = (
