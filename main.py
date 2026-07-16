@@ -1913,12 +1913,7 @@ def build_compare_page_title(car_a, car_b):
 
     left_name, right_name = get_compare_display_names(car_a, car_b)
     body_style = f"{left_name} vs {right_name}"
-    name_text = f"{left_name} {right_name}".lower()
-    if re.search(r"\bx[1-7]\b|q[2-8]\b|gl[acse]|gle|glc|lx|nx|rx|suv|cayenne|macan|range rover", name_text):
-        return f"{body_style}: Luxury SUV Comparison, Price, Comfort and Reliability"
-    if re.search(r"ferrari|mclaren|lamborghini|porsche 911|jaguar f-type|corvette|r8|amg gt", name_text):
-        return f"{body_style}: Speed, Price, Reliability and Driving Experience"
-    return f"{body_style}: Performance, Price, Reliability and Daily Driving"
+    return f"{body_style}: Performance, Price, Efficiency and Cost"
 
 
 def build_compare_quick_verdict(car_a, car_b, compare_decision):
@@ -1942,7 +1937,7 @@ def build_compare_quick_verdict(car_a, car_b, compare_decision):
         other = right_name if winner == left_name else left_name
         return (
             f"The {winner} is the better pick under the default priority weights, "
-            f"while the {other} can still make more sense if you weight price, running cost, comfort or performance differently."
+            f"while the {other} can still make more sense if you weight price, energy cost or performance differently."
         )
     return (
         f"The {left_name} vs {right_name} decision should be read by category, not as one universal winner. "
@@ -1986,13 +1981,6 @@ def build_compare_content_sections(car_a, car_b, compare_decision):
                 f"{left_name} is rated at {left_consumption.get('value', '-')} {left_consumption.get('unit', '')}, "
                 f"while {right_name} is rated at {right_consumption.get('value', '-')} {right_consumption.get('unit', '')}. "
                 "For high-mileage drivers, even a small efficiency difference can matter."
-            ),
-        },
-        {
-            "heading": "Daily Driving",
-            "body": (
-                f"For daily driving, the better choice is the one that feels easier to live with. "
-                f"Compare {left_name} and {right_name} by ride comfort, parking ease, cargo space, fuel use, road noise and how relaxed each car feels in traffic."
             ),
         },
         {
@@ -2072,13 +2060,6 @@ def build_compare_faq(car_a, car_b, compare_decision):
                 f"Compare horsepower, 0-100 km/h and top speed together. "
                 f"{left_name} has {car_a.get('power', '-')} hp and a {car_a.get('topSpeed', '-')} km/h top speed, "
                 f"while {right_name} has {car_b.get('power', '-')} hp and a {car_b.get('topSpeed', '-')} km/h top speed."
-            ),
-        },
-        {
-            "question": f"Which is better for daily driving?",
-            "answer": (
-                f"For daily driving, compare comfort, running cost, visibility, cabin space and reliability. "
-                f"The better daily choice between {left_name} and {right_name} depends on those ownership priorities more than headline speed alone."
             ),
         },
     ]
@@ -2446,28 +2427,9 @@ def build_compare_decision_data(car_a, car_b):
             "reason": scored_reason(best_value_score, "Best mix of price, performance, and efficiency"),
         },
         {
-            "label": "Best Daily Driver",
-            "winner": car_name(best_daily_car) if best_daily_car else "Too close to call",
-            "reason": scored_reason(best_daily_score, "Best everyday balance of price, efficiency, practicality, and model year"),
-        },
-        {
             "label": "Lowest Running Cost",
             "winner": car_name(running_cost_car) if running_cost_car else "Too close to call",
             "reason": scored_reason(running_cost_score, "Lowest cost score from recorded consumption and listed price"),
-        },
-        {
-            "label": "Best for Long Trips",
-            "winner": car_name(long_trip_car) if long_trip_car else "Too close to call",
-            "reason": scored_reason(long_trip_score, "Best long-trip score from efficiency, cabin-size proxy, power, and top speed"),
-        },
-        {
-            "label": "Priority Pick",
-            "winner": car_name(user_priority_car) if user_priority_car else "Too close to call",
-            "reason": (
-                f"Using default weights: performance {DEFAULT_COMPARE_WEIGHTS['performance']}%, "
-                f"price {DEFAULT_COMPARE_WEIGHTS['price']}%, fuel cost {DEFAULT_COMPARE_WEIGHTS['fuel_cost']}%, "
-                f"practicality {DEFAULT_COMPARE_WEIGHTS['practicality']}%."
-            ),
         },
     ]
 
@@ -4407,7 +4369,7 @@ def blog():
             "summary_en": item.get("meta_description") or "Read the latest CarQuantix article.",
             "summary_tr": item.get("meta_description") or "En yeni CarQuantix yazısını okuyun.",
         }
-        for item in load_autoseo_articles()
+        for item in []  # AutoSEO drafts are intentionally excluded from public blog navigation.
     ]
     return render_template(
         "blog.html",
@@ -4616,31 +4578,6 @@ def guide_article(slug):
 
 @app.route("/blog/<slug>")
 def blog_article(slug):
-    generated_article = load_autoseo_articles(slug)
-    if generated_article:
-        generated_article["content_html"] = sanitize_autoseo_html(generated_article.get("content_html"))
-        canonical_url = f"{get_base_url()}/blog/{generated_article['slug']}"
-        page_schema = {
-            "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": generated_article["title"],
-            "description": generated_article.get("meta_description") or "",
-            "url": canonical_url,
-            "author": {"@type": "Person", "name": EDITORIAL_AUTHOR["name"], "url": f"{get_base_url()}{EDITORIAL_AUTHOR['url_path']}"},
-            "publisher": {"@type": "Organization", "name": "CarQuantix"},
-            "datePublished": generated_article.get("published_at") or None,
-            "dateModified": generated_article.get("source_updated_at") or generated_article.get("published_at") or None,
-        }
-        return render_template(
-            "autoseo_article.html",
-            article=generated_article,
-            canonical_url=canonical_url,
-            meta_title=f"{generated_article['title']} - CarQuantix Blog",
-            meta_description=generated_article.get("meta_description") or generated_article["title"],
-            robots_directive="noindex,follow",
-            page_schema=page_schema,
-            editorial_author=EDITORIAL_AUTHOR,
-        )
     article = build_article_context(BLOG_ITEMS, BLOG_ARTICLE_SECTIONS, slug, "Blog", "/blog")
     if not article:
         return "Not Found", 404
