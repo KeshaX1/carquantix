@@ -5518,10 +5518,6 @@ function getBuyerGuideEngineReason(vehicle) {
   const engineText = String(vehicle?.engine || '').trim();
   if (!engineText) return '';
   const lowerEngine = engineText.toLowerCase();
-  const vehicleName = String(vehicle?.name || '').toLowerCase();
-  if (/\bv8\b|shelby|hemi/.test(lowerEngine) || /mustang|camaro|challenger/.test(vehicleName)) {
-    return 'classic muscle-car character';
-  }
   if (/electric|ev|kwh/.test(lowerEngine)) return 'electric powertrain response';
   if (/hybrid/.test(lowerEngine)) return 'hybrid powertrain flexibility';
   if (/xdrive|quattro|4matic|awd|4wd/.test(lowerEngine)) return 'all-wheel-drive traction';

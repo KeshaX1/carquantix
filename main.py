@@ -2502,9 +2502,7 @@ def build_compare_decision_data(car_a, car_b):
         engine_text = str(car.get("engine") or "").strip()
         if engine_text:
             lower_engine = engine_text.lower()
-            if re.search(r"\bv8\b|shelby|hemi|mustang|camaro|challenger", lower_engine):
-                reasons.append("classic muscle-car character")
-            elif re.search(r"electric|ev|kwh", lower_engine):
+            if re.search(r"electric|ev|kwh", lower_engine):
                 reasons.append("electric powertrain response")
             elif re.search(r"hybrid", lower_engine):
                 reasons.append("hybrid powertrain flexibility")
