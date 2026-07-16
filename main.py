@@ -1312,6 +1312,61 @@ BLOG_ARTICLE_SECTIONS = {
     ],
 }
 
+# Original CarQuantix calculation notes added to the broad explainers below.
+# Inputs and formulas are printed in the article so the result can be checked
+# rather than presented as an unexplained editorial claim.
+GUIDE_ARTICLE_SECTIONS["what-is-horsepower"].append({
+    "heading": "CarQuantix calculation: horsepower, kilowatts and power-to-weight",
+    "paragraphs": [
+        "For a transparent conversion, CarQuantix uses 1 metric horsepower (PS) = 0.7355 kW. A vehicle listed at 400 PS therefore converts to 294.2 kW (400 × 0.7355). This conversion changes the unit, not the vehicle's output; rounding and the difference between metric PS and mechanical hp must be checked against the source specification.",
+        "Power-to-weight adds mass to the calculation. A 400 PS car weighing 1,600 kg produces 250 PS per tonne: 400 ÷ 1.6. A 500 PS car weighing 2,200 kg produces about 227 PS per tonne: 500 ÷ 2.2. Despite having 100 PS more, the heavier example has the lower power-to-weight result. This does not predict an exact acceleration time because traction, gearing, tires and the power curve are still missing.",
+    ],
+    "bullets": [
+        "Metric power conversion: PS × 0.7355 = kW.",
+        "Power-to-weight: PS ÷ weight in tonnes.",
+        "Treat the result as one comparison input, not a measured road test.",
+    ],
+})
+
+GUIDE_ARTICLE_SECTIONS["understanding-0-100"].append({
+    "heading": "CarQuantix case study: when two tenths look larger than they are",
+    "paragraphs": [
+        "In the audited Audi RS 6 GT and BMW M5 comparison, the recorded manufacturer figures are 3.3 and 3.5 seconds respectively. The absolute gap is 0.2 seconds. Relative to the M5 figure, the RS 6 uses about 5.7% less time to reach 100 km/h: (3.5 - 3.3) ÷ 3.5 × 100.",
+        "That calculation describes the published baseline, not the result of a CarQuantix track test. Surface temperature, tire condition, launch control, battery charge, vehicle load and measurement rollout can move a real run. CarQuantix therefore treats a two-tenths gap as a useful specification difference but not proof that every road launch will reproduce the same order.",
+    ],
+    "bullets": [
+        "Absolute gap: slower time - quicker time.",
+        "Relative time advantage: gap ÷ slower time × 100.",
+        "Confirm that both figures use comparable test standards before ranking them.",
+    ],
+})
+
+BLOG_ARTICLE_SECTIONS["why-evs-are-growing"].append({
+    "heading": "CarQuantix cost scenario: the routine can matter more than the badge",
+    "paragraphs": [
+        "Consider a transparent 15,000 km annual scenario. At 18 kWh/100 km and $0.18/kWh, an EV uses 2,700 kWh and costs $486 per year for energy: 15,000 ÷ 100 × 18 × 0.18. At 7.5 L/100 km and $1.25/L, a gasoline car uses 1,125 litres and costs about $1,406 per year. Under only these assumptions, the energy-cost difference is about $920 per year.",
+        "This is not a universal savings claim. Public fast-charging prices, charging losses, winter efficiency, local fuel prices and driving speed can materially change the result. Purchase price, insurance, tax, tires, finance, battery condition, maintenance and depreciation are excluded. The useful conclusion is that EV adoption can make financial sense for a predictable charging routine, while the same vehicle can produce a different result for a driver dependent on expensive public charging.",
+    ],
+    "bullets": [
+        "Annual energy = distance ÷ 100 × consumption.",
+        "Annual energy cost = annual energy × local unit price.",
+        "Replace every example input with your own mileage and local prices before deciding.",
+    ],
+})
+
+BLOG_ARTICLE_SECTIONS["why-weight-matters"].append({
+    "heading": "CarQuantix physics check: mass and braking energy at 100 km/h",
+    "paragraphs": [
+        "At the same speed, kinetic energy rises directly with mass. Using E = 1/2 × mass × velocity squared and 100 km/h = 27.78 m/s, a 1,800 kg vehicle carries about 694 kJ of kinetic energy. A 2,200 kg vehicle carries about 849 kJ. The heavier example asks the braking system and tires to manage roughly 155 kJ more energy in the same idealized stop.",
+        "The 2,200 kg vehicle is 22.2% heavier, so at the same speed it also carries 22.2% more kinetic energy. This is a physics comparison, not a stopping-distance prediction. Tire grip, brake hardware, aerodynamics, road surface, ABS calibration and temperature decide how effectively that energy is removed. It does show why adding power can restore acceleration but cannot make extra mass irrelevant to braking heat and consumables.",
+    ],
+    "bullets": [
+        "Convert speed first: km/h ÷ 3.6 = m/s.",
+        "Kinetic energy: 0.5 × kg × (m/s)².",
+        "Use sourced curb weight for the exact trim; do not substitute an estimated dimension record.",
+    ],
+})
+
 
 def is_local_host(host):
     host_only = (host or "").split(":")[0].lower()
@@ -4542,7 +4597,7 @@ def guide_article(slug):
         "url": canonical_url,
         "author": {"@type": "Person", "name": EDITORIAL_AUTHOR["name"], "url": f"{get_base_url()}{EDITORIAL_AUTHOR['url_path']}"},
         "publisher": {"@type": "Organization", "name": "CarQuantix"},
-        "dateModified": "2026-07-10",
+        "dateModified": "2026-07-16",
     }
     return render_template(
         "article_detail.html",
@@ -4600,7 +4655,7 @@ def blog_article(slug):
         "url": canonical_url,
         "author": {"@type": "Person", "name": EDITORIAL_AUTHOR["name"], "url": f"{get_base_url()}{EDITORIAL_AUTHOR['url_path']}"},
         "publisher": {"@type": "Organization", "name": "CarQuantix"},
-        "dateModified": "2026-07-10",
+        "dateModified": "2026-07-16",
     }
     return render_template(
         "article_detail.html",
