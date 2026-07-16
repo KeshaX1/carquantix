@@ -42,7 +42,7 @@
         <span class="content-kicker">{{ article.tag }}</span>
         <h1>{{ article.title }}</h1>
         <p>{{ article.summary }}</p>
-        <p class="article-byline">By CarQuantix Editorial Team · Reviewed July 10, 2026</p>
+        <p class="article-byline">By <a href="{{ editorial_author.url_path }}">{{ editorial_author.name }}</a>, {{ editorial_author.role }} · Reviewed July 16, 2026</p>
       </header>
 
       <div class="article-body">

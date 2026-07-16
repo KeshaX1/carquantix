@@ -25,13 +25,13 @@
         <span class="content-kicker">CarQuantix Blog</span>
         <h1>{{ article.title }}</h1>
         {% if article.meta_description %}<p>{{ article.meta_description }}</p>{% endif %}
-        <p class="article-byline">By CarQuantix Editorial Team</p>
+        <p class="article-byline">Draft prepared for review by <a href="{{ editorial_author.url_path }}">{{ editorial_author.name }}</a></p>
       </header>
       {% if article.hero_image_url %}
       <figure class="autoseo-hero-image"><img src="{{ article.hero_image_url }}" alt="{{ article.hero_image_alt or article.title }}" loading="eager"></figure>
       {% endif %}
       <div class="article-body autoseo-content">{{ article.content_html|safe }}</div>
-      <footer class="article-footer-note"><a href="/blog">Back to Blog</a></footer>
+      <footer class="article-footer-note"><p>This draft is excluded from search indexing until its sources, calculations and conclusions receive a manual editorial review.</p><a href="/blog">Back to Blog</a></footer>
     </article>
   </main>
   {% include '_footer.html' %}

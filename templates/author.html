@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="/favicon.ico">
+  <title>Kerim Orazov - Founder & Automotive Data Analyst | CarQuantix</title>
+  <meta name="description" content="Meet Kerim Orazov, founder of CarQuantix, and learn how public vehicle data, calculations and corrections are handled.">
+  <meta name="robots" content="{{ robots_directive }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <script type="application/ld+json">{{ page_schema|tojson }}</script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260716-author1') }}">
+</head>
+<body class="about-page article-page">
+  {% include '_topbar.html' %}
+  <main class="article-wrap"><article class="article-shell">
+    <header class="article-hero"><span class="content-kicker">Author and data responsibility</span><h1>{{ author.name }}</h1><p>{{ author.role }} at CarQuantix</p></header>
+    <div class="article-body">
+      <section><h2>Why I built CarQuantix</h2><p>I created CarQuantix to make scattered vehicle specifications easier to compare and to put performance, efficiency, price context and ownership questions in the same view. The site is an independently developed research tool; it is not a manufacturer, dealer or vehicle testing laboratory.</p></section>
+      <section><h2>How I work with the data</h2><p>I organize publicly available manufacturer specifications and automotive reference data, review records where a source is available, and build the comparison rules and cost estimates used on the site. Calculated results are identified as estimates and should be checked against the exact model year, trim and local market before a purchase decision.</p><p>I do not claim to have personally driven every vehicle listed on CarQuantix. Articles and comparisons are data-based unless a page explicitly documents a first-hand test.</p></section>
+      <section><h2>Editorial and correction policy</h2><p>CarQuantix aims to separate recorded specifications from estimates, state important assumptions, and link to relevant sources. Automated drafts are not eligible for search indexing until they have been manually reviewed. If a figure appears incorrect, send the model year, trim, market, disputed field and supporting source through the <a href="/contact">contact page</a>.</p><p>For calculation rules, source hierarchy and data limitations, see the <a href="/methodology">methodology and data notes</a>.</p></section>
+    </div>
+  </article></main>
+  {% include '_footer.html' %}
+</body>
+</html>

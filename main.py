@@ -538,7 +538,13 @@ FEATURED_COMPARE_REFERENCES = CURATED_COMPARE_REFERENCES + NEW_SEO_COMPARE_REFER
     ("EV4", "ID.7"),
     ("Corvette", "911 Turbo"),
 ]
-FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", "30"))
+FEATURED_COMPARE_LIMIT = int(os.environ.get("FEATURED_COMPARE_LIMIT", "10"))
+
+EDITORIAL_AUTHOR = {
+    "name": "Kerim Orazov",
+    "role": "Founder & Automotive Data Analyst",
+    "url_path": "/author/kerim-orazov",
+}
 COMPARE_RACE_VIDEO_OVERRIDES = {}
 LEGACY_COMPARE_SLUGS = {
     "audi-rs6-vs-bmw-m5-cs": ("RS6", "M5 CS"),
@@ -4309,7 +4315,7 @@ def blog():
     ]
     return render_template(
         "blog.html",
-        blog_items=autoseo_items + BLOG_ITEMS,
+        blog_items=BLOG_ITEMS,
         canonical_url=canonical_url,
         meta_title="CarQuantix Blog - Car Writing and Editorials",
         meta_description="Read CarQuantix automotive editorials, car buying context, performance explainers and practical notes for comparing vehicles more clearly.",
@@ -4493,7 +4499,7 @@ def guide_article(slug):
         "headline": article["title"],
         "description": article["summary"],
         "url": canonical_url,
-        "author": {"@type": "Organization", "name": "CarQuantix Editorial Team"},
+        "author": {"@type": "Person", "name": EDITORIAL_AUTHOR["name"], "url": f"{get_base_url()}{EDITORIAL_AUTHOR['url_path']}"},
         "publisher": {"@type": "Organization", "name": "CarQuantix"},
         "dateModified": "2026-07-10",
     }
@@ -4508,6 +4514,7 @@ def guide_article(slug):
         related_article_links=build_related_article_links(article["slug"], limit=8),
         related_car_links=build_editorial_car_links(cars, limit=8),
         related_compare_links=build_editorial_compare_links(cars, slug_map, limit=8),
+        editorial_author=EDITORIAL_AUTHOR,
     )
 
 
@@ -4523,7 +4530,7 @@ def blog_article(slug):
             "headline": generated_article["title"],
             "description": generated_article.get("meta_description") or "",
             "url": canonical_url,
-            "author": {"@type": "Organization", "name": "CarQuantix Editorial Team"},
+            "author": {"@type": "Person", "name": EDITORIAL_AUTHOR["name"], "url": f"{get_base_url()}{EDITORIAL_AUTHOR['url_path']}"},
             "publisher": {"@type": "Organization", "name": "CarQuantix"},
             "datePublished": generated_article.get("published_at") or None,
             "dateModified": generated_article.get("source_updated_at") or generated_article.get("published_at") or None,
@@ -4534,8 +4541,9 @@ def blog_article(slug):
             canonical_url=canonical_url,
             meta_title=f"{generated_article['title']} - CarQuantix Blog",
             meta_description=generated_article.get("meta_description") or generated_article["title"],
-            robots_directive="index,follow",
+            robots_directive="noindex,follow",
             page_schema=page_schema,
+            editorial_author=EDITORIAL_AUTHOR,
         )
     article = build_article_context(BLOG_ITEMS, BLOG_ARTICLE_SECTIONS, slug, "Blog", "/blog")
     if not article:
@@ -4549,7 +4557,7 @@ def blog_article(slug):
         "headline": article["title"],
         "description": article["summary"],
         "url": canonical_url,
-        "author": {"@type": "Organization", "name": "CarQuantix Editorial Team"},
+        "author": {"@type": "Person", "name": EDITORIAL_AUTHOR["name"], "url": f"{get_base_url()}{EDITORIAL_AUTHOR['url_path']}"},
         "publisher": {"@type": "Organization", "name": "CarQuantix"},
         "dateModified": "2026-07-10",
     }
@@ -4564,7 +4572,21 @@ def blog_article(slug):
         related_article_links=build_related_article_links(article["slug"], limit=8),
         related_car_links=build_editorial_car_links(cars, limit=8),
         related_compare_links=build_editorial_compare_links(cars, slug_map, limit=8),
+        editorial_author=EDITORIAL_AUTHOR,
     )
+
+
+@app.route("/author/kerim-orazov")
+def author_kerim_orazov():
+    canonical_url = f"{get_base_url()}{EDITORIAL_AUTHOR['url_path']}"
+    page_schema = {
+        "@context": "https://schema.org", "@type": "Person",
+        "name": EDITORIAL_AUTHOR["name"], "jobTitle": EDITORIAL_AUTHOR["role"],
+        "url": canonical_url,
+        "worksFor": {"@type": "Organization", "name": "CarQuantix", "url": get_base_url()},
+    }
+    return render_template("author.html", author=EDITORIAL_AUTHOR, canonical_url=canonical_url,
+                           page_schema=page_schema, robots_directive="index,follow")
 
 
 @app.route("/methodology")
@@ -5108,7 +5130,7 @@ def sitemap():
     ]
     urls.extend(f"{base_url}/guides/{item['slug']}" for item in GUIDE_ITEMS if item.get("slug"))
     urls.extend(f"{base_url}/blog/{item['slug']}" for item in BLOG_ITEMS if item.get("slug"))
-    urls.extend(f"{base_url}/blog/{item['slug']}" for item in load_autoseo_articles() if item.get("slug"))
+    urls.append(f"{base_url}{EDITORIAL_AUTHOR['url_path']}")
     entries = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
     xml = (
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
