@@ -4627,7 +4627,7 @@ def methodology():
     )
 
 
-@app.route("/privacy-policy")
+@app.route("/privacy-policy", strict_slashes=False)
 def privacy_policy():
     canonical_url = f"{get_base_url()}{request.path}"
     return render_template(
