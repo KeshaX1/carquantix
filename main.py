@@ -4640,6 +4640,19 @@ def privacy_policy():
     )
 
 
+@app.route("/guess-rush-privacy-policy", strict_slashes=False)
+def guess_rush_privacy_policy():
+    canonical_url = f"{get_base_url()}/guess-rush-privacy-policy"
+    return render_template(
+        "guess_rush_privacy_policy.html",
+        canonical_url=canonical_url,
+        meta_title="Guess Rush Privacy Policy - CarQuantix",
+        meta_description="Privacy policy for the Guess Rush Android app (com.kerim.guessrush), published by CarQuantix.",
+        robots_directive="index,follow",
+        adsense_enabled=False,
+    )
+
+
 @app.route("/about-us")
 def about_us():
     canonical_url = f"{get_base_url()}{request.path}"
@@ -5151,6 +5164,7 @@ def sitemap():
         f"{base_url}/terms",
         f"{base_url}/refund-policy",
         f"{base_url}/privacy-policy",
+        f"{base_url}/guess-rush-privacy-policy",
     ]
     urls.extend(f"{base_url}/guides/{item['slug']}" for item in GUIDE_ITEMS if item.get("slug"))
     urls.extend(f"{base_url}/blog/{item['slug']}" for item in BLOG_ITEMS if item.get("slug"))

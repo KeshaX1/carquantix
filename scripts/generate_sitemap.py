@@ -26,6 +26,7 @@ def generate_sitemap(base_url: str, output_path: Path) -> None:
         f"{base_url}/terms",
         f"{base_url}/refund-policy",
         f"{base_url}/privacy-policy",
+        f"{base_url}/guess-rush-privacy-policy",
     ]
     urls.extend(f"{base_url}/guides/{item['slug']}" for item in GUIDE_ITEMS if item.get("slug"))
     urls.extend(f"{base_url}/blog/{item['slug']}" for item in BLOG_ITEMS if item.get("slug"))

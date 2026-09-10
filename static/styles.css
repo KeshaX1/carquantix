@@ -3046,6 +3046,20 @@ body.dark .comment-section textarea::placeholder {
   margin: 4px 0;
 }
 
+.guess-rush-policy .privacy-card {
+  grid-template-columns: 1fr;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+
+.guess-rush-policy .privacy-card:first-child {
+  grid-column: 1 / -1;
+}
+
+.guess-rush-policy .privacy-content {
+  overflow: visible;
+}
+
 .privacy-image-slot {
   width: 100%;
   height: 100%;
